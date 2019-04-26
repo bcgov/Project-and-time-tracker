@@ -1,6 +1,13 @@
 # time-machine
 Time and billing management tool
 
+# Run the TimeMachine application locally 
+Step 1: Provide all the environment variables in .env file
+Step 2: Verify and update keycloak.json in 'web/public/statics'
+Step 3: docker-compose build
+Step 4: docker-compose up
+Step 5: http://localhost:8080
+
 
 Addenda
 March 4, 2019

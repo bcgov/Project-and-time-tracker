@@ -1,0 +1,10 @@
+{
+  "realm": "master",
+  "auth-server-url": "http://keycloakUrl/auth",
+  "ssl-required": "none",
+  "resource": "timeMachineApp",
+  "clientId": "timeMachineApp",
+  "public-client": true,
+  "confidential-port": 0,
+  "ignore-oauth-query-parameter":true
+}
