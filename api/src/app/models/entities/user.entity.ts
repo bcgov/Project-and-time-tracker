@@ -1,0 +1,17 @@
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Contact } from './contact.entity';
+
+@Entity()
+export class User {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  @Column({ type: 'text' })
+  referenceId: string;
+  
+  @ManyToOne(type => Contact, { nullable: true })
+  contact: Contact;
+
+  @Column({ type: 'text', nullable: true })
+  role: string;
+}

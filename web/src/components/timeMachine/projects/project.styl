@@ -1,0 +1,49 @@
+@import '../../../theme/colors'
+
+.project-form
+    width:100%;
+    .contacts
+        .container-custom
+            margin: 20px
+    .v-tabs
+        .v-tabs__wrapper
+            height: 75px
+            .v-tabs__slider-wrapper
+                display none !important
+            .v-tabs__container
+                height : 35px
+                margin: 20px;
+                .v-tabs__item--active
+                    position: static
+                    background-color: $primary
+                    color: white
+                .v-tabs__div
+                    :first-child
+                        border-radius: 2px 0px 0px 2px;
+                    :last-child
+                        border-radius: 0px 2px 2px 0px;
+                    text-transform: none !important
+                    border: 1px solid #E2E2E2
+                    box-shadow: 0px 2px 2px #e2e2e26e
+                    font-weight: 700
+                    color: black;
+                    .v-tabs__item
+                        font-size: 14px
+    .title-container
+        display: flex
+        .title
+            margin-left: 20px
+            font-size: 25px !important
+            font-weight: inherit
+
+.rfx-summary-panel
+    border-bottom: 1px solid #ccc;
+    .v-expansion-panel__header
+        border: none;
+        padding-top: 21px;
+    .edit-rfx-btn
+        margin: 0px 1rem;
+    .v-card
+        .v-card__text
+            padding-top: 0px;
+
