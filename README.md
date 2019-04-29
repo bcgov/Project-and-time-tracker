@@ -23,6 +23,8 @@ Step 3: Once you run the application all the schema will be created.
 Step 4: Execute *BC_Timesheet_MasterData.sql* to create all master data required by default.
 
 
+# Comments
+
 Addenda
 March 4, 2019
 
