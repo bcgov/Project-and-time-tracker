@@ -12,6 +12,16 @@ Step 4: docker-compose up
 
 Step 5: http://localhost:8080
 
+# Set up Database
+
+Step 1: Create a postgres database (To run application in docker, make sure the database is in a public ip or cloud).
+
+Step 2: Provide the database details in .env file
+
+Step 3: Once you run the application all the schema will be created.
+
+Step 4: Execute *BC_Timesheet_MasterData.sql* to create all master data required by default.
+
 
 Addenda
 March 4, 2019
