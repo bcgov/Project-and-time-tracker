@@ -22,7 +22,10 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: npm install
+      working-directory: ./web
     - run: npm run build --if-present
+      working-directory: ./web
     - run: npm run test:unit
+      working-directory: ./web
       env:
         CI: true
