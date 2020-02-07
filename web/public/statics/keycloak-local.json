@@ -1,6 +1,6 @@
 {
   "realm": "Time_Tracker_dev",
-  "auth-server-url": "http://keycloakUrl/auth",
+  "auth-server-url": "http://iam.aot-technologies.com/auth",
   "ssl-required": "none",
   "resource": "timeMachineApp",
   "clientId": "timeMachineApp",
