@@ -32,9 +32,10 @@ jobs:
     #     CI: true
     - name: LS
       run: ls
+      working-directory: ./web
     - name: Deploy
       uses: JamesIves/github-pages-deploy-action@releases/v3
       with:
         ACCESS_TOKEN: ${{ secrets.timemachineDeploy}}
         BRANCH: gh-pages
-        FOLDER: dist
+        FOLDER: web/dist
