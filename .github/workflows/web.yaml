@@ -30,9 +30,6 @@ jobs:
     #   working-directory: ./web
     #   env:
     #     CI: true
-    - name: LS
-      run: ls
-      working-directory: ./web
     - name: Deploy
       uses: JamesIves/github-pages-deploy-action@releases/v3
       with:
