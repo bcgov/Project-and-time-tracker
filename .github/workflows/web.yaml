@@ -32,6 +32,6 @@ jobs:
     - name: Deploy
       uses: JamesIves/github-pages-deploy-action@releases/v3
       with:
-        SSH: true
+        ACCESS_TOKEN: ${{ secrets.timemachineDeploy}}
         BRANCH: gh-pages
         FOLDER: dist
