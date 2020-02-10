@@ -1,0 +1,10 @@
+{
+  "realm": "Time_Tracker_dev",
+  "auth-server-url": "http://iam.aot-technologies.com/auth",
+  "ssl-required": "none",
+  "resource": "timeMachineApp",
+  "clientId": "timeMachineApp",
+  "public-client": true,
+  "confidential-port": 0,
+  "ignore-oauth-query-parameter":true
+}
