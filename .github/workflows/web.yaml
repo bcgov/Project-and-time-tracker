@@ -12,7 +12,8 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [8.x, 10.x, 12.x]
+        # Don't want to deploy multiple times for multiple versions
+        node-version: [12.x]
 
     steps:
     - uses: actions/checkout@v2
