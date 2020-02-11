@@ -73,7 +73,7 @@
       <v-toolbar-title class="App-toolbar-title">
         <img src="./images/logo.svg" alt="avatar" class="app-logo"/>
       </v-toolbar-title>
-      <div class="app-title">Time Machine</div>
+      <div class="app-title">Time Machine GitHub deploy</div>
       <v-spacer></v-spacer>
        <div class="user-name" v-if="userName">Hi, {{userName}}</div>
     </v-toolbar>

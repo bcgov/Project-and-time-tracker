@@ -1,1 +1,3 @@
 db/
+deploy.sh
+deploy-api.sh
