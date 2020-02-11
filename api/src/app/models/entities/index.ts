@@ -1,6 +1,6 @@
 export * from './client.entity';
 export * from './contact.entity';
-export * from './document.entity';
+// export * from './document.entity';
 export * from './ministry.entity';
 export * from './project.entity';
 export * from './projectContacts.entity';
