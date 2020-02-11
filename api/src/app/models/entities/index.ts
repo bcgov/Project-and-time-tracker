@@ -4,7 +4,7 @@ export * from './document.entity';
 export * from './ministry.entity';
 export * from './project.entity';
 export * from './projectContacts.entity';
-export * from './projectDocuments.entity';
+// export * from './projectDocuments.entity';
 export * from './projectIntake.entity';
 export * from './projectIntakeContacts.entity';
 export * from './projectRfx.entity';
