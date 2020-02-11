@@ -42,7 +42,8 @@ INSERT INTO rfx_type("rfxTypeName") VALUES ('SOW (Statement of Work)');
 INSERT INTO rfx_type("rfxTypeName") VALUES ('Pre-Qualification List');
 INSERT INTO rfx_type("rfxTypeName") VALUES ('Direct Award');
 
--- INSERT INTO rfx_phase("rfxPhaseName") VALUES ('On-boarding');
+--Making edits to the existing project phases
+---INSERT INTO rfx_phase("rfxPhaseName") VALUES ('On-boarding');
 INSERT INTO rfx_phase("rfxPhaseName") VALUES ('Planning');
 INSERT INTO rfx_phase("rfxPhaseName") VALUES ('Drafting');
 INSERT INTO rfx_phase("rfxPhaseName") VALUES ('Posted');
