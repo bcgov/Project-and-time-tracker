@@ -77,9 +77,6 @@ const menuItems = [
     icon: 'lock_open',
   },
   {
-    divider: true,
-  },
-  {
     header: 'System',
   },
   {

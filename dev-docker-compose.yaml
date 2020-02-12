@@ -14,11 +14,3 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: timemachine
-
-  web-dev:
-    build: 
-      context: ./web
-    volumes: 
-      - "./web/:/web/"
-    ports: 
-      - "8080:8080"
