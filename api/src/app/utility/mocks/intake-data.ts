@@ -10,7 +10,7 @@ import { IClient } from '../../models/interfaces/i-client';
 import { IContact } from '../../models/interfaces/i-contact';
 import { IntakeStatus } from '../../models/entities/projectIntake.entity';
 import { IMinistry } from '../../models/interfaces/i-ministry';
-import { IDocuments } from '../../models/interfaces/i-documents';
+// import { IDocuments } from '../../models/interfaces/i-documents';
 import { IProject } from '../../models/interfaces';
 import { IRfxPhase } from '../../models/interfaces/i-rfx-phase';
 import { ITimesheetEntry } from '../../models/interfaces/i-timesheet-entry';
@@ -54,12 +54,12 @@ export namespace IntakeData {
     postalCode: chance.postal()
   });
 
-  export const genDocuments = (): IDocuments => ({
-    id: chance.guid(),
-    mimetype: chance.name(),
-    data: null,
-    version: chance.string()
-  });
+  // export const genDocuments = (): IDocuments => ({
+  //   id: chance.guid(),
+  //   mimetype: chance.name(),
+  //   data: null,
+  //   version: chance.string()
+  // });
 
   export const genContacts = (): IContact => ({
     id: chance.guid(),

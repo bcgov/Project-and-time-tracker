@@ -27,8 +27,8 @@
                   <v-tab ripple>RFx Type and Phase</v-tab>
                   <v-tab ripple>Project Contacts</v-tab>
                   <v-tab ripple>Finance Codes</v-tab>
-                  <v-tab ripple>Time Report</v-tab>
-                  <v-tab ripple>Documents</v-tab>
+                  <!-- <v-tab ripple>Time Report</v-tab> -->
+                  <!-- <v-tab ripple>Documents</v-tab> -->
 
                   <!-- RFx Type and Phases -->
                   <v-tab-item>
@@ -146,22 +146,22 @@
                     </v-card>
                   </v-tab-item>
                   <!-- Time Report -->
-                  <v-tab-item>
+                  <!-- <v-tab-item>
                     <v-card>
                       <v-card-title>
                         <span class="title">Coming Soon...</span>
                         <!-- <project-timesheet-report></project-timesheet-report> -->
-                      </v-card-title>
+                      <!-- </v-card-title>
                     </v-card>
-                  </v-tab-item>
+                  </v-tab-item> --> 
                   <!-- Documents -->
-                  <v-tab-item>
+                  <!-- <v-tab-item>
                     <v-card>
                       <v-card-title>
                         <span class="title">Coming Soon...</span>
                       </v-card-title>
                     </v-card>
-                  </v-tab-item>
+                  </v-tab-item> -->
                 </v-tabs>
               </div>
             </template>

@@ -1,11 +1,11 @@
 export * from './i-auth';
 export * from './i-client';
 export * from './i-contact';
-export * from './i-documents';
+// export * from './i-documents';
 export * from './i-keycloak-user-fetch-by-role';
 export * from './i-ministry';
 export * from './i-project-contact';
-export * from './i-project-documents';
+// export * from './i-project-documents';
 export * from './i-project-intake-contact';
 export * from './i-project-intake';
 export * from './i-project-rfx';
