@@ -72,6 +72,14 @@ const menuItems = [
     divider: true,
   },
   {
+    href: '/admin',
+    title: 'Admin',
+    icon: 'lock_open',
+  },
+  {
+    divider: true,
+  },
+  {
     header: 'System',
   },
   {
