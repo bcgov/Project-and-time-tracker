@@ -1,5 +1,6 @@
 <template>
   <v-container grid-list-xl fluid class="custom-manage-projects-container">
+   <confirm ref="confirm"></confirm>
     <v-layout>
       <v-flex md12>
         <h1 class="projects-header">Admin &mdash; Ministries</h1>
@@ -9,6 +10,7 @@
       <v-flex xs12>
         <p>Welcome to ministries list</p>
         <p>TODO: Re-name, Create.</p>
+        <p>TODO: Copy Archive icon used by Tanya</p>
         <p>TODO: Need to handle re-names in a way that don't retroactively rename.</p>
 
         <!-- <v-list>
@@ -17,6 +19,8 @@
           </v-list-tile>
         </v-list>-->
 
+        <v-btn>Create New Ministry</v-btn>
+
         <v-data-table :headers="headers" :items="ministries" class="elevation-1">
           <template v-slot:items="props">
             <td v-if="!editableRows[props.item.id]">{{ props.item.ministryName }}</td>
@@ -24,12 +28,16 @@
               <v-text-field label="Name" v-model='props.item.ministryName'></v-text-field>
             </td>
 
-
-            <td v-if="!editableRows[props.item.id]" @click="editName(props.item.id, props.item.ministryName)">Rename</td>
+            <td @click="archivePrompt(props.item)">
+              <v-btn>Archive</v-btn>
+            </td>
+            <!-- <td v-if="!editableRows[props.item.id]" @click="editName(props.item.id, props.item.ministryName)">
+              Rename
+            </td>
             <td v-else>
               <v-btn @click='cancelName(props.item.id, props.item.ministryName)'>Cancel</v-btn>
-              <v-btn @click='saveName(props.item.id, props.item.ministryName)'>Save</v-btn>
-              </td>
+              <v-btn @click='saveName(props.item)'>Save</v-btn>
+              </td> -->
           </template>
         </v-data-table>
       </v-flex>
@@ -38,9 +46,13 @@
 </template>
 
 <script>
-// import Material from 'vuetify/es5/util/colors';
+import Confirm from '../common/Confirm.vue'
+
 
 export default {
+  components: {
+    Confirm
+  },
   data() {
     return {
       headers: [
@@ -68,29 +80,36 @@ export default {
   },
   methods: {
     editName(i, name) {
-
-      console.log('editName, has originalName?', this._originalName, this.ministries);
-
       const toggle = !this.editableRows[i];
       this.$set(this.editableRows, i, toggle);
       this._originalName = name;
     },
     cancelName(i, name){
-
       const ministry = this.ministries.find(x => x.id === i)
-      // ministry.ministryName = name;
       ministry.ministryName = this._originalName;
       this.$set(this.editableRows, i, false); // false=make non-editable
-      // this.$set(this.ministries0)
-
-      console.log('cancelName', ministry)
-      // this.$set(this.ministries)
     },
-    saveName(i, name){
-      console.log('saveName', {i, name});
-      this.$set(this.editableRows, i, false); // false=make non-editable
-    }
-  }
+    // saveName(i, name){
+    saveName(item){
+      this.$set(this.editableRows, item.id, false); // false=make non-editable
+      console.log('TODO! MAKE API CALL HERE');
+      this.$store.dispatch('updateMinistries', item)
+    },
+    async archivePrompt(item){
+       if (
+        await this.$refs.confirm.open(
+          'info',
+          `Are you sure to archive ${item.ministryName}?`,
+        )
+      ) {
+        console.log('TODO - Archive!')
+        // this.$store.dispatch('approveIntakeRequest', { id }).then(() => {
+        //   this.$store.dispatch('fetchIntakeRequests');
+        //   this.$refs.snackbar.displaySnackbar('success', 'Request Approved.');
+        // });
+      }
+    },
+  },
 };
 </script>
 
