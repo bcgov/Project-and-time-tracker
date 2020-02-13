@@ -52,11 +52,14 @@
             </td>
             <td class="text-xs-left">{{ props.item.completionDate }}</td>
             <td class="text-xs-right">
-              <v-btn flat icon color="grey" @click="viewProjectTimesheets">
+              <!-- <v-btn flat icon color="grey" @click="viewProjectTimesheets">
                 <v-icon color="btnPrimary">timer</v-icon>
-              </v-btn>
+              </v-btn> -->
               <v-btn flat icon color="grey" @click="editProject(props.item.id)">
                 <v-icon>edit</v-icon>
+              </v-btn>
+              <v-btn flat icon color="grey" @click="archiveProject(props.item.id)">
+              <v-icon>archive</v-icon>
               </v-btn>
               <v-btn flat icon color="grey" @click="deleteProject(props.item.id)">
                 <v-icon>delete</v-icon>
@@ -91,8 +94,7 @@ export default {
         { text: 'Project Lead', value: 'projectLeadId', sortable: false },
         { text: 'Project Backup', value: 'projectBackup', sortable: false },
         { text: 'Project Deadline', value: 'completionDate', sortable: true },
-        {
-          text: 'Actions', value: 'action', align: 'right', width: '145px', sortable: false,
+        { text: 'Actions', value: 'action', align: 'center', width: '145px', sortable: false,
         },
       ],
       selectedLeadUser: '',
@@ -114,6 +116,14 @@ export default {
     editProject(id) {
       this.$router.push({ path: `project/${id}` });
     },
+    archiveProject(id) {
+      if(this.$refs.confirm.open('info','Do you want to archive this project?'))
+      {
+        //yes
+        this.$store.dispatch('updateProject');
+      }
+    },
+
     viewProjectTimesheets() {
       this.$router.push({ path: 'timesheets' });
     },
