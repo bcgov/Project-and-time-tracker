@@ -4,7 +4,8 @@ import {
   retrieveMinistries, 
   retrieveMinistryById, 
   updateMinistry,
-  retrieveAllMinistries
+  retrieveAllMinistries,
+  createMinistry
 } from '../../../services/client/ministry.service';
 import { authorize } from '../../../services/common/authorize.service';
 
@@ -47,6 +48,16 @@ export const updateMinistryActionById = async (ctx: Koa.Context) => {
   }
 }
 
+export const addMinistry = async (ctx: Koa.Context) => {
+  try {
+    const ministryName = ctx.request.body;
+    await createMinistry(ministryName);
+    ctx.body = 'success';
+  } catch (err) {
+    ctx.throw(err.message)
+  }
+}
+
 const routerOpts: Router.IRouterOptions = {
   prefix: '/ministry'
 };
@@ -54,6 +65,7 @@ const routerOpts: Router.IRouterOptions = {
 const router: Router = new Router(routerOpts);
 
 router.get('/', authorize, getMinistries);
+router.post('/', authorize, addMinistry);
 router.get('/all', authorize, getAllMinistries);
 router.get('/:id', authorize, getMinistryById);
 router.patch('/:id/update', authorize, updateMinistryActionById);

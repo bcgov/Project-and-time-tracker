@@ -12,12 +12,9 @@
         <ul>
           <li><b>TODO</b></li>
           <li>Create New Ministries</li>
-          <li>Un-Archive</li>
-          <li>Style archived text strike-out</li>
-          <li>See Archived?</li>
         </ul>
 
-        <v-btn>Create New Ministry</v-btn>
+        <v-btn @click="createMinistryPrompt()">Create New Ministry</v-btn>
 
         <v-data-table :headers="headers" :items="allMinistries" class="elevation-1">
           <template v-slot:items="props">
@@ -38,6 +35,35 @@
         </v-data-table>
       </v-flex>
     </v-layout>
+
+
+
+   <v-dialog v-model="dialog" persistent max-width="600px">
+      <!-- <template v-slot:activator="{ on }">
+        <v-btn color="primary" dark v-on="on">Open Dialog</v-btn>
+      </template> -->
+      <v-card>
+        <v-card-title>
+          <span class="headline">Create Ministry</span>
+        </v-card-title>
+        <v-card-text>
+          <v-container grid-list-md>
+            <v-layout wrap>
+              <v-flex xs12>
+                <v-text-field v-model="newMinistryName" label="Ministry Name" required></v-text-field>
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" flat @click="dialog = false">Close</v-btn>
+          <v-btn color="blue darken-1" flat @click="createMinistry(newMinistryName)">Save</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+
   </v-container>
 </template>
 
@@ -57,7 +83,9 @@ export default {
           value: "ministryName"
         },
         { text: "Actions", value: "actions", value: "is_archived" }
-      ]
+      ],
+      dialog: false,
+      newMinistryName: '',
     };
   },
   computed: {
@@ -83,6 +111,17 @@ export default {
         this.$store.dispatch("fetchAllMinistries");
       }
     },
+    createMinistryPrompt(){
+      console.log('create ministry!');
+      this.dialog = true;
+    },
+    async createMinistry(name){
+      console.log('createMinistry', {name});
+      await this.$store.dispatch('addMinistry', {ministryName: name});
+      this.dialog = false; // Close window
+      this.$store.dispatch('fetchAllMinistries');
+      // TODO - Need to refresh!
+    }
   },
   created(){
     this.$store.dispatch('fetchAllMinistries');

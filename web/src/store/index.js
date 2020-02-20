@@ -172,6 +172,11 @@ const store = new Vuex.Store({
     addUser() {
       throw new Error('Not implemented!');
     },
+    addMinistry(state, data){
+      console.log('TODO - NOT SURE IF COMPLETE - addMinistry MUTATION called', {state, data});
+      // state.ministries = data;
+      // throw new Error('Not implemented');
+    },
     updateUser() {
       throw new Error('Not implemented!');
     },
@@ -394,6 +399,18 @@ const store = new Vuex.Store({
           const content = res.data;
           ctx.commit('fetchAllMinistries', content);
         });
+    },
+    async addMinistry(ctx, req){
+      const body = req;
+      const api = $http
+        .post(`${API_URI}/ministry`, body)
+        .then((res) => {
+          const content = res.data;
+          ctx.commit('addMinistry', content);
+          return Promise.resolve(res.data);
+        })
+        .catch(err => Promise.reject(err));
+        return Promise.resolve(api);
     },
     async updateMinistries(ctx, req){
       const api = await $http
