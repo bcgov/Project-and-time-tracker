@@ -59,11 +59,11 @@
           ></v-select>
         </div>
       </v-flex>
-      <v-flex md6>
+      <!-- <v-flex md6>
         <div class="v-form-container">
           <v-text-field label="Commodity Code" v-model="form.commodityCode"></v-text-field>
         </div>
-      </v-flex>
+      </v-flex> -->
       <v-flex md6>
         <div class="v-form-container">
           <v-text-field

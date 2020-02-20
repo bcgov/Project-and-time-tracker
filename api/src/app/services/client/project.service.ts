@@ -84,10 +84,59 @@ export const retrieveProjects = async () => {
       'p.backupUserId',
       'p.mouAmount',
     ])
+    .where('p.is_archived = :is_archived', {is_archived : false})
+    .getMany();
+};
+
+export const retrieveArchivedProjects = async () => {
+  const repo = projectRepo();
+  return await repo
+    .createQueryBuilder('p')
+    .innerJoin('p.client', 'c')
+    .innerJoin('c.ministry', 'm')
+    .innerJoin('p.projectSector', 'ps')
+    .orderBy('p.dateModified', 'DESC')
+    .select([
+      'p.id',
+      'p.projectName',
+      'ps',
+      'p.completionDate',
+      'c.orgDivision',
+      'm.ministryName',
+      'p.leadUserId',
+      'p.backupUserId',
+      'p.mouAmount',
+    ])
+    .where('p.is_archived = :is_archived', {is_archived : true})
     .getMany();
 };
 
 export const retrieveProjectsByUserId = async (userId: string) => {
+  const repo = projectRepo();
+  return await repo
+    .createQueryBuilder('p')
+    .innerJoin('p.client', 'c')
+    .innerJoin('c.ministry', 'm')
+    .innerJoin('p.user','u')
+    .innerJoin('c.contact','uc')
+    .innerJoin('p.projectSector', 'ps')
+    .select([
+      'p.id',
+      'p.projectName',
+      'ps',
+      'u.id',
+      'uc.fullName',
+      'p.completionDate',
+      'c.orgDivision',
+      'm.ministryName',      
+      'p.leadUserId',
+      'p.backupUserId',
+      'p.mouAmount',
+    ])
+    .where('p."is_archived" = :is_archived, {is_archived : false}) AND p."leadUserId" = :userId OR p."backupUserId" = :userId', { userId: userId })
+    .getMany();
+};
+export const retrieveArchivedProjectsByUserId = async (userId: string) => {
   const repo = projectRepo();
   return await repo
     .createQueryBuilder('p')
@@ -105,6 +154,6 @@ export const retrieveProjectsByUserId = async (userId: string) => {
       'p.backupUserId',
       'p.mouAmount',
     ])
-    .where('p."leadUserId" = :userId OR p."backupUserId" = :userId', { userId: userId })
+    .where('p."is_archived" = :is_archived, {is_archived : true}) AND p."leadUserId" = :userId OR p."backupUserId" = :userId', { userId: userId })
     .getMany();
 };
