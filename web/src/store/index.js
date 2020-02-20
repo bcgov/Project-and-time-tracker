@@ -45,6 +45,7 @@ const store = new Vuex.Store({
     services: [],
     projectSectors: [],
     ministries: [],
+    allMinistries: [],
     rfxPhases: [],
     rfxTypes: [],
     // Intake form component
@@ -117,6 +118,10 @@ const store = new Vuex.Store({
     fetchMinistries(state, data) {
       console.log('fetchMinistries called', data);
       state.ministries = data;
+    },
+    fetchAllMinistries(state, data){
+      console.log('fetchAllMinistries called', data)
+      state.allMinistries = data;
     },
     fetchRFxPhases(state, data) {
       state.rfxPhases = data;
@@ -381,13 +386,24 @@ const store = new Vuex.Store({
           ctx.commit('fetchMinistries', content);
         });
     },
-    updateMinistries(ctx, req){
+    // Returns archived ministries + unarchived
+    fetchAllMinistries(ctx){
       $http
+        .get(`${API_URI}/ministry/all`)
+        .then((res) => {
+          const content = res.data;
+          ctx.commit('fetchAllMinistries', content);
+        });
+    },
+    async updateMinistries(ctx, req){
+      const api = await $http
         .patch(`${API_URI}/ministry/${req.id}/update`, req)
         .then((res) => {
           console.log('updateMinistires RESPONSE', {res})
-          // ctx.commit...
+          return Promise.resolve(res.data)
         })
+        .catch(err => Promise.reject(err));
+        return Promise.resolve(api);
     },
     fetchRFxPhases(ctx) {
       $http.get(`${API_URI}/rfx-phase`)

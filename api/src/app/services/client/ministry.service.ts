@@ -1,25 +1,22 @@
-import { Repository, getRepository } from 'typeorm';
+import { Repository, getRepository, IsNull } from 'typeorm';
 import { Ministry } from '../../models/entities/ministry.entity';
 
 const ministryRepo = (): Repository<Ministry> => {
   return getRepository(Ministry);
 };
 
+// Excludes archived
 export const retrieveMinistries = async () => {
   const repo = ministryRepo();
-  return await repo.find();
-  // TODO - MODIFY SO THAT IS_ARCHIVE=FALSE
-  // return await repo.createQueryBuilder('m')
-  //                   // .where("m.is_archived = NULL", { val: null })
-  //                   .getMany();
+  return await repo.createQueryBuilder('m')
+                    .where("m.is_archived IS NULL OR m.is_archived = :val", { val: false })
+                    .getMany();
 };
 
-// Working but not fully wired up yet
-export const retrieveArchivedMinistries = async () => {
+// Both archived and unarchived
+export const retrieveAllMinistries = async () => {
   const repo = ministryRepo();
-  return await repo.createQueryBuilder('m')
-    .where("m.is_archived = :val", { val: true })
-    .getMany();
+  return repo.find();
 };
 
 export const retrieveMinistryById = async (id: string) => {
