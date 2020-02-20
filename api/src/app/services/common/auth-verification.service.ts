@@ -21,6 +21,7 @@ export const validateToken = async (ctx: Koa.Context, next: () => Promise<any>) 
   try {
     const url = `${keycloakConfig.url}/realms/${keycloakConfig.realmName}/protocol/openid-connect/userinfo`;
 
+    // console.log('validateToken URL: ', url);    
     // assumes bearer token is passed as an authorization header
     if (ctx.headers.authorization) {
       const options = {
@@ -34,9 +35,12 @@ export const validateToken = async (ctx: Koa.Context, next: () => Promise<any>) 
 
       const response = await fetch(url, options);
 
+      // console.log('validateToken response', { response })
+
       if (response.status !== 200) {
         // if the request status isn't "OK", the token is invalid
         ctx.status = HttpStatus.UNAUTHORIZED;
+        console.log('ARC unauthorized 1');
       } else {
         // the token is valid pass request onto your next function
         const data: any = await response.json();
@@ -67,9 +71,11 @@ export const validateToken = async (ctx: Koa.Context, next: () => Promise<any>) 
     } else {
       // there is no token, don't process request further
       ctx.status = HttpStatus.UNAUTHORIZED;
+      console.log('ARC Unauthorized 2 - changed')
     }
   } catch (error) {
     ctx.status = HttpStatus.UNAUTHORIZED;
+    console.log('ARC Unauthorized 3')
     throw error;
   }
 };
@@ -78,11 +84,17 @@ export const retrieveKeycloakAdminToken = async () => {
   try {
     const tokenUrl = `${keycloakConfig.url}/realms/${keycloakConfig.realmName}/protocol/openid-connect/token`; 
 
+    // console.log('retrieveKeycloakAdminToken URL', { tokenUrl });
+
+    // ARC TODO - PROBLEM IS IN THIS FUNCTION. PARAMS ARE WRONG MAYBE?
+
+    // console.log('retrieveKeycloakAdminToken keycloak config', { keycloakConfig})
+
     const tokenParams = new URLSearchParams();
     tokenParams.append('username', keycloakConfig.adminUserName);
     tokenParams.append('password', keycloakConfig.adminPassword);
     tokenParams.append('grant_type', 'password');
-    tokenParams.append('client_id', keycloakConfig.resourceName);
+    tokenParams.append('client_id', keycloakConfig.resourceName); 
 
     const response = await fetch(tokenUrl, { 
       method: 'POST',
@@ -91,6 +103,8 @@ export const retrieveKeycloakAdminToken = async () => {
       },
       body: tokenParams
     });
+
+    // console.log('retrieveKeycloakAdminToken RESPONSE', { response })
     
     if (response.status !== 200) {
       throw Error(response.statusText);
@@ -125,11 +139,15 @@ export const retrieveKeycloakUsersByRole = async (role: string, token: string) =
 
 const verifyAndCreateOrUpdateUser = async (authData: IAuth, data: any) => {
   const user = await retrieveUserByReferenceId(data.sub);
+  console.log('verifyAndCreateOrUpdateUser called.')
   if (!user) {
+    console.log('ARC - User does not exist, creating contact with nam: ', authData.fullName)
     const contact: any = await createContact(<IContact> {
       fullName: authData.fullName,
       contactType: 'user'
     });
+
+    console.log('ARC - Created contact.  ID: ', contact.id)
 
     const createdUser = await createUser(<IUser> {
       referenceId: authData.referenceId,
@@ -139,6 +157,9 @@ const verifyAndCreateOrUpdateUser = async (authData: IAuth, data: any) => {
       }
     });
     authData.userId = createdUser.id;
+
+    console.log('ARC - Created user ID:', createdUser.id)
+
   } else {
     if (user.role !== authData.role) {
       await updateUser(user.id, { role: authData.role });

@@ -23,6 +23,7 @@ import IntakeRequestDto from '@/domain/models/Intake.dto';
 import HashTable from '@/utils/HashTable';
 
 const API_URI = process.env.VUE_APP_API_URI || 'http://localhost:3000';
+console.log('API URL:', { API_URI })
 
 Vue.use(Vuex);
 
@@ -114,6 +115,7 @@ const store = new Vuex.Store({
     },
     // Master data
     fetchMinistries(state, data) {
+      console.log('fetchMinistries called', data);
       state.ministries = data;
     },
     fetchRFxPhases(state, data) {
@@ -159,6 +161,7 @@ const store = new Vuex.Store({
     },
     // User contacts (profiles?)
     fetchUsers(state, data) {
+      console.log('fetchUsers called', { state, data } )
       state.users = data;
     },
     addUser() {
@@ -377,6 +380,14 @@ const store = new Vuex.Store({
           const content = res.data;
           ctx.commit('fetchMinistries', content);
         });
+    },
+    updateMinistries(ctx, req){
+      $http
+        .patch(`${API_URI}/ministry/${req.id}/update`, req)
+        .then((res) => {
+          console.log('updateMinistires RESPONSE', {res})
+          // ctx.commit...
+        })
     },
     fetchRFxPhases(ctx) {
       $http.get(`${API_URI}/rfx-phase`)

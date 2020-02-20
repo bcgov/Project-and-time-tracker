@@ -48,6 +48,9 @@ export class ProjectIntake {
 
   @Column({ type: 'timestamp', nullable: true })
   dateModified: Date;
+
+  // @Column({ type: 'boolean', nullable: false })
+  // is_archived: Boolean;
 }
 
 export type IntakeStatus = 'submitted' | 'approved' | 'rejected';

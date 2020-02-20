@@ -23,6 +23,12 @@
               class="text-xs-left"
             >{{ [props.item.ministryName, props.item.orgDivision].join(" ") }}</td>
             <td class="text-xs-left table-dropdown">
+              <!-- TODO: is below v-if necessary on v-select?
+
+              ARC - v-if is because you need to approve before you can assign
+              Question - Why can't we show the users name properly? Name exists on contact? what?
+
+               -->
               <v-select
                 v-if="props.item.status !== 'submitted'"
                 :items="userList"
@@ -130,9 +136,13 @@ export default {
   },
   computed: {
     intakeRequests() {
+      // console.log('intakeRequests', this.$store.state.intakeRequests);
       return this.$store.state.intakeRequests;
     },
     userList() {
+      console.log('userList called', this.$store.state.users);
+      // ARC - UserList doesn't seem to come back with names? What?
+      // potentially issue is 'contact' is null. How to get it non-null?
       return this.$store.state.users;
     },
   },

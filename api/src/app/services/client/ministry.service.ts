@@ -8,6 +8,18 @@ const ministryRepo = (): Repository<Ministry> => {
 export const retrieveMinistries = async () => {
   const repo = ministryRepo();
   return await repo.find();
+  // TODO - MODIFY SO THAT IS_ARCHIVE=FALSE
+  // return await repo.createQueryBuilder('m')
+  //                   // .where("m.is_archived = NULL", { val: null })
+  //                   .getMany();
+};
+
+// Working but not fully wired up yet
+export const retrieveArchivedMinistries = async () => {
+  const repo = ministryRepo();
+  return await repo.createQueryBuilder('m')
+    .where("m.is_archived = :val", { val: true })
+    .getMany();
 };
 
 export const retrieveMinistryById = async (id: string) => {
@@ -28,3 +40,15 @@ export const createMinistry = async obj => {
   }
   return ret;
 };
+
+export const updateMinistry = async (input: Ministry) => {
+  const repo = ministryRepo();
+  const ministry: Ministry = await repo.findOne(input.id)
+
+  if (!ministry){
+    throw Error('Ministry not found');
+  }
+
+  const updatedMinistry = await repo.save(input);
+  return updatedMinistry;
+}

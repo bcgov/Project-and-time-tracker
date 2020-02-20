@@ -16,6 +16,11 @@ export const DB_CONFIG = process.env.environment ? {
     synchronize: process.env.db_synchronize
 } : ENVIRONMENT_CONFIG.database['postgresdb'];
 
+console.log('DB_Config - ', { DB_CONFIG });
+
+
+// ARC TODO - Use process.env to store keycloak creds on server
+// https://cli.vuejs.org/guide/mode-and-env.html#example-staging-mode
 export const keycloakConfig = {
     url: process.env.kc_authServerUrl || ENVIRONMENT_CONFIG.keyCloak.authServerUrl,
     realmName: process.env.kc_realm || ENVIRONMENT_CONFIG.keyCloak.realm,
@@ -23,3 +28,5 @@ export const keycloakConfig = {
     adminUserName: process.env.kc_adminUserName || ENVIRONMENT_CONFIG.keyCloak.adminUserName,
     adminPassword: process.env.kc_adminPassword || ENVIRONMENT_CONFIG.keyCloak.adminPassword
 };
+
+// console.log('Keycloak config', {keycloakConfig});

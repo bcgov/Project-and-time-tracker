@@ -23,13 +23,17 @@
 
         <v-data-table :headers="headers" :items="ministries" class="elevation-1">
           <template v-slot:items="props">
-            <td v-if="!editableRows[props.item.id]">{{ props.item.ministryName }}</td>
-            <td v-else>
+            <!-- <td v-if="!editableRows[props.item.id]">{{ props.item.ministryName }}</td> -->
+            <td>{{ props.item.ministryName }}</td>
+            <!-- <td v-else>
               <v-text-field label="Name" v-model='props.item.ministryName'></v-text-field>
-            </td>
+            </td> -->
 
-            <td @click="archivePrompt(props.item)">
-              <v-btn>Archive</v-btn>
+            <td @click="archivePrompt(props.item, true)">
+              <v-btn flat icon color="grey">
+              <v-icon>archive</v-icon>
+              </v-btn>
+              <!-- <v-btn><v-icon>Archive</v-icon></v-btn> -->
             </td>
             <!-- <td v-if="!editableRows[props.item.id]" @click="editName(props.item.id, props.item.ministryName)">
               Rename
@@ -64,14 +68,14 @@ export default {
         { text: "Actions", value: "actions" }
       ],
 
-      editableRows: {},
-      _originalName: '',
+      // editableRows: {},
+      // _originalName: '',
     };
   },
 
-  beforeMount() {
-    // this.$store.state.collapseNavigationBar = true;
-  },
+  // beforeMount() {
+  //   // this.$store.state.collapseNavigationBar = true;
+  // },
   // computed: {},
   computed: {
     ministries() {
@@ -79,34 +83,32 @@ export default {
     }
   },
   methods: {
-    editName(i, name) {
-      const toggle = !this.editableRows[i];
-      this.$set(this.editableRows, i, toggle);
-      this._originalName = name;
-    },
-    cancelName(i, name){
-      const ministry = this.ministries.find(x => x.id === i)
-      ministry.ministryName = this._originalName;
-      this.$set(this.editableRows, i, false); // false=make non-editable
-    },
-    // saveName(i, name){
-    saveName(item){
-      this.$set(this.editableRows, item.id, false); // false=make non-editable
-      console.log('TODO! MAKE API CALL HERE');
-      this.$store.dispatch('updateMinistries', item)
-    },
-    async archivePrompt(item){
+    // editName(i, name) {
+    //   const toggle = !this.editableRows[i];
+    //   this.$set(this.editableRows, i, toggle);
+    //   this._originalName = name;
+    // },
+    // cancelName(i, name){
+    //   const ministry = this.ministries.find(x => x.id === i)
+    //   ministry.ministryName = this._originalName;
+    //   this.$set(this.editableRows, i, false); // false=make non-editable
+    // },
+    // // saveName(i, name){
+    // saveName(item){
+    //   this.$set(this.editableRows, item.id, false); // false=make non-editable
+    //   console.log('TODO! MAKE API CALL HERE');
+    //   this.$store.dispatch('updateMinistries', item)
+    // },
+    async archivePrompt(item, archiveVal){
        if (
         await this.$refs.confirm.open(
           'info',
           `Are you sure to archive ${item.ministryName}?`,
         )
       ) {
-        console.log('TODO - Archive!')
-        // this.$store.dispatch('approveIntakeRequest', { id }).then(() => {
-        //   this.$store.dispatch('fetchIntakeRequests');
-        //   this.$refs.snackbar.displaySnackbar('success', 'Request Approved.');
-        // });
+        console.log('TODO - Archive!', item)
+        item.is_archived = archiveVal; // TODO: Parameterize
+        this.$store.dispatch('updateMinistries', item)
       }
     },
   },
