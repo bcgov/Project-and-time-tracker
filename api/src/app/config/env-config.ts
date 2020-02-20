@@ -20,8 +20,9 @@ export  const ENV_CONFIG =  {
             realm: 'Time_Tracker_dev',
             resource: 'timeMachineApp',
             authServerUrl: 'http://iam.aot-technologies.com/auth',
-            adminUserName: 'dev_admin',
+            adminUserName: 'admin',
             adminPassword: 'aot123'
         }
     },
 };
+
