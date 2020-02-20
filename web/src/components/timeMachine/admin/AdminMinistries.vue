@@ -19,45 +19,25 @@
 
         <v-btn>Create New Ministry</v-btn>
 
-        <!-- <v-data-table :headers="headers" :items="ministries" class="elevation-1"> -->
         <v-data-table :headers="headers" :items="allMinistries" class="elevation-1">
           <template v-slot:items="props">
-            <td>{{ props.item.ministryName }}</td>
+            <td v-bind:class="{ 'archived': props.item.is_archived}">{{ props.item.ministryName }}</td>
 
             <td v-if="!props.item.is_archived" @click="archivePrompt(props.item, true)">
-              <v-btn flat icon color="grey">
+              <v-btn flat color="grey">
                 <v-icon>archive</v-icon>
+                Archive
               </v-btn>
             </td>
             <td v-else @click="archivePrompt(props.item, false)">
-              Unarchive
-              <!-- <v-btn flat icon color="grey">
-                <v-icon>archive</v-icon>
-              </v-btn> -->
+              <v-btn flat >
+              Restore
+              </v-btn>
             </td>
           </template>
         </v-data-table>
-
-        <!-- <hr>
-        <h2>Archived Ministries</h2>
-        <v-data-table :headers="headers" :items="archived_ministries" class="elevation-1">
-          <template v-slot:items="props">
-            <td>{{ props.item.ministryName }}</td>
-
-            <td v-if='!props.item.is_archived' @click="archivePrompt(props.item, true)">
-              <v-btn flat icon color="grey">
-                <v-icon>archive</v-icon>
-              </v-btn>
-            </td>
-            <td v-else>Un-archive todo</td>
-
-
-
-          </template>> -->
-          </v-flex>
-        </v-data-table>
-
-      </v-layout>
+      </v-flex>
+    </v-layout>
   </v-container>
 </template>
 
@@ -76,7 +56,7 @@ export default {
           align: "left",
           value: "ministryName"
         },
-        { text: "Actions", value: "actions" }
+        { text: "Actions", value: "actions", value: "is_archived" }
       ]
     };
   },
@@ -110,4 +90,8 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.archived {
+  text-decoration: line-through;
+}
+</style>
