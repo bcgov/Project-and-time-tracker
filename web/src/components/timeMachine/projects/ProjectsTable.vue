@@ -21,7 +21,7 @@
             <td>{{ props.item.projectName }}</td>
             <td
               class="text-xs-left"
-            >{{ [props.item.client.ministry.ministryName, props.item.orgDivision].join(" ") }}</td>
+              >{{ [props.item.client.ministry.ministryName, props.item.orgDivision].join(" ") }}</td>
             <td class="text-xs-left table-dropdown">
               <v-select
                 :items="userList"
@@ -61,9 +61,9 @@
               <v-btn flat icon color="grey" @click="archiveProject(props.item.id)">
               <v-icon>archive</v-icon>
               </v-btn>
-              <v-btn flat icon color="grey" @click="deleteProject(props.item.id)">
+              <!-- <v-btn flat icon color="grey" @click="deleteProject(props.item.id)">
                 <v-icon>delete</v-icon>
-              </v-btn>
+              </v-btn> -->
             </td>
           </template>
         </v-data-table>
@@ -116,13 +116,10 @@ export default {
     editProject(id) {
       this.$router.push({ path: `project/${id}` });
     },
-    archiveProject(id) {
-      if(this.$refs.confirm.open('info','Do you want to archive this project?'))
-      {
-        //yes
-        this.$store.dispatch('updateProject');
-      }
-    },
+    archiveProject() {
+      this.$refs.confirm.open('info','Do you want to archive this project?');
+      this.$store.dispatch('fetchProjects');
+      },
 
     viewProjectTimesheets() {
       this.$router.push({ path: 'timesheets' });
