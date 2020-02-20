@@ -1,0 +1,16 @@
+# Use postgres/example user/password credentials
+version: '3.1'
+
+services:
+
+  db:
+    image: postgres
+    volumes:
+      - ~/dev/Project-and-time-tracker/db/:/var/lib/postgresql/data
+      - ~/dev/Project-and-time-tracker/BC_Timesheet_MasterData.sql:/BC_Timesheet_MasterData.sql
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: timemachine

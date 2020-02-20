@@ -1,0 +1,60 @@
+name: WEB - Build Application
+
+on:
+  push:
+    paths:
+      - 'web/*'
+      - '.github/workflows/web.yaml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        # Don't want to deploy multiple times for multiple versions
+        node-version: [12.x]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: npm install
+      working-directory: ./web
+    - run: npm run build --if-present
+      working-directory: ./web
+    # TEMPORARILY COMMENTED OUT UNTIL TESTS PASS
+    # - run: npm run test:unit
+    #   working-directory: ./web
+    #   env:
+    # #     CI: true
+    # - name: Deploy
+    #   uses: JamesIves/github-pages-deploy-action@releases/v3
+    #   with:
+    #     ACCESS_TOKEN: ${{ secrets.timemachineDeploy}}
+    #     BRANCH: gh-pages
+    #     FOLDER: web/dist
+
+    # NOT WORKING BUT SHOULD BE CLOSE?
+    # - name: Deploy to Dev server
+    #   uses: easingthemes/ssh-deploy@v2.0.7
+    #   env:
+    #     SSH_PRIVATE_KEY: ${{ secrets.timemachine_dev_ssh_public_key }}
+    #     ARGS: "-rltgoDzvO"
+    #     SOURCE: "dist/"
+    #     REMOTE_HOST: ${{ secrets.timemachine_dev_ip }}
+    #     REMOTE_USER: ${{ secrets.timemachine_dev_user }}
+    #     TARGET: ${{ secrets.timemachine_dev_path }}
+    # - name: copy file via ssh key
+    #   uses: appleboy/scp-action@master
+    #   env:
+    #     HOST: ${{ secrets.timemachine_dev_ip }}
+    #     USERNAME: ${{ secrets.timemachine_dev_user }}
+    #     PORT: ${{ secrets.PORT }}
+    #     KEY: ${{ secrets.timemachine_dev_ssh_public_key }}
+    #   with:
+    #     source: "dist/*"
+    #     target: "${{ secrets.timemachine_dev_path }}"
+
