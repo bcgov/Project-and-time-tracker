@@ -21,4 +21,6 @@ export interface IProjectIntake {
   previousContractBackground: string;
   projectFailImpact: string;
   projectSuccess: string;
+  riskScore: number;
+  riskLevel: number;
 }

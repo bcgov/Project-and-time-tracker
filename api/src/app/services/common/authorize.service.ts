@@ -56,6 +56,7 @@ const permissions = {
     'POST/intake/:id/approve',
     'POST/project/:id/assign-lead',
     'POST/project/:id/assign-backup',
+    'GET/project-risk/',
     ...commonForPSBAdminAndUser
   ],
   PSB_User: [
