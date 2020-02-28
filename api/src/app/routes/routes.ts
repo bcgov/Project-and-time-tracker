@@ -10,6 +10,7 @@ import rfxPhaseController from './client/controllers/rfxPhase.controller';
 import timesheetController from './client/controllers/timesheet.controller';
 import userController from './client/controllers/user.controller';
 import authController from './client/controllers/auth.controller';
+import projectRiskController from './client/controllers/projectRisk.controller';
 
 export const appRoutes = [
   projectController.routes(),
@@ -24,6 +25,7 @@ export const appRoutes = [
   timesheetController.routes(),
   userController.routes(),
   authController.routes(),
+  projectRiskController.routes()
 ];
 
 export const allowedMethods = [
@@ -38,5 +40,6 @@ export const allowedMethods = [
   rfxPhaseController.allowedMethods(),
   timesheetController.allowedMethods(),
   userController.allowedMethods(),
-  authController.allowedMethods()
+  authController.allowedMethods(),
+  projectRiskController.allowedMethods()
 ];

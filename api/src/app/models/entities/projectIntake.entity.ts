@@ -43,6 +43,12 @@ export class ProjectIntake {
   @Column({ type: 'uuid', nullable: true })
   approverUserId: string;
 
+  @Column({ type: 'int', nullable: true })
+  riskScore: number;
+
+  @Column({ type: 'int', nullable: true })
+  riskLevel: number;
+
   @Column({ type: 'timestamp', nullable: true })
   dateCreated: Date;
 

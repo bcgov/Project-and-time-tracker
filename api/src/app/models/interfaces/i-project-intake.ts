@@ -16,4 +16,6 @@ export interface IProjectIntake {
   status: IntakeStatus;
   contacts: IContact[];
   createdUserId: string;
+  riskScore: number;
+  riskLevel: number;
 }
