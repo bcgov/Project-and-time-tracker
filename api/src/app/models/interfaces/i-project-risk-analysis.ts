@@ -1,5 +1,5 @@
-import { IRiskQuestions } from "./i-risk-questions";
-import { IRiskAnswers } from "./i-risk-answers";
+import { IRiskQuestions } from './i-risk-questions';
+import { IRiskAnswers } from './i-risk-answers';
 export interface IProjectRiskAnalysis {
   id: string;
   question: IRiskQuestions;

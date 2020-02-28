@@ -1,4 +1,4 @@
-import { IRiskQuestions } from "./i-risk-questions";
+import { IRiskQuestions } from './i-risk-questions';
 export interface IRiskAnswers {
   id: string;
   question: IRiskQuestions;

@@ -4,10 +4,10 @@ import { ProjectSector } from './projectSector.entity';
 
 @Entity()
 export class ProjectIntake {
-  @PrimaryGeneratedColumn("uuid")
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: "text" })
+  @Column({ type: 'text' })
   projectName: string;
 
   @ManyToOne(type => Client)
@@ -16,43 +16,43 @@ export class ProjectIntake {
   @ManyToOne(type => ProjectSector)
   projectSector: ProjectSector;
 
-  @Column({ type: "text", nullable: true })
+  @Column({ type: 'text', nullable: true })
   commodityCode: string;
 
-  @Column({ type: "date", nullable: true })
+  @Column({ type: 'date', nullable: true })
   estimatedCompletionDate: Date;
 
-  @Column({ type: "double precision", nullable: true })
+  @Column({ type: 'double precision', nullable: true })
   estimatedContractValue: number;
 
-  @Column({ type: "double precision", nullable: true })
+  @Column({ type: 'double precision', nullable: true })
   mouAmount: number;
 
-  @Column({ type: "text", nullable: true })
+  @Column({ type: 'text', nullable: true })
   description: string;
 
-  @Column({ type: "text", nullable: true })
+  @Column({ type: 'text', nullable: true })
   status: IntakeStatus;
 
-  @Column({ type: "uuid", nullable: true })
+  @Column({ type: 'uuid', nullable: true })
   projectId: string;
 
-  @Column({ type: "uuid", nullable: true })
+  @Column({ type: 'uuid', nullable: true })
   createdUserId: string;
 
-  @Column({ type: "uuid", nullable: true })
+  @Column({ type: 'uuid', nullable: true })
   approverUserId: string;
 
-  @Column({ type: "int", nullable: true })
+  @Column({ type: 'int', nullable: true })
   riskScore: number;
 
-  @Column({ type: "int", nullable: true })
+  @Column({ type: 'int', nullable: true })
   riskLevel: number;
 
-  @Column({ type: "timestamp", nullable: true })
+  @Column({ type: 'timestamp', nullable: true })
   dateCreated: Date;
 
-  @Column({ type: "timestamp", nullable: true })
+  @Column({ type: 'timestamp', nullable: true })
   dateModified: Date;
 }
 

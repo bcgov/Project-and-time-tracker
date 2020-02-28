@@ -1,10 +1,10 @@
-import * as Koa from "koa";
-import * as Router from "koa-router";
+import * as Koa from 'koa';
+import * as Router from 'koa-router';
 import {
   retrieveQuestions
-} from "../../../services/client/projectRisk.service";
+} from '../../../services/client/projectRisk.service';
 
-import { authorize } from "../../../services/common/authorize.service";
+import { authorize } from '../../../services/common/authorize.service';
 
 export const getRiskQuestions = async (ctx: Koa.Context) => {
      try {
@@ -27,13 +27,13 @@ export const getProjectRiskQuestions = async (ctx: Koa.Context) => {
 
 
 const routerOpts: Router.IRouterOptions = {
-  prefix: "/project-risk"
+  prefix: '/project-risk'
 };
 
 const router: Router = new Router(routerOpts);
 
-router.get("/", authorize, getRiskQuestions);
-router.get("/:id", authorize, getProjectRiskQuestions);
+router.get('/', authorize, getRiskQuestions);
+router.get('/:id', authorize, getProjectRiskQuestions);
 
 
 export default router;
