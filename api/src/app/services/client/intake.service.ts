@@ -24,6 +24,12 @@ export const retrieveIntakes = async () => {
       'i."projectId" AS "projectId"',
       'p."leadUserId" AS "leadUserId"',
       'p."backupUserId" AS "backupUserId"',
+      'i.isReprocurement AS "isReprocurement"',
+      'i.dateOfReprocurement AS "dateOfReprocurement"',
+      'i.previousContractBackground AS "previousContractBackground"',
+      'i.projectFailImpact AS "projectFailImpact"',
+      'i.projectSuccess AS "projectSuccess"',
+      'i.isMinistry AS "isMinistry"'
     ])
     .getRawMany();
 };

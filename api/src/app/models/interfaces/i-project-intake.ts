@@ -16,4 +16,9 @@ export interface IProjectIntake {
   status: IntakeStatus;
   contacts: IContact[];
   createdUserId: string;
+  isReprocurement: boolean;
+  dateOfReprocurement: Date;
+  previousContractBackground: string;
+  projectFailImpact: string;
+  projectSuccess: string;
 }

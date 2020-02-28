@@ -51,7 +51,8 @@ export namespace IntakeData {
     city: chance.city(),
     province: chance.province(),
     country: chance.country(),
-    postalCode: chance.postal()
+    postalCode: chance.postal(),
+    isMinistry: chance.bool()
   });
 
   // export const genDocuments = (): IDocuments => ({
@@ -94,7 +95,12 @@ export namespace IntakeData {
     description: chance.sentence(),
     status: genIntakeStatus(),
     mouAmount: chance.integer(),
-    createdUserId: chance.guid()
+    createdUserId: chance.guid(),
+    isReprocurement: chance.bool(),
+    dateOfReprocurement: chance.date(),
+    previousContractBackground: chance.string(),
+    projectFailImpact: chance.string(),
+    projectSuccess: chance.string()
   });
 
   export const genProject = (
@@ -113,7 +119,12 @@ export namespace IntakeData {
     contractValue: chance.integer(),
     description: chance.sentence(),
     mouAmount: chance.integer({ min: 0, max: 99999 }),
-    createdUserId: chance.guid()
+    createdUserId: chance.guid(),
+    isReprocurement: chance.bool(),
+    dateOfReprocurement: chance.date(),
+    previousContractBackground: chance.string(),
+    projectFailImpact: chance.string(),
+    projectSuccess: chance.string() 
   });
 
   export const genProjectContacts = (

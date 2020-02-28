@@ -53,4 +53,7 @@ export class Client {
 
   @Column({ type: 'timestamp', nullable: true })
   dateModified: Date;
+
+  @Column({ type: 'boolean', nullable: true })
+  isMinistry: boolean;
 }

@@ -48,6 +48,28 @@ export class ProjectIntake {
 
   @Column({ type: 'timestamp', nullable: true })
   dateModified: Date;
+
+  @Column({ type: 'boolean', nullable: true })
+  isReprocurement: boolean;
+
+  @Column({ type: 'timestamp', nullable: true })
+  dateOfReprocurement: Date;
+
+  @Column({ type: 'uuid', nullable: true })
+  serviceId: string;
+
+  @Column({ type: 'uuid', nullable: true })
+  categoryId: string;
+
+  @Column({ type: 'text', nullable: true })
+  previousContractBackground: string;
+
+  @Column({ type: 'text', nullable: true })
+  projectFailImpact: string;
+
+  @Column({ type: 'text', nullable: true })
+  projectSuccess: string;
+
 }
 
 export type IntakeStatus = 'submitted' | 'approved' | 'rejected';
