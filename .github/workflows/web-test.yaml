@@ -1,4 +1,4 @@
-name: WEB - Build Application
+name: WEB - Run Unit Tests
 
 on:
   push:
@@ -23,5 +23,5 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - run: npm install
       working-directory: ./web
-    - run: npm run build --if-present
+    - run: npm run unit 
       working-directory: ./web
