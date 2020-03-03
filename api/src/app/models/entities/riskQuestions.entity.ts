@@ -8,8 +8,8 @@ export class RiskQuestions {
   @Column({ type: 'text', nullable: false })
   question: string;
 
-  @Column({ type: 'int', nullable: true })
-  category: number;
+  @Column({ type: 'text', nullable: true })
+  category: string;
 
   @Column({ type: 'int', nullable: true })
   riskLevel: number;

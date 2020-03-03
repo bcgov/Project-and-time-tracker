@@ -5,13 +5,20 @@
            
               <v-flex sm12>
                   <div v-html='item.question'  class="question" />
-                   <v-radio-group>
+                   <v-radio-group  v-if="item.answer && item.answer[0] && item.answer[0].answer.length< 16" row>
         <v-radio  class="answer"
           v-for="selection in item.answer" :key="selection.id"
           :label="selection.answer"
           :value="selection.id"
         ></v-radio>
-      </v-radio-group>                    
+      </v-radio-group>
+                 <v-radio-group  v-if="item.answer && item.answer[0] && item.answer[0].answer.length> 15" column>
+        <v-radio  class="answer"
+          v-for="selection in item.answer" :key="selection.id"
+          :label="selection.answer"
+          :value="selection.id"
+        ></v-radio>
+      </v-radio-group>                     
       </v-flex>
        </v-flex>
       <v-flex xs12>
