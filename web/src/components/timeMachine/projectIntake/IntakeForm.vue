@@ -32,6 +32,27 @@
                   </v-card>
                 </v-expansion-panel-content>
               </v-expansion-panel>
+               <v-expansion-panel class="mt-4" v-model="panelStates[RISK_ASSESSMENT].value" expand>
+                <v-expansion-panel-content >
+                  <template v-slot:header>
+                    <div class="primary-heading">
+                      <img src="../../../images/ministryinfo.svg">
+                      <label class="sub-header-large">Risk Assessment</label>
+                    </div>
+                  </template>
+                  <v-card>
+                    <v-card-text>
+                      <!-- Only one client on the form for now, but there will be multiple in the future -->
+                      <intake-risk-assessment
+                        ref="intakeRiskAssessment"
+                        :intakeRisk="intakeRiskQuestions"
+                        :nextPanel="nextPanel"
+                        :panelName="RISK_ASSESSMENT"
+                      ></intake-risk-assessment>
+                    </v-card-text>
+                  </v-card>
+                </v-expansion-panel-content>
+              </v-expansion-panel>
               <v-expansion-panel class="mt-4" v-model="panelStates[CLIENTS_INFO].value" expand>
                 <v-expansion-panel-content >
                   <template v-slot:header>
@@ -115,6 +136,7 @@
                                       !(
                                         $store.state.projectInformation &&
                                         $store.state.ministryInformation &&
+                                        $store.state.intakeRisk &&
                                         $store.state.contactInformation
                                       )
                                     "
@@ -148,9 +170,9 @@ import MinistryBranchInfo from '../common/MinistryBranchInfo.vue';
 import Snackbar from '../common/Snackbar.vue';
 import Spinner from '../common/Spinner.vue';
 import ProjectContactInfo from '../projects/ProjectContactInfo.vue';
+import intakeRiskAssessment from './intakeRisk.vue';
 import ProjectAdditionalContactInfo from '../projects/ProjectAddintionalContactInfo.vue';
 import './intakeform.styl';
-
 
 Vue.use(VeeValidate);
 
@@ -158,6 +180,7 @@ const INTAKE_FORM_PANELS = {
   PROJECT_INFO: 'projectInfo',
   CLIENTS_INFO: 'clientInfo',
   CONTACTS_INFO: 'contactInfo',
+  RISK_ASSESSMENT: 'intakeRisk',
 };
 
 const CLIENT_INFO_TYPES = {
@@ -172,6 +195,7 @@ export default {
     MinistryBranchInfo,
     ProjectContactInfo,
     ProjectAdditionalContactInfo,
+    intakeRiskAssessment,
     Snackbar,
     Spinner,
   },
@@ -183,12 +207,14 @@ export default {
       projectInformation: this.$store.state.projectInformation,
       ministryInformation: this.$store.state.ministryInformation,
       contactInformation: this.$store.state.contactInformation,
+      intakeRiskQuestions: this.$store.state.intakeRiskQuestions,
       valid: false,
       enabled: false,
       ...INTAKE_FORM_PANELS,
       panelStates: {
         [INTAKE_FORM_PANELS.PROJECT_INFO]: { value: [true] },
         [INTAKE_FORM_PANELS.CLIENTS_INFO]: { value: [false] },
+        [INTAKE_FORM_PANELS.RISK_ASSESSMENT]: { value: [false] },
         [INTAKE_FORM_PANELS.CONTACTS_INFO]: { value: [false] },
       },
       ...CLIENT_INFO_TYPES,
@@ -273,6 +299,7 @@ export default {
         this.$store.state.projectInformation
         && this.$store.state.ministryInformation
         && this.$store.state.contactInformation
+        && this.$store.state.intakeRisk
       ) {
         this.$refs.spinner.open();
         formData.estimatedContractValue = parseFloat(formData.estimatedContractValue);
@@ -306,6 +333,7 @@ export default {
       this.$refs.projectLead.reset();
       this.$refs.projectSponsor.reset();
       this.$refs.projectContact.reset();
+      this.$refs.IntakeRiskQts.reset();
     },
     getClientInfo(infoType) {
       const contacts = this.$store.state.activeIntakeRequest.contacts || [];
