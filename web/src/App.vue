@@ -114,6 +114,7 @@ export default {
       return shouldDisplayItem(item, this.$router, this.$store.getters.SECURITY_AUTH);
     },
     fetchInitialData() {
+      this.$store.dispatch('fetchintakeRiskQuestions');
       this.$store.dispatch('fetchMinistries');
       this.$store.dispatch('fetchRFxPhases');
       this.$store.dispatch('fetchRFxTypes');
