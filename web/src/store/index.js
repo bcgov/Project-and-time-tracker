@@ -46,6 +46,7 @@ const store = new Vuex.Store({
     ministries: [],
     rfxPhases: [],
     rfxTypes: [],
+    intakeRiskQuestions:[], 
     // Intake form component
     activeIntakeRequestId: null,
     activeIntakeRequest: {},
@@ -67,6 +68,7 @@ const store = new Vuex.Store({
     projectInformation: false,
     ministryInformation: false,
     contactInformation: false,
+    intakeRisk:false,
     timesheetsWeek: {
       startDate: null,
       endDate: null,
@@ -115,6 +117,9 @@ const store = new Vuex.Store({
     // Master data
     fetchMinistries(state, data) {
       state.ministries = data;
+    },
+    fetchintakeRiskQuestions(state, data) {
+      state.intakeRiskQuestions = data;
     },
     fetchRFxPhases(state, data) {
       state.rfxPhases = data;
@@ -378,6 +383,14 @@ const store = new Vuex.Store({
           ctx.commit('fetchMinistries', content);
         });
     },
+    fetchintakeRiskQuestions(ctx) {
+      $http
+        .get(`${API_URI}/project-risk`)
+        .then((res) => {
+          const content = res.data;
+          ctx.commit('fetchintakeRiskQuestions', content);
+        });
+    },    
     fetchRFxPhases(ctx) {
       $http.get(`${API_URI}/rfx-phase`)
         .then((res) => {
