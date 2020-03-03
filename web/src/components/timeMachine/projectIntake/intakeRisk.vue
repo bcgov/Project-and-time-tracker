@@ -4,9 +4,9 @@
          <v-flex sm12 v-for="item in intakeRiskQuestions" :key="item.id">
            
               <v-flex sm12>
-                  <div v-html='item.question'/>
+                  <div v-html='item.question'  class="question" />
                    <v-radio-group>
-        <v-radio
+        <v-radio  class="answer"
           v-for="selection in item.answer" :key="selection.id"
           :label="selection.answer"
           :value="selection.id"
