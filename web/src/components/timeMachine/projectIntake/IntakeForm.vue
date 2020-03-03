@@ -8,7 +8,7 @@
             <h1 class="intake-form-header">Project Intake Form</h1>
             <div
               class="my-3"
-            >Complete the intake form to submit your project to the Procurement Services Division.</div>
+            >Complete the intake form to submit your project</div>
           </v-flex>
         </v-layout>
       <v-container>
