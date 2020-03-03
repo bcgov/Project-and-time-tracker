@@ -7,7 +7,7 @@
           <v-flex md12>
             <h1 class="intake-form-header">Project Intake Form</h1>
             <div
-              class="my-3"
+              class="intake-sub-header"
             >Complete the intake form to submit your project</div>
           </v-flex>
         </v-layout>
