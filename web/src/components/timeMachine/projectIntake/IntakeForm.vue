@@ -3,38 +3,83 @@
     <snackbar ref="snackbar"></snackbar>
     <spinner ref="spinner"></spinner>
     <v-form>
-      <v-container>
         <v-layout>
           <v-flex md12>
             <h1 class="intake-form-header">Project Intake Form</h1>
             <div
               class="my-3"
             >Complete the intake form to submit your project to the Procurement Services Division.</div>
-            <template>
-              <v-expansion-panel class="mt-4" v-model="panelStates[PROJECT_INFO].value" expand>
-                <v-expansion-panel-content >
-                  <!-- <v-expansion-panel-content> -->
-                  <template v-slot:header>
+          </v-flex>
+        </v-layout>
+      <v-container>
+          <v-stepper v-model="e1">
+          <v-stepper-header>
+            <v-stepper-step :complete="e1 > 1" step="1">Project Inform</v-stepper-step>
+
+            <v-divider></v-divider>
+
+            <v-stepper-step :complete="e1 > 2" step="2">Ministry/Branch Information</v-stepper-step>
+
+            <v-divider></v-divider>
+
+            <v-stepper-step :complete="e1 > 3" step="3">Risk Assessment</v-stepper-step>
+
+            <v-divider></v-divider>
+
+            <v-stepper-step :complete="e1 > 4" step="4">Contact Information</v-stepper-step>
+
+            <v-divider></v-divider>
+
+            <v-stepper-step step="5">Review&Submit</v-stepper-step>
+          </v-stepper-header>
+
+          <v-stepper-items>
+            <v-stepper-content step="1">
+              <template v-slot:header>
+                <div class="primary-heading">
+                  <img src="../../../images/projectinfo.svg" />
+                  <label class="sub-header-large">Project Information</label>
+                </div>
+              </template>
+              <v-card>
+                <v-card-text>
+                  <intake-base-info
+                    ref="intakeBaseInfo"
+                    :project="intakeRequest"
+                    @next="clickfnctn(2)"
+                  ></intake-base-info>
+                </v-card-text>
+              </v-card>
+              <v-btn color="primary" @click="clickfnctn(2)">Continue</v-btn>
+
+              <v-btn text>Cancel</v-btn>
+            </v-stepper-content>
+
+            <v-stepper-content step="2">
+               <template v-slot:header>
                     <div class="primary-heading">
-                      <img src="../../../images/projectinfo.svg">
-                      <label class="sub-header-large">Project Information</label>
+                      <img src="../../../images/ministryinfo.svg" />
+                      <label class="sub-header-large">Ministry / Branch Information</label>
                     </div>
                   </template>
                   <v-card>
                     <v-card-text>
-                      <intake-base-info
-                        ref="intakeBaseInfo"
-                        :project="intakeRequest"
-                        :nextPanel="nextPanel"
-                        :panelName="PROJECT_INFO"
-                      ></intake-base-info>
+                      <!-- Only one client on the form for now, but there will be multiple in the future -->
+                      <ministry-branch-info
+                        ref="intakeClientInfo"
+                        :ministry="intakeRequest.client"
+                        @next="clickfnctn(3)"
+                      ></ministry-branch-info>
                     </v-card-text>
                   </v-card>
-                </v-expansion-panel-content>
-              </v-expansion-panel>
-               <v-expansion-panel class="mt-4" v-model="panelStates[RISK_ASSESSMENT].value" expand>
-                <v-expansion-panel-content >
-                  <template v-slot:header>
+
+              <v-btn color="primary" @click="clickfnctn(3)">Continue</v-btn>
+
+              <v-btn text>Cancel</v-btn>
+            </v-stepper-content>
+
+            <v-stepper-content step="3">
+               <template v-slot:header>
                     <div class="primary-heading">
                       <img src="../../../images/ministryinfo.svg">
                       <label class="sub-header-large">Risk Assessment</label>
@@ -46,39 +91,19 @@
                       <intake-risk-assessment
                         ref="intakeRiskAssessment"
                         :intakeRisk="intakeRiskQuestions"
-                        :nextPanel="nextPanel"
-                        :panelName="RISK_ASSESSMENT"
+                        @next="clickfnctn(4)"
                       ></intake-risk-assessment>
                     </v-card-text>
                   </v-card>
-                </v-expansion-panel-content>
-              </v-expansion-panel>
-              <v-expansion-panel class="mt-4" v-model="panelStates[CLIENTS_INFO].value" expand>
-                <v-expansion-panel-content >
-                  <template v-slot:header>
+
+              <v-btn color="primary" @click="clickfnctn(4)">Continue</v-btn>
+
+              <v-btn text>Cancel</v-btn>
+            </v-stepper-content>
+            <v-stepper-content step="4">
+              <template v-slot:header>
                     <div class="primary-heading">
-                      <img src="../../../images/ministryinfo.svg">
-                      <label class="sub-header-large">Ministry / Branch Information</label>
-                    </div>
-                  </template>
-                  <v-card>
-                    <v-card-text>
-                      <!-- Only one client on the form for now, but there will be multiple in the future -->
-                      <ministry-branch-info
-                        ref="intakeClientInfo"
-                        :ministry="intakeRequest.client"
-                        :nextPanel="nextPanel"
-                        :panelName="CLIENTS_INFO"
-                      ></ministry-branch-info>
-                    </v-card-text>
-                  </v-card>
-                </v-expansion-panel-content>
-              </v-expansion-panel>
-              <v-expansion-panel class="mt-4" v-model="panelStates[CONTACTS_INFO].value" expand>
-                <v-expansion-panel-content>
-                  <template v-slot:header>
-                    <div class="primary-heading">
-                      <img src="../../../images/contactinfo.svg">
+                      <img src="../../../images/contactinfo.svg" />
                       <label class="sub-header-large">Contact Information</label>
                     </div>
                   </template>
@@ -136,7 +161,6 @@
                                       !(
                                         $store.state.projectInformation &&
                                         $store.state.ministryInformation &&
-                                        $store.state.intakeRisk &&
                                         $store.state.contactInformation
                                       )
                                     "
@@ -151,11 +175,21 @@
                       </div>
                     </v-card-text>
                   </v-card>
-                </v-expansion-panel-content>
-              </v-expansion-panel>
-            </template>
-          </v-flex>
-        </v-layout>
+
+              <v-btn color="primary" @click="clickfnctn(5)">Continue</v-btn>
+
+              <v-btn text>Cancel</v-btn>
+            </v-stepper-content>
+            <v-stepper-content step="5">
+              <v-card class="mb-12" color="grey lighten-1" height="200px"></v-card>
+
+              <v-btn color="primary" @click="e1 = 1">Continue</v-btn>
+
+              <v-btn text>Cancel</v-btn>
+            </v-stepper-content>
+          </v-stepper-items>
+        </v-stepper>
+      
       </v-container>
     </v-form>
   </div>
@@ -211,13 +245,14 @@ export default {
       valid: false,
       enabled: false,
       ...INTAKE_FORM_PANELS,
-      panelStates: {
-        [INTAKE_FORM_PANELS.PROJECT_INFO]: { value: [true] },
-        [INTAKE_FORM_PANELS.CLIENTS_INFO]: { value: [false] },
-        [INTAKE_FORM_PANELS.RISK_ASSESSMENT]: { value: [false] },
-        [INTAKE_FORM_PANELS.CONTACTS_INFO]: { value: [false] },
-      },
+      // panelStates: {
+      //   [INTAKE_FORM_PANELS.PROJECT_INFO]: { value: [true] },
+      //   [INTAKE_FORM_PANELS.CLIENTS_INFO]: { value: [false] },
+      //   [INTAKE_FORM_PANELS.RISK_ASSESSMENT]: { value: [false] },
+      //   [INTAKE_FORM_PANELS.CONTACTS_INFO]: { value: [false] },
+      // },
       ...CLIENT_INFO_TYPES,
+       e1: 1
     };
   },
   computed: {
@@ -236,30 +271,30 @@ export default {
         this.$store.dispatch('clearActiveIntakeRequest');
       }
     },
-    prevPanel(panelName) {
-      const panelNames = Object.keys(this.panelStates);
-      const panelCount = panelNames.length;
-      const panelIdx = panelNames.indexOf(panelName);
-      const nextPanelIdx = (panelIdx + 1) % panelCount;
-      this.panelStates[panelNames[nextPanelIdx]].value = [true];
-    },
-    nextPanel(panelName) {
-      const panelNames = Object.keys(this.panelStates);
-      const panelCount = panelNames.length;
-      const panelIdx = panelNames.indexOf(panelName);
-      const nextPanelIdx = (panelIdx + 1) % panelCount;
-      this.panelStates[panelNames[nextPanelIdx]].value = [true];
+    // prevPanel(panelName) {
+    //   const panelNames = Object.keys(this.panelStates);
+    //   const panelCount = panelNames.length;
+    //   const panelIdx = panelNames.indexOf(panelName);
+    //   const nextPanelIdx = (panelIdx + 1) % panelCount;
+    //   this.panelStates[panelNames[nextPanelIdx]].value = [true];
+    // },
+    // nextPanel(panelName) {
+    //   const panelNames = Object.keys(this.panelStates);
+    //   const panelCount = panelNames.length;
+    //   const panelIdx = panelNames.indexOf(panelName);
+    //   const nextPanelIdx = (panelIdx + 1) % panelCount;
+    //   this.panelStates[panelNames[nextPanelIdx]].value = [true];
 
-      const panels = document.querySelectorAll('.v-expansion-panel');
-      const scrollOffset = panels[nextPanelIdx].offsetTop;
+    //   const panels = document.querySelectorAll('.v-expansion-panel');
+    //   const scrollOffset = panels[nextPanelIdx].offsetTop;
 
-      setTimeout(() => {
-        window.scrollTo({
-          top: scrollOffset,
-          behavior: 'smooth',
-        });
-      }, 400);
-    },
+    //   setTimeout(() => {
+    //     window.scrollTo({
+    //       top: scrollOffset,
+    //       behavior: 'smooth',
+    //     });
+    //   }, 400);
+    // },
     async submitForm() {
       this.$refs.projectLead.onNextClicked();
       this.$refs.projectSponsor.onNextClicked();
@@ -340,6 +375,20 @@ export default {
       const clientInfo = contacts.find(contact => contact.contactType === infoType);
       return clientInfo;
     },
+       clickfnctn(step) {
+        console.log('step is:', step);
+      this.e1 = step;
+      // if (step == 2) {
+      //   this.page2click();
+      // }
+      // if (step == 3) {
+      //   this.page2click();
+      // }
+    },
+
+    page1click() {},
+
+    page2click() {}
   },
   created() {
     this.fetchData();

@@ -97,7 +97,8 @@ export default {
   methods: {
     onNextClicked() {
       if (this.$refs.intakeClientInfo.validate()) {
-        this.nextPanel(this.panelName);
+        //this.nextPanel(this.panelName);
+         this.$emit('next');
         this.$store.state.ministryInformation = true;
       }
     },

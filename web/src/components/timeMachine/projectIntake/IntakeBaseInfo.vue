@@ -187,7 +187,8 @@ export default {
     },
     onNextClicked() {
       if (this.$refs.intakeBaseInfo.validate()) {
-        this.nextPanel(this.panelName);
+        //this.nextPanel(this.panelName);
+        this.$emit('next');
         this.$store.state.projectInformation = true;
       }
     },

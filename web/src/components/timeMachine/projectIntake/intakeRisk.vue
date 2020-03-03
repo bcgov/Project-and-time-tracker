@@ -14,7 +14,15 @@
       </v-radio-group>                    
       </v-flex>
        </v-flex>
-     
+      <v-flex xs12>
+        <div class="v-form-container">
+          <div class="v-form-actions">
+            <v-flex md-12 mt-4>
+              <v-btn :disabled="!valid" color="primary" @click="onNextClicked">Next</v-btn>
+            </v-flex>
+          </div>
+        </div>
+      </v-flex>
     </v-form>
   </v-layout>
 </template>
@@ -48,6 +56,9 @@ export default {
   watch: {
   },
   methods: {
+    onNextClicked() {
+       this.$emit('next');
+    }
   },
 };
 </script>
