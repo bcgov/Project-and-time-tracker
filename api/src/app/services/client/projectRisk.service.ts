@@ -14,14 +14,15 @@ export const retrieveQuestions = async () => {
   const repo = riskRepo();
   
   const res =  await repo
-    .createQueryBuilder('q')
-    .orderBy('q.questionNo', 'ASC')    
+    .createQueryBuilder('q')   
+    .orderBy('q.category', 'ASC')
+    .addOrderBy('q.questionNo', 'ASC')
     .select([
       'q.id AS "id"',
       'q.question AS "question"',
       'q.category AS "category"',
       'q.riskLevel AS "riskLevel"',
-      'q."questionNo" AS "questionNo"'
+      'q.questionNo AS "questionNo"'
     ])
     .getRawMany();   
    for (let index = 0; index < res.length; index++) {   
