@@ -12,18 +12,18 @@
           </v-flex>
         </v-layout>
       <v-container>
-          <v-stepper v-model="e1"  alt-labels>
+          <v-stepper  v-model="e1"  alt-labels>
           <v-stepper-header >
-            <v-stepper-step :complete="e1 > 1" step="1">Project<br>Information</v-stepper-step>
+            <v-stepper-step   :complete="e1 > 1" step="1">Project<br>Information</v-stepper-step>
             <v-divider class="first-divider"></v-divider>
             <v-divider class="second-divider"></v-divider>
-            <v-stepper-step :complete="e1 > 2" step="2">Ministry/Branch Information</v-stepper-step>
+            <v-stepper-step  edit-icon="2" :complete="e1 > 2" step="2">Ministry/Branch Information</v-stepper-step>
             <v-divider class="first-divider"></v-divider>
             <v-divider class="second-divider"></v-divider>
-            <v-stepper-step :complete="e1 > 3" step="3">Risk<br>Assessment</v-stepper-step>
+            <v-stepper-step  :complete="e1 > 3" step="3">Risk<br>Assessment</v-stepper-step>
            <v-divider class="first-divider"></v-divider>
             <v-divider class="second-divider"></v-divider>
-            <v-stepper-step :complete="e1 > 4" step="4">Contact<br>Information</v-stepper-step>
+            <v-stepper-step  :complete="e1 > 4" step="4">Contact<br>Information</v-stepper-step>
            <v-divider class="first-divider"></v-divider>
             <v-divider class="second-divider"></v-divider>
             <v-stepper-step step="5">Review<br>& Submit</v-stepper-step>
@@ -46,9 +46,6 @@
                   ></intake-base-info>
                 </v-card-text>
               </v-card>
-              <v-btn color="primary" @click="clickfnctn(2)">Continue</v-btn>
-
-              <v-btn text>Cancel</v-btn>
             </v-stepper-content>
 
             <v-stepper-content step="2">
