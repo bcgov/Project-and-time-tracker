@@ -29,7 +29,7 @@ export const retrieveIntakes = async () => {
       'i.previousContractBackground AS "previousContractBackground"',
       'i.projectFailImpact AS "projectFailImpact"',
       'i.projectSuccess AS "projectSuccess"',
-      'i.isMinistry AS "isMinistry"'
+      'c.isMinistry AS "isMinistry"'
     ])
     .getRawMany();
 };
