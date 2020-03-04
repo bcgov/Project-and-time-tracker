@@ -14,24 +14,19 @@
       <v-container>
           <v-stepper v-model="e1"  alt-labels>
           <v-stepper-header >
-            <v-stepper-step :complete="e1 > 1" step="1">Project Inform</v-stepper-step>
+            <v-stepper-step :complete="e1 > 1" step="1">Project<br>Information</v-stepper-step>
             <v-divider class="first-divider"></v-divider>
-            <v-divider class="second-divider"></v-divider>        
-
+            <v-divider class="second-divider"></v-divider>
             <v-stepper-step :complete="e1 > 2" step="2">Ministry/Branch Information</v-stepper-step>
             <v-divider class="first-divider"></v-divider>
-            <v-divider class="second-divider"></v-divider>  
-
-            <v-stepper-step :complete="e1 > 3" step="3">Risk Assessment</v-stepper-step>
+            <v-divider class="second-divider"></v-divider>
+            <v-stepper-step :complete="e1 > 3" step="3">Risk<br>Assessment</v-stepper-step>
            <v-divider class="first-divider"></v-divider>
-            <v-divider class="second-divider"></v-divider>  
-           
-            <v-stepper-step :complete="e1 > 4" step="4">Contact Information</v-stepper-step>
-
+            <v-divider class="second-divider"></v-divider>
+            <v-stepper-step :complete="e1 > 4" step="4">Contact<br>Information</v-stepper-step>
            <v-divider class="first-divider"></v-divider>
-            <v-divider class="second-divider"></v-divider>  
-           
-            <v-stepper-step step="5">Review&Submit</v-stepper-step>
+            <v-divider class="second-divider"></v-divider>
+            <v-stepper-step step="5">Review<br>& Submit</v-stepper-step>
           </v-stepper-header>
 
           <v-stepper-items>
