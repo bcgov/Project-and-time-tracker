@@ -14,7 +14,7 @@
       <v-container>
           <v-stepper v-model="e1">
           <v-stepper-header>
-            <v-stepper-step :complete="e1 > 1" step="1">Project Inform</v-stepper-step>
+            <v-stepper-step :complete="e1 > 1" step="1">Project Information</v-stepper-step>
 
             <v-divider></v-divider>
 
