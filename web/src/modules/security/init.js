@@ -19,7 +19,7 @@ const pageBasedOnRole = (role) => {
 
 export default (next, roles, isLoggedIn = false) => {
   keycloakAuth
-    .init({ onLoad: 'login-required', responseMode: 'query' })
+    .init({ onLoad: 'login-required', responseMode: 'query',"checkLoginIframe" : false })
     .success(() => {
       keycloakAuth.logoutUrl = `${keycloakAuth.authServerUrl}/realms/${keycloakAuth.realm}`
         + `/protocol/openid-connect/logout?redirect_uri=${document.baseURI}`;
