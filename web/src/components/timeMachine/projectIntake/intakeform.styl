@@ -4,8 +4,25 @@
     font-size: 24px
     margin-left: 35%
 .intake-sub-header
-    margin-top: 16px !important;
-    margin-bottom: 16px !important;
-    margin-left:32%
-.theme--light.v-divider
-    border-bottom: double !important;    
+  margin-top: 16px !important;
+  margin-bottom: 16px !important;
+  margin-left:32%
+.v-stepper__header
+  width: 752px;
+  box-shadow: none;
+  margin: auto;
+  .first-divider
+    margin:34px -21px 0px -79px !important;
+    align-self: flex-start !important;
+    border-color: #003366 !important;
+  .second-divider
+    margin: 38px -77px 0px -114px !important;
+    align-self: flex-start !important;
+    border-color: #003366 !important;
+
+.v-stepper__step.v-stepper__step--inactive .v-stepper__step__step
+  background-color: #9E9E9E !important;
+.v-stepper__step.v-stepper__step--active + hr,.v-stepper__step.v-stepper__step--complete + hr
+  border-width:3px !important;
+  hr
+    disply:none;
