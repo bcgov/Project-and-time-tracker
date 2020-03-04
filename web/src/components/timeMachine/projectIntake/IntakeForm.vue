@@ -292,11 +292,13 @@ export default {
     //   }, 400);
     // },
     async submitForm() {
+      debugger
       this.$refs.projectLead.onNextClicked();
       this.$refs.projectSponsor.onNextClicked();
       const formData = assign({}, this.$refs.intakeBaseInfo.form, {
         client: this.$refs.intakeClientInfo.form,
         contacts: [],
+        risk:this.$refs.intakeRiskAssessment.form,
       });
       const projectLead = this.$refs.projectLead.form || undefined;
       const projectSponsor = this.$refs.projectSponsor.form || undefined;
@@ -364,7 +366,7 @@ export default {
       this.$refs.projectLead.reset();
       this.$refs.projectSponsor.reset();
       this.$refs.projectContact.reset();
-      this.$refs.IntakeRiskQts.reset();
+      this.$refs.intakeRiskAssessment.reset();
     },
     getClientInfo(infoType) {
       const contacts = this.$store.state.activeIntakeRequest.contacts || [];
