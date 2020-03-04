@@ -77,6 +77,13 @@ const routes = [
     meta: { requiresAuth: true, roles: ['PSB_User', 'PSB_Admin'] },
   },
   {
+    exact: true,
+    path: '/archived',
+    name: 'timeMachineProjects',
+    component: TimeMachineProjects,
+    meta: { requiresAuth: true, roles: ['PSB_User', 'PSB_Admin'] },
+  },
+  {
     path: '/project',
     name: 'project',
     component: Project,

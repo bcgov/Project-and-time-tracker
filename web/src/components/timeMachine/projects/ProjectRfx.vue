@@ -28,7 +28,21 @@
           ></v-select>
         </div>
       </v-flex>
-      <v-flex xs12>
+      <v-flex md12>
+        <div class="v-form-container">
+          <v-select
+            :items="rfxPhases"
+            :rules="required"
+            class="required"
+            label="RFx Name"
+            item-value="id"
+            item-text="rfxName"
+            v-model="rfxForm.rfxPhase.id"
+          ></v-select>
+        </div>
+      </v-flex>
+
+      <v-flex md6>
         <div class="v-form-container">
           <v-textarea
             name="rfx-overview"
@@ -41,6 +55,7 @@
           ></v-textarea>
         </div>
       </v-flex>
+
       <v-flex md6>
         <div class="v-form-container">
           <v-textarea
@@ -67,17 +82,7 @@
           ></v-textarea>
         </div>
       </v-flex>
-      <v-flex xs12 px-4>
-        <div class="v-form-actions">
-          <v-btn
-            color="primary"
-            class="ma-0"
-            @click="saveRFxForm"
-            :disabled="saveRFxBtnLoading"
-            :loading="saveRFxBtnLoading"
-          >Save</v-btn>
-        </div>
-      </v-flex>
+      
     </v-form>
   </v-layout>
 </template>

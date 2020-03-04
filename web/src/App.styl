@@ -167,6 +167,8 @@
    right: -0.5rem;
  }
 
+
+
  table.v-table thead td:not(:nth-child(1)),
  table.v-table tbody td:not(:nth-child(1)),
  table.v-table thead th:not(:nth-child(1)),
@@ -401,3 +403,20 @@
   font-weight: 600;
 .app-logo
   height:35px;
+
+
+
+
+
+// Remove number input native control
+
+[type="number"]::-webkit-outer-spin-button 
+{ 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+
+
+input[type=number] {
+    -moz-appearance:textfield; /* Firefox */
+}

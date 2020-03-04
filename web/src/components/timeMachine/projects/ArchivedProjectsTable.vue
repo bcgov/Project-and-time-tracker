@@ -19,16 +19,14 @@
         >
           <template slot="items" slot-scope="props">
             <td>{{ props.item.projectName }}</td>
-            <td
-              class="text-xs-left"
-            >{{props.item.client.ministry.ministryName}}</td>
-            <td class="text-xs-left">
-              {{props.item.leadUserId}}</td>
-              <!-- {{ [props.item.projectLeadUserId,props.user.contact.FirstName].join(" ") }}</td> -->
-            <td class="text-xs-left">
-              {{props.item.projectBackupUserId}}</td>
+            <td class="text-xs-left">{{props.item.client.ministry.ministryName}}</td>
+            <td class="text-xs-left">{{ props.item.projectName }}</td>
+            <td class="text-xs-left">{{ props.item.projectName }}</td>
             <td class="text-xs-left">{{props.item.completionDate}}</td>
             <td class="text-xs-right">
+              <v-btn flat icon color="grey" @click="unarchiveProject(props.item.id)">
+                <v-icon>unarchive</v-icon>
+              </v-btn>
               <v-btn flat icon color="grey" @click="deleteProject(props.item.id)">
                 <v-icon>delete</v-icon>
               </v-btn>
@@ -62,15 +60,16 @@ export default {
         { text: 'Project Lead', value: 'projectLeadId', sortable: false },
         { text: 'Project Backup', value: 'projectBackup', sortable: false },
         { text: 'Project Completed', value: 'completionDate', sortable: true },
-        { text: 'Actions', value: 'action', align: 'right', width: '145px', sortable: false,
+        { text: 'Actions', value: 'action', align: 'center', width: '145px', sortable: false,
         },
       ],
+      archivedprojects: [],
       selectedLeadUser: '',
       selectedProjectBackup: '',
     };
   },
   computed: {
-    projects() {
+  projects() {
       return this.$store.state.projects;
     },
     userList() {
@@ -78,8 +77,8 @@ export default {
     },
   },
   methods: {
-    fetchData() {
-      this.$store.dispatch('fetchProjects');
+    fetchArchivedData() {
+      this.$store.dispatch('fetchArchivedProjects',archivedprojects);
     },
     editProject(id) {
       this.$router.push({ path: `project/${id}` });
@@ -97,13 +96,14 @@ export default {
     async deleteProject() {
       if (await this.$refs.confirm.open('danger', '')) {
         // yes
-        this.$store.dispatch('fetchProjects');
+        this.$store.dispatch('fetchArchivedProjects');
         this.$refs.snackbar.displaySnackbar('success', 'Deleted.');
       }
     },
   },
   created() {
-    this.fetchData();
-  },
+    this.fetchArchivedData();
+    },
 };
+
 </script>

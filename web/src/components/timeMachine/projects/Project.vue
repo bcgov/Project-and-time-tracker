@@ -10,7 +10,7 @@
                 <v-expansion-panel-content>
                   <template v-slot:header>
                     <div class="primary-heading">
-                      <img src="@/assets/bulb.svg">
+                      <!-- <img src="@/assets/bulb.svg"> -->
                       <label class="sub-header-large">Project Overview</label>
                     </div>
                   </template>
@@ -21,15 +21,34 @@
                   </v-card>
                 </v-expansion-panel-content>
               </v-expansion-panel>
-
+              
+<div>
+  <v-expansion-panel class="mt-4" :value=0>
+  <v-expansion-panel-content>
+  <template v-slot:header>
+      <div class="primary-heading">
+              <label class="sub-header-large">Notes</label>
+              <label class="sub-header-large">-----------To do-----------------</label>
+</div>
+</template>
+</v-expansion-panel-content>
+</v-expansion-panel>
+</div> 
               <div>
                 <v-tabs class="mt-4">
                   <v-tab ripple>RFx Type and Phase</v-tab>
-                  <v-tab ripple>Project Contacts</v-tab>
+                  <v-tab ripple>Contacts</v-tab>
                   <v-tab ripple>Finance Codes</v-tab>
-                  <!-- <v-tab ripple>Time Report</v-tab> -->
-                  <!-- <v-tab ripple>Documents</v-tab> -->
-
+                  <v-tab ripple>Risk</v-tab> 
+                  <v-tab ripple>Procurement Log</v-tab>
+                  <v-flex justify-end align-end><v-text-field
+                            class="search-bar"
+                            v-model="search"
+                            append-icon="search"
+                            label="Search"
+                            single-line
+                            hide-details
+                          ></v-text-field></v-flex>
                   <!-- RFx Type and Phases -->
                   <v-tab-item>
                     <v-expansion-panel
@@ -41,8 +60,11 @@
                       <v-expansion-panel-content>
                         <template v-slot:header>
                           <div class="primary-heading">
-                            <img src="@/assets/bulb.svg">
+                            <!-- <img src="@/assets/bulb.svg"> -->
                             <label class="sub-header-large">RFx Type and Phase #{{index+1}}</label>
+                            <v-flex xs12>
+                                <v-btn color="primary" @click="projectRfxData">Save</v-btn>
+                              </v-flex>
                           </div>
                         </template>
                         <v-card>
@@ -136,33 +158,42 @@
                         <v-flex xs12 py-2>
                           <div class="v-form-container">
                             <div class="v-form-actions">
-                              <v-flex md12>
-                                <v-btn color="primary" @click="saveFinanceCodes">Save</v-btn>
-                              </v-flex>
+                                <v-flex md12 mt-4>
+                                    <v-btn color="primary" @click="saveProjectContacts">Save</v-btn>
+                                </v-flex>
                             </div>
                           </div>
                         </v-flex>
                       </v-card-text>
                     </v-card>
                   </v-tab-item>
-                  <!-- Time Report -->
-                  <!-- <v-tab-item>
-                    <v-card>
-                      <v-card-title>
-                        <span class="title">Coming Soon...</span>
-                        <!-- <project-timesheet-report></project-timesheet-report> -->
-                      <!-- </v-card-title>
-                    </v-card>
-                  </v-tab-item> --> 
-                  <!-- Documents -->
-                  <!-- <v-tab-item>
-                    <v-card>
-                      <v-card-title>
-                        <span class="title">Coming Soon...</span>
-                      </v-card-title>
-                    </v-card>
-                  </v-tab-item> -->
-                </v-tabs>
+                  <!-- RISK -->
+                  <v-tab-item>
+                    <v-expansion-panel class="mt-4" :value=0>
+                    <v-expansion-panel-content>
+                    <template v-slot:header>
+                    <div class="primary-heading">
+                    <label class="sub-header-large">RISK</label>
+                    <label class="sub-header-large">-----------To do-----------------</label>
+                    </div>
+                    </template>
+                    </v-expansion-panel-content>
+                    </v-expansion-panel>
+                    </v-tab-item>
+                  <!-- PROCUREMENT LOG -->
+                  <v-tab-item>
+                    <v-expansion-panel class="mt-4" :value=0>
+                    <v-expansion-panel-content>
+                    <template v-slot:header>
+                    <div class="primary-heading">
+                    <label class="sub-header-large">PROCUREMENT LOG</label>
+                    <label class="sub-header-large">-----------To do-----------------</label>
+                    </div>
+                    </template>
+                    </v-expansion-panel-content>
+                    </v-expansion-panel>
+                    </v-tab-item>
+                  </v-tabs>
               </div>
             </template>
           </v-flex>
@@ -175,6 +206,7 @@
 <script>
 import Vue from 'vue';
 import VeeValidate from 'vee-validate';
+import Procurementlog from './Procurementlog.vue';
 import ProjectBaseInfo from './ProjectBaseInfo.vue';
 import ProjectContactInfo from './ProjectContactInfo.vue';
 import ProjectRfx from './ProjectRfx.vue';

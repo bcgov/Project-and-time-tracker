@@ -51,7 +51,7 @@ const menuItems = [
   {
     href: '/intake',
     title: 'New Intake Request',
-    icon: 'assignment',
+    icon: 'post_add ',
   },
   {
     href: '/intake-requests',
@@ -60,13 +60,13 @@ const menuItems = [
   },
   {
     href: '/projects',
-    title: 'Manage Projects',
+    title: 'Projects',
     icon: 'folder',
   },
   {
     href: '/timesheets',
-    title: 'Manage Timesheets',
-    icon: 'timer',
+    title: 'Timesheets',
+    icon: 'timelapse',
   },
   {
     divider: true,
