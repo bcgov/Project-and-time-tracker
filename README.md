@@ -43,7 +43,8 @@ Make sure you have docker and docker-compose installed (`docker-compose --versio
     psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB"
     
     # import sql - tip: use tab completion
-    \i BC_Timesheet_MasterData.sql 
+    \i BC_Timesheet_MasterData.sql
+    \i Risk_MasterData.sql 
 
     # log out of container
     exit
