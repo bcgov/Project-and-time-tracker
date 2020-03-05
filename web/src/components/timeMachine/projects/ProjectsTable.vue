@@ -78,15 +78,15 @@
 
 <script>
 
-import moment from 'moment';
+// import moment from 'moment';
 import Confirm from '../common/Confirm.vue';
 import Snackbar from '../common/Snackbar.vue';
 
-Vue.filter('formatDate', function(value) {
-      if (value) {
-        return moment(String(value)).format('MM/DD/YYYY hh:mm')
-      }
-    })
+// Vue.filter('formatDate', function(value) {
+//       if (value) {
+//         return moment(String(value)).format('MM/DD/YYYY hh:mm')
+//       }
+//     })
 
 export default {
   props: {
@@ -113,7 +113,7 @@ export default {
       selectedLeadUser: '',
       selectedProjectBackup: '',
     };
-  
+
   },
   computed: {
     projects() {

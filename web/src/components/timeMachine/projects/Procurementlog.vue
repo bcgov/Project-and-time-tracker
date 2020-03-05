@@ -1,5 +1,6 @@
 <template>
-  <v-layout row wrap py-2>
+  <p>Todo</p>
+  <!-- <v-layout row wrap py-2>
     <snackbar ref="snackbar"></snackbar>
     <v-form id="procurementlog" ref="procurementlog" v-model="valid" lazy-validation>
       <v-flex xs12>
@@ -39,16 +40,16 @@
             full-width
             max-width="290px"
             min-width="290px"
-          >
-          
+          > </v-menu>
+
             <template v-slot:activator="{ on }">
               <v-text-field
                 class="required"
                 :rules="requiredRule"
                 v-model="form.completionDate"
-                label="How many separate contracts are estimated for this project?"
+                label="How many separate contracts are estimated for this project?">
               </v-text-field>
-               
+
          <v-flex md6>
         <div class="v-form-container">
           <v-text-field
@@ -120,7 +121,7 @@
           ></v-select>
         </div>
       </v-flex>
-      
+
         <v-flex md6>
         <div class="v-form-container">
           <v-text-field
@@ -198,7 +199,7 @@
         </div>
       </v-flex>
       </v-form>
-  </v-layout>
+  </v-layout> -->
 </template>
 
 <script>
