@@ -151,6 +151,21 @@
                       </v-flex>
                     </v-layout>
                     <v-layout>
+                        <v-flex xs12>
+        <div class="v-form-container">
+          <div class="v-form-actions">
+            <v-flex md-12 mt-4>
+              <v-btn :disabled="
+                                  !(
+                                    $store.state.projectInformation &&
+                                    $store.state.ministryInformation &&
+                                    this.$store.state.intakeRiskQuestions
+                                  )
+                                " color="primary" @click="clickfnctn(5)">Next</v-btn>
+            </v-flex>
+          </div>
+        </div>
+      </v-flex>
                       <v-flex xs12 py-2>
                         <div class="v-form-container">
                           <div class="v-form-actions">

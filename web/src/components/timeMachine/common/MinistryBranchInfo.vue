@@ -14,16 +14,16 @@
             item-text="ministryName"
           ></v-select>
         </div>
+        
         <div class="v-form-container">
-        <v-text-field
-          :rules="requiredRule"
-          v-if="enabled"
-          class="required"
-          label="Non Ministry Value"
-          v-model="form.NonMinistryValue"
-        >
-        </v-text-field>
-      </div>
+          <v-text-field
+            :rules="requiredRule"
+            v-if="enabled"
+            class="required"
+            label="Non Ministry Value"
+            v-model="form.NonMinistryValue"
+          ></v-text-field>
+        </div>
       </v-flex>
       <v-flex sm6>
         <div class="v-form-container">
@@ -32,18 +32,17 @@
             v-model="form.orgDivision"
             class="required"
             :rules="requiredRule"
-            ></v-text-field>
+          ></v-text-field>
         </div>
       </v-flex>
       <v-flex sm6>
         <v-container fluid row wrap align-start justify-end fill-height>
-          <label  class="v-label theme--light" style="margin-left: 2%;">NonMinistry</label>
-    <v-checkbox
-      v-model="enabled"
-    ></v-checkbox></v-container>
+          <label class="v-label theme--light" style="margin-left: 2%;">NonMinistry</label>
+          <v-checkbox v-model="enabled"></v-checkbox>
+        </v-container>
       </v-flex>
-       <v-flex xs12>
-         <h3 class="finance-header" style="margin-left: 3%;">Address Information</h3>
+      <v-flex xs12>
+        <h3 class="finance-header" style="margin-left: 3%;">Address Information</h3>
       </v-flex>
       <v-flex xs12>
         <generic-contact-info :contact="form"></generic-contact-info>
@@ -55,9 +54,7 @@
         <div class="v-form-container">
           <div class="v-form-actions">
             <v-flex md-12 mt-4>
-              <v-btn :disabled="!valid" color="primary" @click="onNextClicked">
-                Next
-              </v-btn>
+              <v-btn :disabled="!valid" color="primary" @click="onNextClicked">Next</v-btn>
             </v-flex>
           </div>
         </div>
@@ -67,25 +64,25 @@
 </template>
 
 <script>
-import ProjectFinanceInfo from '../projects/ProjectFinanceInfo.vue';
-import GenericContactInfo from './GenericContactInfo.vue';
+import ProjectFinanceInfo from "../projects/ProjectFinanceInfo.vue";
+import GenericContactInfo from "./GenericContactInfo.vue";
 
-import MinistryDto from '@/domain/models/Ministry.dto';
+import MinistryDto from "@/domain/models/Ministry.dto";
 
 export default {
   components: {
     ProjectFinanceInfo,
-    GenericContactInfo,
+    GenericContactInfo
   },
   props: {
     nextPanel: Function,
     panelName: String,
-    ministry: Object,
+    ministry: Object
   },
   computed: {
     ministries() {
       return this.$store.state.ministries;
-    },
+    }
   },
   data() {
     const form = Object.assign({}, this.$props.ministry);
@@ -97,10 +94,10 @@ export default {
 
     return {
       valid: true,
-      requiredRule: [v => !!v || 'This field required'],
+      requiredRule: [v => !!v || "This field required"],
       form: { ...form },
-       enabled: false,
-      ministryInformation: this.$store.state.ministryInformation,
+      enabled: false,
+      ministryInformation: this.$store.state.ministryInformation
     };
   },
   watch: {
@@ -114,19 +111,19 @@ export default {
       if (!inputMinistry) {
         this.form.ministry = new MinistryDto();
       }
-    },
+    }
   },
   methods: {
     onNextClicked() {
       if (this.$refs.intakeClientInfo.validate()) {
         //this.nextPanel(this.panelName);
-         this.$emit('next');
+        this.$emit("next");
         this.$store.state.ministryInformation = true;
       }
     },
     reset() {
       this.$refs.intakeClientInfo.reset();
-    },
-  },
+    }
+  }
 };
 </script>
