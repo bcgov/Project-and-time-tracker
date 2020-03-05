@@ -8,6 +8,7 @@ services:
     volumes:
       - ~/dev/Project-and-time-tracker/db/:/var/lib/postgresql/data
       - ~/dev/Project-and-time-tracker/BC_Timesheet_MasterData.sql:/BC_Timesheet_MasterData.sql
+      - ~/dev/Project-and-time-tracker/Risk_MasterData.sql:/Risk_MasterData.sql
     ports:
       - "5432:5432"
     environment:
