@@ -122,6 +122,7 @@ export default {
       this.$store.dispatch('fetchProjectIntakeCategory');
       this.$store.dispatch('fetchProjectIntakeServices');
       this.$store.dispatch('fetchUsers');
+      this.$store.dispatch('fetchMOUs');
       this.initialLoadDone = true;
       this.userName = JSON.parse(localStorage.getItem('keycloak_user')).name;
     },
@@ -155,6 +156,7 @@ export default {
       this.$store.state.collapseNavigationBar = false;
     },
     fetchToken(newValue, oldValue) {
+      console.log('fetchToken', {newValue, oldValue})
       if (newValue !== oldValue) {
         this.$store.dispatch('verifyTokenServer')
           .then(() => {

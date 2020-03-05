@@ -27,7 +27,8 @@ const commonForAllUsers = [
   'GET/rfx-phase/:id',
   'GET/rfx-type/',
   'GET/rfx-type/:id',
-  'GET/user/'
+  'GET/user/',
+  'GET/MOU/'
 ];
 
 const commonForPSBAdminAndUser = [

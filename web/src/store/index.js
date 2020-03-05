@@ -48,7 +48,8 @@ const store = new Vuex.Store({
     ministries: [],
     rfxPhases: [],
     rfxTypes: [],
-    intakeRiskQuestions:[], 
+    intakeRiskQuestions:[],
+    mouList: [],
     // Intake form component
     activeIntakeRequestId: null,
     activeIntakeRequest: {},
@@ -114,6 +115,7 @@ const store = new Vuex.Store({
     },
     // Verify data
     verifyTokenServer(state, data) {
+      console.log('verifyTokenServer called', {state, data})
       state.verifyTokenServer = data;
     },
     // Master data
@@ -130,6 +132,7 @@ const store = new Vuex.Store({
       state.rfxTypes = data;
     },
     fetchProjectSectors(state, data) {
+      console.log('fetchProjectSectors called', {state, data})
       state.projectSectors = data;
       // TODO: Remove me! I'm just for backward compat right now...
       state.services = data;
@@ -140,7 +143,6 @@ const store = new Vuex.Store({
       state.services = data;
     },
     fetchProjectIntakeServices(state, data) {
-      debugger
       state.projectIntakeServices = data;
       // TODO: Remove me! I'm just for backward compat right now...
        state.services = data;
@@ -153,6 +155,9 @@ const store = new Vuex.Store({
       state.clients = data;
     },
     fetchClient() {
+    },
+    fetchMOUs(state, data){
+      state.mouList = data;
     },
     addClient() {
       throw new Error('Not implemented!');
@@ -403,7 +408,7 @@ const store = new Vuex.Store({
           const content = res.data;
           ctx.commit('fetchintakeRiskQuestions', content);
         });
-    },    
+    },
     fetchRFxPhases(ctx) {
       $http.get(`${API_URI}/rfx-phase`)
         .then((res) => {
@@ -461,7 +466,6 @@ const store = new Vuex.Store({
       $http
         .get(`${API_URI}/project-intake-service`)
         .then((res) => {
-          debugger
           const content = res.data;
           ctx.commit('fetchProjectIntakeServices', content);
         });
@@ -569,6 +573,24 @@ const store = new Vuex.Store({
         .then((res) => {
           const content = res.data;
           ctx.commit('deleteUser', content);
+        });
+    },
+    fetchMOUs(ctx, req){
+      $http
+        .get(`${API_URI}/MOU`)
+        .then((res) => {
+          console.log('fetch MOUs', res);
+          const content = res.data;
+          ctx.commit('fetchMOU', content);
+        })
+    },
+    createMOU(){
+      const body = req;
+      $http
+        .post(`${API_URI}/MOU`, body)
+        .then((res) => {
+          const content = res.data;
+          ctx.commit('createMOU', content);
         });
     },
     // Intake requests
