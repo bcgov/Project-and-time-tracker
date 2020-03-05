@@ -65,10 +65,6 @@
                   ></ministry-branch-info>
                 </v-card-text>
               </v-card>
-
-              <v-btn color="primary" @click="clickfnctn(3)">Continue</v-btn>
-
-              <v-btn text>Cancel</v-btn>
             </v-stepper-content>
 
             <v-stepper-content step="3">
@@ -88,10 +84,6 @@
                   ></intake-risk-assessment>
                 </v-card-text>
               </v-card>
-
-              <v-btn color="primary" @click="clickfnctn(4)">Continue</v-btn>
-
-              <v-btn text>Cancel</v-btn>
             </v-stepper-content>
             <v-stepper-content step="4">
               <template v-slot:header>
@@ -166,17 +158,9 @@
                   </div>
                 </v-card-text>
               </v-card>
-
-              <v-btn color="primary" @click="clickfnctn(5)">Continue</v-btn>
-
-              <v-btn text>Cancel</v-btn>
             </v-stepper-content>
             <v-stepper-content step="5">
               <v-card class="mb-12" color="grey lighten-1" height="200px"></v-card>
-
-              <v-btn color="primary" @click="e1 = 1">Continue</v-btn>
-
-              <v-btn text>Cancel</v-btn>
             </v-stepper-content>
           </v-stepper-items>
         </v-stepper>

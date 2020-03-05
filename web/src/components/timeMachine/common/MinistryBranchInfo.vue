@@ -37,11 +37,14 @@
       </v-flex>
       <v-flex sm6>
         <v-container fluid row wrap align-start justify-end fill-height>
-          <label  class="v-label theme--light" style="margin-left: 1%;">Non-Ministry</label>
+          <label  class="v-label theme--light" style="margin-left: 2%;">Non-Ministry</label>
     <v-checkbox
       v-model="enabled"
       :label="Non-Ministry"
     ></v-checkbox></v-container>
+      </v-flex>
+       <v-flex xs12>
+         <h3 class="finance-header" style="margin-left: 3%;">Address Information</h3>
       </v-flex>
       <v-flex xs12>
         <generic-contact-info :contact="form"></generic-contact-info>
