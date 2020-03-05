@@ -34,6 +34,9 @@ export const retrieveUserByReferenceId = async (id: string) => {
 };
 
 export const retrieveUsersNameAndIdByRole = async (roles: string[]) => {
+
+  console.log('retrieveUsersNameAndIdByRole start - ', roles)
+
   const repo = userRepo();
   const users = await repo
     .createQueryBuilder('u')
@@ -45,18 +48,27 @@ export const retrieveUsersNameAndIdByRole = async (roles: string[]) => {
       'c.fullName'
     ])
     .getMany();
+  
+  // console.log('retrieveUsersNameAndIdByRole B -', { repo, users })
+  console.log('retrieveUsersNameAndIdByRole B -')
                       
   const kcAdminToken = await retrieveKeycloakAdminToken();
+  // ARC - ERROR OCCURS ABOVE
+  console.log('retrieveUsersNameAndIdByRole C - after adminToken', { kcAdminToken })
   const keycloakUsers: IKeycloakUserByRole[] = [];
   for (let index = 0; index < roles.length; index++) {
     keycloakUsers.push(...await retrieveKeycloakUsersByRole(roles[index], kcAdminToken));      
   }
+
+  console.log('retrieveUsersNameAndIdByRole D - have users', { keycloakUsers })
 
   const filteredUsers = users.filter((element, index, array) => {
     return keycloakUsers.find((value, i, arr) => {
       return value.id === element.referenceId;
     });
   });
+
+  console.log('retrieveUsersNameAndIdByRole E - filtered users', { filteredUsers })
 
   return filteredUsers;
 };

@@ -23,6 +23,7 @@ import IntakeRequestDto from '@/domain/models/Intake.dto';
 import HashTable from '@/utils/HashTable';
 
 const API_URI = process.env.VUE_APP_API_URI || 'http://localhost:3000';
+console.log('API URL:', { API_URI })
 
 Vue.use(Vuex);
 
@@ -46,6 +47,7 @@ const store = new Vuex.Store({
     projectIntakeCategory: [],
     projectIntakeServices: [],
     ministries: [],
+    allMinistries: [],
     rfxPhases: [],
     rfxTypes: [],
     intakeRiskQuestions:[],
@@ -120,7 +122,11 @@ const store = new Vuex.Store({
     },
     // Master data
     fetchMinistries(state, data) {
+      console.log('fetchMinistries called', data);
       state.ministries = data;
+    },
+    fetchAllMinistries(state, data){
+      state.allMinistries = data;
     },
     fetchintakeRiskQuestions(state, data) {
       state.intakeRiskQuestions = data;
@@ -182,10 +188,16 @@ const store = new Vuex.Store({
     },
     // User contacts (profiles?)
     fetchUsers(state, data) {
+      console.log('fetchUsers called', { state, data } )
       state.users = data;
     },
     addUser() {
       throw new Error('Not implemented!');
+    },
+    addMinistry(state, data){
+      console.log('TODO - NOT SURE IF COMPLETE - addMinistry MUTATION called', {state, data});
+      // state.ministries = data;
+      // throw new Error('Not implemented');
     },
     updateUser() {
       throw new Error('Not implemented!');
@@ -400,6 +412,37 @@ const store = new Vuex.Store({
           const content = res.data;
           ctx.commit('fetchMinistries', content);
         });
+    },
+    // Returns archived ministries + unarchived
+    fetchAllMinistries(ctx){
+      $http
+        .get(`${API_URI}/ministry/all`)
+        .then((res) => {
+          const content = res.data;
+          ctx.commit('fetchAllMinistries', content);
+        });
+    },
+    async addMinistry(ctx, req){
+      const body = req;
+      const api = $http
+        .post(`${API_URI}/ministry`, body)
+        .then((res) => {
+          const content = res.data;
+          ctx.commit('addMinistry', content);
+          return Promise.resolve(res.data);
+        })
+        .catch(err => Promise.reject(err));
+        return Promise.resolve(api);
+    },
+    async updateMinistries(ctx, req){
+      const api = await $http
+        .patch(`${API_URI}/ministry/${req.id}/update`, req)
+        .then((res) => {
+          console.log('updateMinistires RESPONSE', {res})
+          return Promise.resolve(res.data)
+        })
+        .catch(err => Promise.reject(err));
+        return Promise.resolve(api);
     },
     fetchintakeRiskQuestions(ctx) {
       $http
@@ -676,6 +719,15 @@ const store = new Vuex.Store({
           let content = res.data;
           content = res.data.map(project => project);
           ctx.commit('fetchProjects', content);
+        });
+    },
+    fetchArchivedProjects(ctx) {
+      $http
+        .get(`${API_URI}/archivedproject`)
+        .then((res) => {
+          let content = res.data;
+          content = res.data.map(project => project);
+          ctx.commit('fetchArchivedProjects', content);
         });
     },
     fetchProject(ctx, req) {

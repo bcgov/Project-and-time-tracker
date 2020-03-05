@@ -1,34 +1,42 @@
 <template>
   <v-container grid-list-xl fluid class="custom-manage-projects-container">
-    <v-layout>
       <v-flex md12>
-        <h1 class="projects-header">Projects</h1>
-      </v-flex>
-    </v-layout>
-    <v-layout row wrap>
+        <v-radio-group v-model="selected" row>
+        <v-radio label="My Projects" value="My Projects"></v-radio>
+        <v-radio label="Other Projects" value="Other Projects"></v-radio>
+        <v-radio label="Archived Projects" value="Archived Projects"></v-radio>
+      </v-radio-group>
+      </v-flex>  
+      <h1 class="projects-header">View {{ selected }}</h1>
+      <v-layout row wrap>
       <v-flex xs12>
-        <projects-table></projects-table>
+        <projects-table v-if="selected === 'My Projects'"></projects-table>
+        <projects-table v-if="selected === 'Other Projects'"></projects-table> 
+        <archived-projects-table v-if="selected === 'Archived Projects'"></archived-projects-table> 
       </v-flex>
     </v-layout>
+      <v-flex md12>
+      </v-flex>  
   </v-container>
 </template>
 
 <script>
 import Material from 'vuetify/es5/util/colors';
 import ProjectsTable from './ProjectsTable.vue';
+import ArchivedProjectsTable from './ArchivedProjectsTable.vue';
 
 import './projects.styl';
 
 export default {
   components: {
-    ProjectsTable,
+    ProjectsTable,ArchivedProjectsTable,
   },
   data: () => ({
     color: Material,
-    selectedTab: 'tab-1',
+    selected: 'My Projects',
+    
   }),
   computed: {},
 };
 </script>
-
 <style></style>

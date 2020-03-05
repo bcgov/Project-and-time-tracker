@@ -8,14 +8,14 @@
         <div class="body-2">{{form.projectName}}</div>
       </v-flex>
     </v-layout>
-    <v-layout>
+    <!-- <v-layout>
       <v-flex md4>
         <div class="body-1">Desired Completion Date:</div>
       </v-flex>
       <v-flex md8 justify-center>
         <div class="body-2">{{form.estimatedCompletionDate}}</div>
       </v-flex>
-    </v-layout>
+    </v-layout> -->
 
     <v-layout>
       <v-flex md4>

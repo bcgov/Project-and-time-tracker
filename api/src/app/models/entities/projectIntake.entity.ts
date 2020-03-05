@@ -78,7 +78,6 @@ export class ProjectIntake {
 
   @Column({ type: 'text', nullable: true })
   projectSuccess: string;
-
 }
 
 export type IntakeStatus = 'submitted' | 'approved' | 'rejected';

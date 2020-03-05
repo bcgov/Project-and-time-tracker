@@ -54,4 +54,3 @@ INSERT INTO rfx_phase("rfxPhaseName") VALUES ('Closed Out');
 INSERT INTO rfx_phase("rfxPhaseName") VALUES ('Suspended');
 INSERT INTO rfx_phase("rfxPhaseName") VALUES ('Cancelled');
 INSERT INTO rfx_phase("rfxPhaseName") VALUES ('Completed');
-
