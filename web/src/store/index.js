@@ -657,6 +657,15 @@ const store = new Vuex.Store({
           ctx.commit('fetchProjects', content);
         });
     },
+    fetchArchivedProjects(ctx) {
+      $http
+        .get(`${API_URI}/archivedproject`)
+        .then((res) => {
+          let content = res.data;
+          content = res.data.map(project => project);
+          ctx.commit('fetchArchivedProjects', content);
+        });
+    },
     fetchProject(ctx, req) {
       // TODO: Make sure it's the right kind of ID - eg. numeric or GUID/UUID
       $http

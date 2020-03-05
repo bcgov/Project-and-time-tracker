@@ -18,11 +18,14 @@
           disable-initial-sort
         >
           <template slot="items" slot-scope="props">
-            <td>{{ props.item.projectName }}</td>
-            <td class="text-xs-left">{{props.item.client.ministry.ministryName}}</td>
+            <td v-bind:class="text-xs-left">{{ props.item.mouAmount }} </td>
+            <td v-bind:class="{ 'archived': props.item.is_archived}">{{ props.item.projectName }}</td>
             <td class="text-xs-left">{{ props.item.projectName }}</td>
-            <td class="text-xs-left">{{ props.item.projectName }}</td>
+            <td class="text-xs-left">{{ [props.item.client.ministry.ministryName, props.item.orgDivision].join(" ") }}</td>
+            <td class="text-xs-left">{{ props.item.projectLeadUserId }}</td>
+            <td class="text-xs-left">{{ props.item.projectBackupUserId }}</td>
             <td class="text-xs-left">{{props.item.completionDate}}</td>
+            <td class="text-xs-left">{{ props.item.dateModified }}</td>
             <td class="text-xs-right">
               <v-btn flat icon color="grey" @click="unarchiveProject(props.item.id)">
                 <v-icon>unarchive</v-icon>
@@ -55,12 +58,15 @@ export default {
   data() {
     return {
       headers: [
+        { text: 'MOU', value: 'mouAmount', align: 'left', sortable: true },
         { text: 'Project Name', value: 'projectName', align: 'left', sortable: true },
+        { text: 'Phase', value: 'rfxPhaseName', align: 'left', sortable: true },
         { text: 'Client', value: 'client.ministry.ministryName', sortable: true },
         { text: 'Project Lead', value: 'projectLeadId', sortable: false },
         { text: 'Project Backup', value: 'projectBackup', sortable: false },
-        { text: 'Project Completed', value: 'completionDate', sortable: true },
-        { text: 'Actions', value: 'action', align: 'center', width: '145px', sortable: false,
+        { text: 'Project Deadline', value: 'completionDate', sortable: true },
+        { text: 'Last Updated', value: 'dateModified', sortable: true },
+        { text: 'Actions', value: 'is_archived', align: 'center', width: '145px', sortable: false,
         },
       ],
       archivedprojects: [],
@@ -78,7 +84,7 @@ export default {
   },
   methods: {
     fetchArchivedData() {
-      this.$store.dispatch('fetchArchivedProjects',archivedprojects);
+      this.$store.dispatch('fetchArchivedProjects');
     },
     editProject(id) {
       this.$router.push({ path: `project/${id}` });

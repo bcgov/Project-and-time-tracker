@@ -20,7 +20,7 @@
           <template slot="items" slot-scope="props">
             <td v-bind:class="text-xs-left">{{ props.item.mouAmount }} </td>
             <td v-bind:class="{ 'archived': props.item.is_archived}">{{ props.item.projectName }}</td>
-            <td v-bind:class="text-xs-left">{{ props.item .projectName}} </td>
+            <td v-bind:class="text-xs-left">{{ props.item.projectName}} </td>
             <td class="text-xs-left">{{ [props.item.client.ministry.ministryName, props.item.orgDivision].join(" ") }}</td>
             <td class="text-xs-left table-dropdown">
               <v-select
@@ -67,8 +67,8 @@
                 Archived
                 </v-btn>
             </td>
-            </td>
-          </template>
+
+            </template>
         </v-data-table>
       </template>
       <v-divider></v-divider>
@@ -78,8 +78,15 @@
 
 <script>
 
+import moment from 'moment';
 import Confirm from '../common/Confirm.vue';
 import Snackbar from '../common/Snackbar.vue';
+
+Vue.filter('formatDate', function(value) {
+      if (value) {
+        return moment(String(value)).format('MM/DD/YYYY hh:mm')
+      }
+    })
 
 export default {
   props: {
@@ -106,6 +113,7 @@ export default {
       selectedLeadUser: '',
       selectedProjectBackup: '',
     };
+  
   },
   computed: {
     projects() {
@@ -114,11 +122,13 @@ export default {
     userList() {
       return this.$store.state.users;
     },
-  },
+    },
   methods: {
     fetchData() {
       this.$store.dispatch('fetchProjects');
     },
+
+
     editProject(id) {
       this.$router.push({ path: `project/${id}` });
     },
@@ -131,7 +141,7 @@ export default {
       {
         item.is_archived = archiveVal;
         // await this.$store.dispatch("updateProject", item);
-        this.$store.dispatch("fetchProjects");
+        this.$store.dispatch('fetchProjects');
       }
     },
 
