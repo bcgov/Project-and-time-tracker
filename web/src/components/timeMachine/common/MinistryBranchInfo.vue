@@ -5,6 +5,7 @@
         <div class="v-form-container">
           <v-select
             :items="ministries"
+            v-if="!enabled"
             label="Ministry"
             class="required"
             :rules="requiredRule"
@@ -13,6 +14,16 @@
             item-text="ministryName"
           ></v-select>
         </div>
+        <div class="v-form-container">
+        <v-text-field
+          :rules="requiredRule"
+          v-if="enabled"
+          class="required"
+          label="Non Ministry Value"
+          v-model="form.NonMinistryValue"
+        >
+        </v-text-field>
+      </div>
       </v-flex>
       <v-flex sm6>
         <div class="v-form-container">
@@ -23,6 +34,14 @@
             :rules="requiredRule"
             ></v-text-field>
         </div>
+      </v-flex>
+      <v-flex sm6>
+        <v-container fluid row wrap align-start justify-end fill-height>
+          <label  class="v-label theme--light" style="margin-left: 1%;">Non-Ministry</label>
+    <v-checkbox
+      v-model="enabled"
+      :label="Non-Ministry"
+    ></v-checkbox></v-container>
       </v-flex>
       <v-flex xs12>
         <generic-contact-info :contact="form"></generic-contact-info>
@@ -78,6 +97,7 @@ export default {
       valid: true,
       requiredRule: [v => !!v || 'This field required'],
       form: { ...form },
+       enabled: false,
       ministryInformation: this.$store.state.ministryInformation,
     };
   },

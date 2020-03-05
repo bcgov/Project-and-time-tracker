@@ -43,6 +43,8 @@ const store = new Vuex.Store({
     clients: [],
     services: [],
     projectSectors: [],
+    projectIntakeCategory: [],
+    projectIntakeServices: [],
     ministries: [],
     rfxPhases: [],
     rfxTypes: [],
@@ -131,6 +133,17 @@ const store = new Vuex.Store({
       state.projectSectors = data;
       // TODO: Remove me! I'm just for backward compat right now...
       state.services = data;
+    },
+    fetchProjectIntakeCategory(state, data) {
+      state.projectIntakeCategory = data;
+      // TODO: Remove me! I'm just for backward compat right now...
+      state.services = data;
+    },
+    fetchProjectIntakeServices(state, data) {
+      debugger
+      state.projectIntakeServices = data;
+      // TODO: Remove me! I'm just for backward compat right now...
+       state.services = data;
     },
     fetchProjectRfx(state, data) {
       state.projectsRfx.set(data.projectId, data.content);
@@ -434,6 +447,23 @@ const store = new Vuex.Store({
         .then((res) => {
           const content = res.data;
           ctx.commit('fetchProjectSectors', content);
+        });
+    },
+    fetchProjectIntakeCategory(ctx) {
+      $http
+        .get(`${API_URI}/project-intake-category`)
+        .then((res) => {
+          const content = res.data;
+          ctx.commit('fetchProjectIntakeCategory', content);
+        });
+    },
+    fetchProjectIntakeServices(ctx) {
+      $http
+        .get(`${API_URI}/project-intake-service`)
+        .then((res) => {
+          debugger
+          const content = res.data;
+          ctx.commit('fetchProjectIntakeServices', content);
         });
     },
     // Clients or Government Ministries

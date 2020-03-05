@@ -119,6 +119,8 @@ export default {
       this.$store.dispatch('fetchRFxPhases');
       this.$store.dispatch('fetchRFxTypes');
       this.$store.dispatch('fetchProjectSectors');
+      this.$store.dispatch('fetchProjectIntakeCategory');
+      this.$store.dispatch('fetchProjectIntakeServices');
       this.$store.dispatch('fetchUsers');
       this.initialLoadDone = true;
       this.userName = JSON.parse(localStorage.getItem('keycloak_user')).name;

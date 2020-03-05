@@ -2,6 +2,8 @@ import projectController from './client/controllers/project.controller';
 import intakeController from './client/controllers/intake.controller';
 import ministryController from './client/controllers/ministry.controller';
 import projectSectorController from './client/controllers/projectSector.controller';
+import projectIntakeCategoryController from './client/controllers/projectIntakeCategory.controller';
+import projectIntakeServicesController from './client/controllers/projectIntakeServices.controller';
 import clientController from './client/controllers/client.controller';
 import contractController from './client/controllers/contact.controller';
 import projectRfxController from './client/controllers/projectRfx.controller';
@@ -25,7 +27,9 @@ export const appRoutes = [
   timesheetController.routes(),
   userController.routes(),
   authController.routes(),
-  projectRiskController.routes()
+  projectRiskController.routes(),
+  projectIntakeCategoryController.routes(),
+  projectIntakeServicesController.routes()
 ];
 
 export const allowedMethods = [
@@ -41,5 +45,7 @@ export const allowedMethods = [
   timesheetController.allowedMethods(),
   userController.allowedMethods(),
   authController.allowedMethods(),
-  projectRiskController.allowedMethods()
+  projectRiskController.allowedMethods(),
+  projectIntakeCategoryController.allowedMethods(),
+  projectIntakeServicesController.allowedMethods()
 ];
