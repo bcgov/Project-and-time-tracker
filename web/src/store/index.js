@@ -44,10 +44,14 @@ const store = new Vuex.Store({
     clients: [],
     services: [],
     projectSectors: [],
+    projectIntakeCategory: [],
+    projectIntakeServices: [],
     ministries: [],
     allMinistries: [],
     rfxPhases: [],
     rfxTypes: [],
+    intakeRiskQuestions:[],
+    mouList: [],
     // Intake form component
     activeIntakeRequestId: null,
     activeIntakeRequest: {},
@@ -69,6 +73,7 @@ const store = new Vuex.Store({
     projectInformation: false,
     ministryInformation: false,
     contactInformation: false,
+    intakeRisk:false,
     timesheetsWeek: {
       startDate: null,
       endDate: null,
@@ -112,6 +117,7 @@ const store = new Vuex.Store({
     },
     // Verify data
     verifyTokenServer(state, data) {
+      console.log('verifyTokenServer called', {state, data})
       state.verifyTokenServer = data;
     },
     // Master data
@@ -120,8 +126,10 @@ const store = new Vuex.Store({
       state.ministries = data;
     },
     fetchAllMinistries(state, data){
-      console.log('fetchAllMinistries called', data)
       state.allMinistries = data;
+    },
+    fetchintakeRiskQuestions(state, data) {
+      state.intakeRiskQuestions = data;
     },
     fetchRFxPhases(state, data) {
       state.rfxPhases = data;
@@ -130,9 +138,20 @@ const store = new Vuex.Store({
       state.rfxTypes = data;
     },
     fetchProjectSectors(state, data) {
+      console.log('fetchProjectSectors called', {state, data})
       state.projectSectors = data;
       // TODO: Remove me! I'm just for backward compat right now...
       state.services = data;
+    },
+    fetchProjectIntakeCategory(state, data) {
+      state.projectIntakeCategory = data;
+      // TODO: Remove me! I'm just for backward compat right now...
+      state.services = data;
+    },
+    fetchProjectIntakeServices(state, data) {
+      state.projectIntakeServices = data;
+      // TODO: Remove me! I'm just for backward compat right now...
+       state.services = data;
     },
     fetchProjectRfx(state, data) {
       state.projectsRfx.set(data.projectId, data.content);
@@ -142,6 +161,9 @@ const store = new Vuex.Store({
       state.clients = data;
     },
     fetchClient() {
+    },
+    fetchMOUs(state, data){
+      state.mouList = data;
     },
     addClient() {
       throw new Error('Not implemented!');
@@ -422,6 +444,14 @@ const store = new Vuex.Store({
         .catch(err => Promise.reject(err));
         return Promise.resolve(api);
     },
+    fetchintakeRiskQuestions(ctx) {
+      $http
+        .get(`${API_URI}/project-risk`)
+        .then((res) => {
+          const content = res.data;
+          ctx.commit('fetchintakeRiskQuestions', content);
+        });
+    },
     fetchRFxPhases(ctx) {
       $http.get(`${API_URI}/rfx-phase`)
         .then((res) => {
@@ -465,6 +495,22 @@ const store = new Vuex.Store({
         .then((res) => {
           const content = res.data;
           ctx.commit('fetchProjectSectors', content);
+        });
+    },
+    fetchProjectIntakeCategory(ctx) {
+      $http
+        .get(`${API_URI}/project-intake-category`)
+        .then((res) => {
+          const content = res.data;
+          ctx.commit('fetchProjectIntakeCategory', content);
+        });
+    },
+    fetchProjectIntakeServices(ctx) {
+      $http
+        .get(`${API_URI}/project-intake-service`)
+        .then((res) => {
+          const content = res.data;
+          ctx.commit('fetchProjectIntakeServices', content);
         });
     },
     // Clients or Government Ministries
@@ -570,6 +616,24 @@ const store = new Vuex.Store({
         .then((res) => {
           const content = res.data;
           ctx.commit('deleteUser', content);
+        });
+    },
+    fetchMOUs(ctx, req){
+      $http
+        .get(`${API_URI}/MOU`)
+        .then((res) => {
+          console.log('fetch MOUs', res);
+          const content = res.data;
+          ctx.commit('fetchMOU', content);
+        })
+    },
+    createMOU(){
+      const body = req;
+      $http
+        .post(`${API_URI}/MOU`, body)
+        .then((res) => {
+          const content = res.data;
+          ctx.commit('createMOU', content);
         });
     },
     // Intake requests

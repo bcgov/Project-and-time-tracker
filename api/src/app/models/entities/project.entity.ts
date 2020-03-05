@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { Client } from './client.entity';
 import { ProjectSector } from './projectSector.entity';
+import { MOU } from './mou.entity';
 
 
 @Entity()
@@ -55,4 +56,7 @@ export class Project {
 
   @Column({ type: 'boolean', nullable: true })
   is_archived: boolean;
+
+  @ManyToOne(type => MOU)
+  mou: MOU;
 }

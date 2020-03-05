@@ -43,14 +43,41 @@ export class ProjectIntake {
   @Column({ type: 'uuid', nullable: true })
   approverUserId: string;
 
+  @Column({ type: 'int', nullable: true })
+  riskScore: number;
+
+  @Column({ type: 'int', nullable: true })
+  riskLevel: number;
+
   @Column({ type: 'timestamp', nullable: true })
   dateCreated: Date;
 
   @Column({ type: 'timestamp', nullable: true })
   dateModified: Date;
 
-  // @Column({ type: 'boolean', nullable: false })
-  // is_archived: Boolean;
+  @Column({ type: 'boolean', nullable: true })
+  isReprocurement: boolean;
+
+  @Column({ type: 'boolean', nullable: true })
+  isMinistry: boolean;
+
+  @Column({ type: 'timestamp', nullable: true })
+  dateOfReprocurement: Date;
+
+  @Column({ type: 'uuid', nullable: true })
+  serviceId: string;
+
+  @Column({ type: 'uuid', nullable: true })
+  categoryId: string;
+
+  @Column({ type: 'text', nullable: true })
+  previousContractBackground: string;
+
+  @Column({ type: 'text', nullable: true })
+  projectFailImpact: string;
+
+  @Column({ type: 'text', nullable: true })
+  projectSuccess: string;
 }
 
 export type IntakeStatus = 'submitted' | 'approved' | 'rejected';

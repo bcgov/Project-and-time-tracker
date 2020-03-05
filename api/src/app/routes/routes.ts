@@ -2,6 +2,8 @@ import projectController from './client/controllers/project.controller';
 import intakeController from './client/controllers/intake.controller';
 import ministryController from './client/controllers/ministry.controller';
 import projectSectorController from './client/controllers/projectSector.controller';
+import projectIntakeCategoryController from './client/controllers/projectIntakeCategory.controller';
+import projectIntakeServicesController from './client/controllers/projectIntakeServices.controller';
 import clientController from './client/controllers/client.controller';
 import contractController from './client/controllers/contact.controller';
 import projectRfxController from './client/controllers/projectRfx.controller';
@@ -10,6 +12,8 @@ import rfxPhaseController from './client/controllers/rfxPhase.controller';
 import timesheetController from './client/controllers/timesheet.controller';
 import userController from './client/controllers/user.controller';
 import authController from './client/controllers/auth.controller';
+import projectRiskController from './client/controllers/projectRisk.controller';
+import mouController from './client/controllers/mou.controller';
 
 export const appRoutes = [
   projectController.routes(),
@@ -24,6 +28,10 @@ export const appRoutes = [
   timesheetController.routes(),
   userController.routes(),
   authController.routes(),
+  projectRiskController.routes(),
+  projectIntakeCategoryController.routes(),
+  projectIntakeServicesController.routes(),
+  mouController.routes()
 ];
 
 export const allowedMethods = [
@@ -38,5 +46,9 @@ export const allowedMethods = [
   rfxPhaseController.allowedMethods(),
   timesheetController.allowedMethods(),
   userController.allowedMethods(),
-  authController.allowedMethods()
+  authController.allowedMethods(),
+  projectRiskController.allowedMethods(),
+  projectIntakeCategoryController.allowedMethods(),
+  projectIntakeServicesController.allowedMethods(),
+  mouController.allowedMethods()
 ];

@@ -18,6 +18,13 @@
           disable-initial-sort
         >
           <template slot="items" slot-scope="props">
+            <td class='pl-3'>
+              <v-btn color="btnPrimary"
+                class="white--text intake-table-approve-btn ma-0"
+                @click.native='showMOUModal(props.item)'>
+                  ASSIGN MOU
+               </v-btn>
+            </td>
             <td>{{ props.item.projectName }}</td>
             <td
               class="text-xs-left"
@@ -95,8 +102,43 @@
       </template>
       <v-divider></v-divider>
     </v-card-text>
+
+  <v-dialog v-model="mouDialog" persistent max-width="600px">
+      <template v-slot:activator="{ on }">
+        <v-btn color="primary" dark v-on="on">Open Dialog</v-btn>
+      </template>
+      <v-card>
+        <v-card-title>
+          <span class="headline">Assign or Create</span>
+        </v-card-title>
+        <v-card-text>
+          <v-container grid-list-md>
+            <v-layout wrap>
+              <v-flex xs12>
+                <v-combobox
+                  v-model="mouName"
+                  :items="['af-123', 'bc-4351']"
+                  label="Assign MOU"
+                ></v-combobox>
+                Project: {{ mouProjectName }}
+              </v-flex>
+               <v-flex xs12>
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" flat @click="mouDialog = false">Close</v-btn>
+          <v-btn color="blue darken-1" flat
+           @click="createMOU()">Save</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+
   </v-card>
-</template>
+ </template>
 
 <script>
 import './intakeformtable.styl';
@@ -117,6 +159,7 @@ export default {
   data() {
     return {
       headers: [
+        { text: 'MOU', value: 'mou', align: 'left', sortable: true },
         { text: 'Project Name', value: 'projectName', align: 'left', sortable: true },
         { text: 'Client', value: 'ministryName', sortable: true },
         { text: 'Project Lead', value: 'projectLeadId', sortable: false },
@@ -131,7 +174,10 @@ export default {
         sortBy: 'name',
       },
       dialog: false,
+      mouDialog: false,
       id: '',
+      mouProjectName: '',
+      mouName: '',
     };
   },
   computed: {
@@ -286,6 +332,18 @@ export default {
         this.$router.push({ path: 'intake-requests' });
       }
     },
+    showMOUModal(item) {
+      this.mouDialog = true;
+      this.mouProjectName = item.projectName;
+    },
+    createMOU(){
+      console.log('create MOU', this.mouProjectName);
+      const body = {
+        item,
+        todo: 'todo'
+      }
+      this.$store.dispatch('createMOU', body);
+    }
   },
   created() {
     this.fetchData();

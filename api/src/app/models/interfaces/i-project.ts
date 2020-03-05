@@ -16,4 +16,9 @@ export interface IProject {
   leadUserId: string;
   backupUserId: string;
   createdUserId: string;
+  isReprocurement: boolean;
+  dateOfReprocurement: Date;
+  previousContractBackground: string;
+  projectFailImpact: string;
+  projectSuccess: string;
 }

@@ -110,7 +110,12 @@ export const updateApproveStatus = async (ctx: Koa.Context) => {
       description: intake.description,
       leadUserId: null,
       backupUserId: null,
-      createdUserId: auth.userId
+      createdUserId: auth.userId,
+      isReprocurement: intake.isReprocurement,
+      dateOfReprocurement: intake.dateOfReprocurement,
+      previousContractBackground: intake.previousContractBackground,
+      projectFailImpact: intake.projectFailImpact,
+      projectSuccess: intake.projectSuccess
     };
     const projectData = await createProject(newProject);
 
@@ -184,6 +189,20 @@ const validateIntakeForm = (intake: IProjectIntake) => {
   
   if (!intake.estimatedCompletionDate) {
     validationErrors.push('Estimated Value of Completion is required.');
+  }
+
+  if (!intake.previousContractBackground) {
+    validationErrors.push('Background from the previous contract is required.');
+  }
+  if (!intake.projectFailImpact) {
+    validationErrors.push(' Potential impact if this project fails is required.');
+  }
+  if (!intake.projectSuccess) {
+    validationErrors.push('success look like for this project is required.');
+  }
+
+  if (!intake.dateOfReprocurement) {
+    validationErrors.push('Date of Reprocurement is required.');
   }
 
   if (!intake.description) {

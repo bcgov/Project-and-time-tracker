@@ -19,11 +19,16 @@ const commonForAllUsers = [
   'GET/ministry/:id',
   'GET/project-sector/',
   'GET/project-sector/:id',
+  'GET/project-intake-category/',
+  'GET/project-intake-category/:id',
+  'GET/project-intake-service/',
+  'GET/project-intake-service/:id',
   'GET/rfx-phase/',
   'GET/rfx-phase/:id',
   'GET/rfx-type/',
   'GET/rfx-type/:id',
-  'GET/user/'
+  'GET/user/',
+  'GET/MOU/'
 ];
 
 const commonForPSBAdminAndUser = [
@@ -58,6 +63,7 @@ const permissions = {
     'POST/project/:id/assign-backup',
     'PATCH/ministry/:id/update',
     'POST/ministry/',
+    'GET/project-risk/',
     ...commonForPSBAdminAndUser
   ],
   PSB_User: [
