@@ -13,16 +13,21 @@
             item-value="id"
             item-text="ministryName"
           ></v-select>
-        </div>
-        
-        <div class="v-form-container">
-          <v-text-field
+            <v-container fluid row wrap align-start justify-end fill-height style="padding:0px !important">
+          <label class="v-label theme--light" style="margin-left: 2%;">NonMinistry</label>
+          <v-checkbox v-model="enabled"></v-checkbox>
+            <v-text-field
             :rules="requiredRule"
             v-if="enabled"
             class="required"
             label="Non Ministry Value"
             v-model="form.NonMinistryValue"
           ></v-text-field>
+        </v-container>
+        </div>
+        
+        <div class="v-form-container">
+        
         </div>
       </v-flex>
       <v-flex sm6>
@@ -36,10 +41,7 @@
         </div>
       </v-flex>
       <v-flex sm6>
-        <v-container fluid row wrap align-start justify-end fill-height>
-          <label class="v-label theme--light" style="margin-left: 2%;">NonMinistry</label>
-          <v-checkbox v-model="enabled"></v-checkbox>
-        </v-container>
+      
       </v-flex>
       <v-flex xs12>
         <h3 class="finance-header" style="margin-left: 3%;">Address Information</h3>
