@@ -29,7 +29,7 @@ export const retrieveIntakes = async () => {
       'i.previousContractBackground AS "previousContractBackground"',
       'i.projectFailImpact AS "projectFailImpact"',
       'i.projectSuccess AS "projectSuccess"',
-      'i.isMinistry AS "isMinistry"'
+      'c.isMinistry AS "isMinistry"'
     ])
     .getRawMany();
 };
@@ -37,20 +37,19 @@ export const retrieveIntakes = async () => {
 export const retrieveIntakeById = async (intakeId: string) => {
   const repo = intakeRepo();
   const res = await repo
-                      .createQueryBuilder('i')
-                      .innerJoinAndSelect('i.client', 'c')
-                      .innerJoinAndSelect('i.projectSector', 'ps')
-                      .innerJoinAndSelect('c.ministry', 'm')
-                      .where('i.id = :id', { id: intakeId })
-                      .getOne();
-  if (!res) { 
-    throw Error(`intake not found for the id specified: ${intakeId}`); 
+    .createQueryBuilder('i')
+    .innerJoinAndSelect('i.client', 'c')
+    .innerJoinAndSelect('i.projectSector', 'ps')
+    .innerJoinAndSelect('c.ministry', 'm')
+    .where('i.id = :id', { id: intakeId })
+    .getOne();
+  if (!res) {
+    throw Error(`intake not found for the id specified: ${intakeId}`);
   }
   return res;
 };
 
 export const createIntake = async (obj: IProjectIntake) => {
-  
   const intake: ProjectIntake = intakeRepo().create(obj);
   intake.dateCreated = new Date();
   intake.dateModified = new Date();

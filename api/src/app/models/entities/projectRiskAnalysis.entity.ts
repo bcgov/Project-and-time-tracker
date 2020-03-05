@@ -12,13 +12,10 @@ export class ProjectRiskAnalysis {
   question: RiskQuestions;
 
   @ManyToOne(type => RiskAnswers)
-  Answer: RiskAnswers;
+  answer: RiskAnswers;
 
   @ManyToOne(type => ProjectIntake)
-  Intake: ProjectIntake;
-
-  @Column({ type: 'uuid', nullable: true })
-  projectId: string;
+  intake: ProjectIntake;
 
   @Column({ type: 'int', nullable: false })
   score: number;
@@ -26,6 +23,6 @@ export class ProjectRiskAnalysis {
   @Column({ type: 'timestamp', nullable: true })
   dateCreated: Date;
 
-  @Column({ type: "timestamp", nullable: true })
+  @Column({ type: 'timestamp', nullable: true })
   dateModified: Date;
 }
