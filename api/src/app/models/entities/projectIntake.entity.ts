@@ -58,6 +58,9 @@ export class ProjectIntake {
   @Column({ type: 'boolean', nullable: true })
   isReprocurement: boolean;
 
+  @Column({ type: 'boolean', nullable: true })
+  isMinistry: boolean;
+
   @Column({ type: 'timestamp', nullable: true })
   dateOfReprocurement: Date;
 
