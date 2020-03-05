@@ -37,10 +37,9 @@
       </v-flex>
       <v-flex sm6>
         <v-container fluid row wrap align-start justify-end fill-height>
-          <label  class="v-label theme--light" style="margin-left: 2%;">Non-Ministry</label>
+          <label  class="v-label theme--light" style="margin-left: 2%;">NonMinistry</label>
     <v-checkbox
       v-model="enabled"
-      :label="Non-Ministry"
     ></v-checkbox></v-container>
       </v-flex>
        <v-flex xs12>

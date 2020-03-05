@@ -12,21 +12,31 @@
       <v-container>
         <v-stepper v-model="e1" alt-labels>
           <v-stepper-header>
-            <v-stepper-step :complete="e1 > 1" step="1">Project<br />Information</v-stepper-step>
+            <v-stepper-step :complete="e1 > 1" step="1">
+              Project
+              <br />Information
+            </v-stepper-step>
             <v-divider class="first-divider"></v-divider>
             <v-divider class="second-divider"></v-divider>
-            <v-stepper-step edit-icon="2" :complete="e1 > 2" step="2"
-              >Ministry/Branch Information</v-stepper-step
-            >
+            <v-stepper-step edit-icon="2" :complete="e1 > 2" step="2">Ministry/Branch Information</v-stepper-step>
             <v-divider class="first-divider"></v-divider>
             <v-divider class="second-divider"></v-divider>
-            <v-stepper-step :complete="e1 > 3" step="3">Risk<br />Assessment</v-stepper-step>
+            <v-stepper-step :complete="e1 > 3" step="3">
+              Risk
+              <br />Assessment
+            </v-stepper-step>
             <v-divider class="first-divider"></v-divider>
             <v-divider class="second-divider"></v-divider>
-            <v-stepper-step :complete="e1 > 4" step="4">Contact<br />Information</v-stepper-step>
+            <v-stepper-step :complete="e1 > 4" step="4">
+              Contact
+              <br />Information
+            </v-stepper-step>
             <v-divider class="first-divider"></v-divider>
             <v-divider class="second-divider"></v-divider>
-            <v-stepper-step step="5">Review<br />& Submit</v-stepper-step>
+            <v-stepper-step step="5">
+              Review
+              <br />& Submit
+            </v-stepper-step>
           </v-stepper-header>
 
           <v-stepper-items>
@@ -115,6 +125,15 @@
                         />
                       </v-flex>
                       <v-flex xs12 md6 my-3>
+                        <h3 class="v-form-container">Financial Contact Information</h3>
+                        <project-contact-info
+                          ref="projectFinance"
+                          :contact="getClientInfo(CLIENT_FINANCE)"
+                          :contactNameLabel="'Client Finance Name'"
+                          :isRequired="true"
+                        />
+                      </v-flex>
+                      <v-flex xs12 md6 my-3>
                         <div>
                           <v-checkbox color="primary" v-model="enabled" class="v-form-container">
                             <template v-slot:label>
@@ -148,8 +167,7 @@
                                 "
                                 color="primary"
                                 @click="submitForm"
-                                >Submit</v-btn
-                              >
+                              >Submit</v-btn>
                             </v-flex>
                           </div>
                         </div>
@@ -169,32 +187,33 @@
   </div>
 </template>
 <script>
-import assign from 'object-assign';
-import Vue from 'vue';
-import VeeValidate from 'vee-validate';
-import { setTimeout } from 'timers';
-import IntakeBaseInfo from './IntakeBaseInfo.vue';
-import MinistryBranchInfo from '../common/MinistryBranchInfo.vue';
-import Snackbar from '../common/Snackbar.vue';
-import Spinner from '../common/Spinner.vue';
-import ProjectContactInfo from '../projects/ProjectContactInfo.vue';
-import intakeRiskAssessment from './intakeRisk.vue';
-import ProjectAdditionalContactInfo from '../projects/ProjectAddintionalContactInfo.vue';
-import './intakeform.styl';
+import assign from "object-assign";
+import Vue from "vue";
+import VeeValidate from "vee-validate";
+import { setTimeout } from "timers";
+import IntakeBaseInfo from "./IntakeBaseInfo.vue";
+import MinistryBranchInfo from "../common/MinistryBranchInfo.vue";
+import Snackbar from "../common/Snackbar.vue";
+import Spinner from "../common/Spinner.vue";
+import ProjectContactInfo from "../projects/ProjectContactInfo.vue";
+import intakeRiskAssessment from "./intakeRisk.vue";
+import ProjectAdditionalContactInfo from "../projects/ProjectAddintionalContactInfo.vue";
+import "./intakeform.styl";
 
 Vue.use(VeeValidate);
 
 const INTAKE_FORM_PANELS = {
-  PROJECT_INFO: 'projectInfo',
-  CLIENTS_INFO: 'clientInfo',
-  CONTACTS_INFO: 'contactInfo',
-  RISK_ASSESSMENT: 'intakeRisk',
+  PROJECT_INFO: "projectInfo",
+  CLIENTS_INFO: "clientInfo",
+  CONTACTS_INFO: "contactInfo",
+  RISK_ASSESSMENT: "intakeRisk"
 };
 
 const CLIENT_INFO_TYPES = {
-  CLIENT_LEAD: 'clientlead',
-  CLIENT_SPONSOR: 'clientsponsor',
-  CLIENT_CONTACT: 'clientcontact',
+  CLIENT_LEAD: "clientlead",
+  CLIENT_SPONSOR: "clientsponsor",
+  CLIENT_CONTACT: "clientcontact",
+  CLIENT_FINANCE: "clientfinance"
 };
 
 export default {
@@ -205,10 +224,10 @@ export default {
     ProjectAdditionalContactInfo,
     intakeRiskAssessment,
     Snackbar,
-    Spinner,
+    Spinner
   },
   $_veeValidate: {
-    validator: 'new',
+    validator: "new"
   },
   data() {
     return {
@@ -220,13 +239,13 @@ export default {
       enabled: false,
       ...INTAKE_FORM_PANELS,
       ...CLIENT_INFO_TYPES,
-      e1: 1,
+      e1: 1
     };
   },
   computed: {
     intakeRequest() {
       return this.$store.state.activeIntakeRequest;
-    },
+    }
   },
   methods: {
     fetchData() {
@@ -234,9 +253,9 @@ export default {
       const id = params.id || undefined;
 
       if (!(id === undefined)) {
-        this.$store.dispatch('fetchIntakeRequest', { id: params.id });
+        this.$store.dispatch("fetchIntakeRequest", { id: params.id });
       } else {
-        this.$store.dispatch('clearActiveIntakeRequest');
+        this.$store.dispatch("clearActiveIntakeRequest");
       }
     },
     getRiskAnalysis() {
@@ -244,13 +263,14 @@ export default {
       let applicableQuestion = true;
       for (let i = 0; i < this.$store.state.intakeRiskQuestions.length; i++) {
         if (this.$store.state.intakeRiskQuestions[i].questionNo === 1) {
-          applicableQuestion = this.$store.state.intakeRiskQuestions[i].showStatus;
+          applicableQuestion = this.$store.state.intakeRiskQuestions[i]
+            .showStatus;
         }
 
         riskAnalysis[i] = {
           questionId: this.$store.state.intakeRiskQuestions[i].id,
           answerId: this.$store.state.intakeRiskQuestions[i].selectedAnswerId,
-          applicable: applicableQuestion,
+          applicable: applicableQuestion
         };
       }
       return riskAnalysis;
@@ -258,16 +278,19 @@ export default {
     async submitForm() {
       this.$refs.projectLead.onNextClicked();
       this.$refs.projectSponsor.onNextClicked();
+      this.$refs.projectFinance.onNextClicked();
 
       const formData = assign({}, this.$refs.intakeBaseInfo.form, {
         client: this.$refs.intakeClientInfo.form,
         contacts: [],
-        risk: this.getRiskAnalysis(),
+        risk: this.getRiskAnalysis()
       });
       const projectLead = this.$refs.projectLead.form || undefined;
       const projectSponsor = this.$refs.projectSponsor.form || undefined;
+       const projectFinance = this.$refs.projectFinance.form || undefined;
       let projectContact;
-      if (this.enabled) projectContact = this.$refs.projectContact.form || undefined;
+      if (this.enabled)
+        projectContact = this.$refs.projectContact.form || undefined;
       // Set types - this could be done dynamically later, but definitely out of scope
       // and doing so wouldn't match the user interface that has been approved
       if (projectLead !== undefined) {
@@ -277,13 +300,15 @@ export default {
       if (projectSponsor !== undefined) {
         projectSponsor.contactType = CLIENT_INFO_TYPES.CLIENT_SPONSOR;
       }
-
+      if (projectFinance !== undefined) {
+        projectFinance.contactType = CLIENT_INFO_TYPES.CLIENT_FINANCE;
+      }
       if (projectContact !== undefined) {
         projectContact.contactType = CLIENT_INFO_TYPES.CLIENT_CONTACT;
       }
 
-      const contacts = [projectLead, projectSponsor, projectContact].filter(
-        contact => contact !== undefined,
+      const contacts = [projectLead, projectSponsor,projectFinance, projectContact].filter(
+        contact => contact !== undefined
       );
 
       if (contacts instanceof Array && contacts.length > 0) {
@@ -293,29 +318,37 @@ export default {
       }
 
       if (
-        this.$store.state.projectInformation
-        && this.$store.state.ministryInformation
-        && this.$store.state.contactInformation
-        && this.$store.state.intakeRisk
+        this.$store.state.projectInformation &&
+        this.$store.state.ministryInformation &&
+        this.$store.state.contactInformation &&
+        this.$store.state.intakeRisk
       ) {
         this.$refs.spinner.open();
-        formData.estimatedContractValue = parseFloat(formData.estimatedContractValue);
+        formData.estimatedContractValue = parseFloat(
+          formData.estimatedContractValue
+        );
         formData.mouAmount = parseFloat(formData.mouAmount);
-        this.$store.dispatch('addIntakeRequest', formData).then(
+        this.$store.dispatch("addIntakeRequest", formData).then(
           () => {
-            this.$refs.snackbar.displaySnackbar('success', 'Project Intake Form Submited.');
+            this.$refs.snackbar.displaySnackbar(
+              "success",
+              "Project Intake Form Submited."
+            );
             this.$refs.spinner.close();
-            this.$router.push('intake-success');
+            this.$router.push("intake-success");
           },
-          (err) => {
+          err => {
             this.$refs.spinner.close();
             if (err && err.response && err.response.data) {
               const { message } = err.response.data.error;
-              this.$refs.snackbar.displaySnackbar('error', message);
+              this.$refs.snackbar.displaySnackbar("error", message);
             } else {
-              this.$refs.snackbar.displaySnackbar('error', 'Intake Request Error');
+              this.$refs.snackbar.displaySnackbar(
+                "error",
+                "Intake Request Error"
+              );
             }
-          },
+          }
         );
       }
     },
@@ -324,21 +357,24 @@ export default {
       this.$refs.intakeClientInfo.reset();
       this.$refs.projectLead.reset();
       this.$refs.projectSponsor.reset();
+      this.$refs.projectFinance.reset();
       this.$refs.projectContact.reset();
       this.$refs.intakeRiskAssessment.reset();
     },
     getClientInfo(infoType) {
       const contacts = this.$store.state.activeIntakeRequest.contacts || [];
-      const clientInfo = contacts.find(contact => contact.contactType === infoType);
+      const clientInfo = contacts.find(
+        contact => contact.contactType === infoType
+      );
       return clientInfo;
     },
     clickfnctn(step) {
       this.e1 = step;
-    },
+    }
   },
   created() {
     this.fetchData();
-  },
+  }
 };
 </script>
 
