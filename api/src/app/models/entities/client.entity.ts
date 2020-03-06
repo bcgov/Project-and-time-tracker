@@ -55,5 +55,8 @@ export class Client {
   dateModified: Date;
 
   @Column({ type: 'boolean', nullable: true })
-  isMinistry: boolean;
+  isNonMinistry: boolean;
+
+  @Column({ type: 'text', nullable: true })
+  nonMinistryName: string;
 }

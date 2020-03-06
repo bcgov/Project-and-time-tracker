@@ -1,6 +1,6 @@
 <template>
   <v-layout row wrap py-2 class="custom-project-base-layout">
-    <v-form id="intake-base-info" ref="intakeBaseInfo" v-model="valid" lazy-validation>
+    <v-form id="intake-base-info" ref="intakeBaseInfo" v-model="valid" lazy-validation class="intake-base-info">
       <v-flex md6>
         <div class="v-form-container">
           <v-text-field
@@ -22,10 +22,21 @@
             item-value="id"
             item-text="projectSectorName"
           ></v-select>
+
         </div>
       </v-flex>
-
-      <v-flex md6>
+      <v-flex md6></v-flex>
+          <v-flex md6>
+             <div class="v-form-container">
+               <v-text-field
+            :rules="requiredRule"
+            v-if="form.projectSector.id =='8a00dd55-0818-4ab5-92da-c08f4a22a4e9'"
+            class="required"
+            label="Other Project Sector Name"
+            v-model="form.otherProjectSectorName"
+          ></v-text-field></div>
+          </v-flex>
+      <!-- <v-flex md6>
         <div class="v-form-container">
           <v-select
             :items="projectIntakeService"
@@ -37,9 +48,10 @@
             item-text="ProjectIntakeServiceName"
           ></v-select>
         </div>
-      </v-flex>
+      </v-flex>-->
       <v-flex md6>
-        <div class="v-form-container pl-0">
+        <div class="v-form-container pl-0" style="width: 95%;
+    margin-left: 5%;">
           <v-menu
             v-model="menu1"
             :close-on-content-click="false"
@@ -57,7 +69,7 @@
                 readonly
                 :rules="requiredRule"
                 v-model="form.estimatedCompletionDate"
-                label="Desired Completion Date"
+                label="Desired Date of Completion"
                 persistent-hint
                 prepend-inner-icon="event"
                 @blur="date = parseDate(dateFormatted)"
@@ -73,7 +85,7 @@
           </v-menu>
         </div>
       </v-flex>
-      <v-flex md6>
+      <!-- <v-flex md6>
         <div class="v-form-container">
           <v-select
             :items="projectIntakeCategories"
@@ -85,12 +97,7 @@
             item-text="projectIntakeCategoryName"
           ></v-select>
         </div>
-      </v-flex>
-      <!-- <v-flex md6>
-        <div class="v-form-container">
-          <v-text-field label="Commodity Code" v-model="form.commodityCode"></v-text-field>
-        </div>
-      </v-flex> -->
+      </v-flex>-->
       <v-flex md6>
         <div class="v-form-container">
           <v-text-field
@@ -106,7 +113,7 @@
           ></v-text-field>
         </div>
       </v-flex>
-      <v-flex md6>
+      <!-- <v-flex md6>
         <div class="v-form-container">
           <v-text-field
             prepend-inner-icon="attach_money"
@@ -118,23 +125,24 @@
             v-model="form.mouAmount"
           ></v-text-field>
         </div>
-      </v-flex>
+      </v-flex> -->
       <v-flex md6>
         <div>
           <v-container fluid>
             <label class="v-label theme--light" style="margin-left: 4%;">Reprocurement?</label>
-            <v-radio-group v-model="chkReprocurement" row>
-              <v-radio label="Yes" :value="true"></v-radio>
-              <v-radio label="No" :value="false"></v-radio>
+            <v-radio-group v-model="form.chkReprocurement" row>
+              <v-radio label=" Yes" :value="true" form.chkReprocurement></v-radio>
+              <v-radio label=" No" :value="false" form.chkReprocurement></v-radio>
             </v-radio-group>
           </v-container>
         </div>
       </v-flex>
       <v-flex md6>
-        <div class="v-form-container pl-0">
+        <div class="v-form-container pl-0" style="width: 95%;
+    margin-left: 5%;">
           <v-menu
             v-model="menu2"
-            v-if="chkReprocurement"
+            v-if="form.chkReprocurement"
             :close-on-content-click="false"
             :nudge-right="40"
             lazy
@@ -182,7 +190,7 @@
         <div class="v-form-container">
           <v-textarea
             class="required"
-            v-if="chkReprocurement"
+            v-if="form.chkReprocurement"
             name="project-description"
             label="What is the background from the previous contract?"
             no-resize
@@ -195,7 +203,6 @@
         <div class="v-form-container">
           <v-textarea
             class="required"
-            v-if="chkReprocurement"
             name="project-description"
             label="What is the potential if this project fails?"
             no-resize
@@ -208,7 +215,6 @@
         <div class="v-form-container">
           <v-textarea
             class="required"
-            v-if="chkReprocurement"
             name="project-description"
             label="What does success look like for this project?"
             no-resize
@@ -231,18 +237,18 @@
 </template>
 
 <script>
-import "./intakebaseinfo.styl";
-import ProjectSectorDto from "@/domain/models/ProjectSector.dto";
-import ProjectIntakeCategoryDto from "@/domain/models/ProjectIntakeCategory.dto";
-import ProjectIntakeServicesDto from "@/domain/models/ProjectIntakeServices.dto";
-import ClientDto from "@/domain/models/Client.dto";
+import './intakebaseinfo.styl';
+import ProjectSectorDto from '@/domain/models/ProjectSector.dto';
+import ProjectIntakeCategoryDto from '@/domain/models/ProjectIntakeCategory.dto';
+import ProjectIntakeServicesDto from '@/domain/models/ProjectIntakeServices.dto';
+import ClientDto from '@/domain/models/Client.dto';
 
 export default {
   components: {},
   props: {
     nextPanel: Function,
     panelName: String,
-    project: Object
+    project: Object,
   },
   computed: {
     computedDateFormatted() {
@@ -256,19 +262,20 @@ export default {
     },
     projectIntakeService() {
       return this.$store.state.projectIntakeServices;
-    }
+    },
   },
   data() {
     const form = Object.assign({}, this.$props.project);
+    form.chkReprocurement = false;
     const inputProjectSector = form.projectSector || null;
     if (!inputProjectSector) {
       form.projectSector = new ProjectSectorDto();
     }
-    const inputProjectIntakeCategory = form.projectIntakeCategory || null;
+    const inputProjectIntakeCategory = null;
     if (!inputProjectIntakeCategory) {
       form.projectIntakeCategory = new ProjectIntakeCategoryDto();
     }
-    const inputProjectIntakeServices = form.projectIntakeServices || null;
+    const inputProjectIntakeServices = null;
     if (!inputProjectIntakeServices) {
       form.projectIntakeServices = new ProjectIntakeServicesDto();
     }
@@ -279,15 +286,15 @@ export default {
 
     return {
       valid: true,
-      requiredRule: [v => !!v || "This field required"],
+      requiredRule: [v => !!v || 'This field required'],
       // Initialize using props
       form: { ...form },
-      chkReprocurement: false,
+      // chkReprocurement: false,
       menu1: false,
       menu2: false,
       dateFormatted: undefined,
       projectInformation: this.$store.state.projectInformation,
-      row: null
+      row: null,
     };
   },
   watch: {
@@ -303,32 +310,28 @@ export default {
       if (!inputProjectSector) {
         this.form.projectSector = new ProjectSectorDto();
       }
-      const inputProjectIntakeCategory = form.projectIntakeCategory || null;
-      if (!inputProjectIntakeCategory) {
-        form.projectIntakeCategory = new ProjectIntakeCategoryDto();
-      }
-      const inputProjectIntakeServices = form.projectIntakeServices || null;
-      if (!inputProjectIntakeServices) {
-        form.projectIntakeServices = new ProjectIntakeServicesDto();
-      }
-    }
+    },
   },
   methods: {
     formatDate(date) {
       if (!date) return null;
 
-      const [year, month, day] = date.split("-");
+      const [year, month, day] = date.split('-');
       return `${month}/${day}/${year}`;
     },
     parseDate(date) {
       if (!date) return null;
-      const [month, day, year] = date.split("/");
-      return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+      const [month, day, year] = date.split('/');
+      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
     },
     onNextClicked() {
       if (this.$refs.intakeBaseInfo.validate()) {
-        //this.nextPanel(this.panelName);
-        this.$emit("next");
+        // this.nextPanel(this.panelName);
+        if (!this.form.chkReprocurement) {
+          this.form.dateofReprocurement = undefined;
+          this.form.previousContractBackground = undefined;
+        }
+        this.$emit('next');
         this.$store.state.projectInformation = true;
       }
     },
@@ -336,9 +339,12 @@ export default {
       this.$refs.intakeBaseInfo.reset();
     },
     submitForm() {
+      // if (this.chkReprocurement) {
+      // projectContact = this.$refs.projectContact.form || undefined;
+      // }
       const formData = this.form;
-      this.$store.dispatch("addIntakeRequest", formData);
-    }
-  }
+      this.$store.dispatch('addIntakeRequest', formData);
+    },
+  },
 };
 </script>

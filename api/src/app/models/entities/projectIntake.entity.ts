@@ -80,6 +80,10 @@ export class ProjectIntake {
   @Column({ type: 'text', nullable: true })
   projectSuccess: string;
 
+
+  @Column({ type: 'text', nullable: true })
+  otherProjectSectorName: string;
+
   @ManyToOne(type => MOU)
   mou: MOU;
 }

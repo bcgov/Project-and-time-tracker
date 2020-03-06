@@ -3,6 +3,7 @@ import { IContact } from './i-contact';
 import { IProjectSector } from './i-project-sector';
 import { IProjectIntakeCategory } from './i-project-intake-category';
 import { IProjectIntakeServices } from './i-project-intake-services';
+import { IProjectRiskAnalysis } from './i-project-risk-analysis';
 import { IntakeStatus } from '../entities/projectIntake.entity';
 
 export interface IProjectIntake {
@@ -12,6 +13,7 @@ export interface IProjectIntake {
   projectSector: IProjectSector;
   projectIntakeCategory: IProjectIntakeCategory;
   projectIntakeServices: IProjectIntakeServices;
+  risk: IProjectRiskAnalysis[];
   commodityCode: string;
   estimatedCompletionDate: Date;
   estimatedContractValue: number;
@@ -27,4 +29,5 @@ export interface IProjectIntake {
   projectSuccess: string;
   riskScore: number;
   riskLevel: number;
+  otherProjectSectorName: string;
 }

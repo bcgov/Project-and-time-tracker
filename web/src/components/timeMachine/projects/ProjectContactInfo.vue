@@ -52,15 +52,7 @@
           ></v-text-field>
         </div>
       </v-flex>
-       <v-flex xs12>
-        <div class="v-form-container">
-          <div class="v-form-actions">
-            <v-flex md-12 mt-4>
-              <v-btn :disabled="!valid" color="primary" @click="onNextClicked">Next</v-btn>
-            </v-flex>
-          </div>
-        </div>
-      </v-flex>
+     
     </v-form>
   </v-layout>
 </template>
@@ -113,9 +105,15 @@ export default {
     } },
   methods: {
     onNextClicked() {
-      if (this.$refs.projectContact.validate()) this.$store.state.contactInformation = true;
-      else this.$store.state.contactInformation = false;
-      this.$emit('next');
+      if (this.$refs.projectContact.validate())
+      { 
+      this.$store.state.contactInformation = true;
+         // this.$emit('next');
+      }
+      else {
+         this.$store.state.contactInformation = false;
+      }
+      return this.$store.state.contactInformation;
     },
     reset() {
       this.$refs.projectContact.reset();
