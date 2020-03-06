@@ -1,6 +1,6 @@
 <template>
 <div class="review-submit">
-  <v-expansion-panel value="0">
+  <v-expansion-panel v-bind:value="0">
     <v-expansion-panel-content>
       <template v-slot:header>
         <div class="panel-header">Project Information</div>
@@ -88,15 +88,15 @@
         <v-card-text class="pl-4">
           <v-flex sm12><h3>Client Lead</h3></v-flex>
           <v-flex sm12><h4>Name</h4></v-flex>
-          <v-flex sm12>{{ $props.intakeValues.contacts.fullName }}</v-flex>
+          <v-flex sm12><span v-if="$props.intakeValues.contacts">{{ $props.intakeValues.contacts.fullName }}</span></v-flex>
           <v-flex sm12><h4>Email</h4></v-flex>
-          <v-flex sm12>{{ $props.intakeValues.contacts.email }}</v-flex>
+          <v-flex sm12><span v-if="$props.intakeValues.contacts">{{ $props.intakeValues.contacts.email }}</span></v-flex>
           <v-flex sm12><h4>Organization</h4></v-flex>
-          <v-flex sm12>{{ $props.intakeValues.contacts.orgName }}</v-flex>
+          <v-flex sm12><span v-if="$props.intakeValues.contacts">{{ $props.intakeValues.contacts.orgName }}</span></v-flex>
           <v-flex sm12><h4>Position Title</h4></v-flex>
-          <v-flex sm12>{{ $props.intakeValues.contacts.orgPosition }}</v-flex>
+          <v-flex sm12><span v-if="$props.intakeValues.contacts">{{ $props.intakeValues.contacts.orgPosition }}</span></v-flex>
           <v-flex sm12><h4>Phone Number</h4></v-flex>
-          <v-flex sm12>{{ $props.intakeValues.contacts.phoneNumber }}</v-flex>
+          <v-flex sm12><span v-if="$props.intakeValues.contacts">{{ $props.intakeValues.contacts.phoneNumber }}</span></v-flex>
         </v-card-text>
       </v-card>
     </v-expansion-panel-content>
