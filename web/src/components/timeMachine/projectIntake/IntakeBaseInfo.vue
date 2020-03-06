@@ -1,6 +1,6 @@
 <template>
   <v-layout row wrap py-2 class="custom-project-base-layout">
-    <v-form id="intake-base-info" ref="intakeBaseInfo" v-model="valid" lazy-validation>
+    <v-form id="intake-base-info" ref="intakeBaseInfo" v-model="valid" lazy-validation class="intake-base-info">
       <v-flex md6>
         <div class="v-form-container">
           <v-text-field
@@ -22,7 +22,7 @@
             item-value="id"
             item-text="projectSectorName"
           ></v-select>
-           
+
         </div>
       </v-flex>
       <v-flex md6></v-flex>
@@ -131,8 +131,8 @@
           <v-container fluid>
             <label class="v-label theme--light" style="margin-left: 4%;">Reprocurement?</label>
             <v-radio-group v-model="form.chkReprocurement" row>
-              <v-radio label="Yes" :value="true"></v-radio>
-              <v-radio label="No" :value="false"></v-radio>
+              <v-radio label=" Yes" :value="true" form.chkReprocurement></v-radio>
+              <v-radio label=" No" :value="false" form.chkReprocurement></v-radio>
             </v-radio-group>
           </v-container>
         </div>
@@ -237,18 +237,18 @@
 </template>
 
 <script>
-import "./intakebaseinfo.styl";
-import ProjectSectorDto from "@/domain/models/ProjectSector.dto";
-import ProjectIntakeCategoryDto from "@/domain/models/ProjectIntakeCategory.dto";
-import ProjectIntakeServicesDto from "@/domain/models/ProjectIntakeServices.dto";
-import ClientDto from "@/domain/models/Client.dto";
+import './intakebaseinfo.styl';
+import ProjectSectorDto from '@/domain/models/ProjectSector.dto';
+import ProjectIntakeCategoryDto from '@/domain/models/ProjectIntakeCategory.dto';
+import ProjectIntakeServicesDto from '@/domain/models/ProjectIntakeServices.dto';
+import ClientDto from '@/domain/models/Client.dto';
 
 export default {
   components: {},
   props: {
     nextPanel: Function,
     panelName: String,
-    project: Object
+    project: Object,
   },
   computed: {
     computedDateFormatted() {
@@ -262,7 +262,7 @@ export default {
     },
     projectIntakeService() {
       return this.$store.state.projectIntakeServices;
-    }
+    },
   },
   data() {
     const form = Object.assign({}, this.$props.project);
@@ -270,11 +270,11 @@ export default {
     if (!inputProjectSector) {
       form.projectSector = new ProjectSectorDto();
     }
-    const inputProjectIntakeCategory = form.projectIntakeCategory || null;
+    const inputProjectIntakeCategory = null;
     if (!inputProjectIntakeCategory) {
       form.projectIntakeCategory = new ProjectIntakeCategoryDto();
     }
-    const inputProjectIntakeServices = form.projectIntakeServices || null;
+    const inputProjectIntakeServices = null;
     if (!inputProjectIntakeServices) {
       form.projectIntakeServices = new ProjectIntakeServicesDto();
     }
@@ -285,15 +285,15 @@ export default {
 
     return {
       valid: true,
-      requiredRule: [v => !!v || "This field required"],
+      requiredRule: [v => !!v || 'This field required'],
       // Initialize using props
       form: { ...form },
-      //chkReprocurement: false,
+      // chkReprocurement: false,
       menu1: false,
       menu2: false,
       dateFormatted: undefined,
       projectInformation: this.$store.state.projectInformation,
-      row: null
+      row: null,
     };
   },
   watch: {
@@ -317,28 +317,28 @@ export default {
       if (!inputProjectIntakeServices) {
         form.projectIntakeServices = new ProjectIntakeServicesDto();
       }
-    }
+    },
   },
   methods: {
     formatDate(date) {
       if (!date) return null;
 
-      const [year, month, day] = date.split("-");
+      const [year, month, day] = date.split('-');
       return `${month}/${day}/${year}`;
     },
     parseDate(date) {
       if (!date) return null;
-      const [month, day, year] = date.split("/");
-      return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+      const [month, day, year] = date.split('/');
+      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
     },
     onNextClicked() {
       if (this.$refs.intakeBaseInfo.validate()) {
-        //this.nextPanel(this.panelName);
-          if(!this.form.chkReprocurement){
-            this.form.dateofReprocurement= undefined;
-            this.form.previousContractBackground = undefined;
-          }
-        this.$emit("next");
+        // this.nextPanel(this.panelName);
+        if (!this.form.chkReprocurement) {
+          this.form.dateofReprocurement = undefined;
+          this.form.previousContractBackground = undefined;
+        }
+        this.$emit('next');
         this.$store.state.projectInformation = true;
       }
     },
@@ -347,11 +347,11 @@ export default {
     },
     submitForm() {
       // if (this.chkReprocurement) {
-       // projectContact = this.$refs.projectContact.form || undefined;
-      //}
+      // projectContact = this.$refs.projectContact.form || undefined;
+      // }
       const formData = this.form;
-      this.$store.dispatch("addIntakeRequest", formData);
-    }
-  }
+      this.$store.dispatch('addIntakeRequest', formData);
+    },
+  },
 };
 </script>

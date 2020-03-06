@@ -14,7 +14,7 @@
             item-text="ministryName"
           ></v-select>
             <v-container fluid row wrap align-start justify-end fill-height style="padding:0px !important">
-          <label class="v-label theme--light" style="margin-left: 2%;">NonMinistry</label>
+          <label class="v-label theme--light" style="margin-left: 2%;">Non-Ministry</label>
           <v-checkbox v-model="form.isNonMinistry"></v-checkbox>
             <v-text-field
             :rules="requiredRule"
@@ -25,9 +25,9 @@
           ></v-text-field>
         </v-container>
         </div>
-        
+
         <div class="v-form-container">
-        
+
         </div>
       </v-flex>
       <v-flex sm6>
@@ -41,7 +41,7 @@
         </div>
       </v-flex>
       <v-flex sm6>
-      
+
       </v-flex>
       <v-flex xs12>
         <h3 class="finance-header" style="margin-left: 3%;">Address Information</h3>
@@ -66,29 +66,29 @@
 </template>
 
 <script>
-import ProjectFinanceInfo from "../projects/ProjectFinanceInfo.vue";
-import GenericContactInfo from "./GenericContactInfo.vue";
+import MinistryDto from '@/domain/models/Ministry.dto';
+import ProjectFinanceInfo from '../projects/ProjectFinanceInfo.vue';
+import GenericContactInfo from './GenericContactInfo.vue';
 
-import MinistryDto from "@/domain/models/Ministry.dto";
 
 export default {
   components: {
     ProjectFinanceInfo,
-    GenericContactInfo
+    GenericContactInfo,
   },
   props: {
     nextPanel: Function,
     panelName: String,
-    ministry: Object
+    ministry: Object,
   },
   computed: {
     ministries() {
       return this.$store.state.ministries;
-    }
+    },
   },
   data() {
     const form = Object.assign({}, this.$props.ministry);
-
+    form.chkReprocurement = false;
     const inputMinistry = form.ministry || null;
     if (!inputMinistry) {
       form.ministry = new MinistryDto();
@@ -96,9 +96,9 @@ export default {
 
     return {
       valid: true,
-      requiredRule: [v => !!v || "This field required"],
+      requiredRule: [v => !!v || 'This field required'],
       form: { ...form },
-      ministryInformation: this.$store.state.ministryInformation
+      ministryInformation: this.$store.state.ministryInformation,
     };
   },
   watch: {
@@ -112,25 +112,24 @@ export default {
       if (!inputMinistry) {
         this.form.ministry = new MinistryDto();
       }
-    }
+    },
   },
   methods: {
     onNextClicked() {
       if (this.$refs.intakeClientInfo.validate()) {
-        //this.nextPanel(this.panelName);
-        if(this.form.isNonMinistry){
-            this.form.ministry= undefined;
-          } else {
-            this.form.NonMinistryName = undefined;
-          }
-          console.log(this.form);
-        this.$emit("next");
+        // this.nextPanel(this.panelName);
+        if (this.form.isNonMinistry) {
+          this.form.ministry = undefined;
+        } else {
+          this.form.NonMinistryName = undefined;
+        }
+        this.$emit('next');
         this.$store.state.ministryInformation = true;
       }
     },
     reset() {
       this.$refs.intakeClientInfo.reset();
-    }
-  }
+    },
+  },
 };
 </script>
