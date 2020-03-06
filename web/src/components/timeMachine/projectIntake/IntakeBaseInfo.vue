@@ -266,6 +266,7 @@ export default {
   },
   data() {
     const form = Object.assign({}, this.$props.project);
+    form.chkReprocurement = false;
     const inputProjectSector = form.projectSector || null;
     if (!inputProjectSector) {
       form.projectSector = new ProjectSectorDto();
@@ -308,14 +309,6 @@ export default {
       const inputProjectSector = this.form.projectSector || null;
       if (!inputProjectSector) {
         this.form.projectSector = new ProjectSectorDto();
-      }
-      const inputProjectIntakeCategory = form.projectIntakeCategory || null;
-      if (!inputProjectIntakeCategory) {
-        form.projectIntakeCategory = new ProjectIntakeCategoryDto();
-      }
-      const inputProjectIntakeServices = form.projectIntakeServices || null;
-      if (!inputProjectIntakeServices) {
-        form.projectIntakeServices = new ProjectIntakeServicesDto();
       }
     },
   },

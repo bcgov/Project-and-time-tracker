@@ -88,7 +88,6 @@ export default {
   },
   data() {
     const form = Object.assign({}, this.$props.ministry);
-    form.chkReprocurement = false;
     const inputMinistry = form.ministry || null;
     if (!inputMinistry) {
       form.ministry = new MinistryDto();
