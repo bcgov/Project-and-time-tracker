@@ -219,8 +219,12 @@ const store = new Vuex.Store({
     addIntakeRequest(state, data) {
       state.activeIntakeRequest = IntakeRequestDto.constructFromObject(data);
     },
-    updateIntakeRequest() {
-      throw new Error('Not implemented!');
+    updateIntakeRequest(state, data) {
+      // console.log('mutation.updateIntakeRequest', state.intakeRequests)
+      // update only the correct record, use filter or something?
+      // console.log('state.intakeRequests')
+
+      // throw new Error('Not implemented!');
     },
     deleteIntakeRequest() {
       throw new Error('Not implemented!');
@@ -684,13 +688,16 @@ const store = new Vuex.Store({
         .catch(err => Promise.reject(err));
       return Promise.resolve(api);
     },
-    updateIntakeRequest(ctx, req) {
-      $http
-        .patch(`${API_URI}/intake/${req.id}`)
+    async updateIntakeRequest(ctx, req) {
+      const api = $http
+        .patch(`${API_URI}/intake/${req.id}`, req)
         .then((res) => {
           const content = res.data;
           ctx.commit('updateIntakeRequest', content);
-        });
+          return Promise.resolve(content);
+        })
+        .catch(err => Promise.reject(err));
+      return Promise.resolve(api);
     },
     async deleteIntakeRequest(ctx, req) {
       try {
