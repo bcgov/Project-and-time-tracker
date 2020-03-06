@@ -1,5 +1,6 @@
 <template>
-  <v-expansion-panel class="review-submit">
+<div class="review-submit">
+  <v-expansion-panel value="0">
     <v-expansion-panel-content>
       <template v-slot:header>
         <div class="panel-header">Project Information</div>
@@ -100,6 +101,7 @@
       </v-card>
     </v-expansion-panel-content>
   </v-expansion-panel>
+  </div>
 </template>
 <script>
 import './intakeRisk.styl';
