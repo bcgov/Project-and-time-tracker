@@ -87,7 +87,7 @@ export const retrieveProjects = async () => {
       'p.backupUserId',
       'p.mouAmount'
     ])
-    .where('p.is_archived = :is_archived', {is_archived : false})
+    .where('p.is_archived IS NULL OR p.is_archived = :is_archived', {is_archived : false})
     .getMany();
 };
 

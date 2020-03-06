@@ -16,7 +16,6 @@ import { authorize } from '../../../services/common/authorize.service';
 export const getProjects = async (ctx: Koa.Context) => {
   try {
     const auth = ctx.state.auth as IAuth;
-
     if (auth.role === Role.PSB_Admin) {
       ctx.body = await retrieveProjects();
     } else if (auth.role === Role.PSB_User) {
@@ -92,6 +91,17 @@ export const updateProjectAction = async (ctx: Koa.Context) => {
     ctx.throw(err.message);
   }
 };
+
+export const archiveProjectAction = async (ctx: Koa.Context) => {
+  try {
+    await updateProject(ctx.params.id, {is_archived: ctx.request.body.is_archived});
+    ctx.body = 'success';
+  } catch (err) {
+    ctx.throw(err.message);
+  }
+};
+
+
 
 export const assignLeadAction = async (ctx: Koa.Context) => {
   try {
@@ -173,9 +183,11 @@ const routerOpts: Router.IRouterOptions = {
 const router: Router = new Router(routerOpts);
 
 router.get('/', authorize, getProjects);
-// router.get('/archived', authorize, getArchivedProjects);
+router.get('/archived', authorize, getArchivedProjects);
 router.get('/:id', authorize, getProjectById);
 router.patch('/:id', authorize, updateProjectAction);
+router.patch('/:id/archive', authorize, archiveProjectAction);
+
 // router.delete('/:id', deleteProjectAction); TODO: Implement in the 2nd phase of development.
 router.post('/:id/assign-lead', authorize, assignLeadAction);
 router.post('/:id/assign-backup', authorize, assignBackupAction);
