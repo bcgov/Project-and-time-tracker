@@ -151,21 +151,25 @@
                       </v-flex>
                     </v-layout>
                     <v-layout>
-                        <v-flex xs12>
-        <div class="v-form-container">
-          <div class="v-form-actions">
-            <v-flex md-12 mt-4>
-              <v-btn :disabled="
+                      <v-flex xs12>
+                        <div class="v-form-container">
+                          <div class="v-form-actions">
+                            <v-flex md-12 mt-4>
+                              <v-btn
+                                :disabled="
                                   !(
                                     $store.state.projectInformation &&
                                     $store.state.ministryInformation &&
                                     this.$store.state.intakeRiskQuestions
                                   )
-                                " color="primary" @click="clickfnctn(5)">Next</v-btn>
-            </v-flex>
-          </div>
-        </div>
-      </v-flex>
+                                "
+                                color="primary"
+                                @click="clickfnctn(5)"
+                              >Next</v-btn>
+                            </v-flex>
+                          </div>
+                        </div>
+                      </v-flex>
                       <v-flex xs12 py-2>
                         <div class="v-form-container">
                           <div class="v-form-actions">
@@ -193,7 +197,9 @@
               </v-card>
             </v-stepper-content>
             <v-stepper-content step="5">
-              <v-card class="mb-12" color="grey lighten-1" height="200px"></v-card>
+              <v-card class="mb-12" color="grey lighten-1" height="200px">
+                <intake-review ref="intakeReview" :intakeValues="reviewSubmit"></intake-review>
+              </v-card>
             </v-stepper-content>
           </v-stepper-items>
         </v-stepper>
@@ -213,6 +219,7 @@ import Spinner from '../common/Spinner.vue';
 import ProjectContactInfo from '../projects/ProjectContactInfo.vue';
 import intakeRiskAssessment from './intakeRisk.vue';
 import ProjectAdditionalContactInfo from '../projects/ProjectAddintionalContactInfo.vue';
+import intakeReview from './IntakeReviewSubmit.vue';
 import './intakeform.styl';
 
 Vue.use(VeeValidate);
@@ -238,6 +245,7 @@ export default {
     ProjectContactInfo,
     ProjectAdditionalContactInfo,
     intakeRiskAssessment,
+    intakeReview,
     Snackbar,
     Spinner,
   },
@@ -255,6 +263,7 @@ export default {
       ...INTAKE_FORM_PANELS,
       ...CLIENT_INFO_TYPES,
       e1: 1,
+      reviewSubmit: [],
     };
   },
   computed: {
@@ -281,9 +290,16 @@ export default {
       for (let i = 0; i < this.$store.state.intakeRiskQuestions.length; i++) {
         scoreValue = 0;
         const question = this.$store.state.intakeRiskQuestions[i];
-        if (typeof question.selectedAnswerId !== 'undefined' || question.selectedAnswerId) {
-          const selectedAnswer = question.answer.filter(answer => answer.id === question.selectedAnswerId);
-          if (selectedAnswer && selectedAnswer[0]) { scoreValue = selectedAnswer[0].score; }
+        if (
+          typeof question.selectedAnswerId !== 'undefined'
+          || question.selectedAnswerId
+        ) {
+          const selectedAnswer = question.answer.filter(
+            answer => answer.id === question.selectedAnswerId,
+          );
+          if (selectedAnswer && selectedAnswer[0]) {
+            scoreValue = selectedAnswer[0].score;
+          }
           if (question.questionNo === 1) {
             applicableQuestion = question.showStatus;
             riskAnalysis[riskAnalysisIndex] = {
@@ -321,7 +337,9 @@ export default {
       const projectSponsor = this.$refs.projectSponsor.form || undefined;
       const projectFinance = this.$refs.projectFinance.form || undefined;
       let projectContact;
-      if (this.enabled) { projectContact = this.$refs.projectContact.form || undefined; }
+      if (this.enabled) {
+        projectContact = this.$refs.projectContact.form || undefined;
+      }
       // Set types - this could be done dynamically later, but definitely out of scope
       // and doing so wouldn't match the user interface that has been approved
       if (projectLead !== undefined) {
@@ -338,9 +356,12 @@ export default {
         projectContact.contactType = CLIENT_INFO_TYPES.CLIENT_CONTACT;
       }
 
-      const contacts = [projectLead, projectSponsor, projectFinance, projectContact].filter(
-        contact => contact !== undefined,
-      );
+      const contacts = [
+        projectLead,
+        projectSponsor,
+        projectFinance,
+        projectContact,
+      ].filter(contact => contact !== undefined);
 
       if (contacts instanceof Array && contacts.length > 0) {
         if (formData.contacts instanceof Array) {
@@ -401,6 +422,69 @@ export default {
     },
     clickfnctn(step) {
       this.e1 = step;
+      if (step === 5) {
+        this.$refs.projectLead.onNextClicked();
+        this.$refs.projectSponsor.onNextClicked();
+        this.$refs.projectFinance.onNextClicked();
+
+        const riskAnalysis = this.getRiskAnalysis();
+        const scoreSum = riskAnalysis.map(o => o.score).reduce((a, c) => a + c);
+        const formData = assign({}, this.$refs.intakeBaseInfo.form, {
+          client: this.$refs.intakeClientInfo.form,
+          contacts: [],
+          risk: riskAnalysis,
+          riskScore: scoreSum,
+        });
+        const projectLead = this.$refs.projectLead.form || undefined;
+        const projectSponsor = this.$refs.projectSponsor.form || undefined;
+        const projectFinance = this.$refs.projectFinance.form || undefined;
+        let projectContact;
+        if (this.enabled) {
+          projectContact = this.$refs.projectContact.form || undefined;
+        }
+        // Set types - this could be done dynamically later, but definitely out of scope
+        // and doing so wouldn't match the user interface that has been approved
+        if (projectLead !== undefined) {
+          projectLead.contactType = CLIENT_INFO_TYPES.CLIENT_LEAD;
+        }
+
+        if (projectSponsor !== undefined) {
+          projectSponsor.contactType = CLIENT_INFO_TYPES.CLIENT_SPONSOR;
+        }
+        if (projectFinance !== undefined) {
+          projectFinance.contactType = CLIENT_INFO_TYPES.CLIENT_FINANCE;
+        }
+        if (projectContact !== undefined) {
+          projectContact.contactType = CLIENT_INFO_TYPES.CLIENT_CONTACT;
+        }
+
+        const contacts = [
+          projectLead,
+          projectSponsor,
+          projectFinance,
+          projectContact,
+        ].filter(contact => contact !== undefined);
+
+        if (contacts instanceof Array && contacts.length > 0) {
+          if (formData.contacts instanceof Array) {
+            formData.contacts = formData.contacts.concat(contacts);
+          }
+        }
+
+        if (
+          this.$store.state.projectInformation
+          && this.$store.state.ministryInformation
+          && this.$store.state.contactInformation
+          && this.$store.state.intakeRisk
+        ) {
+          this.$refs.spinner.open();
+          formData.estimatedContractValue = parseFloat(
+            formData.estimatedContractValue,
+          );
+          formData.mouAmount = parseFloat(q.mouAmount);
+          this.reviewSubmit = formData;
+        }
+      }
     },
   },
   created() {

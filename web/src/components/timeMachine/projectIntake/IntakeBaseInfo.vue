@@ -22,10 +22,21 @@
             item-value="id"
             item-text="projectSectorName"
           ></v-select>
+           
         </div>
       </v-flex>
-
-      <v-flex md6>
+      <v-flex md6></v-flex>
+          <v-flex md6>
+             <div class="v-form-container">
+               <v-text-field
+            :rules="requiredRule"
+            v-if="form.projectSector.id =='8a00dd55-0818-4ab5-92da-c08f4a22a4e9'"
+            class="required"
+            label="Other Project Sector Name"
+            v-model="form.otherProjectSectorName"
+          ></v-text-field></div>
+          </v-flex>
+      <!-- <v-flex md6>
         <div class="v-form-container">
           <v-select
             :items="projectIntakeService"
@@ -37,9 +48,10 @@
             item-text="ProjectIntakeServiceName"
           ></v-select>
         </div>
-      </v-flex>
+      </v-flex>-->
       <v-flex md6>
-        <div class="v-form-container pl-0">
+        <div class="v-form-container pl-0" style="width: 95%;
+    margin-left: 5%;">
           <v-menu
             v-model="menu1"
             :close-on-content-click="false"
@@ -57,7 +69,7 @@
                 readonly
                 :rules="requiredRule"
                 v-model="form.estimatedCompletionDate"
-                label="Desired Completion Date"
+                label="Desired Date of Completion"
                 persistent-hint
                 prepend-inner-icon="event"
                 @blur="date = parseDate(dateFormatted)"
@@ -73,7 +85,7 @@
           </v-menu>
         </div>
       </v-flex>
-      <v-flex md6>
+      <!-- <v-flex md6>
         <div class="v-form-container">
           <v-select
             :items="projectIntakeCategories"
@@ -85,12 +97,7 @@
             item-text="projectIntakeCategoryName"
           ></v-select>
         </div>
-      </v-flex>
-      <v-flex md6>
-        <div class="v-form-container">
-          <v-text-field label="Commodity Code" v-model="form.commodityCode"></v-text-field>
-        </div>
-      </v-flex>
+      </v-flex>-->
       <v-flex md6>
         <div class="v-form-container">
           <v-text-field
@@ -106,7 +113,7 @@
           ></v-text-field>
         </div>
       </v-flex>
-      <v-flex md6>
+      <!-- <v-flex md6>
         <div class="v-form-container">
           <v-text-field
             prepend-inner-icon="attach_money"
@@ -118,7 +125,7 @@
             v-model="form.mouAmount"
           ></v-text-field>
         </div>
-      </v-flex>
+      </v-flex> -->
       <v-flex md6>
         <div>
           <v-container fluid>
@@ -131,7 +138,8 @@
         </div>
       </v-flex>
       <v-flex md6>
-        <div class="v-form-container pl-0">
+        <div class="v-form-container pl-0" style="width: 95%;
+    margin-left: 5%;">
           <v-menu
             v-model="menu2"
             v-if="chkReprocurement"
@@ -195,7 +203,6 @@
         <div class="v-form-container">
           <v-textarea
             class="required"
-            v-if="chkReprocurement"
             name="project-description"
             label="What is the potential if this project fails?"
             no-resize
@@ -208,7 +215,6 @@
         <div class="v-form-container">
           <v-textarea
             class="required"
-            v-if="chkReprocurement"
             name="project-description"
             label="What does success look like for this project?"
             no-resize
@@ -336,6 +342,9 @@ export default {
       this.$refs.intakeBaseInfo.reset();
     },
     submitForm() {
+      if (this.chkReprocurement) {
+        projectContact = this.$refs.projectContact.form || undefined;
+      }
       const formData = this.form;
       this.$store.dispatch("addIntakeRequest", formData);
     }
