@@ -18,7 +18,7 @@
           disable-initial-sort
         >
           <template slot="items" slot-scope="props">
-            <td v-bind:class="text-xs-left">{{ props.item.mouAmount }} </td>
+            <td class="text-xs-left">{{ props.item.mouAmount }} </td>
             <td v-bind:class="{ 'archived': props.item.is_archived}">{{ props.item.projectName }}</td>
             <td class="text-xs-left">{{ props.item.projectName }}</td>
             <td class="text-xs-left">{{ [props.item.client.ministry.ministryName, props.item.orgDivision].join(" ") }}</td>
@@ -98,7 +98,7 @@ export default {
     getProjectBackup(projectBackupId) {
       this.selectedProjectBackup = projectBackupId;
     },
-    
+
     async deleteProject() {
       if (await this.$refs.confirm.open('danger', '')) {
         // yes

@@ -18,9 +18,9 @@
           disable-initial-sort
         >
           <template slot="items" slot-scope="props">
-            <td v-bind:class="text-xs-left">{{ props.item.mouAmount }} </td>
+            <td class="text-xs-left">{{ props.item.mouAmount }} </td>
             <td v-bind:class="{ 'archived': props.item.is_archived}">{{ props.item.projectName }}</td>
-            <td v-bind:class="text-xs-left">{{ props.item.projectName}} </td>
+            <td class="text-xs-left">{{ props.item.projectName}} </td>
             <td class="text-xs-left">{{ [props.item.client.ministry.ministryName, props.item.orgDivision].join(" ") }}</td>
             <td class="text-xs-left table-dropdown">
               <v-select
@@ -53,19 +53,16 @@
             <td class="text-xs-left">{{ props.item.completionDate }}</td>
             <td class="text-xs-left">{{ props.item.dateModified }}</td>
             <td class="text-xs-center">
-                <v-btn flat icon color="blue" @click="editProject(props.item.id)">
+
+               <v-btn flat icon color="grey" @click="editProject(props.item.id)">
                 <v-icon>edit</v-icon>
+              </v-btn>
+              <v-btn flat icon color="grey" v-if="!props.item.is_archived" @click="archivePrompt(props.item, true)">
+                  <v-icon >archive</v-icon>
                 </v-btn>
-                <td v-if="!props.item.is_archived" @click="archivePrompt(props.item, true)">
-                <v-btn flat color="blue">
-                <v-icon>archive</v-icon>
-                Archive
-                </v-btn>
-                </td>
-                <td v-else @click="archivePrompt(props.item, false)">
-                <v-btn flat>
-                Archived
-                </v-btn>
+              <v-btn flat v-else @click="archivePrompt(props.item, false)">>
+              Archived
+              </v-btn>
             </td>
 
             </template>
