@@ -12,6 +12,7 @@ export const retrieveIntakes = async () => {
     .createQueryBuilder('i')
     .innerJoin('i.client', 'c')
     .innerJoin('c.ministry', 'm')
+    .innerJoin('i.mou', 'd')
     .leftJoin('project', 'p', 'p.id = i.projectId')
     .orderBy('i.dateModified', 'DESC')
     .select([
@@ -29,6 +30,7 @@ export const retrieveIntakes = async () => {
       'i.previousContractBackground AS "previousContractBackground"',
       'i.projectFailImpact AS "projectFailImpact"',
       'i.projectSuccess AS "projectSuccess"',
+      'd.name AS "mouName"',
       'i.isMinistry AS "isMinistry"'
     ])
     .getRawMany();

@@ -19,11 +19,12 @@
         >
           <template slot="items" slot-scope="props">
             <td class='pl-3'>
-              <v-btn color="btnPrimary"
+              <v-btn v-if='!props.item.mouName'  color="btnPrimary"
                 class="white--text intake-table-approve-btn ma-0"
                 @click.native='showMOUModal(props.item)'>
                   ASSIGN MOU
                </v-btn>
+               <span v-else>{{ props.item.mouName }}</span>
             </td>
             <td>{{ props.item.projectName }}</td>
             <td
@@ -350,42 +351,18 @@ export default {
 
       if (!this.mou || this.mou === '') return;
       console.log('assignMOU', {project: this.mouProject, mou: this.mou})
-
-
       let mouID = this.mou.id;
 
-
-      // console.log('mouID check', {check: !mouID, mouID})
+      // Create MOU if does not exist.
       if (!mouID && this.mou){
-        // Need to create new record in DB
-        console.log('no MOU id, submitting new one', {name: this.mou});
         mouID = await this.$store.dispatch('createMOU', {name: this.mou});
-        console.log('createMOU response', {mouID})
-
       }
 
       const project = this.mouProject;
-
-      // console.log('final MOUID', {mouID})
-      project.mouID = mouID
-
-
-      // need
-        // FULL PROJECT
-        // mou ID
+      project.mou = {id: mouID, name: this.mou}
+      const projResponse = await this.$store.dispatch('updateIntakeRequest', project);
+      console.log('assignMOU projResponse', {projResponse});
     }
-    // async createMOU(){
-    //   console.log('create MOU', this.mouProjectName);
-    //   const body = {
-    //     name: this.mouName
-    //   }
-    //   this.$store.dispatch('createMOU', body);
-
-    //   // TODO - ASSIGN MOU
-
-    //   //
-    //   console.log('createMOU', body)
-    // }
   },
   created() {
     this.fetchData();
