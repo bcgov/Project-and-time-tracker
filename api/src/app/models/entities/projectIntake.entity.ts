@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { Client } from './client.entity';
 import { ProjectSector } from './projectSector.entity';
+import { MOU } from './mou.entity';
 
 @Entity()
 export class ProjectIntake {
@@ -78,6 +79,9 @@ export class ProjectIntake {
 
   @Column({ type: 'text', nullable: true })
   projectSuccess: string;
+
+  @ManyToOne(type => MOU)
+  mou: MOU;
 }
 
 export type IntakeStatus = 'submitted' | 'approved' | 'rejected';
