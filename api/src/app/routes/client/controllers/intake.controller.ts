@@ -185,7 +185,7 @@ const validateIntakeForm = (intake: IProjectIntake) => {
     }
     // Business validation: End.
 
-    if (!(client.ministry && client.ministry.id)) {
+    if (!(client.ministry && client.ministry.id) && !client.isNonMinistry) {
       validationErrors.push('Ministry is required.');
     }
 
