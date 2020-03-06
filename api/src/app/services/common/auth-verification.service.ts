@@ -139,7 +139,6 @@ export const retrieveKeycloakUsersByRole = async (role: string, token: string) =
 
 const verifyAndCreateOrUpdateUser = async (authData: IAuth, data: any) => {
   const user = await retrieveUserByReferenceId(data.sub);
-  console.log('verifyAndCreateOrUpdateUser called.')
   if (!user) {
     console.log('ARC - User does not exist, creating contact with nam: ', authData.fullName)
     const contact: any = await createContact(<IContact> {

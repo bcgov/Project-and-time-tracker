@@ -39,6 +39,7 @@ const commonForPSBAdminAndUser = [
   'GET/project/',
   'GET/project/:id',
   'PATCH/project/:id',
+  'PATCH/project/:id/archive',
   'GET/project-rfx/:id/by-project-id',
   'POST/project-rfx/',
   'PATCH/project-rfx/:id',
