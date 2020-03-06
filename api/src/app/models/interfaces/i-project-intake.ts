@@ -29,4 +29,5 @@ export interface IProjectIntake {
   projectSuccess: string;
   riskScore: number;
   riskLevel: number;
+  otherProjectSectorName: string;
 }

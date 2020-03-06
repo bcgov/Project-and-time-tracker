@@ -29,7 +29,8 @@ export const retrieveIntakes = async () => {
       'i.previousContractBackground AS "previousContractBackground"',
       'i.projectFailImpact AS "projectFailImpact"',
       'i.projectSuccess AS "projectSuccess"',
-      'c.isMinistry AS "isMinistry"'
+      'c.isNonMinistry AS "isNonMinistry"',
+      'c.nonMinistryName AS "nonMinistryName"'
     ])
     .getRawMany();
 };

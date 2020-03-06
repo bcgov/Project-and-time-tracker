@@ -216,7 +216,7 @@ const validateIntakeForm = (intake: IProjectIntake) => {
     validationErrors.push('Estimated Value of Completion is required.');
   }
 
-  if (!intake.previousContractBackground) {
+  if (!intake.previousContractBackground && intake.isReprocurement) {
     validationErrors.push('Background from the previous contract is required.');
   }
   if (!intake.projectFailImpact) {
@@ -228,12 +228,8 @@ const validateIntakeForm = (intake: IProjectIntake) => {
     validationErrors.push('success look like for this project is required.');
   }
 
-  if (!intake.dateOfReprocurement) {
+  if (!intake.dateOfReprocurement && intake.isReprocurement) {
     validationErrors.push('Date of Reprocurement is required.');
-  }
-
-  if (!intake.description) {
-    validationErrors.push('Description is required.');
   }
   if (intake.estimatedContractValue <= 0) {
     validationErrors.push('Estimated value of contract cannot be zero.');

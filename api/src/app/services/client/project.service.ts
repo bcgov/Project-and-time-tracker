@@ -51,17 +51,19 @@ export const retrieveProjectById = async (id: string | string[]) => {
   if (Array.isArray(id)) {
     const arr: any = [];
     for (let index = 0; index < id.length; index++) {
-      arr.push(await retrieveProjectById(id[index]));      
-    }    
+      arr.push(await retrieveProjectById(id[index]));
+    }
     return arr;
   }
   const res = await repo
-                      .createQueryBuilder('p')
-                      .innerJoinAndSelect('p.client', 'c')
-                      .innerJoinAndSelect('c.ministry', 'm')
-                      .where('p.id = :id', { id: id })
-                      .getOne();
-  if (!res) { throw Error(`project not found for the id specified: ${id}`); }
+    .createQueryBuilder('p')
+    .innerJoinAndSelect('p.client', 'c')
+    .innerJoinAndSelect('c.ministry', 'm')
+    .where('p.id = :id', { id: id })
+    .getOne();
+  if (!res) {
+    throw Error(`project not found for the id specified: ${id}`);
+  }
   return res;
 };
 
@@ -79,11 +81,10 @@ export const retrieveProjects = async () => {
       'ps',
       'p.completionDate',
       'c.orgDivision',
-       'c.isMinistry',
       'm.ministryName',
       'p.leadUserId',
       'p.backupUserId',
-      'p.mouAmount',
+      'p.mouAmount'
     ])
     .getMany();
 };
@@ -101,12 +102,13 @@ export const retrieveProjectsByUserId = async (userId: string) => {
       'ps',
       'p.completionDate',
       'c.orgDivision',
-      'c.isMinistry',
-      'm.ministryName',      
+      'm.ministryName',
       'p.leadUserId',
       'p.backupUserId',
-      'p.mouAmount',
+      'p.mouAmount'
     ])
-    .where('p."leadUserId" = :userId OR p."backupUserId" = :userId', { userId: userId })
+    .where('p."leadUserId" = :userId OR p."backupUserId" = :userId', {
+      userId: userId
+    })
     .getMany();
 };
