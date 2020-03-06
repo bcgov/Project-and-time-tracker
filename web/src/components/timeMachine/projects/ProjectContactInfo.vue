@@ -105,9 +105,15 @@ export default {
     } },
   methods: {
     onNextClicked() {
-      if (this.$refs.projectContact.validate()) this.$store.state.contactInformation = true;
-      else this.$store.state.contactInformation = false;
-      this.$emit('next');
+      if (this.$refs.projectContact.validate())
+      { 
+      this.$store.state.contactInformation = true;
+         // this.$emit('next');
+      }
+      else {
+         this.$store.state.contactInformation = false;
+      }
+      return this.$store.state.contactInformation;
     },
     reset() {
       this.$refs.projectContact.reset();
