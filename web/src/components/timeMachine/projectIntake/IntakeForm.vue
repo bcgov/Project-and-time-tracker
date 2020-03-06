@@ -429,11 +429,6 @@ export default {
     },
     clickfnctn(step) {
       if (step === 5) {
-        // if (this.$refs.projectLead.validate()){
-        //   console.log('valid')
-        // } else {
-        //    console.log('invalid')
-        // }
         const value1 = this.$refs.projectLead.onNextClicked();
         const value2 = this.$refs.projectSponsor.onNextClicked();
         const value3 = this.$refs.projectFinance.onNextClicked();
@@ -494,8 +489,7 @@ export default {
           );
           this.reviewSubmit = formData;
         }
-      }
-      this.e1 = step;
+      } else { this.e1 = step; }
     },
   },
   created() {
