@@ -12,7 +12,7 @@ export const retrieveIntakes = async () => {
     .createQueryBuilder('i')
     .innerJoin('i.client', 'c')
     .innerJoin('c.ministry', 'm')
-    .innerJoin('i.mou', 'd')
+    .leftJoin('i.mou', 'd')
     .leftJoin('project', 'p', 'p.id = i.projectId')
     .orderBy('i.dateModified', 'DESC')
     .select([
