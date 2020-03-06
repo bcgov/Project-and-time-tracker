@@ -4,7 +4,8 @@ import {
   retrieveProjects, 
   retrieveProjectById, 
   updateProject, 
-  retrieveProjectsByUserId 
+  retrieveProjectsByUserId,
+  retrieveArchivedProjects
 } from '../../../services/client/project.service';
 import { IProject } from '../../../models/interfaces/i-project';
 import { retrieveClientByProjectId } from '../../../services/client/client.service';
@@ -25,6 +26,22 @@ export const getProjects = async (ctx: Koa.Context) => {
     ctx.throw(err.message);
   }
 };
+
+// Calling separate method for archived projects
+export const getArchivedProjects = async (ctx: Koa.Context) => {
+  try {
+    const auth = ctx.state.auth as IAuth;
+
+    if (auth.role === Role.PSB_Admin) {
+      ctx.body = await retrieveArchivedProjects();
+    } else if (auth.role === Role.PSB_User) {
+      ctx.body = await retrieveProjectsByUserId(auth.userId);
+    }
+  } catch (err) {
+    ctx.throw(err.message);
+  }
+};
+
 
 export const getProjectById = async (ctx: Koa.Context) => {
   try {
@@ -80,8 +97,8 @@ export const assignLeadAction = async (ctx: Koa.Context) => {
   try {
     const obj = ctx.request.body as any;
     if (!(obj)) {
-       ctx.throw('no data found');
-       return;
+      ctx.throw('no data found');
+      return;
     } else {
       const client = await retrieveClientByProjectId(ctx.params.id);
       if (!(client.clientNo > 0 && client.responsibilityCenter > 0 && 
@@ -105,8 +122,8 @@ export const assignBackupAction = async (ctx: Koa.Context) => {
   try {
     const obj = ctx.request.body as any;
     if (!(obj)) {
-       ctx.throw('no data found');
-       return;
+      ctx.throw('no data found');
+      return;
     } else {
       const client = await retrieveClientByProjectId(ctx.params.id);
       if (!(client.clientNo > 0 && client.responsibilityCenter > 0 && 
@@ -156,6 +173,7 @@ const routerOpts: Router.IRouterOptions = {
 const router: Router = new Router(routerOpts);
 
 router.get('/', authorize, getProjects);
+// router.get('/archived', authorize, getArchivedProjects);
 router.get('/:id', authorize, getProjectById);
 router.patch('/:id', authorize, updateProjectAction);
 // router.delete('/:id', deleteProjectAction); TODO: Implement in the 2nd phase of development.

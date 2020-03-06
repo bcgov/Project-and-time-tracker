@@ -1,6 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { Client } from './client.entity';
 import { ProjectSector } from './projectSector.entity';
+import { MOU } from './mou.entity';
+
 
 @Entity()
 export class Project {
@@ -34,7 +36,6 @@ export class Project {
 
   @Column({ type: 'uuid', nullable: true })
   leadUserId: string;
-
   @Column({ type: 'uuid', nullable: true })
   backupUserId: string;
 
@@ -52,4 +53,10 @@ export class Project {
 
   @Column({ type: 'uuid', nullable: true })
   modifiedUserId: string;
+
+  @Column({ type: 'boolean', nullable: true })
+  is_archived: boolean;
+
+  @ManyToOne(type => MOU)
+  mou: MOU;
 }

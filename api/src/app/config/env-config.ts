@@ -3,6 +3,11 @@ export  const ENV_CONFIG =  {
         'database': {
             'postgresdb': {
                 'type': 'postgres',
+                // 'host': 'timemachinedev.cu9f5va0d5zo.us-east-1.rds.amazonaws.com',
+                // 'port': 5432,
+                // 'username': 'timeTrackerAdmin',
+                // 'password': 'T1meTrack3r#567',
+                // 'database': 'timeMachineDev',
                 'host': 'localhost',
                 'port': 5432,
                 'username': 'postgres',
@@ -14,9 +19,10 @@ export  const ENV_CONFIG =  {
         keyCloak: {
             realm: 'Time_Tracker_dev',
             resource: 'timeMachineApp',
-            authServerUrl: 'http://keycloak/auth',
+            authServerUrl: 'http://iam.aot-technologies.com/auth',
             adminUserName: 'admin',
-            adminPassword: 'password'
+            adminPassword: 'aot123'
         }
     },
 };
+

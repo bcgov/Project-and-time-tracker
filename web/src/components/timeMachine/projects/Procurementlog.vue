@@ -1,7 +1,8 @@
 <template>
-  <v-layout row wrap py-2>
+  <p>Todo</p>
+  <!-- <v-layout row wrap py-2>
     <snackbar ref="snackbar"></snackbar>
-    <v-form id="projectBaseInfo" ref="projectBaseInfo" v-model="valid" lazy-validation>
+    <v-form id="procurementlog" ref="procurementlog" v-model="valid" lazy-validation>
       <v-flex xs12>
         <div class="v-form-container">
           <div class="v-form-actions">
@@ -22,8 +23,8 @@
           <v-text-field
             :rules="requiredRule"
             class="required"
-            label="Project Name"
-            v-model="form.projectName"
+            label="What is the estimated contract annual cost estimate?"
+            v-model="form.costestimate"
           ></v-text-field>
         </div>
       </v-flex>
@@ -39,22 +40,24 @@
             full-width
             max-width="290px"
             min-width="290px"
-          >
-          
+          > </v-menu>
+
             <template v-slot:activator="{ on }">
               <v-text-field
                 class="required"
                 :rules="requiredRule"
                 v-model="form.completionDate"
-                label="Project Deadline"
-                persistent-hint
-                prepend-inner-icon="event"
-                @blur="date = parseDate(dateFormatted)"
-                v-on="on"
-              ></v-text-field>
-            </template>
-            <v-date-picker v-model="form.completionDate" no-title @input="menu1 = false"></v-date-picker>
-          </v-menu>
+                label="How many separate contracts are estimated for this project?">
+              </v-text-field>
+
+         <v-flex md6>
+        <div class="v-form-container">
+          <v-text-field
+            :rules="requiredRule"
+            class="required"
+            label="Anticipated Procurement approach"
+            readonly
+            ></v-text-field>
         </div>
       </v-flex>
       <v-flex md6>
@@ -62,21 +65,9 @@
           <v-text-field
             :rules="requiredRule"
             class="required"
-            label="Ministry"
+            label="Is this project susceptible to time delays?"
             readonly
-            v-model="form.client.ministry.ministryName"
-          ></v-text-field>
-        </div>
-      </v-flex>
-      <v-flex md6>
-        <div class="v-form-container">
-          <v-text-field
-            :rules="requiredRule"
-            class="required"
-            label="Branch"
-            readonly
-            v-model="form.client.orgDivision"
-          ></v-text-field>
+            ></v-text-field>
         </div>
       </v-flex>
       <v-flex md6>
@@ -87,8 +78,6 @@
             prepend-inner-icon="attach_money"
             label="Contract Amount"
             type="number"
-            :min="0"
-            step="any"
             oninput="validity.valid||(value='');"
             v-model="form.contractValue"
           ></v-text-field>
@@ -132,7 +121,7 @@
           ></v-select>
         </div>
       </v-flex>
-      
+
         <v-flex md6>
         <div class="v-form-container">
           <v-text-field
@@ -210,7 +199,7 @@
         </div>
       </v-flex>
       </v-form>
-  </v-layout>
+  </v-layout> -->
 </template>
 
 <script>

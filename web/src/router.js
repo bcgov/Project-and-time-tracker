@@ -8,6 +8,8 @@ import TimeMachineIntakeRequests from './components/timeMachine/projectIntake/In
 import TimeMachineIntakeSuccess from './components/timeMachine/projectIntake/IntakeSuccess.vue';
 import TimeMachineProjects from './components/timeMachine/projects/Projects.vue';
 import TimeMachineTimesheets from './components/timeMachine/timesheets/Timesheets.vue';
+import AdminMain from './components/timeMachine/admin/AdminMain.vue'
+import AdminMinistries from './components/timeMachine/admin/AdminMinistries.vue'
 import Unauthorized from './components/error/Unauthorized.vue';
 import security from '@/modules/security';
 import store from '@/store';
@@ -75,6 +77,13 @@ const routes = [
     meta: { requiresAuth: true, roles: ['PSB_User', 'PSB_Admin'] },
   },
   {
+    exact: true,
+    path: '/archived',
+    name: 'timeMachineProjects',
+    component: TimeMachineProjects,
+    meta: { requiresAuth: true, roles: ['PSB_User', 'PSB_Admin'] },
+  },
+  {
     path: '/project',
     name: 'project',
     component: Project,
@@ -105,6 +114,20 @@ const routes = [
     name: 'export',
     component: null,
     meta: { requiresAuth: true, roles: ['PSB_User', 'PSB_Admin'] },
+  },
+  {
+    exact: true,
+    path: '/admin',
+    name: 'admin',
+    component: AdminMain,
+    meta: { requiresAuth: true, roles: ['PSB_Admin'] },
+  },
+  {
+    exact: true,
+    path: '/admin/ministries',
+    name: 'admin-ministries',
+    component: AdminMinistries,
+    meta: { requiresAuth: true, roles: ['PSB_Admin'] },
   },
   // Error routes
   {

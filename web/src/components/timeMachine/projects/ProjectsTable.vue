@@ -18,10 +18,10 @@
           disable-initial-sort
         >
           <template slot="items" slot-scope="props">
-            <td>{{ props.item.projectName }}</td>
-            <td
-              class="text-xs-left"
-            >{{ [props.item.client.ministry.ministryName, props.item.orgDivision].join(" ") }}</td>
+            <td v-bind:class="text-xs-left">{{ props.item.mouAmount }} </td>
+            <td v-bind:class="{ 'archived': props.item.is_archived}">{{ props.item.projectName }}</td>
+            <td v-bind:class="text-xs-left">{{ props.item.projectName}} </td>
+            <td class="text-xs-left">{{ [props.item.client.ministry.ministryName, props.item.orgDivision].join(" ") }}</td>
             <td class="text-xs-left table-dropdown">
               <v-select
                 :items="userList"
@@ -51,18 +51,24 @@
               ></v-select>
             </td>
             <td class="text-xs-left">{{ props.item.completionDate }}</td>
-            <td class="text-xs-right">
-              <v-btn flat icon color="grey" @click="viewProjectTimesheets">
-                <v-icon color="btnPrimary">timer</v-icon>
-              </v-btn>
-              <v-btn flat icon color="grey" @click="editProject(props.item.id)">
+            <td class="text-xs-left">{{ props.item.dateModified }}</td>
+            <td class="text-xs-center">
+                <v-btn flat icon color="blue" @click="editProject(props.item.id)">
                 <v-icon>edit</v-icon>
-              </v-btn>
-              <v-btn flat icon color="grey" @click="deleteProject(props.item.id)">
-                <v-icon>delete</v-icon>
-              </v-btn>
+                </v-btn>
+                <td v-if="!props.item.is_archived" @click="archivePrompt(props.item, true)">
+                <v-btn flat color="blue">
+                <v-icon>archive</v-icon>
+                Archive
+                </v-btn>
+                </td>
+                <td v-else @click="archivePrompt(props.item, false)">
+                <v-btn flat>
+                Archived
+                </v-btn>
             </td>
-          </template>
+
+            </template>
         </v-data-table>
       </template>
       <v-divider></v-divider>
@@ -72,8 +78,15 @@
 
 <script>
 
+// import moment from 'moment';
 import Confirm from '../common/Confirm.vue';
 import Snackbar from '../common/Snackbar.vue';
+
+// Vue.filter('formatDate', function(value) {
+//       if (value) {
+//         return moment(String(value)).format('MM/DD/YYYY hh:mm')
+//       }
+//     })
 
 export default {
   props: {
@@ -86,18 +99,21 @@ export default {
   data() {
     return {
       headers: [
+        { text: 'MOU', value: 'mouAmount', align: 'left', sortable: true },
         { text: 'Project Name', value: 'projectName', align: 'left', sortable: true },
+        { text: 'Phase', value: 'rfxPhaseName', align: 'left', sortable: true },
         { text: 'Client', value: 'client.ministry.ministryName', sortable: true },
         { text: 'Project Lead', value: 'projectLeadId', sortable: false },
         { text: 'Project Backup', value: 'projectBackup', sortable: false },
         { text: 'Project Deadline', value: 'completionDate', sortable: true },
-        {
-          text: 'Actions', value: 'action', align: 'right', width: '145px', sortable: false,
+        { text: 'Last Updated', value: 'dateModified', sortable: true },
+        { text: 'Actions', value: 'is_archived', align: 'center', width: '145px', sortable: false,
         },
       ],
       selectedLeadUser: '',
       selectedProjectBackup: '',
     };
+
   },
   computed: {
     projects() {
@@ -106,14 +122,29 @@ export default {
     userList() {
       return this.$store.state.users;
     },
-  },
+    },
   methods: {
     fetchData() {
       this.$store.dispatch('fetchProjects');
     },
+
+
     editProject(id) {
       this.$router.push({ path: `project/${id}` });
     },
+    async archivePrompt(item, archiveVal){
+      if (
+        await this.$refs.confirm.open(
+          "info",
+          `Are you sure to archive project: ${item}?`)
+      )
+      {
+        item.is_archived = archiveVal;
+        // await this.$store.dispatch("updateProject", item);
+        this.$store.dispatch('fetchProjects');
+      }
+    },
+
     viewProjectTimesheets() {
       this.$router.push({ path: 'timesheets' });
     },

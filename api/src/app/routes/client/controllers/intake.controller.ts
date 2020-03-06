@@ -46,6 +46,15 @@ export const getIntakeByIdAction = async (ctx: Koa.Context) => {
   }
 };
 
+export const updateIntakeByIdAction = async (ctx: Koa.Context) => {
+  try {
+    const body = ctx.request.body;
+    ctx.body = await updateIntake(ctx.params.id, body);
+  } catch (err) {
+    ctx.throw(err.message);
+  }
+};
+
 export const createIntakeAction = async (ctx: Koa.Context) => {
   try {
     const projectIntake = ctx.request.body as IProjectIntake;
@@ -290,7 +299,11 @@ const router: Router = new Router(routerOpts);
 
 router.get('/', authorize, getIntakesAction);
 router.get('/:id', authorize, getIntakeByIdAction);
+router.patch('/:id', authorize, updateIntakeByIdAction);
 router.post('/', authorize, createIntakeAction);
 router.post('/:id/approve', authorize, updateApproveStatus);
 
 export default router;
+
+
+

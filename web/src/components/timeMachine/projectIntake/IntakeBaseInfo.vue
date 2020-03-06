@@ -63,7 +63,7 @@
             max-width="290px"
             min-width="290px"
           >
-            <template v-slot:activator="{ on }">
+            <!-- <template v-slot:activator="{ on }">
               <v-text-field
                 class="required"
                 readonly
@@ -75,7 +75,7 @@
                 @blur="date = parseDate(dateFormatted)"
                 v-on="on"
               ></v-text-field>
-            </template>
+            </template> -->
             <v-date-picker
               v-model="form.estimatedCompletionDate"
               no-title
