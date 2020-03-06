@@ -97,9 +97,9 @@ export default {
       }
     },
     onNextClicked() {
+      this.$emit('next');
       if (this.$refs.intakeRiskAssessment.validate()) {
         this.$store.state.intakeRisk = true;
-        this.$emit('next');
       }
     },
     reset() {
