@@ -177,10 +177,23 @@
                           </div>
                         </div>
                       </v-flex>
-                      <v-flex xs12 py-2>
+
+                    </v-layout>
+                  </div>
+                </v-card-text>
+              </v-card>
+            </v-stepper-content>
+            <v-stepper-content step="5">
+              <v-card class="mb-12" color="grey lighten-1" height="200px">
+                <intake-review ref="intakeReview" :intakeValues="reviewSubmit"></intake-review>
+              </v-card>
+            </v-stepper-content>
+          </v-stepper-items>
+        </v-stepper>
+        <v-flex xs12 py-2>
                         <div class="v-form-container">
                           <div class="v-form-actions">
-                            <v-flex md12 mt-4 v-if="e1==4">
+                            <v-flex md12 mt-4 v-if="e1==5">
                               <v-btn color="default" @click="discard">Discard</v-btn>
                               <v-btn
                                 :disabled="
@@ -198,18 +211,6 @@
                           </div>
                         </div>
                       </v-flex>
-                    </v-layout>
-                  </div>
-                </v-card-text>
-              </v-card>
-            </v-stepper-content>
-            <v-stepper-content step="5">
-              <v-card class="mb-12" color="grey lighten-1" height="200px">
-                <intake-review ref="intakeReview" :intakeValues="reviewSubmit"></intake-review>
-              </v-card>
-            </v-stepper-content>
-          </v-stepper-items>
-        </v-stepper>
       </v-container>
     </v-form>
   </div>
@@ -493,9 +494,8 @@ export default {
           );
           this.reviewSubmit = formData;
         }
-      } else {
-        this.e1 = step;
       }
+      this.e1 = step;
     },
   },
   created() {
