@@ -133,11 +133,11 @@ export default {
       if (
         await this.$refs.confirm.open(
           "info",
-          `Are you sure to archive project: ${item}?`)
+          `Are you sure to archive project: ${item.projectName}?`)
       )
       {
         item.is_archived = archiveVal;
-        // await this.$store.dispatch("updateProject", item);
+        await this.$store.dispatch("archiveProject", item.id, archiveVal);
         this.$store.dispatch('fetchProjects');
       }
     },

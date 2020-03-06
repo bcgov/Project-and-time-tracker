@@ -27,7 +27,7 @@
             <td class="text-xs-left">{{props.item.completionDate}}</td>
             <td class="text-xs-left">{{ props.item.dateModified }}</td>
             <td class="text-xs-right">
-              <v-btn flat icon color="grey" @click="unarchiveProject(props.item.id)">
+              <v-btn flat icon color="grey" @click="archivePrompt(props.item, false)">
                 <v-icon>unarchive</v-icon>
               </v-btn>
               <v-btn flat icon color="grey" @click="deleteProject(props.item.id)">
@@ -76,7 +76,7 @@ export default {
   },
   computed: {
   projects() {
-      return this.$store.state.projects;
+      return this.$store.state.archivedProjects;
     },
     userList() {
       return this.$store.state.users;
@@ -104,6 +104,18 @@ export default {
         // yes
         this.$store.dispatch('fetchArchivedProjects');
         this.$refs.snackbar.displaySnackbar('success', 'Deleted.');
+      }
+    },
+    async archivePrompt(item, archiveVal){
+      if (
+        await this.$refs.confirm.open(
+          "info",
+          `Are you sure to un-archive project: ${item.projectName}?`)
+      )
+      {
+        item.is_archived = archiveVal;
+        await this.$store.dispatch("archiveProject", item.id, archiveVal);
+        this.$store.dispatch('fetchProjects');
       }
     },
   },

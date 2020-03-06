@@ -62,6 +62,7 @@ const store = new Vuex.Store({
     activeProjectRfxData: [],
     activeProjectContacts: [],
     projects: [],
+    archivedProjects: [],
     projectsRfx: new HashTable(),
     // Timesheets component
     activeTimesheetEntryRowId: null, // Row of timesheet entries (1 week)
@@ -262,6 +263,9 @@ const store = new Vuex.Store({
       // TODO: Overwrite projects entry
       state.activeProject = data;
     },
+    fetchArchivedProjects(state, data){
+      state.archivedProjects = data;
+    },
     addProject() {
       throw new Error('Not implemented!');
     },
@@ -379,6 +383,9 @@ const store = new Vuex.Store({
     deleteTimesheetEntryComment() {
       throw new Error('Not implemented!');
     },
+    archiveProject(state, data){
+      console.log('archiveProject response', data);
+    }
   },
   /**
    * This layer uses our service classes to make AJAX requests to the backend.
@@ -738,12 +745,20 @@ const store = new Vuex.Store({
     },
     fetchArchivedProjects(ctx) {
       $http
-        .get(`${API_URI}/archivedproject`)
+        .get(`${API_URI}/project/archived`)
         .then((res) => {
           let content = res.data;
           content = res.data.map(project => project);
           ctx.commit('fetchArchivedProjects', content);
         });
+    },
+    archiveProject(ctx, id, is_archived){
+      $http
+        .patch(`${API_URI}/project/${id}/archive`, {is_archived: true})
+        .then((res) => {
+          const content = res.data;
+          ctx.commit('archiveProject', content);
+        })
     },
     fetchProject(ctx, req) {
       // TODO: Make sure it's the right kind of ID - eg. numeric or GUID/UUID
