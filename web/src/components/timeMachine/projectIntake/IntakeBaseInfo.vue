@@ -130,7 +130,7 @@
         <div>
           <v-container fluid>
             <label class="v-label theme--light" style="margin-left: 4%;">Reprocurement?</label>
-            <v-radio-group v-model="chkReprocurement" row>
+            <v-radio-group v-model="form.chkReprocurement" row>
               <v-radio label="Yes" :value="true"></v-radio>
               <v-radio label="No" :value="false"></v-radio>
             </v-radio-group>
@@ -142,7 +142,7 @@
     margin-left: 5%;">
           <v-menu
             v-model="menu2"
-            v-if="chkReprocurement"
+            v-if="form.chkReprocurement"
             :close-on-content-click="false"
             :nudge-right="40"
             lazy
@@ -190,7 +190,7 @@
         <div class="v-form-container">
           <v-textarea
             class="required"
-            v-if="chkReprocurement"
+            v-if="form.chkReprocurement"
             name="project-description"
             label="What is the background from the previous contract?"
             no-resize
@@ -288,7 +288,7 @@ export default {
       requiredRule: [v => !!v || "This field required"],
       // Initialize using props
       form: { ...form },
-      chkReprocurement: false,
+      //chkReprocurement: false,
       menu1: false,
       menu2: false,
       dateFormatted: undefined,
@@ -334,6 +334,10 @@ export default {
     onNextClicked() {
       if (this.$refs.intakeBaseInfo.validate()) {
         //this.nextPanel(this.panelName);
+          if(!this.form.chkReprocurement){
+            this.form.dateofReprocurement= undefined;
+            this.form.previousContractBackground = undefined;
+          }
         this.$emit("next");
         this.$store.state.projectInformation = true;
       }
@@ -342,9 +346,9 @@ export default {
       this.$refs.intakeBaseInfo.reset();
     },
     submitForm() {
-      if (this.chkReprocurement) {
-        projectContact = this.$refs.projectContact.form || undefined;
-      }
+      // if (this.chkReprocurement) {
+       // projectContact = this.$refs.projectContact.form || undefined;
+      //}
       const formData = this.form;
       this.$store.dispatch("addIntakeRequest", formData);
     }
