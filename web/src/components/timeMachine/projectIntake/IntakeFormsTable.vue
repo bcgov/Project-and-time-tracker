@@ -104,9 +104,6 @@
     </v-card-text>
 
   <v-dialog v-model="mouDialog" persistent max-width="600px">
-      <template v-slot:activator="{ on }">
-        <v-btn color="primary" dark v-on="on">Open Dialog</v-btn>
-      </template>
       <v-card>
         <v-card-title>
           <span class="headline">Assign or Create</span>
@@ -115,9 +112,15 @@
           <v-container grid-list-md>
             <v-layout wrap>
               <v-flex xs12>
+                  <!-- v-model="mou" -->
+                  <!-- @input.native="e => mou = e.target.value" -->
+                  <!-- @input.native="mou=$event.srcElement.value" -->
+                  <!-- Bug: Currently can require two clicks. -->
                 <v-combobox
-                  v-model="mouName"
-                  :items="['af-123', 'bc-4351']"
+                  v-model="mou"
+                  :items="mouList"
+                  item-text='name'
+                  item-value='id'
                   label="Assign MOU"
                 ></v-combobox>
                 Project: {{ mouProjectName }}
@@ -131,7 +134,7 @@
           <v-spacer></v-spacer>
           <v-btn color="blue darken-1" flat @click="mouDialog = false">Close</v-btn>
           <v-btn color="blue darken-1" flat
-           @click="createMOU()">Save</v-btn>
+           @click="assignMOU()">Save</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -141,6 +144,7 @@
  </template>
 
 <script>
+import Vue from 'vue';
 import './intakeformtable.styl';
 import IntakeFormView from './IntakeFormView.vue';
 import Snackbar from '../common/Snackbar.vue';
@@ -177,7 +181,7 @@ export default {
       mouDialog: false,
       id: '',
       mouProjectName: '',
-      mouName: '',
+      mou: '',
     };
   },
   computed: {
@@ -191,10 +195,14 @@ export default {
       // potentially issue is 'contact' is null. How to get it non-null?
       return this.$store.state.users;
     },
+    mouList(){
+      return this.$store.state.mouList;
+    }
   },
   methods: {
     fetchData() {
       this.$store.dispatch('fetchIntakeRequests');
+      // this.$store.dispatch('fetchMOU')
     },
     viewRequest(intakeId) {
       this.id = intakeId;
@@ -335,15 +343,49 @@ export default {
     showMOUModal(item) {
       this.mouDialog = true;
       this.mouProjectName = item.projectName;
+      this.mouProjectId = item.id
+      this.mouProject = item
     },
-    createMOU(){
-      console.log('create MOU', this.mouProjectName);
-      const body = {
-        item,
-        todo: 'todo'
+    async assignMOU(){
+
+      if (!this.mou || this.mou === '') return;
+      console.log('assignMOU', {project: this.mouProject, mou: this.mou})
+
+
+      let mouID = this.mou.id;
+
+
+      // console.log('mouID check', {check: !mouID, mouID})
+      if (!mouID && this.mou){
+        // Need to create new record in DB
+        console.log('no MOU id, submitting new one', {name: this.mou});
+        mouID = await this.$store.dispatch('createMOU', {name: this.mou});
+        console.log('createMOU response', {mouID})
+
       }
-      this.$store.dispatch('createMOU', body);
+
+      const project = this.mouProject;
+
+      // console.log('final MOUID', {mouID})
+      project.mouID = mouID
+
+
+      // need
+        // FULL PROJECT
+        // mou ID
     }
+    // async createMOU(){
+    //   console.log('create MOU', this.mouProjectName);
+    //   const body = {
+    //     name: this.mouName
+    //   }
+    //   this.$store.dispatch('createMOU', body);
+
+    //   // TODO - ASSIGN MOU
+
+    //   //
+    //   console.log('createMOU', body)
+    // }
   },
   created() {
     this.fetchData();

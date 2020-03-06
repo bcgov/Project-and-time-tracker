@@ -1,7 +1,7 @@
 import * as Koa from 'koa';
 import * as Router from 'koa-router';
 import { authorize } from '../../../services/common/authorize.service';
-import { retrieveMOUs } from '../../../services/client/mou.service';
+import { retrieveMOUs, createMOU } from '../../../services/client/mou.service';
 
 export const getMOUs = async (ctx: Koa.Context) => {
     try {
@@ -12,10 +12,9 @@ export const getMOUs = async (ctx: Koa.Context) => {
     }
 };
 
-export const createMOU = async (ctx: Koa.Context) => {
+export const createMOUAction = async (ctx: Koa.Context) => {
     try {
-        console.log('createMOU called')
-        ctx.body = await createMOU(ctx.params.id);
+        ctx.body = await createMOU(ctx.request.body);
     } catch (err) {
         ctx.throw(err.message);
     }
@@ -29,6 +28,6 @@ const routerOpts: Router.IRouterOptions = {
 const router: Router = new Router(routerOpts);
 
 router.get('/', authorize, getMOUs);
-router.post('/', authorize, createMOU);
+router.post('/', authorize, createMOUAction);
 
 export default router;

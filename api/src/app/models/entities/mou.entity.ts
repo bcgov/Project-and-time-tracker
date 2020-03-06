@@ -8,4 +8,6 @@ export class MOU {
 
   @Column({ type: 'text', nullable: false })
   name: string;
+
+  
 }

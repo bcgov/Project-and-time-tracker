@@ -231,6 +231,10 @@ const store = new Vuex.Store({
     assignContactToIntakeRequest() {
       throw new Error('Not implemented!');
     },
+    createMOU(state, data){
+      console.log('createMOU mutation', data);
+      // state.mouList = data;
+    },
     // Projects
     fetchProjects(state, data) {
       if (data instanceof Array) {
@@ -624,17 +628,21 @@ const store = new Vuex.Store({
         .then((res) => {
           console.log('fetch MOUs', res);
           const content = res.data;
-          ctx.commit('fetchMOU', content);
+          ctx.commit('fetchMOUs', content);
         })
     },
-    createMOU(){
+    async createMOU(ctx, req){
       const body = req;
-      $http
+      const api = await $http
         .post(`${API_URI}/MOU`, body)
         .then((res) => {
           const content = res.data;
+          console.log('createMOU called with body', body);
           ctx.commit('createMOU', content);
-        });
+          return Promise.resolve(content);
+        })
+        .catch(err => Promise.reject(err));
+      return Promise.resolve(api);
     },
     // Intake requests
     fetchIntakeRequests(ctx) {

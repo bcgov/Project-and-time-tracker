@@ -50,6 +50,7 @@ const commonForPSBAdminAndUser = [
   'POST/timesheet/getLight',
   'PATCH/timesheet/:id',
   'DELETE/timesheet/:id',
+  'POST/MOU/'
 ];
 
 const permissions = {

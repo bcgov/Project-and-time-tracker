@@ -11,14 +11,14 @@ export const retrieveMOUs = async () => {
     return await repo.find();
 };
 
-export const createOrAssignMOU = async obj => {
-    // TODO - CHANGE THIS!  Do a lookup first, and if so, assign.
-    // Otherwise, create.
-    // https://stackoverflow.com/questions/46745688/typeorm-upsert-create-if-not-exist
-    // does typeOrm have "findOrCreate'"
+// TODO - CHANGE THIS!  Do a lookup first, and if so, assign.
+// Otherwise, create.
+// https://stackoverflow.com/questions/46745688/typeorm-upsert-create-if-not-exist
+// does typeOrm have "findOrCreate'"
 
-    // Goal -> create MOU if not exist, then assign mouID to project.
-    // 
+// Goal -> create MOU if not exist, then assign mouID to project.
+// 
+export const createMOU = async obj => {
     const repo = mouRepo();
     const mou = repo.create(obj);
     const ret = await repo.save(mou);
