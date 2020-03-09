@@ -64,9 +64,9 @@
                             <v-flex xs11>
                             <label class="sub-header-large">RFx Type and Phase #{{index+1}}</label>
                             </v-flex>
-                            <v-flex xs1>
-                                <v-btn color="primary" @click="projectRfxData">Save</v-btn>
-                              </v-flex>
+                            <!-- <v-flex xs2>
+                                <v-btn color="primary" @click="saveProjectRfxData(index)">Save</v-btn>
+                              </v-flex> -->
                           </div>
                         </template>
                         <v-card>
@@ -254,6 +254,10 @@ export default {
     },
   },
   methods: {
+    // saveProjectRfxData(index) {
+    //   debugger;
+    //   const data = this.projectRfxData[index];
+    // },
     projectContactData(contactType) {
       const contactData = this.$store.getters.getProjectContactByType(contactType);
       if (
