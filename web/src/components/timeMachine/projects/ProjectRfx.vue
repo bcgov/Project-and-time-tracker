@@ -28,7 +28,7 @@
           ></v-select>
         </div>
       </v-flex>
-      <v-flex md12>
+      <v-flex md6>
         <div class="v-form-container">
           <v-select
             :items="rfxPhases"
@@ -36,13 +36,13 @@
             class="required"
             label="RFx Name"
             item-value="id"
-            item-text="rfxName"
+            item-text="rfxPhaseName"
             v-model="rfxForm.rfxPhase.id"
           ></v-select>
         </div>
       </v-flex>
 
-      <v-flex md6>
+      <v-flex md12>
         <div class="v-form-container">
           <v-textarea
             name="rfx-overview"
@@ -56,7 +56,7 @@
         </div>
       </v-flex>
 
-      <v-flex md6>
+      <v-flex md12>
         <div class="v-form-container">
           <v-textarea
             name="client-responsibilities"
@@ -69,7 +69,7 @@
           ></v-textarea>
         </div>
       </v-flex>
-      <v-flex md6>
+      <v-flex md12>
         <div class="v-form-container">
           <v-textarea
             name="psd-responsibilities"
@@ -82,7 +82,7 @@
           ></v-textarea>
         </div>
       </v-flex>
-      
+
     </v-form>
   </v-layout>
 </template>

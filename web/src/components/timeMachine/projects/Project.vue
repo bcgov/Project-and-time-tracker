@@ -21,7 +21,7 @@
                   </v-card>
                 </v-expansion-panel-content>
               </v-expansion-panel>
-              
+
 <div>
   <v-expansion-panel class="mt-4" :value=0>
   <v-expansion-panel-content>
@@ -33,18 +33,18 @@
 </template>
 </v-expansion-panel-content>
 </v-expansion-panel>
-</div> 
+</div>
               <div>
                 <v-tabs class="mt-4">
                   <v-tab ripple>RFx Type and Phase</v-tab>
                   <v-tab ripple>Contacts</v-tab>
                   <v-tab ripple>Finance Codes</v-tab>
-                  <v-tab ripple>Risk</v-tab> 
+                  <v-tab ripple>Risk</v-tab>
                   <v-tab ripple>Procurement Log</v-tab>
                   <v-flex justify-end align-end><v-text-field
                             class="search-bar"
                             v-model="search"
-                            append-icon="search"
+                            prepend-inner-icon="search"
                             label="Search"
                             single-line
                             hide-details
@@ -61,8 +61,10 @@
                         <template v-slot:header>
                           <div class="primary-heading">
                             <!-- <img src="@/assets/bulb.svg"> -->
+                            <v-flex xs11>
                             <label class="sub-header-large">RFx Type and Phase #{{index+1}}</label>
-                            <v-flex xs12>
+                            </v-flex>
+                            <v-flex xs1>
                                 <v-btn color="primary" @click="projectRfxData">Save</v-btn>
                               </v-flex>
                           </div>
@@ -206,6 +208,8 @@
 <script>
 import Vue from 'vue';
 import VeeValidate from 'vee-validate';
+import RFxDto from '@/domain/models/RFx.dto';
+import ContactDto from '@/domain/models/Contact.dto';
 import Procurementlog from './Procurementlog.vue';
 import ProjectBaseInfo from './ProjectBaseInfo.vue';
 import ProjectContactInfo from './ProjectContactInfo.vue';
@@ -213,8 +217,6 @@ import ProjectRfx from './ProjectRfx.vue';
 import ProjectFinanceInfo from './ProjectFinanceInfo.vue';
 import Snackbar from '../common/Snackbar.vue';
 import ProjectAdditionalContactInfo from './ProjectAddintionalContactInfo.vue';
-import RFxDto from '@/domain/models/RFx.dto';
-import ContactDto from '@/domain/models/Contact.dto';
 
 import './project.styl';
 
