@@ -1,13 +1,22 @@
-import { Repository, getRepository } from 'typeorm';
+import { Repository, getRepository, IsNull } from 'typeorm';
 import { Ministry } from '../../models/entities/ministry.entity';
 
 const ministryRepo = (): Repository<Ministry> => {
   return getRepository(Ministry);
 };
 
+// Excludes archived
 export const retrieveMinistries = async () => {
   const repo = ministryRepo();
-  return await repo.find();
+  return await repo.createQueryBuilder('m')
+                    .where("m.is_archived IS NULL OR m.is_archived = :val", { val: false })
+                    .getMany();
+};
+
+// Both archived and unarchived
+export const retrieveAllMinistries = async () => {
+  const repo = ministryRepo();
+  return repo.find();
 };
 
 export const retrieveMinistryById = async (id: string) => {
@@ -28,3 +37,15 @@ export const createMinistry = async obj => {
   }
   return ret;
 };
+
+export const updateMinistry = async (input: Ministry) => {
+  const repo = ministryRepo();
+  const ministry: Ministry = await repo.findOne(input.id)
+
+  if (!ministry){
+    throw Error('Ministry not found');
+  }
+
+  const updatedMinistry = await repo.save(input);
+  return updatedMinistry;
+}

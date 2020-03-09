@@ -8,4 +8,7 @@ export class Ministry {
 
   @Column({ type: 'text', nullable: true })
   ministryName: string;
+
+  @Column({ type: 'boolean', nullable: true })
+  is_archived: Boolean;
 }

@@ -18,11 +18,25 @@
           disable-initial-sort
         >
           <template slot="items" slot-scope="props">
+            <td class='pl-3'>
+              <v-btn v-if='!props.item.mouName'  color="btnPrimary"
+                class="white--text intake-table-approve-btn ma-0"
+                @click.native='showMOUModal(props.item)'>
+                  ASSIGN MOU
+               </v-btn>
+               <span v-else>{{ props.item.mouName }}</span>
+            </td>
             <td>{{ props.item.projectName }}</td>
             <td
               class="text-xs-left"
             >{{ [props.item.ministryName, props.item.orgDivision].join(" ") }}</td>
             <td class="text-xs-left table-dropdown">
+              <!-- TODO: is below v-if necessary on v-select?
+
+              ARC - v-if is because you need to approve before you can assign
+              Question - Why can't we show the users name properly? Name exists on contact? what?
+
+               -->
               <v-select
                 v-if="props.item.status !== 'submitted'"
                 :items="userList"
@@ -89,10 +103,49 @@
       </template>
       <v-divider></v-divider>
     </v-card-text>
+
+  <v-dialog v-model="mouDialog" persistent max-width="600px">
+      <v-card>
+        <v-card-title>
+          <span class="headline">Assign or Create</span>
+        </v-card-title>
+        <v-card-text>
+          <v-container grid-list-md>
+            <v-layout wrap>
+              <v-flex xs12>
+                  <!-- v-model="mou" -->
+                  <!-- @input.native="e => mou = e.target.value" -->
+                  <!-- @input.native="mou=$event.srcElement.value" -->
+                  <!-- Bug: Currently can require two clicks. -->
+                <v-combobox
+                  v-model="mou"
+                  :items="mouList"
+                  item-text='name'
+                  item-value='id'
+                  label="Assign MOU"
+                ></v-combobox>
+                Project: {{ mouProjectName }}
+              </v-flex>
+               <v-flex xs12>
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" flat @click="mouDialog = false">Close</v-btn>
+          <v-btn color="blue darken-1" flat
+           @click="assignMOU()">Save</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+
   </v-card>
-</template>
+ </template>
 
 <script>
+import Vue from 'vue';
 import './intakeformtable.styl';
 import IntakeFormView from './IntakeFormView.vue';
 import Snackbar from '../common/Snackbar.vue';
@@ -111,6 +164,7 @@ export default {
   data() {
     return {
       headers: [
+        { text: 'MOU', value: 'mou', align: 'left', sortable: true },
         { text: 'Project Name', value: 'projectName', align: 'left', sortable: true },
         { text: 'Client', value: 'ministryName', sortable: true },
         { text: 'Project Lead', value: 'projectLeadId', sortable: false },
@@ -125,20 +179,31 @@ export default {
         sortBy: 'name',
       },
       dialog: false,
+      mouDialog: false,
       id: '',
+      mouProjectName: '',
+      mou: '',
     };
   },
   computed: {
     intakeRequests() {
+      // console.log('intakeRequests', this.$store.state.intakeRequests);
       return this.$store.state.intakeRequests;
     },
     userList() {
+      console.log('userList called', this.$store.state.users);
+      // ARC - UserList doesn't seem to come back with names? What?
+      // potentially issue is 'contact' is null. How to get it non-null?
       return this.$store.state.users;
     },
+    mouList(){
+      return this.$store.state.mouList;
+    }
   },
   methods: {
     fetchData() {
       this.$store.dispatch('fetchIntakeRequests');
+      // this.$store.dispatch('fetchMOU')
     },
     viewRequest(intakeId) {
       this.id = intakeId;
@@ -276,6 +341,28 @@ export default {
         this.$router.push({ path: 'intake-requests' });
       }
     },
+    showMOUModal(item) {
+      this.mouDialog = true;
+      this.mouProjectName = item.projectName;
+      this.mouProjectId = item.id
+      this.mouProject = item
+    },
+    async assignMOU(){
+
+      if (!this.mou || this.mou === '') return;
+      console.log('assignMOU', {project: this.mouProject, mou: this.mou})
+      let mouID = this.mou.id;
+
+      // Create MOU if does not exist.
+      if (!mouID && this.mou){
+        mouID = await this.$store.dispatch('createMOU', {name: this.mou});
+      }
+
+      const project = this.mouProject;
+      project.mou = {id: mouID, name: this.mou}
+      const projResponse = await this.$store.dispatch('updateIntakeRequest', project);
+      console.log('assignMOU projResponse', {projResponse});
+    }
   },
   created() {
     this.fetchData();

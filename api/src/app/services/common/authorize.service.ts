@@ -19,11 +19,16 @@ const commonForAllUsers = [
   'GET/ministry/:id',
   'GET/project-sector/',
   'GET/project-sector/:id',
+  'GET/project-intake-category/',
+  'GET/project-intake-category/:id',
+  'GET/project-intake-service/',
+  'GET/project-intake-service/:id',
   'GET/rfx-phase/',
   'GET/rfx-phase/:id',
   'GET/rfx-type/',
   'GET/rfx-type/:id',
-  'GET/user/'
+  'GET/user/',
+  'GET/MOU/'
 ];
 
 const commonForPSBAdminAndUser = [
@@ -34,6 +39,7 @@ const commonForPSBAdminAndUser = [
   'GET/project/',
   'GET/project/:id',
   'PATCH/project/:id',
+  'PATCH/project/:id/archive',
   'GET/project-rfx/:id/by-project-id',
   'POST/project-rfx/',
   'PATCH/project-rfx/:id',
@@ -45,6 +51,8 @@ const commonForPSBAdminAndUser = [
   'POST/timesheet/getLight',
   'PATCH/timesheet/:id',
   'DELETE/timesheet/:id',
+  'POST/MOU/',
+  'PATCH/intake/:id',
 ];
 
 const permissions = {
@@ -52,10 +60,13 @@ const permissions = {
     ...commonForAllUsers,    
     'GET/intake/',
     'GET/intake/:id',
+    // 'PATCH/intake/:id',
     'POST/intake/',
     'POST/intake/:id/approve',
     'POST/project/:id/assign-lead',
     'POST/project/:id/assign-backup',
+    'PATCH/ministry/:id/update',
+    'POST/ministry/',
     'GET/project-risk/',
     ...commonForPSBAdminAndUser
   ],

@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { Client } from './client.entity';
 import { ProjectSector } from './projectSector.entity';
+import { MOU } from './mou.entity';
 
 @Entity()
 export class ProjectIntake {
@@ -58,6 +59,9 @@ export class ProjectIntake {
   @Column({ type: 'boolean', nullable: true })
   isReprocurement: boolean;
 
+  @Column({ type: 'boolean', nullable: true })
+  isMinistry: boolean;
+
   @Column({ type: 'timestamp', nullable: true })
   dateOfReprocurement: Date;
 
@@ -76,6 +80,12 @@ export class ProjectIntake {
   @Column({ type: 'text', nullable: true })
   projectSuccess: string;
 
+
+  @Column({ type: 'text', nullable: true })
+  otherProjectSectorName: string;
+
+  @ManyToOne(type => MOU)
+  mou: MOU;
 }
 
 export type IntakeStatus = 'submitted' | 'approved' | 'rejected';

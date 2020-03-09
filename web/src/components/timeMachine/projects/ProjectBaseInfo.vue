@@ -2,7 +2,22 @@
   <v-layout row wrap py-2>
     <snackbar ref="snackbar"></snackbar>
     <v-form id="projectBaseInfo" ref="projectBaseInfo" v-model="valid" lazy-validation>
-      <v-flex md9>
+      <v-flex xs12>
+        <div class="v-form-container">
+          <div class="v-form-actions">
+            <v-flex md-12>
+              <v-btn
+                :disabled="!valid || saveProjectLoading"
+                :loading="saveProjectLoading"
+                color="primary"
+                @click="onSave"
+                >Save
+              </v-btn>
+            </v-flex>
+          </div>
+        </div>
+      </v-flex>
+      <v-flex md6>
         <div class="v-form-container">
           <v-text-field
             :rules="requiredRule"
@@ -12,7 +27,7 @@
           ></v-text-field>
         </div>
       </v-flex>
-      <v-flex md3>
+      <v-flex md6>
         <div class="v-form-container pl-0">
           <v-menu
             v-model="menu1"
@@ -25,6 +40,7 @@
             max-width="290px"
             min-width="290px"
           >
+          
             <template v-slot:activator="{ on }">
               <v-text-field
                 class="required"
@@ -116,34 +132,84 @@
           ></v-select>
         </div>
       </v-flex>
-      <v-flex xs12>
+      
+        <v-flex md6>
+        <div class="v-form-container">
+          <v-text-field
+            name="Reprocurement?"
+            label="Reprocurement?"
+            no-resize
+            rows="1"
+            :rules="requiredRule"
+            v-model="form.reprocurement"
+          ></v-text-field>
+        </div>
+      </v-flex>
+          <v-menu
+            v-model="menu2"
+            :close-on-content-click="true"
+            :nudge-right="40"
+            lazy
+            transition="scale-transition"
+            offset-y
+            full-width
+            max-width="290px"
+            min-width="290px"
+          >
+              <template v-slot:activator="{ on }">
+              <v-text-field
+                class="required"
+                :rules="requiredRule"
+                v-model="form.procurement_date"
+                label="Date of Procurement"
+                persistent-hint
+                prepend-inner-icon="event"
+                @blur="date = parseDate(dateFormatted)"
+                v-on="on"
+              ></v-text-field>
+            </template>
+            <v-date-picker v-model="form.procurement_date" no-title @input="menu2 = false"></v-date-picker>
+          </v-menu>
+        <v-flex xs12>
         <div class="v-form-container">
           <v-textarea
-            name="project-description"
-            label="Project Description"
+            class="required"
+            name="background"
+            label="Background of project"
             no-resize
             rows="4"
             :rules="requiredRule"
-            v-model="form.description"
+            v-model="form.background"
           ></v-textarea>
         </div>
       </v-flex>
-      <v-flex xs12>
+              <v-flex xs12>
         <div class="v-form-container">
-          <div class="v-form-actions">
-            <v-flex md-12>
-              <v-btn
-                :disabled="!valid || saveProjectLoading"
-                :loading="saveProjectLoading"
-                color="primary"
-                @click="onSave"
-                >Save
-              </v-btn>
-            </v-flex>
-          </div>
+          <v-textarea
+            class="required"
+            name="impact"
+            label="Impact if Project fails"
+            no-resize
+            rows="4"
+            :rules="requiredRule"
+            v-model="form.impact"
+          ></v-textarea>
         </div>
       </v-flex>
-    </v-form>
+              <v-flex xs12>
+        <div class="v-form-container">
+          <v-textarea
+            class="required"
+            name="success"
+            label="Overview of success"
+            no-resize
+            rows="4"
+            :rules="requiredRule"
+            v-model="form.success"
+          ></v-textarea>
+        </div>
+      </v-flex>
+      </v-form>
   </v-layout>
 </template>
 

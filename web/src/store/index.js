@@ -23,6 +23,7 @@ import IntakeRequestDto from '@/domain/models/Intake.dto';
 import HashTable from '@/utils/HashTable';
 
 const API_URI = process.env.VUE_APP_API_URI || 'http://localhost:3000';
+console.log('API URL:', { API_URI })
 
 Vue.use(Vuex);
 
@@ -43,9 +44,14 @@ const store = new Vuex.Store({
     clients: [],
     services: [],
     projectSectors: [],
+    projectIntakeCategory: [],
+    projectIntakeServices: [],
     ministries: [],
+    allMinistries: [],
     rfxPhases: [],
     rfxTypes: [],
+    intakeRiskQuestions:[],
+    mouList: [],
     // Intake form component
     activeIntakeRequestId: null,
     activeIntakeRequest: {},
@@ -56,6 +62,7 @@ const store = new Vuex.Store({
     activeProjectRfxData: [],
     activeProjectContacts: [],
     projects: [],
+    archivedProjects: [],
     projectsRfx: new HashTable(),
     // Timesheets component
     activeTimesheetEntryRowId: null, // Row of timesheet entries (1 week)
@@ -67,6 +74,7 @@ const store = new Vuex.Store({
     projectInformation: false,
     ministryInformation: false,
     contactInformation: false,
+    intakeRisk:false,
     timesheetsWeek: {
       startDate: null,
       endDate: null,
@@ -110,11 +118,19 @@ const store = new Vuex.Store({
     },
     // Verify data
     verifyTokenServer(state, data) {
+      console.log('verifyTokenServer called', {state, data})
       state.verifyTokenServer = data;
     },
     // Master data
     fetchMinistries(state, data) {
+      console.log('fetchMinistries called', data);
       state.ministries = data;
+    },
+    fetchAllMinistries(state, data){
+      state.allMinistries = data;
+    },
+    fetchintakeRiskQuestions(state, data) {
+      state.intakeRiskQuestions = data;
     },
     fetchRFxPhases(state, data) {
       state.rfxPhases = data;
@@ -123,9 +139,20 @@ const store = new Vuex.Store({
       state.rfxTypes = data;
     },
     fetchProjectSectors(state, data) {
+      console.log('fetchProjectSectors called', {state, data})
       state.projectSectors = data;
       // TODO: Remove me! I'm just for backward compat right now...
       state.services = data;
+    },
+    fetchProjectIntakeCategory(state, data) {
+      state.projectIntakeCategory = data;
+      // TODO: Remove me! I'm just for backward compat right now...
+      state.services = data;
+    },
+    fetchProjectIntakeServices(state, data) {
+      state.projectIntakeServices = data;
+      // TODO: Remove me! I'm just for backward compat right now...
+       state.services = data;
     },
     fetchProjectRfx(state, data) {
       state.projectsRfx.set(data.projectId, data.content);
@@ -135,6 +162,9 @@ const store = new Vuex.Store({
       state.clients = data;
     },
     fetchClient() {
+    },
+    fetchMOUs(state, data){
+      state.mouList = data;
     },
     addClient() {
       throw new Error('Not implemented!');
@@ -159,10 +189,16 @@ const store = new Vuex.Store({
     },
     // User contacts (profiles?)
     fetchUsers(state, data) {
+      console.log('fetchUsers called', { state, data } )
       state.users = data;
     },
     addUser() {
       throw new Error('Not implemented!');
+    },
+    addMinistry(state, data){
+      console.log('TODO - NOT SURE IF COMPLETE - addMinistry MUTATION called', {state, data});
+      // state.ministries = data;
+      // throw new Error('Not implemented');
     },
     updateUser() {
       throw new Error('Not implemented!');
@@ -184,8 +220,12 @@ const store = new Vuex.Store({
     addIntakeRequest(state, data) {
       state.activeIntakeRequest = IntakeRequestDto.constructFromObject(data);
     },
-    updateIntakeRequest() {
-      throw new Error('Not implemented!');
+    updateIntakeRequest(state, data) {
+      // console.log('mutation.updateIntakeRequest', state.intakeRequests)
+      // update only the correct record, use filter or something?
+      // console.log('state.intakeRequests')
+
+      // throw new Error('Not implemented!');
     },
     deleteIntakeRequest() {
       throw new Error('Not implemented!');
@@ -195,6 +235,10 @@ const store = new Vuex.Store({
     },
     assignContactToIntakeRequest() {
       throw new Error('Not implemented!');
+    },
+    createMOU(state, data){
+      console.log('createMOU mutation', data);
+      // state.mouList = data;
     },
     // Projects
     fetchProjects(state, data) {
@@ -218,6 +262,9 @@ const store = new Vuex.Store({
     fetchProject(state, data) {
       // TODO: Overwrite projects entry
       state.activeProject = data;
+    },
+    fetchArchivedProjects(state, data){
+      state.archivedProjects = data;
     },
     addProject() {
       throw new Error('Not implemented!');
@@ -336,6 +383,9 @@ const store = new Vuex.Store({
     deleteTimesheetEntryComment() {
       throw new Error('Not implemented!');
     },
+    archiveProject(state, data){
+      console.log('archiveProject response', data);
+    }
   },
   /**
    * This layer uses our service classes to make AJAX requests to the backend.
@@ -376,6 +426,45 @@ const store = new Vuex.Store({
         .then((res) => {
           const content = res.data;
           ctx.commit('fetchMinistries', content);
+        });
+    },
+    // Returns archived ministries + unarchived
+    fetchAllMinistries(ctx){
+      $http
+        .get(`${API_URI}/ministry/all`)
+        .then((res) => {
+          const content = res.data;
+          ctx.commit('fetchAllMinistries', content);
+        });
+    },
+    async addMinistry(ctx, req){
+      const body = req;
+      const api = $http
+        .post(`${API_URI}/ministry`, body)
+        .then((res) => {
+          const content = res.data;
+          ctx.commit('addMinistry', content);
+          return Promise.resolve(res.data);
+        })
+        .catch(err => Promise.reject(err));
+        return Promise.resolve(api);
+    },
+    async updateMinistries(ctx, req){
+      const api = await $http
+        .patch(`${API_URI}/ministry/${req.id}/update`, req)
+        .then((res) => {
+          console.log('updateMinistires RESPONSE', {res})
+          return Promise.resolve(res.data)
+        })
+        .catch(err => Promise.reject(err));
+        return Promise.resolve(api);
+    },
+    fetchintakeRiskQuestions(ctx) {
+      $http
+        .get(`${API_URI}/project-risk`)
+        .then((res) => {
+          const content = res.data;
+          ctx.commit('fetchintakeRiskQuestions', content);
         });
     },
     fetchRFxPhases(ctx) {
@@ -421,6 +510,22 @@ const store = new Vuex.Store({
         .then((res) => {
           const content = res.data;
           ctx.commit('fetchProjectSectors', content);
+        });
+    },
+    fetchProjectIntakeCategory(ctx) {
+      $http
+        .get(`${API_URI}/project-intake-category`)
+        .then((res) => {
+          const content = res.data;
+          ctx.commit('fetchProjectIntakeCategory', content);
+        });
+    },
+    fetchProjectIntakeServices(ctx) {
+      $http
+        .get(`${API_URI}/project-intake-service`)
+        .then((res) => {
+          const content = res.data;
+          ctx.commit('fetchProjectIntakeServices', content);
         });
     },
     // Clients or Government Ministries
@@ -528,6 +633,28 @@ const store = new Vuex.Store({
           ctx.commit('deleteUser', content);
         });
     },
+    fetchMOUs(ctx, req){
+      $http
+        .get(`${API_URI}/MOU`)
+        .then((res) => {
+          console.log('fetch MOUs', res);
+          const content = res.data;
+          ctx.commit('fetchMOUs', content);
+        })
+    },
+    async createMOU(ctx, req){
+      const body = req;
+      const api = await $http
+        .post(`${API_URI}/MOU`, body)
+        .then((res) => {
+          const content = res.data;
+          console.log('createMOU called with body', body);
+          ctx.commit('createMOU', content);
+          return Promise.resolve(content);
+        })
+        .catch(err => Promise.reject(err));
+      return Promise.resolve(api);
+    },
     // Intake requests
     fetchIntakeRequests(ctx) {
       $http
@@ -568,13 +695,16 @@ const store = new Vuex.Store({
         .catch(err => Promise.reject(err));
       return Promise.resolve(api);
     },
-    updateIntakeRequest(ctx, req) {
-      $http
-        .patch(`${API_URI}/intake/${req.id}`)
+    async updateIntakeRequest(ctx, req) {
+      const api = $http
+        .patch(`${API_URI}/intake/${req.id}`, req)
         .then((res) => {
           const content = res.data;
           ctx.commit('updateIntakeRequest', content);
-        });
+          return Promise.resolve(content);
+        })
+        .catch(err => Promise.reject(err));
+      return Promise.resolve(api);
     },
     async deleteIntakeRequest(ctx, req) {
       try {
@@ -612,6 +742,23 @@ const store = new Vuex.Store({
           content = res.data.map(project => project);
           ctx.commit('fetchProjects', content);
         });
+    },
+    fetchArchivedProjects(ctx) {
+      $http
+        .get(`${API_URI}/project/archived`)
+        .then((res) => {
+          let content = res.data;
+          content = res.data.map(project => project);
+          ctx.commit('fetchArchivedProjects', content);
+        });
+    },
+    archiveProject(ctx, id, is_archived){
+      $http
+        .patch(`${API_URI}/project/${id}/archive`, {is_archived: true})
+        .then((res) => {
+          const content = res.data;
+          ctx.commit('archiveProject', content);
+        })
     },
     fetchProject(ctx, req) {
       // TODO: Make sure it's the right kind of ID - eg. numeric or GUID/UUID

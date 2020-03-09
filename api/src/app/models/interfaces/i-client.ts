@@ -16,5 +16,6 @@ export interface IClient {
   province: string;
   country: string;
   postalCode: string;
-  isMinistry: boolean;
+  isNonMinistry: boolean;
+  nonMinistryName: string;
 }

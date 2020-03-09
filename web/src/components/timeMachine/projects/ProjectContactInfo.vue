@@ -52,6 +52,7 @@
           ></v-text-field>
         </div>
       </v-flex>
+     
     </v-form>
   </v-layout>
 </template>
@@ -104,8 +105,15 @@ export default {
     } },
   methods: {
     onNextClicked() {
-      if (this.$refs.projectContact.validate()) this.$store.state.contactInformation = true;
-      else this.$store.state.contactInformation = false;
+      if (this.$refs.projectContact.validate())
+      { 
+      this.$store.state.contactInformation = true;
+         // this.$emit('next');
+      }
+      else {
+         this.$store.state.contactInformation = false;
+      }
+      return this.$store.state.contactInformation;
     },
     reset() {
       this.$refs.projectContact.reset();

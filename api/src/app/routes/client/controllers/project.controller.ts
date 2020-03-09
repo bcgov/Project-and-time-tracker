@@ -4,7 +4,8 @@ import {
   retrieveProjects, 
   retrieveProjectById, 
   updateProject, 
-  retrieveProjectsByUserId 
+  retrieveProjectsByUserId,
+  retrieveArchivedProjects
 } from '../../../services/client/project.service';
 import { IProject } from '../../../models/interfaces/i-project';
 import { retrieveClientByProjectId } from '../../../services/client/client.service';
@@ -15,7 +16,6 @@ import { authorize } from '../../../services/common/authorize.service';
 export const getProjects = async (ctx: Koa.Context) => {
   try {
     const auth = ctx.state.auth as IAuth;
-
     if (auth.role === Role.PSB_Admin) {
       ctx.body = await retrieveProjects();
     } else if (auth.role === Role.PSB_User) {
@@ -25,6 +25,22 @@ export const getProjects = async (ctx: Koa.Context) => {
     ctx.throw(err.message);
   }
 };
+
+// Calling separate method for archived projects
+export const getArchivedProjects = async (ctx: Koa.Context) => {
+  try {
+    const auth = ctx.state.auth as IAuth;
+
+    if (auth.role === Role.PSB_Admin) {
+      ctx.body = await retrieveArchivedProjects();
+    } else if (auth.role === Role.PSB_User) {
+      ctx.body = await retrieveProjectsByUserId(auth.userId);
+    }
+  } catch (err) {
+    ctx.throw(err.message);
+  }
+};
+
 
 export const getProjectById = async (ctx: Koa.Context) => {
   try {
@@ -76,12 +92,23 @@ export const updateProjectAction = async (ctx: Koa.Context) => {
   }
 };
 
+export const archiveProjectAction = async (ctx: Koa.Context) => {
+  try {
+    await updateProject(ctx.params.id, {is_archived: ctx.request.body.is_archived});
+    ctx.body = 'success';
+  } catch (err) {
+    ctx.throw(err.message);
+  }
+};
+
+
+
 export const assignLeadAction = async (ctx: Koa.Context) => {
   try {
     const obj = ctx.request.body as any;
     if (!(obj)) {
-       ctx.throw('no data found');
-       return;
+      ctx.throw('no data found');
+      return;
     } else {
       const client = await retrieveClientByProjectId(ctx.params.id);
       if (!(client.clientNo > 0 && client.responsibilityCenter > 0 && 
@@ -105,8 +132,8 @@ export const assignBackupAction = async (ctx: Koa.Context) => {
   try {
     const obj = ctx.request.body as any;
     if (!(obj)) {
-       ctx.throw('no data found');
-       return;
+      ctx.throw('no data found');
+      return;
     } else {
       const client = await retrieveClientByProjectId(ctx.params.id);
       if (!(client.clientNo > 0 && client.responsibilityCenter > 0 && 
@@ -156,8 +183,11 @@ const routerOpts: Router.IRouterOptions = {
 const router: Router = new Router(routerOpts);
 
 router.get('/', authorize, getProjects);
+router.get('/archived', authorize, getArchivedProjects);
 router.get('/:id', authorize, getProjectById);
 router.patch('/:id', authorize, updateProjectAction);
+router.patch('/:id/archive', authorize, archiveProjectAction);
+
 // router.delete('/:id', deleteProjectAction); TODO: Implement in the 2nd phase of development.
 router.post('/:id/assign-lead', authorize, assignLeadAction);
 router.post('/:id/assign-backup', authorize, assignBackupAction);

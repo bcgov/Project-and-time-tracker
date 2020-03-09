@@ -14,9 +14,9 @@ export  const ENV_CONFIG =  {
         keyCloak: {
             realm: 'Time_Tracker_dev',
             resource: 'timeMachineApp',
-            authServerUrl: 'http://keycloak/auth',
-            adminUserName: 'admin',
-            adminPassword: 'password'
+            authServerUrl: 'http://iam.aot-technologies.com/auth',
+            adminUserName: 'dev_admin',
+            adminPassword: 'aot123'
         }
     },
 };

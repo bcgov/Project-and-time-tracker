@@ -25,6 +25,7 @@ INSERT INTO project_sector("projectSectorName") VALUES ('Business, Communication
 INSERT INTO project_sector("projectSectorName") VALUES ('Defense, Security & Safety Equipment & Supplies');
 INSERT INTO project_sector("projectSectorName") VALUES ('Personal, Domestic & Consumer Equipment & Supplies');
 INSERT INTO project_sector("projectSectorName") VALUES ('Services');
+INSERT INTO project_sector("projectSectorName") VALUES ('Other');
 
 INSERT INTO rfx_type("rfxTypeName") VALUES ('ITQ (Invitation to Quote)');
 INSERT INTO rfx_type("rfxTypeName") VALUES ('ITT (Invitation to Tender');
@@ -54,4 +55,3 @@ INSERT INTO rfx_phase("rfxPhaseName") VALUES ('Closed Out');
 INSERT INTO rfx_phase("rfxPhaseName") VALUES ('Suspended');
 INSERT INTO rfx_phase("rfxPhaseName") VALUES ('Cancelled');
 INSERT INTO rfx_phase("rfxPhaseName") VALUES ('Completed');
-

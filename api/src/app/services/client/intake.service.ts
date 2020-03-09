@@ -12,6 +12,7 @@ export const retrieveIntakes = async () => {
     .createQueryBuilder('i')
     .innerJoin('i.client', 'c')
     .innerJoin('c.ministry', 'm')
+    .leftJoin('i.mou', 'd')
     .leftJoin('project', 'p', 'p.id = i.projectId')
     .orderBy('i.dateModified', 'DESC')
     .select([
@@ -29,6 +30,9 @@ export const retrieveIntakes = async () => {
       'i.previousContractBackground AS "previousContractBackground"',
       'i.projectFailImpact AS "projectFailImpact"',
       'i.projectSuccess AS "projectSuccess"',
+      'c.isNonMinistry AS "isNonMinistry"',
+      'c.nonMinistryName AS "nonMinistryName"',
+      'd.name AS "mouName"',
       'i.isMinistry AS "isMinistry"'
     ])
     .getRawMany();
@@ -37,20 +41,19 @@ export const retrieveIntakes = async () => {
 export const retrieveIntakeById = async (intakeId: string) => {
   const repo = intakeRepo();
   const res = await repo
-                      .createQueryBuilder('i')
-                      .innerJoinAndSelect('i.client', 'c')
-                      .innerJoinAndSelect('i.projectSector', 'ps')
-                      .innerJoinAndSelect('c.ministry', 'm')
-                      .where('i.id = :id', { id: intakeId })
-                      .getOne();
-  if (!res) { 
-    throw Error(`intake not found for the id specified: ${intakeId}`); 
+    .createQueryBuilder('i')
+    .innerJoinAndSelect('i.client', 'c')
+    .innerJoinAndSelect('i.projectSector', 'ps')
+    .innerJoinAndSelect('c.ministry', 'm')
+    .where('i.id = :id', { id: intakeId })
+    .getOne();
+  if (!res) {
+    throw Error(`intake not found for the id specified: ${intakeId}`);
   }
   return res;
 };
 
 export const createIntake = async (obj: IProjectIntake) => {
-  
   const intake: ProjectIntake = intakeRepo().create(obj);
   intake.dateCreated = new Date();
   intake.dateModified = new Date();
@@ -67,6 +70,8 @@ export const updateIntake = async (id: string, fields: any) => {
   }
   const updatedIntake = await repo.merge(intake, fields);
   updatedIntake.dateModified = new Date();
+
+  console.log('\n\nupdateIntake in service', fields)
 
   await repo.save(updatedIntake);
   return updatedIntake;

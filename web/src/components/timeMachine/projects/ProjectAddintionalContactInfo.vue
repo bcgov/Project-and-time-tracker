@@ -1,6 +1,11 @@
 <template>
   <v-layout row wrap>
     <v-form id="clientcontact" ref="projectContact">
+       <v-flex md12>
+        <div class="v-form-container">
+          <v-text-field label="Role Name" v-model="form.contactType"></v-text-field>
+        </div>
+      </v-flex>
       <v-flex md12>
         <div class="v-form-container">
           <v-text-field :label="contactNameLabel" v-model="form.fullName"></v-text-field>

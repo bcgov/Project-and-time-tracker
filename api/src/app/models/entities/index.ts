@@ -9,6 +9,8 @@ export * from './projectIntake.entity';
 export * from './projectIntakeContacts.entity';
 export * from './projectRfx.entity';
 export * from './projectSector.entity';
+export * from './project_Intake_Category.entity';
+export * from './project_Intake_Services.entity';
 export * from './rfxPhase.entity';
 export * from './rfxType.entity';
 export * from './timesheet.entity';

@@ -37,19 +37,22 @@ Make sure you have docker and docker-compose installed (`docker-compose --versio
 
     # ssh in - replace {container} with name from above, or if yours is the same as mine copy the name
     docker exec -it {container} bash
-    docker exec -it project-and-time-tracker_db_1 bash
+    docker exec -it projectandtimetracker_db_1 bash
 
     # Login to postgress process
     psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB"
     
     # import sql - tip: use tab completion
-    \i BC_Timesheet_MasterData.sql 
+    \i BC_Timesheet_MasterData.sql
+    \i Risk_MasterData.sql 
 
     # log out of container
     exit
 ```
 
-# Comments
+  docker run --name timemachine-nginx -v /home/arc/prod/app:/app:ro -v /home/arc/prod/nginx.conf:/etc/nginx/nginx.conf:ro -d -p 80:80 nginx
+
+  docker container start timemachine-nginx
 
 Addenda
 March 4, 2019
