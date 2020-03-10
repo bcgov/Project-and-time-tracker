@@ -1,5 +1,6 @@
 <template>
   <v-layout row wrap py-2>
+    <h2 class='heading-txt'>Risk Assessment</h2>
     <v-form
       id="project-risk-assessment"
       ref="projectRiskAssessment"
@@ -63,6 +64,9 @@
         <v-flex md12>
           <v-btn color="primary" @click="editProjectRisk" class="edit-btn">edit</v-btn>
         </v-flex>
+        <v-flex md12>
+          Current Risk Level:
+        </v-flex>
         <v-expansion-panel :value="0">
           <v-expansion-panel-content>
             <template v-slot:header>
@@ -74,7 +78,7 @@
             </template>
             <v-card>
               <v-card-text>
-                <v-flex sm12 v-for="item in projectRiskAnswers" :key="item.id">
+                <v-flex sm12 v-for="item in projectRiskAnswers" :key="item.id" class="risk-analysis">
                   <div v-if="item.riskLevel == 1">
                     <v-card-text class="pl-4">
                       <v-flex>
@@ -84,8 +88,7 @@
                         <v-flex sm12>{{ item.answer }}</v-flex>
                       </v-flex>
                     </v-card-text>
-                  </div></v-flex
-                >
+                  </div></v-flex>
               </v-card-text>
             </v-card>
           </v-expansion-panel-content>
@@ -99,7 +102,7 @@
             </template>
             <v-card>
               <v-card-text>
-                <v-flex sm12 v-for="item in projectRiskAnswers" :key="item.id">
+                <v-flex sm12 v-for="item in projectRiskAnswers" :key="item.id" class="risk-analysis">
                   <div v-if="item.riskLevel == 2">
                     <v-card-text class="pl-4">
                       <v-flex>
@@ -109,8 +112,7 @@
                         <v-flex sm12>{{ item.answer }}</v-flex>
                       </v-flex>
                     </v-card-text>
-                  </div></v-flex
-                >
+                  </div></v-flex>
               </v-card-text>
             </v-card>
           </v-expansion-panel-content>
