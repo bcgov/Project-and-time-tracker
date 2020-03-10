@@ -33,7 +33,7 @@
           </v-flex>
           <v-flex v-if="$props.intakeValues.chkReprocurement">
             <v-flex>
-              <v-flex sm12><h4>Date of Reprocurement</h4></v-flex>
+              <v-flex sm12><h4>Date original contract ends</h4></v-flex>
               <v-flex sm12>{{ $props.intakeValues.projectName }}</v-flex>
             </v-flex>
             <v-flex>

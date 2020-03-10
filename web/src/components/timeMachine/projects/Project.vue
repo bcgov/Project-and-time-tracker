@@ -112,7 +112,7 @@
                               />
                             </v-flex>
                             <v-flex xs12 md6 my-3>
-                              <h3 class="v-form-container">Client Financier</h3>
+                              <h3 class="v-form-container">Financial Contact</h3>
                               <project-contact-info
                                 ref="projectFinancier"
                                 :contact="projectContactData('clientfinance')"

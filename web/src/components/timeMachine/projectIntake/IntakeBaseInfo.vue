@@ -156,7 +156,7 @@
                 readonly
                 :rules="requiredRule"
                 v-model="form.dateOfReprocurement"
-                label="Date of Reprocurement"
+                label="Date original contract ends"
                 persistent-hint
                 prepend-inner-icon="event"
                 @blur="date = parseDate(dateFormatted)"

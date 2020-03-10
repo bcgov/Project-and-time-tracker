@@ -75,7 +75,7 @@
                 color="btnPrimary"
                 class="white--text intake-table-approve-btn ma-0"
                 @click="approveRequest(props.item.id)"
-              >Approve</v-btn>
+              >APPROVE</v-btn>
             </td>
             <td class="text-xs-center">
               <v-btn flat icon color="grey" @click="viewRequest(props.item.id)">
@@ -133,10 +133,11 @@
                 ></v-text-field>
 
                 <!-- <v-checkbox v-model="isNewMOU" class='ml-0 pl-0'> -->
-                <v-checkbox @click='toggleNewMou()' class='ml-0 pl-0'>
-                  <template v-slot:label>
-                    <label class='v-label theme--light'>Create New</label>
-                  </template>
+                <!-- <v-checkbox @click='toggleNewMou' class='ml-0 pl-0'> -->
+                    <label class='v-label theme--light'>Create New {{ isNewMOU ? 1 : 2 }}</label>
+                <v-checkbox v-on:click.stop='toggleNewMou' v-model='isNewMOU' class='ml-0 pl-0'>
+                  <!-- <template v-slot:label>
+                  </template> -->
                 </v-checkbox>
 
 
@@ -396,8 +397,9 @@ export default {
         this.mou = undefined;
       })
     },
-    toggleNewMou(){
-      this.isNewMOU = !this.isNewMOU;
+    toggleNewMou(event){
+      console.log('toggle called');
+      // this.isNewMOU = !this.isNewMOU;
       this.mou = undefined;
     }
   },
