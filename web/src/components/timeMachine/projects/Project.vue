@@ -180,16 +180,14 @@
                   </v-tab-item>
                   <!-- RISK -->
                   <v-tab-item>
-                    <v-expansion-panel class="mt-4" :value=0>
-                    <v-expansion-panel-content>
-                    <template v-slot:header>
-                    <div class="primary-heading">
-                    <label class="sub-header-large">RISK</label>
-                    <label class="sub-header-large">-----------To do-----------------</label>
-                    </div>
-                    </template>
-                    </v-expansion-panel-content>
-                    </v-expansion-panel>
+                    <v-card>
+                      <v-card-text>
+                        <project-risk-assessment
+                          ref="projectRiskAssessment"
+                          v-if="project"
+                        ></project-risk-assessment>
+                      </v-card-text>
+                    </v-card>
                     </v-tab-item>
                   <!-- PROCUREMENT LOG -->
                   <v-tab-item>
@@ -224,6 +222,7 @@ import ProjectBaseInfo from './ProjectBaseInfo.vue';
 import ProjectContactInfo from './ProjectContactInfo.vue';
 import ProjectRfx from './ProjectRfx.vue';
 import ProjectFinanceInfo from './ProjectFinanceInfo.vue';
+import projectRiskAssessment from './ProjectRisk.vue';
 import Snackbar from '../common/Snackbar.vue';
 import ProjectAdditionalContactInfo from './ProjectAddintionalContactInfo.vue';
 
@@ -243,6 +242,7 @@ export default {
     ProjectFinanceInfo,
     Snackbar,
     ProjectAdditionalContactInfo,
+    projectRiskAssessment,
   },
   $_veeValidate: { validator: 'new' },
   computed: { project() {
