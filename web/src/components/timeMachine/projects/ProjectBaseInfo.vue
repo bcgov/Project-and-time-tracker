@@ -69,10 +69,22 @@
             label="Ministry"
             class="required"
             :rules="requiredRule"
-            v-model="form.client.ministry.id"
+            v-model="ministryname"
+            v-if="!form.client.isNonMinistry"
             item-value="id"
             item-text="ministryName"
           ></v-select>
+           <v-container fluid row wrap align-start justify-end fill-height style="padding:0px !important">
+          <label class="v-label theme--light" style="margin-left: 2%;">Non-Ministry</label>
+          <v-checkbox v-model="form.client.isNonMinistry"></v-checkbox>
+            <v-text-field
+            :rules="requiredRule"
+            v-if="form.client.isNonMinistry"
+            class="required"
+            label="Non Ministry Name"
+            v-model="form.client.nonMinistryName"
+          ></v-text-field>
+        </v-container>
         </div>
       </v-flex>
       <v-flex md6>
@@ -153,6 +165,7 @@
       </v-flex>
       <v-menu
         v-model="menu2"
+         v-if="form.isReprocurement"
         :close-on-content-click="true"
         :nudge-right="40"
         lazy
@@ -185,6 +198,7 @@
             no-resize
             rows="4"
             :rules="requiredRule"
+             v-if="form.isReprocurement"
             v-model="form.previousContractBackground"
           ></v-textarea>
         </div>
@@ -270,6 +284,7 @@ export default {
       selectedLeadUser: "",
       menu1: false,
       menu2: false,
+      ministryname:  form.client.ministry? form.client.ministry.id : form.client.nonMinistryName,
       saveProjectLoading: false,
       ministryInformation: this.$store.state.ministryInformation
     };

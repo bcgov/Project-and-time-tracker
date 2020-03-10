@@ -43,7 +43,6 @@
                   <v-tab ripple>Procurement Log</v-tab>
                   <v-flex justify-end align-end><v-text-field
                             class="search-bar"
-                            v-model="search"
                             prepend-inner-icon="search"
                             label="Search"
                             single-line

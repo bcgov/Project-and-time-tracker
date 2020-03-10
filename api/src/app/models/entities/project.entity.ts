@@ -63,7 +63,7 @@ export class Project {
   @Column({ type: 'boolean', nullable: true })
   isMinistry: boolean;
 
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ type: 'date', nullable: true })
   dateOfReprocurement: Date;
 
   @Column({ type: 'text', nullable: true })
