@@ -59,13 +59,23 @@
       </v-flex>
       <v-flex md6>
         <div class="v-form-container">
-          <v-text-field
+          <!-- <v-text-field
             :rules="requiredRule"
             class="required"
             label="Ministry"
             readonly
             v-model="form.client.ministry.ministryName"
-          ></v-text-field>
+          ></v-text-field> -->
+           <v-select
+            :items="ministries"
+            v-if="!form.isNonMinistry"
+            label="Ministry"
+            class="required"
+            :rules="requiredRule"
+            v-model="form.client.ministry.id"
+            item-value="id"
+            item-text="ministryName"
+          ></v-select>
         </div>
       </v-flex>
       <v-flex md6>
@@ -141,7 +151,7 @@
             no-resize
             rows="1"
             :rules="requiredRule"
-            v-model="form.reprocurement"
+            v-model="form.isReprocurement"
           ></v-text-field>
         </div>
       </v-flex>
@@ -160,7 +170,7 @@
               <v-text-field
                 class="required"
                 :rules="requiredRule"
-                v-model="form.procurement_date"
+                v-model="form.dateOfReprocurement"
                 label="Date of Procurement"
                 persistent-hint
                 prepend-inner-icon="event"
@@ -168,7 +178,7 @@
                 v-on="on"
               ></v-text-field>
             </template>
-            <v-date-picker v-model="form.procurement_date" no-title @input="menu2 = false"></v-date-picker>
+            <v-date-picker v-model="form.dateOfReprocurement" no-title @input="menu2 = false"></v-date-picker>
           </v-menu>
         <v-flex xs12>
         <div class="v-form-container">
@@ -179,7 +189,7 @@
             no-resize
             rows="4"
             :rules="requiredRule"
-            v-model="form.background"
+            v-model="form.previousContractBackground"
           ></v-textarea>
         </div>
       </v-flex>
@@ -192,7 +202,7 @@
             no-resize
             rows="4"
             :rules="requiredRule"
-            v-model="form.impact"
+            v-model="form.projectFailImpact"
           ></v-textarea>
         </div>
       </v-flex>
@@ -205,7 +215,7 @@
             no-resize
             rows="4"
             :rules="requiredRule"
-            v-model="form.success"
+            v-model="form.projectSuccess"
           ></v-textarea>
         </div>
       </v-flex>
@@ -255,6 +265,7 @@ export default {
       form: { ...form },
       selectedLeadUser: '',
       menu1: false,
+      menu2: false,
       saveProjectLoading: false,
     };
   },

@@ -113,6 +113,15 @@
                               />
                             </v-flex>
                             <v-flex xs12 md6 my-3>
+                              <h3 class="v-form-container">Client Financier</h3>
+                              <project-contact-info
+                                ref="projectFinancier"
+                                :contact="projectContactData('clientfinance')"
+                                :contactNameLabel="'Client Financiar Name'"
+                                :isRequired="true"
+                              />
+                            </v-flex>
+                            <v-flex xs12 md6 my-3>
                               <div>
                                 <v-checkbox
                                   color="primary"
@@ -303,8 +312,10 @@ export default {
     async saveProjectContacts() {
       this.$refs.projectLead.Validate();
       this.$refs.projectSponsor.Validate();
+      this.$refs.projectFinancier.Validate();
       const projectLeadForm = this.$refs.projectLead.form || undefined;
       const projectSponsorForm = this.$refs.projectSponsor.form || undefined;
+       const projectFinancierForm = this.$refs.projectFinancier.form || undefined;
       const projectContactForm = this.$refs.projectClient
         ? this.$refs.projectClient.form
         : undefined;
@@ -315,6 +326,7 @@ export default {
         projectLeadForm,
         projectSponsorForm,
         projectContactForm,
+        projectFinancierForm
       ].filter(contact => contact !== undefined);
       if (contacts instanceof Array && contacts.length > 0) {
         await this.$store.dispatch('updateProjectContacts', { id: this.projectId,
