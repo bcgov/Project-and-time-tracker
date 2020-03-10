@@ -5,13 +5,15 @@
       <label class="primary-heading sub-header-large">Risk Assessment</label>
 
       <div v-if='score'>
-        <!-- TODO - Need to recalculate each time person changes values below... -->
-        <span class='bold'>Current Risk Level:</span> <span>{{score.level}} -( {{score.percentage}} )</span>
+        <!-- PROBLEM: RISK LEVEL SHOULD RE-CALCULATE EVERY TIME USERS MODIFY CHECKBOXES BELOW -->
+        <span class='bold'>Current Risk Level: &nbsp;</span> <span :class='`level-${score.level}`'>{{score.level}}  ( {{score.percentage}}% )</span>
       </div>
 
       <pre>
-          {{score}}
-      </pre>
+
+Developer only (TODO Remove)
+{{score}}</pre>
+
     </v-flex>
 
 
@@ -160,7 +162,7 @@ export default {
         // Sum all the scores
         .reduce((a, cur) => a + cur);
 
-      const percentage = ((score / totalPossibleScore) * 100).toFixed(4);
+      const percentage = ((score / totalPossibleScore) * 100).toFixed(2);
       return {
         score,
         totalPossibleScore,
@@ -175,3 +177,14 @@ export default {
   },
 };
 </script>
+<style scoped>
+.level-Low {
+  color: green;
+}
+.level-High {
+  color: red;
+}
+.level-Medium {
+  color: orange;
+}
+</style>
