@@ -123,6 +123,7 @@
                   item-text='name'
                   item-value='id'
                   label="Assign MOU"
+                  ref="mouCombobox"
                 ></v-combobox>
                 Project: {{ mouProjectName }}
               </v-flex>
@@ -203,7 +204,7 @@ export default {
   methods: {
     fetchData() {
       this.$store.dispatch('fetchIntakeRequests');
-      // this.$store.dispatch('fetchMOU')
+      this.$store.dispatch('fetchMOUs');
     },
     viewRequest(intakeId) {
       this.id = intakeId;
@@ -348,20 +349,36 @@ export default {
       this.mouProject = item
     },
     async assignMOU(){
+      console.log('CLICK', this.mou);
 
-      if (!this.mou || this.mou === '') return;
-      console.log('assignMOU', {project: this.mouProject, mou: this.mou})
-      let mouID = this.mou.id;
+      // We have to use blur/nextTick in order to force the combobox to update it's value
+      // This only happens if user goes from focusing on combobox to directly clicking 'Save'
+      this.$refs.mouCombobox.blur();
+      this.$nextTick(async () => {
 
-      // Create MOU if does not exist.
-      if (!mouID && this.mou){
-        mouID = await this.$store.dispatch('createMOU', {name: this.mou});
-      }
+        console.log('CLICK afterblur', this.mou);
 
-      const project = this.mouProject;
-      project.mou = {id: mouID, name: this.mou}
-      const projResponse = await this.$store.dispatch('updateIntakeRequest', project);
-      console.log('assignMOU projResponse', {projResponse});
+        if (!this.mou || this.mou === '') return;
+        console.log('assignMOU', {project: this.mouProject, mou: this.mou})
+        let mouID = this.mou.id;
+
+        // Create MOU if does not exist.
+        if (!mouID && this.mou){
+          mouID = await this.$store.dispatch('createMOU', {name: this.mou});
+        }
+
+        const project = this.mouProject;
+        project.mou = {id: mouID, name: this.mou}
+        const projResponse = await this.$store.dispatch('updateIntakeRequest', project);
+        console.log('assignMOU projResponse', {projResponse});
+
+        // TODO - Need to refresh now
+        this.fetchData();
+
+        this.mouDialog = false;
+        // Clear modal for next time
+        this.mou = undefined;
+      })
     }
   },
   created() {
