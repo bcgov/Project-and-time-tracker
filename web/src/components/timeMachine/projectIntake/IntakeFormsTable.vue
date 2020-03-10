@@ -132,15 +132,9 @@
                   v-else
                 ></v-text-field>
 
-                <!-- <v-checkbox v-model="isNewMOU" class='ml-0 pl-0'> -->
-                <!-- <v-checkbox @click='toggleNewMou' class='ml-0 pl-0'> -->
-                    <label class='v-label theme--light'>Create New {{ isNewMOU ? 1 : 2 }}</label>
-                <v-checkbox v-on:click.stop='toggleNewMou' v-model='isNewMOU' class='ml-0 pl-0'>
-                  <!-- <template v-slot:label>
-                  </template> -->
-                </v-checkbox>
-
-
+                <v-checkbox v-model='isNewMOU'
+                            :label="`${isNewMOU ? 'Create' : 'Assign'} MOU`"
+                 ></v-checkbox>
               </v-flex>
                <v-flex xs12>
               </v-flex>
