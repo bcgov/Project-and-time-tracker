@@ -104,9 +104,8 @@
             :rules="requiredRule"
             prepend-inner-icon="attach_money"
             label="Estimated Budget"
-            type="number"
-            :min="0"
-            step="any"
+
+            v-currency
             oninput="validity.valid||(value='');"
             v-model="form.estimatedContractValue"
           ></v-text-field>
