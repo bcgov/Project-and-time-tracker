@@ -21,7 +21,7 @@
             <td class="text-xs-left">{{ props.item.mouAmount }} </td>
             <td v-bind:class="{ 'archived': props.item.is_archived}">{{ props.item.projectName }}</td>
             <td class="text-xs-left">{{ props.item.projectName}} </td>
-            <td class="text-xs-left">{{ [props.item.client.ministry.ministryName, props.item.orgDivision].join(" ") }}</td>
+            <td class="text-xs-left">{{ [props.item.client.ministry?props.item.client.ministry.ministryName: props.item.client.nonMinistryName, props.item.orgDivision].join(" ") }}</td>
             <td class="text-xs-left table-dropdown">
               <v-select
                 :items="userList"

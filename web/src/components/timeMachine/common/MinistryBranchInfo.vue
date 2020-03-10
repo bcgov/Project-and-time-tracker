@@ -21,7 +21,7 @@
             v-if="form.isNonMinistry"
             class="required"
             label="Non Ministry Name"
-            v-model="form.NonMinistryName"
+            v-model="form.nonMinistryName"
           ></v-text-field>
         </v-container>
         </div>
