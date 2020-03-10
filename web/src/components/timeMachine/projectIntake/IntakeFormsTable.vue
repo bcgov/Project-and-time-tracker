@@ -24,7 +24,7 @@
                 @click.native='showMOUModal(props.item)'>
                   ASSIGN MOU
                </v-btn>
-               <span v-else>{{ props.item.mouName }}</span>
+               <span v-else @click='showMOUModal(props.item)'>{{ props.item.mouName }}</span>
             </td>
             <td>{{ props.item.projectName }}</td>
             <td
@@ -113,18 +113,33 @@
           <v-container grid-list-md>
             <v-layout wrap>
               <v-flex xs12>
-                  <!-- v-model="mou" -->
-                  <!-- @input.native="e => mou = e.target.value" -->
-                  <!-- @input.native="mou=$event.srcElement.value" -->
-                  <!-- Bug: Currently can require two clicks. -->
-                <v-combobox
+                Project: {{ mouProjectName }}
+
+                <v-select
                   v-model="mou"
                   :items="mouList"
                   item-text='name'
-                  item-value='id'
+                  item-value='name'
                   label="Assign MOU"
-                ></v-combobox>
-                Project: {{ mouProjectName }}
+                  ref="mouCombobox"
+                  v-if="!isNewMOU"
+                ></v-select>
+                <v-text-field
+                  v-model="mou"
+                  item-text='name'
+                  label="New MOU"
+                  ref="mouCombobox"
+                  v-else
+                ></v-text-field>
+
+                <!-- <v-checkbox v-model="isNewMOU" class='ml-0 pl-0'> -->
+                <v-checkbox @click='toggleNewMou()' class='ml-0 pl-0'>
+                  <template v-slot:label>
+                    <label class='v-label theme--light'>Create New</label>
+                  </template>
+                </v-checkbox>
+
+
               </v-flex>
                <v-flex xs12>
               </v-flex>
@@ -183,6 +198,7 @@ export default {
       id: '',
       mouProjectName: '',
       mou: '',
+      isNewMOU: false,
     };
   },
   computed: {
@@ -203,7 +219,7 @@ export default {
   methods: {
     fetchData() {
       this.$store.dispatch('fetchIntakeRequests');
-      // this.$store.dispatch('fetchMOU')
+      this.$store.dispatch('fetchMOUs');
     },
     viewRequest(intakeId) {
       this.id = intakeId;
@@ -342,26 +358,47 @@ export default {
       }
     },
     showMOUModal(item) {
-      this.mouDialog = true;
       this.mouProjectName = item.projectName;
-      this.mouProjectId = item.id
-      this.mouProject = item
-    },
-    async assignMOU(){
+      this.mouProjectId = item.id;
+      this.mouProject = item;
 
-      if (!this.mou || this.mou === '') return;
-      console.log('assignMOU', {project: this.mouProject, mou: this.mou})
-      let mouID = this.mou.id;
-
-      // Create MOU if does not exist.
-      if (!mouID && this.mou){
-        mouID = await this.$store.dispatch('createMOU', {name: this.mou});
+      if (item.mouName){
+        console.log('has mou!', item);
+        this.mou = {id: item.mouId, name: item.mouName};
       }
 
-      const project = this.mouProject;
-      project.mou = {id: mouID, name: this.mou}
-      const projResponse = await this.$store.dispatch('updateIntakeRequest', project);
-      console.log('assignMOU projResponse', {projResponse});
+      this.mouDialog = true;
+    },
+    async assignMOU(){
+      // We have to use blur/nextTick in order to force the combobox to update it's value
+      // This only happens if user goes from focusing on combobox to directly clicking 'Save'
+      this.$refs.mouCombobox.blur();
+      this.$nextTick(async () => {
+
+        if (!this.mou || this.mou === '') return;
+        console.log('assignMOU', {project: this.mouProject, mou: this.mou})
+        let mouID = this.mou.id;
+
+        // Create MOU if does not exist.
+        if (!mouID && this.mou){
+          console.log('creating mou', {mouID, mou: this.mou})
+          mouID = await this.$store.dispatch('createMOU', {name: this.mou});
+        }
+
+        const project = this.mouProject;
+        project.mou = {id: mouID, name: this.mou}
+        const projResponse = await this.$store.dispatch('updateIntakeRequest', project);
+        // console.log('assignMOU projResponse', {projResponse});
+
+        this.fetchData();
+        this.mouDialog = false;
+        // Clear modal for next time
+        this.mou = undefined;
+      })
+    },
+    toggleNewMou(){
+      this.isNewMOU = !this.isNewMOU;
+      this.mou = undefined;
     }
   },
   created() {

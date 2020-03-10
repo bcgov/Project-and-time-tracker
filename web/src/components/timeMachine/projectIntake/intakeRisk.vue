@@ -74,10 +74,10 @@ export default {
     return {
       valid: true,
       categoryList: [
-        { id: 1, text: 'SIZE & SCOPE', showStatus: true },
-        { id: 2, text: 'PROCESS COMPLEXITY', showStatus: true },
-        { id: 3, text: 'CAPACITY', showStatus: true },
-        { id: 4, text: 'UNIQUE ATTRIBUTES', showStatus: true },
+        { id: 1, text: 'SIZE & SCOPE', showStatus: false},
+        { id: 2, text: 'PROCESS COMPLEXITY', showStatus: false},
+        { id: 3, text: 'CAPACITY', showStatus: false},
+        { id: 4, text: 'UNIQUE ATTRIBUTES', showStatus: false},
       ],
       requireRadioButtondRule: [v => ((v || !v) && v != null) || 'This field required'],
       // Initialize using props

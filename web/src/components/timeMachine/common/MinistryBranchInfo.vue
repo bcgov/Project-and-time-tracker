@@ -13,22 +13,23 @@
             item-value="id"
             item-text="ministryName"
           ></v-select>
-            <v-container fluid row wrap align-start justify-end fill-height style="padding:0px !important">
-          <label class="v-label theme--light" style="margin-left: 2%;">Non-Ministry</label>
-          <v-checkbox v-model="form.isNonMinistry"></v-checkbox>
-            <v-text-field
+
+           <v-text-field
             :rules="requiredRule"
             v-if="form.isNonMinistry"
             class="required"
             label="Non Ministry Name"
             v-model="form.NonMinistryName"
           ></v-text-field>
-        </v-container>
-        </div>
 
-        <div class="v-form-container">
+          <v-container fluid row wrap align-start justify-end fill-height style="padding:0px !important; margin-top: -10px;" class='mb-4 mt-0'>
+            <label class="v-label theme--light" style="margin-left: 2%;">Non-Ministry</label>
+            <v-checkbox v-model="form.isNonMinistry"></v-checkbox>
+          </v-container>
 
         </div>
+        <!-- <div class="v-form-container">
+        </div> -->
       </v-flex>
       <v-flex sm6>
         <div class="v-form-container">

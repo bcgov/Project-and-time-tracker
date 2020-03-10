@@ -6,23 +6,10 @@
           <div class="finance-code-block">
             <h3 class="finance-header">
               Finance Codes
-                
-              <v-tooltip bottom class="finance-tooltip">
-                <template v-slot:activator="{ on }">
-                  <v-icon v-on="on" class="finance-code-info">info</v-icon>
-                </template>
-                <span>
-                  Please note:
-                  <br>To complete the intake form these fields are optional.
-                  <br>However, a project cannot be assigned without finance codes.
-                </span>
-              </v-tooltip>
-              
             </h3>
-             <span>
-                  Please note:
-                  <br>To complete the intake form these fields are optional.However, a project cannot be assigned without finance codes.
-                </span>
+             <span class='mb-4 d-block'>
+               Please note: To complete the intake form these fields are optional. However, a project cannot be assigned without finance codes.
+             </span>
           </div>
         </div>
       </v-flex>
