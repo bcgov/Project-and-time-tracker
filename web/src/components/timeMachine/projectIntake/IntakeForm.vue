@@ -229,6 +229,7 @@ import intakeRiskAssessment from './intakeRisk.vue';
 import ProjectAdditionalContactInfo from '../projects/ProjectAddintionalContactInfo.vue';
 import intakeReview from './IntakeReviewSubmit.vue';
 import './intakeform.styl';
+import parseCurrencyFloat from '../../../utils/parseCurrencyFloat';
 
 Vue.use(VeeValidate);
 
@@ -384,7 +385,7 @@ export default {
         && this.$store.state.intakeRisk
       ) {
         this.$refs.spinner.open();
-        formData.estimatedContractValue = parseFloat(
+        formData.estimatedContractValue = parseCurrencyFloat(
           formData.estimatedContractValue,
         );
         this.$store.dispatch('addIntakeRequest', formData).then(
@@ -484,7 +485,7 @@ export default {
           && this.$store.state.intakeRisk
         ) {
           // this.$refs.spinner.open();
-          formData.estimatedContractValue = parseFloat(
+          formData.estimatedContractValue = parseCurrencyFloat(
             formData.estimatedContractValue,
           );
           this.reviewSubmit = formData;
