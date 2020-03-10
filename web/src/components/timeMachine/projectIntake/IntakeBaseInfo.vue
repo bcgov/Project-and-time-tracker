@@ -331,6 +331,7 @@ export default {
         }
         this.$emit('next');
         this.$store.state.projectInformation = true;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     },
     reset() {
