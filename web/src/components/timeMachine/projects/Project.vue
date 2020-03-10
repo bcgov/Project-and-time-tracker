@@ -170,7 +170,7 @@
                           <div class="v-form-container">
                             <div class="v-form-actions">
                                 <v-flex md12 mt-4>
-                                    <v-btn color="primary" @click="saveProjectContacts">Save</v-btn>
+                                    <v-btn color="primary" @click="saveFinanceCodes">Save</v-btn>
                                 </v-flex>
                             </div>
                           </div>
@@ -315,7 +315,7 @@ export default {
       this.$refs.projectFinancier.Validate();
       const projectLeadForm = this.$refs.projectLead.form || undefined;
       const projectSponsorForm = this.$refs.projectSponsor.form || undefined;
-       const projectFinancierForm = this.$refs.projectFinancier.form || undefined;
+      const projectFinancierForm = this.$refs.projectFinancier.form || undefined;
       const projectContactForm = this.$refs.projectClient
         ? this.$refs.projectClient.form
         : undefined;
@@ -326,7 +326,7 @@ export default {
         projectLeadForm,
         projectSponsorForm,
         projectContactForm,
-        projectFinancierForm
+        projectFinancierForm,
       ].filter(contact => contact !== undefined);
       if (contacts instanceof Array && contacts.length > 0) {
         await this.$store.dispatch('updateProjectContacts', { id: this.projectId,
