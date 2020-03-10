@@ -128,9 +128,9 @@
         <div>
           <v-container fluid>
             <label class="v-label theme--light" style="margin-left: 4%;">Reprocurement?</label>
-            <v-radio-group v-model="form.chkReprocurement" row>
-              <v-radio label=" Yes" :value="true" form.chkReprocurement></v-radio>
-              <v-radio label=" No" :value="false" form.chkReprocurement></v-radio>
+            <v-radio-group v-model="form.isReprocurement" row>
+              <v-radio label=" Yes" :value="true" form.isReprocurement></v-radio>
+              <v-radio label=" No" :value="false" form.isReprocurement></v-radio>
             </v-radio-group>
           </v-container>
         </div>
@@ -140,7 +140,7 @@
     margin-left: 5%;">
           <v-menu
             v-model="menu2"
-            v-if="form.chkReprocurement"
+            v-if="form.isReprocurement"
             :close-on-content-click="false"
             :nudge-right="40"
             lazy
@@ -155,7 +155,7 @@
                 class="required"
                 readonly
                 :rules="requiredRule"
-                v-model="form.dateofReprocurement"
+                v-model="form.dateOfReprocurement"
                 label="Date of Reprocurement"
                 persistent-hint
                 prepend-inner-icon="event"
@@ -164,7 +164,7 @@
               ></v-text-field>
             </template>
             <v-date-picker
-              v-model="form.dateofReprocurement"
+              v-model="form.dateOfReprocurement"
               no-title
               @input="menu2 = false"
               :min="new Date().toISOString()"
@@ -188,7 +188,7 @@
         <div class="v-form-container">
           <v-textarea
             class="required"
-            v-if="form.chkReprocurement"
+            v-if="form.isReprocurement"
             name="project-description"
             label="What is the background from the previous contract?"
             no-resize
@@ -264,7 +264,7 @@ export default {
   },
   data() {
     const form = Object.assign({}, this.$props.project);
-    form.chkReprocurement = false;
+    form.isReprocurement = false;
     const inputProjectSector = form.projectSector || null;
     if (!inputProjectSector) {
       form.projectSector = new ProjectSectorDto();
@@ -287,7 +287,7 @@ export default {
       requiredRule: [v => !!v || 'This field required'],
       // Initialize using props
       form: { ...form },
-      // chkReprocurement: false,
+      // isReprocurement: false,
       menu1: false,
       menu2: false,
       dateFormatted: undefined,
@@ -325,8 +325,8 @@ export default {
     onNextClicked() {
       if (this.$refs.intakeBaseInfo.validate()) {
         // this.nextPanel(this.panelName);
-        if (!this.form.chkReprocurement) {
-          this.form.dateofReprocurement = undefined;
+        if (!this.form.isReprocurement) {
+          this.form.dateOfReprocurement = undefined;
           this.form.previousContractBackground = undefined;
         }
         this.$emit('next');
@@ -337,7 +337,7 @@ export default {
       this.$refs.intakeBaseInfo.reset();
     },
     submitForm() {
-      // if (this.chkReprocurement) {
+      // if (this.isReprocurement) {
       // projectContact = this.$refs.projectContact.form || undefined;
       // }
       const formData = this.form;

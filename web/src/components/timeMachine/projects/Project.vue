@@ -21,7 +21,7 @@
                   </v-card>
                 </v-expansion-panel-content>
               </v-expansion-panel>
-              
+
 <div>
   <v-expansion-panel class="mt-4" :value=0>
   <v-expansion-panel-content>
@@ -33,18 +33,17 @@
 </template>
 </v-expansion-panel-content>
 </v-expansion-panel>
-</div> 
+</div>
               <div>
                 <v-tabs class="mt-4">
                   <v-tab ripple>RFx Type and Phase</v-tab>
                   <v-tab ripple>Contacts</v-tab>
                   <v-tab ripple>Finance Codes</v-tab>
-                  <v-tab ripple>Risk</v-tab> 
+                  <v-tab ripple>Risk</v-tab>
                   <v-tab ripple>Procurement Log</v-tab>
                   <v-flex justify-end align-end><v-text-field
                             class="search-bar"
-                            v-model="search"
-                            append-icon="search"
+                            prepend-inner-icon="search"
                             label="Search"
                             single-line
                             hide-details
@@ -61,10 +60,12 @@
                         <template v-slot:header>
                           <div class="primary-heading">
                             <!-- <img src="@/assets/bulb.svg"> -->
+                            <v-flex xs11>
                             <label class="sub-header-large">RFx Type and Phase #{{index+1}}</label>
-                            <v-flex xs12>
-                                <v-btn color="primary" @click="projectRfxData">Save</v-btn>
-                              </v-flex>
+                            </v-flex>
+                            <!-- <v-flex xs2>
+                                <v-btn color="primary" @click="saveProjectRfxData(index)">Save</v-btn>
+                              </v-flex> -->
                           </div>
                         </template>
                         <v-card>
@@ -107,6 +108,15 @@
                                 ref="projectSponsor"
                                 :contact="projectContactData('clientsponsor')"
                                 :contactNameLabel="'Executive Sponsor Name'"
+                                :isRequired="true"
+                              />
+                            </v-flex>
+                            <v-flex xs12 md6 my-3>
+                              <h3 class="v-form-container">Client Financier</h3>
+                              <project-contact-info
+                                ref="projectFinancier"
+                                :contact="projectContactData('clientfinance')"
+                                :contactNameLabel="'Client Financiar Name'"
                                 :isRequired="true"
                               />
                             </v-flex>
@@ -159,7 +169,7 @@
                           <div class="v-form-container">
                             <div class="v-form-actions">
                                 <v-flex md12 mt-4>
-                                    <v-btn color="primary" @click="saveProjectContacts">Save</v-btn>
+                                    <v-btn color="primary" @click="saveFinanceCodes">Save</v-btn>
                                 </v-flex>
                             </div>
                           </div>
@@ -169,16 +179,14 @@
                   </v-tab-item>
                   <!-- RISK -->
                   <v-tab-item>
-                    <v-expansion-panel class="mt-4" :value=0>
-                    <v-expansion-panel-content>
-                    <template v-slot:header>
-                    <div class="primary-heading">
-                    <label class="sub-header-large">RISK</label>
-                    <label class="sub-header-large">-----------To do-----------------</label>
-                    </div>
-                    </template>
-                    </v-expansion-panel-content>
-                    </v-expansion-panel>
+                    <v-card>
+                      <v-card-text>
+                        <project-risk-assessment
+                          ref="projectRiskAssessment"
+                          v-if="project"
+                        ></project-risk-assessment>
+                      </v-card-text>
+                    </v-card>
                     </v-tab-item>
                   <!-- PROCUREMENT LOG -->
                   <v-tab-item>
@@ -206,15 +214,16 @@
 <script>
 import Vue from 'vue';
 import VeeValidate from 'vee-validate';
+import RFxDto from '@/domain/models/RFx.dto';
+import ContactDto from '@/domain/models/Contact.dto';
 import Procurementlog from './Procurementlog.vue';
 import ProjectBaseInfo from './ProjectBaseInfo.vue';
 import ProjectContactInfo from './ProjectContactInfo.vue';
 import ProjectRfx from './ProjectRfx.vue';
 import ProjectFinanceInfo from './ProjectFinanceInfo.vue';
+import projectRiskAssessment from './ProjectRisk.vue';
 import Snackbar from '../common/Snackbar.vue';
 import ProjectAdditionalContactInfo from './ProjectAddintionalContactInfo.vue';
-import RFxDto from '@/domain/models/RFx.dto';
-import ContactDto from '@/domain/models/Contact.dto';
 
 import './project.styl';
 
@@ -232,6 +241,7 @@ export default {
     ProjectFinanceInfo,
     Snackbar,
     ProjectAdditionalContactInfo,
+    projectRiskAssessment,
   },
   $_veeValidate: { validator: 'new' },
   computed: { project() {
@@ -252,6 +262,10 @@ export default {
     },
   },
   methods: {
+    // saveProjectRfxData(index) {
+    //   debugger;
+    //   const data = this.projectRfxData[index];
+    // },
     projectContactData(contactType) {
       const contactData = this.$store.getters.getProjectContactByType(contactType);
       if (
@@ -297,8 +311,10 @@ export default {
     async saveProjectContacts() {
       this.$refs.projectLead.Validate();
       this.$refs.projectSponsor.Validate();
+      this.$refs.projectFinancier.Validate();
       const projectLeadForm = this.$refs.projectLead.form || undefined;
       const projectSponsorForm = this.$refs.projectSponsor.form || undefined;
+      const projectFinancierForm = this.$refs.projectFinancier.form || undefined;
       const projectContactForm = this.$refs.projectClient
         ? this.$refs.projectClient.form
         : undefined;
@@ -309,6 +325,7 @@ export default {
         projectLeadForm,
         projectSponsorForm,
         projectContactForm,
+        projectFinancierForm,
       ].filter(contact => contact !== undefined);
       if (contacts instanceof Array && contacts.length > 0) {
         await this.$store.dispatch('updateProjectContacts', { id: this.projectId,

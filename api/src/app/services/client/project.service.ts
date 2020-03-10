@@ -58,7 +58,7 @@ export const retrieveProjectById = async (id: string | string[]) => {
   const res = await repo
     .createQueryBuilder('p')
     .innerJoinAndSelect('p.client', 'c')
-    .innerJoinAndSelect('c.ministry', 'm')
+    .leftJoinAndSelect('c.ministry', 'm')
     .where('p.id = :id', { id: id })
     .getOne();
   if (!res) {
@@ -72,7 +72,7 @@ export const retrieveProjects = async () => {
   return await repo
     .createQueryBuilder('p')
     .innerJoin('p.client', 'c')
-    .innerJoin('c.ministry', 'm')
+    .leftJoin('c.ministry', 'm')
     .innerJoin('p.projectSector', 'ps')
     .orderBy('p.dateModified', 'DESC')
     .select([
@@ -85,7 +85,15 @@ export const retrieveProjects = async () => {
       'm.ministryName',
       'p.leadUserId',
       'p.backupUserId',
-      'p.mouAmount'
+      'p.mouAmount',
+      'p.isReprocurement',
+      'c.isNonMinistry',
+      'p.dateOfReprocurement',
+      'p.previousContractBackground',
+      'p.projectFailImpact',
+      'p.projectSuccess',
+      'p.otherProjectSectorName',
+      'c.nonMinistryName'
     ])
     .where('p.is_archived IS NULL OR p.is_archived = :is_archived', {is_archived : false})
     .getMany();
@@ -110,6 +118,13 @@ export const retrieveArchivedProjects = async () => {
       'p.leadUserId',
       'p.backupUserId',
       'p.mouAmount',
+      'p.isReprocurement',
+      'p.isMinistry',
+      'p.dateOfReprocurement',
+      'p.previousContractBackground',
+      'p.projectFailImpact',
+      'p.projectSuccess',
+      'p.otherProjectSectorName'
     ])
     .where('p.is_archived = :is_archived', {is_archived : true})
     .getMany();
@@ -120,9 +135,9 @@ export const retrieveProjectsByUserId = async (userId: string) => {
   return await repo
     .createQueryBuilder('p')
     .innerJoin('p.client', 'c')
-    .innerJoin('c.ministry', 'm')
-    .innerJoin('p.user','u')
-    .innerJoin('c.contact','uc')
+    .leftJoin('c.ministry', 'm')
+    .innerJoin('p.user', 'u')
+    .innerJoin('c.contact', 'uc')
     .innerJoin('p.projectSector', 'ps')
     .select([
       'p.id',
@@ -137,6 +152,14 @@ export const retrieveProjectsByUserId = async (userId: string) => {
       'p.leadUserId',
       'p.backupUserId',
       'p.mouAmount',
+      'p.isReprocurement',
+      'c.isNonMinistry',
+      'p.dateOfReprocurement',
+      'p.previousContractBackground',
+      'p.projectFailImpact',
+      'p.projectSuccess',
+      'p.otherProjectSectorName',
+      'c.nonMinistryName'
     ])
     .where('p."is_archived" = :is_archived, {is_archived : false}) AND p."leadUserId" = :userId OR p."backupUserId" = :userId', { userId: userId })
     .getMany();
@@ -157,7 +180,14 @@ export const retrieveArchivedProjectsByUserId = async (userId: string) => {
       'm.ministryName',
       'p.leadUserId',
       'p.backupUserId',
-      'p.mouAmount'
+      'p.mouAmount',
+      'p.isReprocurement',
+      'p.isMinistry',
+      'p.dateOfReprocurement',
+      'p.previousContractBackground',
+      'p.projectFailImpact',
+      'p.projectSuccess',
+      'p.otherProjectSectorName'
     ])
 
 //   From merge conflict, this line replaced below

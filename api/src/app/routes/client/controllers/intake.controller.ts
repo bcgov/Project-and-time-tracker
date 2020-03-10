@@ -57,7 +57,9 @@ export const updateIntakeByIdAction = async (ctx: Koa.Context) => {
 
 export const createIntakeAction = async (ctx: Koa.Context) => {
   try {
+    
     const projectIntake = ctx.request.body as IProjectIntake;
+
     if (!projectIntake) {
       ctx.throw('no data Found');
       return;

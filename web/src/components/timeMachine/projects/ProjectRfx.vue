@@ -2,6 +2,18 @@
   <v-layout row wrap py-2>
     <snackbar ref="snackbar"></snackbar>
     <v-form id="project-rfx" ref="form" v-model="valid" lazy-validation>
+         <v-flex xs12 px-4>
+        <div class="v-form-actions">
+          <v-btn
+            color="primary"
+            class="ma-0 save-rfx-btn"
+            @click="saveRFxForm"
+            :disabled="saveRFxBtnLoading"
+            :loading="saveRFxBtnLoading"
+            >Save</v-btn
+          >
+        </div>
+      </v-flex>
       <v-flex md6>
         <div class="v-form-container">
           <v-select
@@ -28,7 +40,7 @@
           ></v-select>
         </div>
       </v-flex>
-      <v-flex md12>
+      <v-flex md6>
         <div class="v-form-container">
           <v-select
             :items="rfxPhases"
@@ -36,13 +48,13 @@
             class="required"
             label="RFx Name"
             item-value="id"
-            item-text="rfxName"
+            item-text="rfxPhaseName"
             v-model="rfxForm.rfxPhase.id"
           ></v-select>
         </div>
       </v-flex>
 
-      <v-flex md6>
+      <v-flex md12>
         <div class="v-form-container">
           <v-textarea
             name="rfx-overview"
@@ -56,7 +68,7 @@
         </div>
       </v-flex>
 
-      <v-flex md6>
+      <v-flex md12>
         <div class="v-form-container">
           <v-textarea
             name="client-responsibilities"
@@ -69,7 +81,7 @@
           ></v-textarea>
         </div>
       </v-flex>
-      <v-flex md6>
+      <v-flex md12>
         <div class="v-form-container">
           <v-textarea
             name="psd-responsibilities"
@@ -82,11 +94,10 @@
           ></v-textarea>
         </div>
       </v-flex>
-      
+
     </v-form>
   </v-layout>
 </template>
-
 <script>
 import Snackbar from '../common/Snackbar.vue';
 
@@ -117,6 +128,7 @@ export default {
   methods: {
     async saveRFxForm() {
       if (this.$refs.form.validate()) {
+        debugger;
         const rfxFormData = Object.assign({}, this.rfxForm);
         rfxFormData.project = this.project;
         if (rfxFormData && rfxFormData.project && rfxFormData.project.id) {

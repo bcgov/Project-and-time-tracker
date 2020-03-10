@@ -165,10 +165,6 @@ const validateProject = (project: IProject) => {
     validationErrors.push('Project Deadline is required.');
   }
 
-  if (!project.description) {
-    validationErrors.push('Description is required.');
-  }
-
   if (!(project.contractValue && project.contractValue > 0)) {
     validationErrors.push('Contract Amount is required.');
   }

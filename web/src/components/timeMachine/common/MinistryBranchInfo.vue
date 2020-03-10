@@ -19,7 +19,7 @@
             v-if="form.isNonMinistry"
             class="required"
             label="Non Ministry Name"
-            v-model="form.NonMinistryName"
+            v-model="form.nonMinistryName"
           ></v-text-field>
 
           <v-container fluid row wrap align-start justify-end fill-height style="padding:0px !important; margin-top: -10px;" class='mb-4 mt-0'>
