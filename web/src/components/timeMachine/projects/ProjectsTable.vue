@@ -51,7 +51,7 @@
               ></v-select>
             </td>
             <td class="text-xs-left">{{ props.item.completionDate }}</td>
-            <td class="text-xs-left">{{ props.item.dateModified }}</td>
+            <td class="text-xs-left">{{ formatDate(props.item.dateModified) }}</td>
             <td class="text-xs-center">
 
                <v-btn flat icon color="grey" @click="editProject(props.item.id)">
@@ -251,6 +251,13 @@ export default {
         this.$refs.snackbar.displaySnackbar('success', 'Deleted.');
       }
     },
+    formatDate(dateStr){
+      const split = dateStr.split("T")
+      if (split){
+        return split[0]
+      }
+      return dateStr;
+    }
   },
   created() {
     this.fetchData();
