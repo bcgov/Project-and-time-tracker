@@ -22,7 +22,11 @@
                 </v-expansion-panel-content>
               </v-expansion-panel>
 
-<div>
+<!--
+
+  Temporarily commented out, but will be restored after demo.
+
+  <div>
   <v-expansion-panel class="mt-4" :value=0>
   <v-expansion-panel-content>
   <template v-slot:header>
@@ -33,7 +37,7 @@
 </template>
 </v-expansion-panel-content>
 </v-expansion-panel>
-</div>
+</div> -->
               <div>
                 <v-tabs class="mt-4">
                   <v-tab ripple>RFx Type and Phase</v-tab>
