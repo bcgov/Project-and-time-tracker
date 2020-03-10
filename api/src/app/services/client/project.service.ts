@@ -85,7 +85,7 @@ export const retrieveProjects = async () => {
       'm.ministryName',
       'p.leadUserId',
       'p.backupUserId',
-      'p.mouAmount',
+      'p."mouId"',
       'p.isReprocurement',
       'c.isNonMinistry',
       'p.dateOfReprocurement',

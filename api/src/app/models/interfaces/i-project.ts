@@ -1,5 +1,6 @@
 import { IClient } from './i-client';
 import { IProjectSector } from './i-project-sector';
+import { IMOU } from './i-mou';
 
 export interface IProject {
   id: string;
@@ -21,4 +22,6 @@ export interface IProject {
   previousContractBackground: string;
   projectFailImpact: string;
   projectSuccess: string;
+
+  mou: IMOU;
 }

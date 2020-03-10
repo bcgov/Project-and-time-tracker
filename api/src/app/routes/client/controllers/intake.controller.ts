@@ -143,7 +143,8 @@ export const updateApproveStatus = async (ctx: Koa.Context) => {
       dateOfReprocurement: intake.dateOfReprocurement,
       previousContractBackground: intake.previousContractBackground,
       projectFailImpact: intake.projectFailImpact,
-      projectSuccess: intake.projectSuccess
+      projectSuccess: intake.projectSuccess,
+      mou: intake.mou,
     };
     const projectData = await createProject(newProject);
 
