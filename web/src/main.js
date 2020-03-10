@@ -16,8 +16,11 @@ import store from '@/store';
 
 import VForm from '@/modules/widgets/Form.vue';
 import VField from '@/modules/widgets/Field.vue';
+import VueCurrencyInput from 'vue-currency-input'
+
 
 Vue.use(VueQuillEditor);
+Vue.use(VueCurrencyInput, { globalOptions: { currency: 'CAD'}});
 
 Vue.component('v-form', VForm);
 Vue.component('v-field', VField);
