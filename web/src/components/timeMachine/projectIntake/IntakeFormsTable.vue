@@ -29,7 +29,7 @@
             <td>{{ props.item.projectName }}</td>
             <td
               class="text-xs-left"
-            >{{ [props.item.ministryName, props.item.orgDivision].join(" ") }}</td>
+            >{{ [props.item.ministryName|| props.item.nonMinistryName, props.item.orgDivision].join(" ") }}</td>
             <td class="text-xs-left table-dropdown">
               <!-- TODO: is below v-if necessary on v-select?
 

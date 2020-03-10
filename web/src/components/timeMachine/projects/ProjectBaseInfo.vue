@@ -142,14 +142,13 @@
 
       <v-flex md6>
         <div class="v-form-container">
-          <v-text-field
-            name="Reprocurement?"
-            label="Reprocurement?"
-            no-resize
-            rows="1"
-            :rules="requiredRule"
-            v-model="form.isReprocurement"
-          ></v-text-field>
+         <v-container fluid>
+            <label class="v-label theme--light" style="margin-left: 4%;">Reprocurement?</label>
+            <v-radio-group v-model="form.isReprocurement" row>
+              <v-radio label=" Yes" :value="true" form.isReprocurement></v-radio>
+              <v-radio label=" No" :value="false" form.isReprocurement></v-radio>
+            </v-radio-group>
+          </v-container>
         </div>
       </v-flex>
       <v-menu

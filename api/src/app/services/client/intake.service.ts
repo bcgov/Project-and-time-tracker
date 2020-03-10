@@ -11,7 +11,7 @@ export const retrieveIntakes = async () => {
   return await repo
     .createQueryBuilder('i')
     .innerJoin('i.client', 'c')
-    .innerJoin('c.ministry', 'm')
+    .leftJoin('c.ministry', 'm')
     .leftJoin('i.mou', 'd')
     .leftJoin('project', 'p', 'p.id = i.projectId')
     .orderBy('i.dateModified', 'DESC')
@@ -44,7 +44,7 @@ export const retrieveIntakeById = async (intakeId: string) => {
     .createQueryBuilder('i')
     .innerJoinAndSelect('i.client', 'c')
     .innerJoinAndSelect('i.projectSector', 'ps')
-    .innerJoinAndSelect('c.ministry', 'm')
+    .leftJoinAndSelect('c.ministry', 'm')
     .where('i.id = :id', { id: intakeId })
     .getOne();
   if (!res) {

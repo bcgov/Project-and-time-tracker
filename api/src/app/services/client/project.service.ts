@@ -72,7 +72,7 @@ export const retrieveProjects = async () => {
   return await repo
     .createQueryBuilder('p')
     .innerJoin('p.client', 'c')
-    .innerJoin('c.ministry', 'm')
+    .leftJoin('c.ministry', 'm')
     .innerJoin('p.projectSector', 'ps')
     .orderBy('p.dateModified', 'DESC')
     .select([
@@ -87,12 +87,13 @@ export const retrieveProjects = async () => {
       'p.backupUserId',
       'p.mouAmount',
       'p.isReprocurement',
-      'p.isMinistry',
+      'c.isNonMinistry',
       'p.dateOfReprocurement',
       'p.previousContractBackground',
       'p.projectFailImpact',
       'p.projectSuccess',
-      'p.otherProjectSectorName'
+      'p.otherProjectSectorName',
+      'c.nonMinistryName'
     ])
     .where('p.is_archived IS NULL OR p.is_archived = :is_archived', {is_archived : false})
     .getMany();
@@ -134,7 +135,7 @@ export const retrieveProjectsByUserId = async (userId: string) => {
   return await repo
     .createQueryBuilder('p')
     .innerJoin('p.client', 'c')
-    .innerJoin('c.ministry', 'm')
+    .leftJoin('c.ministry', 'm')
     .innerJoin('p.user', 'u')
     .innerJoin('c.contact', 'uc')
     .innerJoin('p.projectSector', 'ps')
@@ -152,12 +153,13 @@ export const retrieveProjectsByUserId = async (userId: string) => {
       'p.backupUserId',
       'p.mouAmount',
       'p.isReprocurement',
-      'p.isMinistry',
+      'c.isNonMinistry',
       'p.dateOfReprocurement',
       'p.previousContractBackground',
       'p.projectFailImpact',
       'p.projectSuccess',
-      'p.otherProjectSectorName'
+      'p.otherProjectSectorName',
+      'c.nonMinistryName'
     ])
     .where('p."is_archived" = :is_archived, {is_archived : false}) AND p."leadUserId" = :userId OR p."backupUserId" = :userId', { userId: userId })
     .getMany();
