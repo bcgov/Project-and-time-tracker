@@ -18,7 +18,7 @@
           disable-initial-sort
         >
           <template slot="items" slot-scope="props">
-            <td class="text-xs-left">{{ props.item.mouAmount }} </td>
+            <td class="text-xs-left">{{ props.item.mouAmount | toCurrency }} </td>
             <td v-bind:class="{ 'archived': props.item.is_archived}">{{ props.item.projectName }}</td>
             <td class="text-xs-left">{{ props.item.projectName}} </td>
             <td class="text-xs-left">{{ [props.item.client.ministry.ministryName, props.item.orgDivision].join(" ") }}</td>
