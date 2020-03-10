@@ -39,7 +39,7 @@
                   <v-tab ripple>RFx Type and Phase</v-tab>
                   <v-tab ripple>Contacts</v-tab>
                   <v-tab ripple>Finance Codes</v-tab>
-                  <v-tab ripple>Risk</v-tab>
+                  <v-tab ripple @click='calculateRisk()'>Risk</v-tab>
                   <v-tab ripple>Procurement Log</v-tab>
                   <v-flex justify-end align-end><v-text-field
                             class="search-bar"
@@ -359,6 +359,9 @@ export default {
         }
       }
     },
+    calculateRisk(){
+      this.$refs.projectRiskAssessment.calculateData();
+    }
   },
   created() {
     while (this.$store.state.activeProjectContacts.length > 0) {
