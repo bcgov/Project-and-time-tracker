@@ -103,7 +103,7 @@
             class="required"
             :rules="requiredRule"
             prepend-inner-icon="attach_money"
-            label="Estimated Budget"
+            label="Contract Amount"
 
             v-currency
             oninput="validity.valid||(value='');"
