@@ -28,7 +28,7 @@
 
     <v-layout>
       <v-flex md4>
-        <div class="body-1">Postal (Zip Code):</div>
+        <div class="body-1">Postal</div>
       </v-flex>
       <v-flex md8>
         <div class="body-2">{{contact.postalCode}}</div>
