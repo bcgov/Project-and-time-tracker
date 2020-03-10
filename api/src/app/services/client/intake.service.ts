@@ -33,6 +33,7 @@ export const retrieveIntakes = async () => {
       'c.isNonMinistry AS "isNonMinistry"',
       'c.nonMinistryName AS "nonMinistryName"',
       'd.name AS "mouName"',
+      'i."mouId" AS "mouId"',
       'i.isMinistry AS "isMinistry"'
     ])
     .getRawMany();
