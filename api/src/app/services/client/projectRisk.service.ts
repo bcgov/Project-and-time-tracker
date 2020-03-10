@@ -49,7 +49,26 @@ export const retrieveAnswersByQuestionId = async (id: string) => {
   }
   return res;
 };
+export const retrieveProjectQuestions = async (id: string) => {
+  const repo = riskRepo();
 
+  const res = await repo
+    .createQueryBuilder('q')
+    .orderBy('q.category', 'ASC')
+    .addOrderBy('q.questionNo', 'ASC')
+    .select([
+      'q.id AS "id"',
+      'q.question AS "question"',
+      'q.category AS "category"',
+      'q.riskLevel AS "riskLevel"',
+      'q.questionNo AS "questionNo"'
+    ])
+    .getRawMany();
+  for (let index = 0; index < res.length; index++) {
+    res[index].answer = await retrieveAnswersByQuestionId(res[index].id);
+  }
+  return res;
+};
 export const CreateRiskAnalysis = async (
   obj: IProjectRiskAnalysis | IProjectRiskAnalysis[]
 ) => {
