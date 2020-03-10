@@ -24,7 +24,7 @@
                 @click.native='showMOUModal(props.item)'>
                   ASSIGN MOU
                </v-btn>
-               <span v-else>{{ props.item.mouName }}</span>
+               <span v-else @click='showMOUModal(props.item)'>{{ props.item.mouName }}</span>
             </td>
             <td>{{ props.item.projectName }}</td>
             <td
@@ -132,7 +132,8 @@
                   v-else
                 ></v-text-field>
 
-                <v-checkbox v-model="isNewMOU" class='ml-0 pl-0'>
+                <!-- <v-checkbox v-model="isNewMOU" class='ml-0 pl-0'> -->
+                <v-checkbox @click='toggleNewMou()' class='ml-0 pl-0'>
                   <template v-slot:label>
                     <label class='v-label theme--light'>Create New</label>
                   </template>
@@ -357,10 +358,16 @@ export default {
       }
     },
     showMOUModal(item) {
-      this.mouDialog = true;
       this.mouProjectName = item.projectName;
-      this.mouProjectId = item.id
-      this.mouProject = item
+      this.mouProjectId = item.id;
+      this.mouProject = item;
+
+      if (item.mouName){
+        console.log('has mou!', item);
+        this.mou = {id: item.mouId, name: item.mouName};
+      }
+
+      this.mouDialog = true;
     },
     async assignMOU(){
       // We have to use blur/nextTick in order to force the combobox to update it's value
@@ -388,6 +395,10 @@ export default {
         // Clear modal for next time
         this.mou = undefined;
       })
+    },
+    toggleNewMou(){
+      this.isNewMOU = !this.isNewMOU;
+      this.mou = undefined;
     }
   },
   created() {
