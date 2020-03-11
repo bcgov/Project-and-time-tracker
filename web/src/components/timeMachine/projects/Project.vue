@@ -208,10 +208,11 @@
                         <v-container grid-list-xl fluid class="custom-manage-projects-container">
                           <v-layout>
                             <v-flex md12>
-                              <h1 class="projects-header">
-                                <v-icon style="margin:0 2px 5px 0">fas fa-lightbulb</v-icon
-                                >Procurement Log
-                              </h1>
+                              <h4 class="projects-header">
+                                <!-- <v-icon style="margin:0 2px 5px 0">fas fa-lightbulb</v-icon
+                                > -->
+                                Procurement Log
+                              </h4>
                             </v-flex>
                             <v-flex>
                               <v-btn color="primary">Add Log</v-btn>
