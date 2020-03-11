@@ -135,7 +135,6 @@
                           ref="projectFinance"
                           :contact="getClientInfo(CLIENT_FINANCE)"
                           :contactNameLabel="'Client Finance Name'"
-                          :isRequired="true"
                           @next="clickfnctn(5)"
                         />
                       </v-flex>

@@ -68,8 +68,8 @@ const permissions = {
     'PATCH/ministry/:id/update',
     'POST/ministry/',
     'GET/project-risk/',
-    'GET/project-risk/:id/',
-    'PATCH/project-risk/:id/',
+    'GET/project-risk/:id',
+    'PATCH/project-risk/:id',
     ...commonForPSBAdminAndUser
   ],
   PSB_User: [

@@ -42,15 +42,13 @@
       </v-flex>
       <v-flex md6>
         <div class="v-form-container">
-          <v-select
-            :items="rfxPhases"
+           <v-text-field
             :rules="required"
-            class="required"
+            class="inputClass"
             label="RFx Name"
-            item-value="id"
-            item-text="rfxPhaseName"
-            v-model="rfxForm.rfxPhase.id"
-          ></v-select>
+            v-model="rfxForm.rfxName"
+          ></v-text-field>
+
         </div>
       </v-flex>
 
@@ -128,7 +126,6 @@ export default {
   methods: {
     async saveRFxForm() {
       if (this.$refs.form.validate()) {
-        debugger;
         const rfxFormData = Object.assign({}, this.rfxForm);
         rfxFormData.project = this.project;
         if (rfxFormData && rfxFormData.project && rfxFormData.project.id) {

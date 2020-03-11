@@ -175,6 +175,7 @@ const validateIntakeForm = (intake: IProjectIntake) => {
     const client = intake.client;
 
     // Business validation: Start.
+    if (!client.isNonMinistry) {
     if (client.clientNo && client.clientNo.toString().length !== 3) {
       validationErrors.push('Client No should be a 3 digit number.');
     }
@@ -195,6 +196,8 @@ const validateIntakeForm = (intake: IProjectIntake) => {
     if (client.projectCode && client.projectCode.toString().length !== 7) {
       validationErrors.push('Project Code should be a 7 digit number.');
     }
+  }
+
     // Business validation: End.
 
     if (!(client.ministry && client.ministry.id) && !client.isNonMinistry) {

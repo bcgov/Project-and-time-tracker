@@ -50,7 +50,7 @@
       <v-flex xs12>
         <generic-contact-info :contact="form"></generic-contact-info>
       </v-flex>
-      <v-flex xs12 pt-2>
+      <v-flex xs12 pt-2  v-if="!form.isNonMinistry">
         <project-finance-info :financeInfo="form"></project-finance-info>
       </v-flex>
       <v-flex xs12 py-2>
@@ -89,6 +89,7 @@ export default {
   },
   data() {
     const form = Object.assign({}, this.$props.ministry);
+      form.isNonMinistry = false;
     const inputMinistry = form.ministry || null;
     if (!inputMinistry) {
       form.ministry = new MinistryDto();
