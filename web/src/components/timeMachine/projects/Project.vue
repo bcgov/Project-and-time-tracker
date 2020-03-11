@@ -21,7 +21,7 @@
                   </v-card>
                 </v-expansion-panel-content>
               </v-expansion-panel>
-
+                
               <!--
 
   Temporarily commented out, but will be restored after demo.
@@ -39,12 +39,13 @@
 </v-expansion-panel>
               </div>-->
               <div>
+              
                 <v-tabs class="mt-4">
-                  <v-tab ripple>RFx Type and Phase</v-tab>
-                  <v-tab ripple>Contacts</v-tab>
-                  <v-tab ripple>Finance Codes</v-tab>
-                  <v-tab ripple @click="calculateRisk()">Risk</v-tab>
-                  <v-tab ripple>Procurement Log</v-tab>
+                  <v-tab ripple href="#rfx">RFx Type and Phase</v-tab>
+                  <v-tab ripple href="#contacts">Contacts</v-tab>
+                  <v-tab ripple href="#finance" v-if="!project.client.isNonMinistry">Finance Codes</v-tab>
+                  <v-tab ripple href="#risk" @click="calculateRisk()">Risk</v-tab>
+                  <v-tab ripple href="#procurement">Procurement Log</v-tab>
                   <v-flex justify-end align-end>
                     <v-text-field
                       class="search-bar"
@@ -55,7 +56,7 @@
                     ></v-text-field>
                   </v-flex>
                   <!-- RFx Type and Phases -->
-                  <v-tab-item>
+                  <v-tab-item value="rfx">
                     <v-expansion-panel
                       v-for="(rfx, index) in projectRfxData"
                       :key="rfx.id"
@@ -94,7 +95,7 @@
                     </v-card>
                   </v-tab-item>
                   <!-- Project Contacts-->
-                  <v-tab-item class="contacts">
+                  <v-tab-item value="contacts" class="contacts">
                     <v-card>
                       <v-card-text>
                         <div>
@@ -162,7 +163,7 @@
                     </v-card>
                   </v-tab-item>
                   <!-- Finance Codes -->
-                  <v-tab-item>
+                  <v-tab-item value="finance">
                     <v-card>
                       <v-card-text>
                         <project-finance-info
@@ -183,7 +184,7 @@
                     </v-card>
                   </v-tab-item>
                   <!-- RISK -->
-                  <v-tab-item>
+                  <v-tab-item value="risk">
                     <v-card>
                       <v-card-text>
                         <project-risk-assessment ref="projectRiskAssessment" v-if="project"></project-risk-assessment>
@@ -191,7 +192,7 @@
                     </v-card>
                   </v-tab-item>
                   <!-- PROCUREMENT LOG -->
-                  <v-tab-item>
+                  <v-tab-item value="procurement">
                     <v-expansion-panel class="mt-4" :value="0">
                       <v-expansion-panel-content>
                         <v-container grid-list-xl fluid class="custom-manage-projects-container">

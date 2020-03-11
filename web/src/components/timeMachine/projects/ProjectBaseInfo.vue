@@ -11,8 +11,7 @@
                 :loading="saveProjectLoading"
                 color="primary"
                 @click="onSave"
-                >Save</v-btn
-              >
+              >Save</v-btn>
             </v-flex>
           </div>
         </div>
@@ -52,11 +51,7 @@
                 v-on="on"
               ></v-text-field>
             </template>
-            <v-date-picker
-              v-model="form.completionDate"
-              no-title
-              @input="menu1 = false"
-            ></v-date-picker>
+            <v-date-picker v-model="form.completionDate" no-title @input="menu1 = false"></v-date-picker>
           </v-menu>
         </div>
       </v-flex>
@@ -69,16 +64,7 @@
             readonly
             v-model="form.client.ministry.ministryName"
           ></v-text-field>-->
-          <v-select
-            :items="ministries"
-            label="Ministry"
-            class="required"
-            :rules="requiredRule"
-            v-model="ministryname"
-            v-if="!form.client.isNonMinistry"
-            item-value="id"
-            item-text="ministryName"
-          ></v-select>
+
           <v-container
             fluid
             row
@@ -88,15 +74,25 @@
             fill-height
             style="padding:0px !important"
           >
-            <label class="v-label theme--light" style="margin-left: 2%;">Non-Ministry</label>
-            <v-checkbox v-model="form.client.isNonMinistry"></v-checkbox>
-            <v-text-field
+             <v-flex md3> <label class="v-label theme--light" style="margin-left: 2%;">Non-Ministry</label>  </v-flex>
+            <v-flex md1><v-checkbox v-model="form.client.isNonMinistry"></v-checkbox></v-flex>
+           <v-flex md8> <v-text-field
               :rules="requiredRule"
               v-if="form.client.isNonMinistry"
               class="required"
               label="Non Ministry Name"
               v-model="form.client.nonMinistryName"
             ></v-text-field>
+            <v-select
+              :items="ministries"
+              label="Ministry"
+              class="required"
+              :rules="requiredRule"
+              v-model="ministryname"
+              v-if="!form.client.isNonMinistry"
+              item-value="id"
+              item-text="ministryName"
+            ></v-select></v-flex>
           </v-container>
         </div>
       </v-flex>
@@ -165,14 +161,13 @@
         </div>
       </v-flex>
       <v-flex md6>
-        <div class="v-form-container">
-          <v-container fluid>
-            <label class="v-label theme--light" style="margin-left: 4%;">Reprocurement?</label>
-            <v-radio-group v-model="form.isReprocurement" row>
+        <div class="v-form-container fluid">
+            <v-flex md6 style="display:inline-block">
+            <label class="v-label theme--light" style="margin-left: 4%;">Reprocurement?</label></v-flex>
+          <v-flex md6 style="display:inline-block">  <v-radio-group v-model="form.isReprocurement" row>
               <v-radio label=" Yes" :value="true" form.isReprocurement></v-radio>
               <v-radio label=" No" :value="false" form.isReprocurement></v-radio>
-            </v-radio-group>
-          </v-container>
+            </v-radio-group></v-flex>
         </div>
       </v-flex>
       <v-menu
@@ -199,11 +194,7 @@
             v-on="on"
           ></v-text-field>
         </template>
-        <v-date-picker
-          v-model="form.dateOfReprocurement"
-          no-title
-          @input="menu2 = false"
-        ></v-date-picker>
+        <v-date-picker v-model="form.dateOfReprocurement" no-title @input="menu2 = false"></v-date-picker>
       </v-menu>
       <v-flex xs12>
         <div class="v-form-container">
@@ -250,12 +241,12 @@
 </template>
 
 <script>
-import './projectBaseInfo.styl';
-import MinistryDto from '@/domain/models/Ministry.dto';
-import ProjectSectorDto from '@/domain/models/ProjectSector.dto';
-import ClientDto from '@/domain/models/Client.dto';
+import "./projectBaseInfo.styl";
+import MinistryDto from "@/domain/models/Ministry.dto";
+import ProjectSectorDto from "@/domain/models/ProjectSector.dto";
+import ClientDto from "@/domain/models/Client.dto";
 
-import Snackbar from '../common/Snackbar.vue';
+import Snackbar from "../common/Snackbar.vue";
 
 export default {
   components: { Snackbar },
@@ -263,7 +254,7 @@ export default {
     nextPanel: Function,
     panelName: String,
     project: Object,
-    ministry: Object,
+    ministry: Object
   },
   computed: {
     computedDateFormatted() {
@@ -277,7 +268,7 @@ export default {
     },
     ministries() {
       return this.$store.state.ministries;
-    },
+    }
   },
   data() {
     const form = Object.assign({}, this.$props.project);
@@ -294,15 +285,17 @@ export default {
 
     return {
       valid: true,
-      requiredRule: [v => !!v || 'This field is required'],
+      requiredRule: [v => !!v || "This field is required"],
       // Initialize using props
       form: { ...form },
-      selectedLeadUser: '',
+      selectedLeadUser: "",
       menu1: false,
       menu2: false,
-      ministryname: form.client.ministry ? form.client.ministry.id : form.client.nonMinistryName,
+      ministryname: form.client.ministry
+        ? form.client.ministry.id
+        : form.client.nonMinistryName,
       saveProjectLoading: false,
-      ministryInformation: this.$store.state.ministryInformation,
+      ministryInformation: this.$store.state.ministryInformation
     };
   },
   watch: {
@@ -327,20 +320,20 @@ export default {
       if (!inputMinistry) {
         this.form.client.ministry = new MinistryDto();
       }
-    },
+    }
   },
   methods: {
     formatDate(date) {
       if (!date) return null;
 
-      const [year, month, day] = date.split('-');
+      const [year, month, day] = date.split("-");
       return `${month}/${day}/${year}`;
     },
     parseDate(date) {
       if (!date) return null;
 
-      const [month, day, year] = date.split('/');
-      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+      const [month, day, year] = date.split("/");
+      return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
     },
     getProjectLead(projectLeadUserId) {
       this.selectedLeadUser = projectLeadUserId;
@@ -361,34 +354,42 @@ export default {
 
         const projectData = Object.assign({}, this.form);
         this.saveProjectLoading = true;
-        this.$store.dispatch('updateProject', projectData).then(
+        this.$store.dispatch("updateProject", projectData).then(
           () => {
             this.saveProjectLoading = false;
-            scope.$store.dispatch('updateProject', projectData);
-            scope.$refs.snackbar.displaySnackbar('success', 'Updated');
-            scope.$store.dispatch('fetchProjects');
+            scope.$store.dispatch("updateProject", projectData);
+            scope.$refs.snackbar.displaySnackbar("success", "Updated");
+            scope.$store.dispatch("fetchProjects");
           },
-          (err) => {
+          err => {
             this.saveProjectLoading = false;
-            if (err && err.response && err.response.data && err.response.data.error) {
+            if (
+              err &&
+              err.response &&
+              err.response.data &&
+              err.response.data.error
+            ) {
               scope.form.leadUserId = scope.selectedLeadUser;
               const { message } = err.response.data.error;
-              scope.$refs.snackbar.displaySnackbar('error', message);
+              scope.$refs.snackbar.displaySnackbar("error", message);
             } else {
               scope.form.leadUserId = scope.selectedLeadUser;
-              scope.$refs.snackbar.displaySnackbar('error', 'Failed to update project.');
+              scope.$refs.snackbar.displaySnackbar(
+                "error",
+                "Failed to update project."
+              );
             }
-          },
+          }
         );
       }
     },
     fetchData() {
       // Fetching all the users for now
-      this.$store.dispatch('fetchUsers');
-    },
+      this.$store.dispatch("fetchUsers");
+    }
   },
   created() {
     this.fetchData();
-  },
+  }
 };
 </script>
