@@ -1,7 +1,5 @@
 <template>
   <v-card>
-    <confirm ref="confirm"></confirm>
-    <snackbar ref="snackbar"></snackbar>
     <v-toolbar v-if="title" card dense color="transparent">
       <v-toolbar-title>
         <h4>{{ title }}</h4>
@@ -77,7 +75,7 @@ export default {
           resolution: '',
         },
         {
-          id: 1,
+          id: 2,
           logType: 'RFx update',
           riskOwner: 'Jan 20,2020',
           issueDescription: '',
@@ -88,7 +86,7 @@ export default {
           resolution: '',
         },
         {
-          id: 1,
+          id: 3,
           logType: 'Project lead',
           riskOwner: 'Jan 20,2020',
           issueDescription: '',
@@ -99,7 +97,7 @@ export default {
           resolution: '',
         },
         {
-          id: 1,
+          id: 4,
           logType: 'Risk Assessment',
           riskOwner: 'Jan 20,2020',
           issueDescription: '',

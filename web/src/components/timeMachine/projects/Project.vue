@@ -45,7 +45,7 @@
                 <v-tabs class="mt-4">
                   <v-tab ripple href="#rfx">RFx Type and Phase</v-tab>
                   <v-tab ripple href="#contacts">Contacts</v-tab>
-                  <v-tab ripple href="#finance" v-if="!project.client.isNonMinistry"
+                  <v-tab ripple href="#finance" v-if="project.client && !project.client.isNonMinistry"
                     >Finance Codes</v-tab
                   >
                   <v-tab ripple href="#risk" @click="calculateRisk()">Risk</v-tab>
