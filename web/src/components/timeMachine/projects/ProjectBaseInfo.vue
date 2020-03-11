@@ -151,7 +151,6 @@
           ></v-select>
         </div>
       </v-flex>
-
       <v-flex md6>
         <div class="v-form-container">
          <v-container fluid>
@@ -175,6 +174,7 @@
         max-width="290px"
         min-width="290px"
       >
+      
         <template v-slot:activator="{ on }">
           <v-text-field
             class="required"
@@ -334,12 +334,12 @@ export default {
       if (this.$refs.projectBaseInfo.validate()) {
         // ministry part starts
 
-        //  if (this.form.isNonMinistry) {
-        //   this.form.ministry = undefined;
-        // } else {
-        //   this.form.NonMinistryName = undefined;
-        // }
-        // this.$store.state.ministryInformation = true;
+         if (this.form.client.isNonMinistry) {
+          this.form.client.ministry = undefined;
+        } else {
+          this.form.NonMinistryName = undefined;
+        }
+        this.$store.state.ministryInformation = true;
 
         // ministry part ends
 
