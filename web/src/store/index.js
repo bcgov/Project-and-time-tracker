@@ -50,6 +50,7 @@ const store = new Vuex.Store({
     allMinistries: [],
     rfxPhases: [],
     rfxTypes: [],
+    projectRiskAnswers:[],
     intakeRiskQuestions:[],
     mouList: [],
     // Intake form component
@@ -131,6 +132,9 @@ const store = new Vuex.Store({
     },
     fetchintakeRiskQuestions(state, data) {
       state.intakeRiskQuestions = data;
+    },
+    fetchprojectRiskAnswers(state, data) {
+      state.projectRiskAnswers = data;
     },
     fetchRFxPhases(state, data) {
       state.rfxPhases = data;
@@ -466,6 +470,12 @@ const store = new Vuex.Store({
           const content = res.data;
           ctx.commit('fetchintakeRiskQuestions', content);
         });
+    },
+     fetchprojectRiskAnswers(ctx, req) {
+      $http.get(`${API_URI}/project-risk/${req.id}`).then(res => {
+        const content = res.data;
+        ctx.commit("fetchprojectRiskAnswers", content);
+      });
     },
     fetchRFxPhases(ctx) {
       $http.get(`${API_URI}/rfx-phase`)

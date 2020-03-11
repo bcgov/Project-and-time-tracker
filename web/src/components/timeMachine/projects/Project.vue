@@ -6,7 +6,7 @@
         <v-layout>
           <v-flex md12>
             <template>
-              <v-expansion-panel class="mt-3" :value=0>
+              <v-expansion-panel class="mt-3" :value="0">
                 <v-expansion-panel-content>
                   <template v-slot:header>
                     <div class="primary-heading">
@@ -16,13 +16,16 @@
                   </template>
                   <v-card>
                     <v-card-text>
-                      <project-base-info ref="projectBaseInfo" :project="project"></project-base-info>
+                      <project-base-info
+                        ref="projectBaseInfo"
+                        :project="project"
+                      ></project-base-info>
                     </v-card-text>
                   </v-card>
                 </v-expansion-panel-content>
               </v-expansion-panel>
 
-<!--
+              <!--
 
   Temporarily commented out, but will be restored after demo.
 
@@ -43,21 +46,23 @@
                   <v-tab ripple>RFx Type and Phase</v-tab>
                   <v-tab ripple>Contacts</v-tab>
                   <v-tab ripple>Finance Codes</v-tab>
-                  <v-tab ripple @click='calculateRisk()'>Risk</v-tab>
+                  <v-tab ripple @click="calculateRisk()">Risk</v-tab>
                   <v-tab ripple>Procurement Log</v-tab>
-                  <v-flex justify-end align-end><v-text-field
-                            class="search-bar"
-                            prepend-inner-icon="search"
-                            label="Search"
-                            single-line
-                            hide-details
-                          ></v-text-field></v-flex>
+                  <v-flex justify-end align-end
+                    ><v-text-field
+                      class="search-bar"
+                      prepend-inner-icon="search"
+                      label="Search"
+                      single-line
+                      hide-details
+                    ></v-text-field
+                  ></v-flex>
                   <!-- RFx Type and Phases -->
                   <v-tab-item>
                     <v-expansion-panel
                       v-for="(rfx, index) in projectRfxData"
                       :key="rfx.id"
-                      :value=0
+                      :value="0"
                       class="rfx-summary-panel"
                     >
                       <v-expansion-panel-content>
@@ -65,7 +70,9 @@
                           <div class="primary-heading">
                             <!-- <img src="@/assets/bulb.svg"> -->
                             <v-flex xs11>
-                            <label class="sub-header-large">RFx Type and Phase #{{index+1}}</label>
+                              <label class="sub-header-large"
+                                >RFx Type and Phase #{{ index + 1 }}</label
+                              >
                             </v-flex>
                             <!-- <v-flex xs2>
                                 <v-btn color="primary" @click="saveProjectRfxData(index)">Save</v-btn>
@@ -172,9 +179,9 @@
                         <v-flex xs12 py-2>
                           <div class="v-form-container">
                             <div class="v-form-actions">
-                                <v-flex md12 mt-4>
-                                    <v-btn color="primary" @click="saveFinanceCodes">Save</v-btn>
-                                </v-flex>
+                              <v-flex md12 mt-4>
+                                <v-btn color="primary" @click="saveFinanceCodes">Save</v-btn>
+                              </v-flex>
                             </div>
                           </div>
                         </v-flex>
@@ -191,21 +198,23 @@
                         ></project-risk-assessment>
                       </v-card-text>
                     </v-card>
-                    </v-tab-item>
+                  </v-tab-item>
                   <!-- PROCUREMENT LOG -->
                   <v-tab-item>
-                    <v-expansion-panel class="mt-4" :value=0>
-                    <v-expansion-panel-content>
-                    <template v-slot:header>
-                    <div class="primary-heading">
-                    <label class="sub-header-large">PROCUREMENT LOG</label>
-                    <label class="sub-header-large">-----------To do-----------------</label>
-                    </div>
-                    </template>
-                    </v-expansion-panel-content>
+                    <v-expansion-panel class="mt-4" :value="0">
+                      <v-expansion-panel-content>
+                        <template v-slot:header>
+                          <div class="primary-heading">
+                            <label class="sub-header-large">PROCUREMENT LOG</label>
+                            <label class="sub-header-large"
+                              >-----------To do-----------------</label
+                            >
+                          </div>
+                        </template>
+                      </v-expansion-panel-content>
                     </v-expansion-panel>
-                    </v-tab-item>
-                  </v-tabs>
+                  </v-tab-item>
+                </v-tabs>
               </div>
             </template>
           </v-flex>
@@ -248,17 +257,16 @@ export default {
     projectRiskAssessment,
   },
   $_veeValidate: { validator: 'new' },
-  computed: { project() {
-    return this.$store.state.activeProject;
+  computed: {
+    project() {
+      return this.$store.state.activeProject;
+    },
+    projectRfxData() {
+      return this.$store.state.activeProjectRfxData;
+    },
   },
-  projectRfxData() {
-    return this.$store.state.activeProjectRfxData;
-  } },
   data() {
-    return { rfxData: [new RFxDto()],
-      projectId: '',
-      enabled: true,
-      initialLoad: true };
+    return { rfxData: [new RFxDto()], projectId: '', enabled: true, initialLoad: true };
   },
   watch: {
     enabled() {
@@ -295,6 +303,7 @@ export default {
         this.$store.dispatch('fetchProject', { id: this.projectId });
         this.$store.dispatch('fetchProjectRFxData', { id: this.projectId });
         this.$store.dispatch('fetchProjectContacts', { id: this.projectId });
+        this.$store.dispatch('fetchprojectRiskAnswers', { id: this.projectId });
       }
     },
     formatDate(date) {
@@ -332,8 +341,7 @@ export default {
         projectFinancierForm,
       ].filter(contact => contact !== undefined);
       if (contacts instanceof Array && contacts.length > 0) {
-        await this.$store.dispatch('updateProjectContacts', { id: this.projectId,
-          contacts });
+        await this.$store.dispatch('updateProjectContacts', { id: this.projectId, contacts });
         this.$refs.snackbar.displaySnackbar('success', 'Saved');
       }
     },
@@ -342,8 +350,10 @@ export default {
       if (this.$refs.projectFinanceInfo.validate()) {
         if (this.project && this.project.client && this.project.client.id) {
           await this.$store
-            .dispatch('updateProjectFinanceCodes', { id: this.project.client.id,
-              financeCodes: projectFinanceForm })
+            .dispatch('updateProjectFinanceCodes', {
+              id: this.project.client.id,
+              financeCodes: projectFinanceForm,
+            })
             .then(
               () => {
                 this.$refs.snackbar.displaySnackbar('success', 'Updated');
@@ -353,19 +363,16 @@ export default {
                   const { message } = err.response.data.error;
                   this.$refs.snackbar.displaySnackbar('error', message);
                 } catch (ex) {
-                  this.$refs.snackbar.displaySnackbar(
-                    'error',
-                    'Failed to update',
-                  );
+                  this.$refs.snackbar.displaySnackbar('error', 'Failed to update');
                 }
               },
             );
         }
       }
     },
-    calculateRisk(){
+    calculateRisk() {
       this.$refs.projectRiskAssessment.calculateData();
-    }
+    },
   },
   created() {
     while (this.$store.state.activeProjectContacts.length > 0) {
