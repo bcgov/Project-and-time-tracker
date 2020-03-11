@@ -65,6 +65,7 @@ export const retrieveProjectQuestions = async (id: string) => {
       'a.answer AS "answer"',
       'q.id AS "questionId"',
       'a.id AS "answerid"',
+      'a.score AS "score"',
       'q.riskLevel AS "riskLevel"',
       'q.questionNo AS "questionNo"'
     ])

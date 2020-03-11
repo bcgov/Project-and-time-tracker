@@ -10,14 +10,13 @@
         <span :class="`level-${score.level}`">{{ score.level }} ( {{ score.percentage }}% )</span>
       </div>
 
-      <pre>
+      <!-- <pre>
 
 Developer only (TODO Remove)
 {{ score }}</pre
-      >
+      > -->
     </v-flex>
 
-    <h2 class="heading-txt">Risk Assessment</h2>
     <v-form
       id="project-risk-assessment"
       ref="projectRiskAssessment"
@@ -39,6 +38,7 @@ Developer only (TODO Remove)
                 row
                 v-model="item.selectedAnswerId"
                 :rules="requireRadioButtondRule"
+                @change="calculateData()"
               >
                 <v-radio
                   v-on:change="upateCategoryStatus(item, index)"
@@ -47,7 +47,6 @@ Developer only (TODO Remove)
                   :key="selection.id"
                   :label="selection.answer"
                   :value="selection.id"
-                  @change="calculateData()"
                 ></v-radio>
               </v-radio-group>
               <v-radio-group
@@ -55,6 +54,7 @@ Developer only (TODO Remove)
                 v-model="item.selectedAnswerId"
                 :rules="requireRadioButtondRule"
                 column
+                @change="calculateData()"
               >
                 <v-radio
                   class="answer"
@@ -74,6 +74,7 @@ Developer only (TODO Remove)
             <div class="v-form-actions">
               <v-flex md-12 mt-4>
                 <v-btn :disabled="!valid" color="primary" @click="onSave">Save</v-btn>
+                <v-btn color="secondary" @click="onCancel">cancel</v-btn>
               </v-flex>
             </div>
           </div>
@@ -83,9 +84,7 @@ Developer only (TODO Remove)
         <v-flex md12>
           <v-btn color="primary" @click="editProjectRisk" class="edit-btn">edit</v-btn>
         </v-flex>
-        <v-flex md12>
-          Current Risk Level:
-        </v-flex>
+
         <v-expansion-panel :value="0">
           <v-expansion-panel-content>
             <template v-slot:header>
@@ -106,8 +105,13 @@ Developer only (TODO Remove)
                   <div v-if="item.riskLevel == 1">
                     <v-card-text class="pl-4">
                       <v-flex>
-                        <v-flex sm12
-                          ><h4>{{ item.question }}</h4></v-flex
+                        <v-flex sm11
+                          ><b><div v-html="item.question" class="question-text"></div></b>
+                        </v-flex>
+                        <v-flex
+                          ><v-btn :ripple="false" class="edit-link" @click="editProjectRisk"
+                            >edit</v-btn
+                          ></v-flex
                         >
                         <v-flex sm12>{{ item.answer }}</v-flex>
                       </v-flex>
@@ -136,8 +140,13 @@ Developer only (TODO Remove)
                   <div v-if="item.riskLevel == 2">
                     <v-card-text class="pl-4">
                       <v-flex>
-                        <v-flex sm12
-                          ><h4>{{ item.question }}</h4></v-flex
+                        <v-flex sm11
+                          ><b><div v-html="item.question" class="question-text"></div></b>
+                        </v-flex>
+                        <v-flex
+                          ><v-btn :ripple="false" class="edit-link" @click="editProjectRisk"
+                            >edit</v-btn
+                          ></v-flex
                         >
                         <v-flex sm12>{{ item.answer }}</v-flex>
                       </v-flex>
@@ -159,6 +168,7 @@ export default {
   components: {},
   props: {
     intakeRisk: Array,
+    projectId: String,
   },
   computed: {
     intakeRiskQuestions() {
@@ -188,28 +198,70 @@ export default {
   },
   watch: {},
   methods: {
+    prepareRiskAnalysis() {
+      const riskAnalysis = [];
+      const riskAnalysisIndex = 0;
+      for (let i = 0; i < this.intakeRiskQuestions.length; i++) {
+        const question = this.intakeRiskQuestions[i];
+        const analysisId = question.analysisId ? question.analysisId : null;
+        riskAnalysis[riskAnalysisIndex] = {
+          questionId: question.id,
+          answerId: question.selectedAnswerId,
+          score: question.score,
+          id: analysisId,
+        };
+      }
+      return riskAnalysis;
+    },
+    async updateInitalData() {
+      this.categoryList[0].showStatus = true;
+      this.categoryList[1].showStatus = true;
+      this.categoryList[2].showStatus = true;
+      this.categoryList[3].showStatus = true;
+      for (let i = 0; i < this.$store.state.intakeRiskQuestions.length; i++) {
+        const selectedAnswer = this.$store.state.projectRiskAnswers.filter(
+          item => item.questionId === this.$store.state.intakeRiskQuestions[i].id,
+        );
+        if (selectedAnswer && selectedAnswer[0]) {
+          this.$store.state.intakeRiskQuestions[i].selectedAnswerId = selectedAnswer[0].answerid;
+          this.$store.state.intakeRiskQuestions[i].score = selectedAnswer[0].score;
+          this.$store.state.intakeRiskQuestions[i].analysisId = selectedAnswer[0].id;
+        }
+      }
+      this.score = this.calculateRiskScore();
+    },
     onSave() {
+      const riskAnalysis = this.prepareRiskAnalysis();
       this.editScreen = false;
+      this.updateInitalData();
     },
     onCancel() {
+      this.updateInitalData();
       this.editScreen = false;
     },
     editProjectRisk() {
+      this.updateInitalData();
       this.editScreen = true;
     },
     upateCategoryStatus(item, index) {
+      debugger;
       if (item.questionNo === 1 && index === 0) {
         this.categoryList[item.category - 1].showStatus = false;
         item.showStatus = false;
       } else if (item.questionNo === 1) {
         this.categoryList[item.category - 1].showStatus = true;
         item.showStatus = true;
+      } else {
+        item.showStatus = this.categoryList[item.category - 1].showStatus;
       }
-    },
-    onNextClicked() {
-      if (this.$refs.intakeRiskAssessment.validate()) {
-        this.$store.state.intakeRisk = true;
-        this.$emit('next');
+      if (!item.showStatus && item.questionNo === 1) {
+        const questionsInThisCategory = this.intakeRiskQuestions.filter(
+          question => question.category === this.categoryList[item.category - 1].id,
+        );
+        for (let i = 0; i < questionsInThisCategory.length; i++) {
+          questionsInThisCategory[i].selectedAnswerId = null;
+          questionsInThisCategory[i].score = 0;
+        }
       }
     },
     reset() {
@@ -218,9 +270,9 @@ export default {
     },
     getRiskLevel(score) {
       let riskLevel = 'Low';
-      if (score.percentage > 50) {
+      if (score > 50) {
         riskLevel = 'High';
-      } else if (score.percentage > 25) {
+      } else if (score > 25) {
         riskLevel = 'Medium';
       }
       return riskLevel;
@@ -239,18 +291,23 @@ export default {
           totalPossible.sort((a, b) => b - a);
 
           totalPossibleScore += totalPossible[0]; // Now that it's sorted, get highest val
-
-          const selectedAnswer = question.answer.find(
-            async answer => (await answer.id) === question.selectedAnswerId,
+          const selectedAnswer = question.answer.filter(
+            item => item.id === question.selectedAnswerId,
           );
-          if (selectedAnswer) {
-            return selectedAnswer.score;
+          if (
+            selectedAnswer
+            && selectedAnswer[0]
+            && typeof selectedAnswer[0].score !== 'undefined'
+          ) {
+            return selectedAnswer[0].score;
           }
+          return 0;
         })
         // Sum all the scores
         .reduce((a, cur) => a + cur);
-
       const percentage = ((score / totalPossibleScore) * 100).toFixed(2);
+
+      // eslint-disable-next-line consistent-return
       return {
         score,
         totalPossibleScore,
