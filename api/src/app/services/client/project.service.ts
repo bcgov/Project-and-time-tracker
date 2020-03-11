@@ -1,9 +1,16 @@
 import { getRepository, Repository } from 'typeorm';
 import { Project } from '../../models/entities';
+import { Client } from '../../models/entities';
 import { IProject } from '../../models/interfaces/i-project';
+import { IClient } from '../../models/interfaces/i-client';
 
 const projectRepo = (): Repository<Project> => {
   return getRepository(Project);
+};
+
+
+const clientRepo = (): Repository<Client> => {
+  return getRepository(Client);
 };
 
 export const createProject = async (obj: IProject | IProject[]) => {
@@ -22,7 +29,7 @@ export const createProject = async (obj: IProject | IProject[]) => {
   return project;
 };
 
-export const updateProject = async (id: string, fields: any) => {
+export const updateProject = async (id: string, fields: any, clientFilds: any = null) => {
   const repo = projectRepo();
   const project: Project = await repo.findOne(id);
 
@@ -33,6 +40,19 @@ export const updateProject = async (id: string, fields: any) => {
   updatedProject.dateModified = new Date();
 
   await repo.save(updatedProject);
+ if (clientFilds) {
+  const repoClient = clientRepo();
+  const client: Client = await repoClient.findOne(clientFilds.id);
+
+  if (!client) {
+    throw Error('client not found');
+  }
+  const updatedClient = await repoClient.merge(client, clientFilds);
+  updatedClient.dateModified = new Date();
+
+  await repoClient.save(updatedClient);
+
+ }
   return updatedProject;
 };
 
