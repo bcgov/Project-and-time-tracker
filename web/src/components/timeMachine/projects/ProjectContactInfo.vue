@@ -81,11 +81,8 @@ export default {
           v => !!v || 'This field is required',
           v => this.emailPattern.test(v) || 'Email must be valid',
         ]
-        : [v => this.emailPattern.test(v) || 'Email must be valid'],
-      phoneRule: [
-        v => !!v || 'This field is required',
-        v => v.length >= 10 || 'Invalid Phone',
-      ],
+        : [v => !v || this.emailPattern.test(v) || 'Email must be valid'],
+      phoneRule: this.$props.isRequired?[v => !!v || 'This field is required',v => v.length >= 10 || 'Invalid Phone']:[v => !v || v.length >= 10 || 'Invalid Phone'],
 
       contactInformation: this.$store.state.contactInformation,
       // Initialize using props
