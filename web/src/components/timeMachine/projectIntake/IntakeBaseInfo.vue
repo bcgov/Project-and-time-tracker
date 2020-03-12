@@ -25,6 +25,7 @@
             class="required"
             label="Project Sector"
             v-model="form.projectSector.id"
+            v-on="checksectorid()"
             item-value="id"
             item-text="projectSectorName"
           ></v-select>
@@ -253,17 +254,11 @@ export default {
     panelName: String,
     project: Object
   },
-created() {
-   const sector = this.$store.state.projectSectors.filter(
-          item => item.projectSectorName === 'Other',
-        );
-        if (sector[0])
-          this.otherSectorId = sector[0].id;
-},
   computed: {
     computedDateFormatted() {
       return this.formatDate(this.date);
     },
+   
     projectSectors() {
       return this.$store.state.projectSectors;
     },
@@ -305,6 +300,7 @@ created() {
       dateFormatted: undefined,
       projectInformation: this.$store.state.projectInformation,
       row: null,
+      otherSectorId: null
     };
   },
   watch: {
@@ -323,7 +319,13 @@ created() {
     }
   },
   methods: {
-    
+    checksectorid() {
+ const sector = this.$store.state.projectSectors.filter(
+          item => item.projectSectorName === 'Other',
+        );
+        if (sector[0])
+          this.otherSectorId = sector[0].id;
+    },
     formatDate(date) {
       if (!date) return null;
 
