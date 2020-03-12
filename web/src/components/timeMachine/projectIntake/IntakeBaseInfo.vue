@@ -1,6 +1,12 @@
 <template>
   <v-layout row wrap py-2 class="custom-project-base-layout">
-    <v-form id="intake-base-info" ref="intakeBaseInfo" v-model="valid" lazy-validation class="intake-base-info">
+    <v-form
+      id="intake-base-info"
+      ref="intakeBaseInfo"
+      v-model="valid"
+      lazy-validation
+      class="intake-base-info"
+    >
       <v-flex md6>
         <div class="v-form-container">
           <v-text-field
@@ -19,23 +25,24 @@
             class="required"
             label="Project Sector"
             v-model="form.projectSector.id"
+            v-on="checksectorid()"
             item-value="id"
             item-text="projectSectorName"
           ></v-select>
-
         </div>
       </v-flex>
       <v-flex md6></v-flex>
-          <v-flex md6>
-             <div class="v-form-container">
-               <v-text-field
+      <v-flex md6>
+        <div class="v-form-container">
+          <v-text-field
             :rules="requiredRule"
-            v-if="form.projectSector.id =='8a00dd55-0818-4ab5-92da-c08f4a22a4e9'"
+            v-if="form.projectSector.id == otherSectorId"
             class="required"
             label="Other Project Sector Name"
             v-model="form.otherProjectSectorName"
-          ></v-text-field></div>
-          </v-flex>
+          ></v-text-field>
+        </div>
+        </v-flex>
       <!-- <v-flex md6>
         <div class="v-form-container">
           <v-select
@@ -104,7 +111,6 @@
             :rules="requiredRule"
             prepend-inner-icon="attach_money"
             label="Contract Amount"
-
             v-currency
             oninput="validity.valid||(value='');"
             v-model="form.estimatedContractValue"
@@ -123,7 +129,7 @@
             v-model="form.mouAmount"
           ></v-text-field>
         </div>
-      </v-flex> -->
+      </v-flex>-->
       <v-flex md6>
         <div>
           <v-container fluid>
@@ -235,23 +241,24 @@
 </template>
 
 <script>
-import './intakebaseinfo.styl';
-import ProjectSectorDto from '@/domain/models/ProjectSector.dto';
-import ProjectIntakeCategoryDto from '@/domain/models/ProjectIntakeCategory.dto';
-import ProjectIntakeServicesDto from '@/domain/models/ProjectIntakeServices.dto';
-import ClientDto from '@/domain/models/Client.dto';
+import "./intakebaseinfo.styl";
+import ProjectSectorDto from "@/domain/models/ProjectSector.dto";
+import ProjectIntakeCategoryDto from "@/domain/models/ProjectIntakeCategory.dto";
+import ProjectIntakeServicesDto from "@/domain/models/ProjectIntakeServices.dto";
+import ClientDto from "@/domain/models/Client.dto";
 
 export default {
   components: {},
   props: {
     nextPanel: Function,
     panelName: String,
-    project: Object,
+    project: Object
   },
   computed: {
     computedDateFormatted() {
       return this.formatDate(this.date);
     },
+   
     projectSectors() {
       return this.$store.state.projectSectors;
     },
@@ -260,7 +267,7 @@ export default {
     },
     projectIntakeService() {
       return this.$store.state.projectIntakeServices;
-    },
+    }
   },
   data() {
     const form = Object.assign({}, this.$props.project);
@@ -284,7 +291,7 @@ export default {
 
     return {
       valid: true,
-      requiredRule: [v => !!v || 'This field required'],
+      requiredRule: [v => !!v || "This field required"],
       // Initialize using props
       form: { ...form },
       // isReprocurement: false,
@@ -293,6 +300,7 @@ export default {
       dateFormatted: undefined,
       projectInformation: this.$store.state.projectInformation,
       row: null,
+      otherSectorId: null
     };
   },
   watch: {
@@ -308,19 +316,26 @@ export default {
       if (!inputProjectSector) {
         this.form.projectSector = new ProjectSectorDto();
       }
-    },
+    }
   },
   methods: {
+    checksectorid() {
+ const sector = this.$store.state.projectSectors.filter(
+          item => item.projectSectorName === 'Other',
+        );
+        if (sector[0])
+          this.otherSectorId = sector[0].id;
+    },
     formatDate(date) {
       if (!date) return null;
 
-      const [year, month, day] = date.split('-');
+      const [year, month, day] = date.split("-");
       return `${month}/${day}/${year}`;
     },
     parseDate(date) {
       if (!date) return null;
-      const [month, day, year] = date.split('/');
-      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+      const [month, day, year] = date.split("/");
+      return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
     },
     onNextClicked() {
       if (this.$refs.intakeBaseInfo.validate()) {
@@ -329,9 +344,9 @@ export default {
           this.form.dateOfReprocurement = undefined;
           this.form.previousContractBackground = undefined;
         }
-        this.$emit('next');
+        this.$emit("next");
         this.$store.state.projectInformation = true;
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.scrollTo({ top: 0, behavior: "smooth" });
       }
     },
     reset() {
@@ -342,8 +357,8 @@ export default {
       // projectContact = this.$refs.projectContact.form || undefined;
       // }
       const formData = this.form;
-      this.$store.dispatch('addIntakeRequest', formData);
-    },
-  },
+      this.$store.dispatch("addIntakeRequest", formData);
+    }
+  }
 };
 </script>
