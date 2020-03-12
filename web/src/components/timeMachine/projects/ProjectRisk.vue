@@ -62,7 +62,6 @@ Developer only (TODO Remove)
                   v-for="(selection, index) in item.answer"
                   :key="selection.id"
                   :label="selection.answer"
-                  @change="calculateData()"
                   :value="selection.id"
                 ></v-radio>
               </v-radio-group>
@@ -198,9 +197,34 @@ export default {
   },
   watch: {},
   methods: {
+    async updateInitalData() {
+      for (let i = 0; i < this.intakeRiskQuestions.length; i++) {
+        // get the selected answer
+        const selectedAnswer = this.projectRiskAnswers.filter(
+          item => item.questionId === this.intakeRiskQuestions[i].id,
+        );
+        if (selectedAnswer && selectedAnswer[0]) {
+          // update the selected answer details to main array
+          this.intakeRiskQuestions[i].selectedAnswerId = selectedAnswer[0].answerid;
+          this.intakeRiskQuestions[i].score = selectedAnswer[0].score;
+          this.intakeRiskQuestions[i].analysisId = selectedAnswer[0].id;
+        }
+        // to set category status i.e to hide and show questions based on the answer of the first question
+        for (let index = 0; index < this.intakeRiskQuestions[i].answer.length; index++) {
+          if (
+            this.intakeRiskQuestions[i].answer[index].id
+            === this.intakeRiskQuestions[i].selectedAnswerId
+          ) {
+            this.upateCategoryStatus(this.intakeRiskQuestions[i], index);
+          }
+        }
+      }
+      this.calculateData();
+    },
     prepareRiskAnalysis() {
+      // prepare data to send to server
       const riskAnalysis = [];
-      const riskAnalysisIndex = 0;
+      let riskAnalysisIndex = 0;
       for (let i = 0; i < this.intakeRiskQuestions.length; i++) {
         const question = this.intakeRiskQuestions[i];
         const analysisId = question.analysisId ? question.analysisId : null;
@@ -210,27 +234,12 @@ export default {
           score: question.score,
           id: analysisId,
         };
+        riskAnalysisIndex++;
       }
       return riskAnalysis;
     },
-    async updateInitalData() {
-      this.categoryList[0].showStatus = true;
-      this.categoryList[1].showStatus = true;
-      this.categoryList[2].showStatus = true;
-      this.categoryList[3].showStatus = true;
-      for (let i = 0; i < this.$store.state.intakeRiskQuestions.length; i++) {
-        const selectedAnswer = this.$store.state.projectRiskAnswers.filter(
-          item => item.questionId === this.$store.state.intakeRiskQuestions[i].id,
-        );
-        if (selectedAnswer && selectedAnswer[0]) {
-          this.$store.state.intakeRiskQuestions[i].selectedAnswerId = selectedAnswer[0].answerid;
-          this.$store.state.intakeRiskQuestions[i].score = selectedAnswer[0].score;
-          this.$store.state.intakeRiskQuestions[i].analysisId = selectedAnswer[0].id;
-        }
-      }
-      this.score = this.calculateRiskScore();
-    },
     onSave() {
+      debugger;
       const riskAnalysis = this.prepareRiskAnalysis();
       this.editScreen = false;
       this.updateInitalData();
@@ -244,29 +253,25 @@ export default {
       this.editScreen = true;
     },
     upateCategoryStatus(item, index) {
-      debugger;
+      // to set status of first question of the category, for the first answer selection from the list
       if (item.questionNo === 1 && index === 0) {
         this.categoryList[item.category - 1].showStatus = false;
-        item.showStatus = false;
-      } else if (item.questionNo === 1) {
+      } // to set status of first question of the category
+      else if (item.questionNo === 1) {
         this.categoryList[item.category - 1].showStatus = true;
-        item.showStatus = true;
-      } else {
-        item.showStatus = this.categoryList[item.category - 1].showStatus;
       }
-      if (!item.showStatus && item.questionNo === 1) {
+      // to reset the selection & score of the hidden answers
+      if (!this.categoryList[item.category - 1].showStatus && item.questionNo === 1) {
         const questionsInThisCategory = this.intakeRiskQuestions.filter(
           question => question.category === this.categoryList[item.category - 1].id,
         );
         for (let i = 0; i < questionsInThisCategory.length; i++) {
-          questionsInThisCategory[i].selectedAnswerId = null;
-          questionsInThisCategory[i].score = 0;
+          if (questionsInThisCategory[i].questionNo !== 1) {
+            questionsInThisCategory[i].selectedAnswerId = null;
+            questionsInThisCategory[i].score = 0;
+          }
         }
       }
-    },
-    reset() {
-      this.$data.requireRadioButtondRule = this.data.requireRadioButtondRule;
-      this.$refs.intakeRiskAssessment.reset();
     },
     getRiskLevel(score) {
       let riskLevel = 'Low';
@@ -316,7 +321,6 @@ export default {
       };
     },
     calculateData() {
-      console.log('calcualteData called');
       this.score = this.calculateRiskScore();
     },
   },

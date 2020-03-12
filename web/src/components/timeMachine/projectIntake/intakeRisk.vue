@@ -1,7 +1,7 @@
 <template>
   <v-layout row wrap py-2>
     <v-form id="intake-risk-assessment" ref="intakeRiskAssessment" v-model="valid" lazy-validation>
-      <v-flex sm12 v-for="item in intakeRiskQuestions" :key="item.id">
+      <v-flex sm12 v-for="item in intakeRiskQuestion" :key="item.id">
         <v-flex sm12>
           <div v-if="item.questionNo == 1">
             <h2>{{ categoryList[item.category - 1].text }}</h2>
@@ -65,7 +65,7 @@ export default {
     panelName: String,
   },
   computed: {
-    intakeRiskQuestions() {
+    intakeRiskQuestion() {
       return this.$store.state.intakeRiskQuestions;
     },
   },
@@ -74,10 +74,10 @@ export default {
     return {
       valid: true,
       categoryList: [
-        { id: 1, text: 'SIZE & SCOPE', showStatus: false},
-        { id: 2, text: 'PROCESS COMPLEXITY', showStatus: false},
-        { id: 3, text: 'CAPACITY', showStatus: false},
-        { id: 4, text: 'UNIQUE ATTRIBUTES', showStatus: false},
+        { id: 1, text: 'SIZE & SCOPE', showStatus: false },
+        { id: 2, text: 'PROCESS COMPLEXITY', showStatus: false },
+        { id: 3, text: 'CAPACITY', showStatus: false },
+        { id: 4, text: 'UNIQUE ATTRIBUTES', showStatus: false },
       ],
       requireRadioButtondRule: [v => ((v || !v) && v != null) || 'This field required'],
       // Initialize using props
@@ -86,6 +86,13 @@ export default {
     };
   },
   watch: {},
+  beforeMount() {
+    // to delete previously selected data
+    for (let index = 0; index < this.$store.state.intakeRiskQuestions.length; index++) {
+      delete this.$store.state.intakeRiskQuestions[index].score;
+      delete this.$store.state.intakeRiskQuestions[index].selectedAnswerId;
+    }
+  },
   methods: {
     upateCategoryStatus(item, index) {
       if (item.questionNo === 1 && index === 0) {
