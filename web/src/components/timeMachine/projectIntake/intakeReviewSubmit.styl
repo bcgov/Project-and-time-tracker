@@ -1,4 +1,4 @@
-.review-submit
+.review-submit    
     li.v-expansion-panel__container.v-expansion-panel__container
         border: 1px solid #ccc;
         margin-bottom: 30px;
@@ -13,11 +13,19 @@
 
     .v-card__text.pl-4
         padding-left: 0px !important;
-        padding-right: 0px;
-        margin-left: 0px;
-        margin-right: 0px;
-        padding-top: 0px;
-        margin-top: 0px;
+        padding-right: 0px !important;
+        .edit-link,.edit-link:focus:before
+            background: none!important;
+            border: none;
+            padding: 0!important;
+            font-family: arial, sans-serif;
+            color: #069;
+            text-decoration: underline;
+            cursor: pointer;
+            box-shadow: none !important;
+            float: right;
+            margin-top: 0px;
+        
         > div
             padding-top: 17px;
             padding-bottom: 12px;
@@ -26,3 +34,20 @@
 
         > div:nth-child(even)
             background-color:#FAFAFA
+        .contacts        
+           background-color:transparent !important
+           padding-left: 0px;
+           padding-right: 0px;
+           h3
+            padding-top: 10px;
+            padding-bottom: 10px;
+            padding-left: 20px;
+            padding-right: 20px;
+           > div
+                padding-top: 17px;
+                padding-bottom: 12px;
+                padding-left: 40px;
+                padding-right: 40px;
+
+            > div:nth-child(even)
+                background-color:#FAFAFA
