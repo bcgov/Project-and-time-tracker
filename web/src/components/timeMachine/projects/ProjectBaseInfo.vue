@@ -118,6 +118,8 @@
             :min="0"
             step="any"
             oninput="validity.valid||(value='');"
+            @blur="onBlurNumber"
+            @focus="onFocusText"
             v-model="form.contractValue"
           ></v-text-field>
         </div>
@@ -328,6 +330,24 @@ export default {
 
       const [year, month, day] = date.split('-');
       return `${month}/${day}/${year}`;
+    },
+    onBlurNumber(e) {
+    this.visible = false;
+        this.temp = this.amount;
+        this.amount = this.thousandSeprator(this.amount);
+    },
+    onFocusText() {
+    this.visible = true;
+        this.amount = this.temp;
+    },
+    thousandSeprator(amount) {
+    if (amount !== '' || amount !== undefined || amount !== 0 || amount !== '0' || amount !== null) 
+    {
+        return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    } else 
+    {
+        return amount;
+    }
     },
     parseDate(date) {
       if (!date) return null;

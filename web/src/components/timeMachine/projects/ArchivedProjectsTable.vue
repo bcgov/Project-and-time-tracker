@@ -22,10 +22,11 @@
             <td v-bind:class="{ 'archived': props.item.is_archived}">{{ props.item.projectName }}</td>
             <td class="text-xs-left">{{ props.item.projectName }}</td>
             <td class="text-xs-left">{{ [props.item.client.ministry.ministryName, props.item.orgDivision].join(" ") }}</td>
-            <td class="text-xs-left">{{ props.item.projectLeadUserId }}</td>
-            <td class="text-xs-left">{{ props.item.projectBackupUserId }}</td>
-            <td class="text-xs-left">{{props.item.completionDate}}</td>
-            <td class="text-xs-left">{{ props.item.dateModified }}</td>
+            <td class="text-xs-left">{{ props.item.leadUserId }}</td>
+            <td class="text-xs-left">{{ props.item.backupUserId }}</td>
+            <td class="text-xs-left">{{props.item.completionDate | formatDate }}</td>
+            <td class="text-xs-left">{{ props.item.dateModified | formatDate }}</td>
+            <!-- <td class="text-xs-left">{{ props.item.dateModified | dateParse('YYYY-MM-DD') }}</td> -->
             <td class="text-xs-right">
               <v-btn flat icon color="grey" @click="archivePrompt(props.item, false)">
                 <v-icon>unarchive</v-icon>
@@ -99,6 +100,12 @@ export default {
       this.selectedProjectBackup = projectBackupId;
     },
 
+    // Vue.filter('formatDate', function(value) 
+    // {
+    // if (value) {
+    // return moment(String(value)).format('MM/DD/YYYY hh:mm')
+    // }
+    // },
     async deleteProject() {
       if (await this.$refs.confirm.open('danger', '')) {
         // yes
