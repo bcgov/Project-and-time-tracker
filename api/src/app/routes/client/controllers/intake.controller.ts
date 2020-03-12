@@ -276,7 +276,7 @@ const validateIntakeForm = (intake: IProjectIntake) => {
 
       if (!contact.orgPosition) {
         validationErrors.push(
-          contactTypeLabel + ' Position Title is required.'
+          contactTypeLabel + ' Position is required.'
         );
       }
 

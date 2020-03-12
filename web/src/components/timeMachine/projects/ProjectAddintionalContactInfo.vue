@@ -23,7 +23,7 @@
       </v-flex>
       <v-flex md12>
         <div class="v-form-container">
-          <v-text-field label="Position Title" v-model="form.orgPosition"></v-text-field>
+          <v-text-field label="Position" v-model="form.orgPosition"></v-text-field>
         </div>
       </v-flex>
       <v-flex md12>

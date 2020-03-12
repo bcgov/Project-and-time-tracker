@@ -93,7 +93,7 @@
           <v-flex sm12><span v-if="$props.intakeValues.contacts">{{ $props.intakeValues.contacts.email }}</span></v-flex>
           <v-flex sm12><h4>Organization</h4></v-flex>
           <v-flex sm12><span v-if="$props.intakeValues.contacts">{{ $props.intakeValues.contacts.orgName }}</span></v-flex>
-          <v-flex sm12><h4>Position Title</h4></v-flex>
+          <v-flex sm12><h4>Position</h4></v-flex>
           <v-flex sm12><span v-if="$props.intakeValues.contacts">{{ $props.intakeValues.contacts.orgPosition }}</span></v-flex>
           <v-flex sm12><h4>Phone Number</h4></v-flex>
           <v-flex sm12><span v-if="$props.intakeValues.contacts">{{ $props.intakeValues.contacts.phoneNumber }}</span></v-flex>
