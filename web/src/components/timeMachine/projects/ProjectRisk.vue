@@ -239,7 +239,6 @@ export default {
       return riskAnalysis;
     },
     onSave() {
-      debugger;
       const riskAnalysis = this.prepareRiskAnalysis();
       this.editScreen = false;
       this.updateInitalData();
