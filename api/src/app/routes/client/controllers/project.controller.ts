@@ -123,11 +123,13 @@ export const assignLeadAction = async (ctx: Koa.Context) => {
       return;
     } else {
       const client = await retrieveClientByProjectId(ctx.params.id);
+      if (!client.isNonMinistry) {
       if (!(client.clientNo > 0 && client.responsibilityCenter > 0 && 
         client.serviceCenter > 0 && client.stob > 0 && client.projectCode > 0)) {
           ctx.throw('Project Lead cannot be assigned without providing all Finance Codes. Please fill the Finance Codes in Project page.');
           return;
         }
+      }
     }
     
     await updateProject(ctx.params.id, {
@@ -148,11 +150,13 @@ export const assignBackupAction = async (ctx: Koa.Context) => {
       return;
     } else {
       const client = await retrieveClientByProjectId(ctx.params.id);
+      if (!client.isNonMinistry) {
       if (!(client.clientNo > 0 && client.responsibilityCenter > 0 && 
         client.serviceCenter > 0 && client.stob > 0 && client.projectCode > 0)) {
           ctx.throw('Project Backup cannot be assigned without providing all Finance Codes. Please fill the Finance Codes in Project page.');
           return;
         }
+      }
     }
 
     await updateProject(ctx.params.id, {
