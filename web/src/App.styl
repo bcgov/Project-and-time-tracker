@@ -405,6 +405,21 @@
   height:35px;
 
 
+// printer styles for intake review and submit
+@media print
+  .v-btn,.v-stepper__header,.v-toolbar__content,.intake-sub-header, i.v-icon.material-icons.theme--light
+    display: none !important;
+  
+  .application--wrap .v-content  
+    padding: 64px 0px 0px 0px !important;
+  
+  .application--wrap > aside 
+    display: none !important;
+      
+  .v-expansion-panel__header, .v-expansion-panel__container,.v-stepper
+    border: none !important;
+    box-shadow: none !important;
+  
 
 
 
