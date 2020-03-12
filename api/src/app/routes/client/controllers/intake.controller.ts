@@ -57,7 +57,9 @@ export const updateIntakeByIdAction = async (ctx: Koa.Context) => {
 
 export const createIntakeAction = async (ctx: Koa.Context) => {
   try {
+    
     const projectIntake = ctx.request.body as IProjectIntake;
+
     if (!projectIntake) {
       ctx.throw('no data Found');
       return;
@@ -141,7 +143,8 @@ export const updateApproveStatus = async (ctx: Koa.Context) => {
       dateOfReprocurement: intake.dateOfReprocurement,
       previousContractBackground: intake.previousContractBackground,
       projectFailImpact: intake.projectFailImpact,
-      projectSuccess: intake.projectSuccess
+      projectSuccess: intake.projectSuccess,
+      mou: intake.mou,
     };
     const projectData = await createProject(newProject);
 
@@ -172,6 +175,7 @@ const validateIntakeForm = (intake: IProjectIntake) => {
     const client = intake.client;
 
     // Business validation: Start.
+    if (!client.isNonMinistry) {
     if (client.clientNo && client.clientNo.toString().length !== 3) {
       validationErrors.push('Client No should be a 3 digit number.');
     }
@@ -192,6 +196,8 @@ const validateIntakeForm = (intake: IProjectIntake) => {
     if (client.projectCode && client.projectCode.toString().length !== 7) {
       validationErrors.push('Project Code should be a 7 digit number.');
     }
+  }
+
     // Business validation: End.
 
     if (!(client.ministry && client.ministry.id) && !client.isNonMinistry) {

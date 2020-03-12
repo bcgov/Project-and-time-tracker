@@ -13,22 +13,23 @@
             item-value="id"
             item-text="ministryName"
           ></v-select>
-            <v-container fluid row wrap align-start justify-end fill-height style="padding:0px !important">
-          <label class="v-label theme--light" style="margin-left: 2%;">Non-Ministry</label>
-          <v-checkbox v-model="form.isNonMinistry"></v-checkbox>
-            <v-text-field
+
+           <v-text-field
             :rules="requiredRule"
             v-if="form.isNonMinistry"
             class="required"
             label="Non Ministry Name"
-            v-model="form.NonMinistryName"
+            v-model="form.nonMinistryName"
           ></v-text-field>
-        </v-container>
-        </div>
 
-        <div class="v-form-container">
+          <v-container fluid row wrap align-start justify-end fill-height style="padding:0px !important; margin-top: -10px;" class='mb-4 mt-0'>
+            <label class="v-label theme--light" style="margin-left: 2%;">Non-Ministry</label>
+            <v-checkbox v-model="form.isNonMinistry"></v-checkbox>
+          </v-container>
 
         </div>
+        <!-- <div class="v-form-container">
+        </div> -->
       </v-flex>
       <v-flex sm6>
         <div class="v-form-container">
@@ -49,7 +50,7 @@
       <v-flex xs12>
         <generic-contact-info :contact="form"></generic-contact-info>
       </v-flex>
-      <v-flex xs12 pt-2>
+      <v-flex xs12 pt-2  v-if="!form.isNonMinistry">
         <project-finance-info :financeInfo="form"></project-finance-info>
       </v-flex>
       <v-flex xs12 py-2>
@@ -88,6 +89,7 @@ export default {
   },
   data() {
     const form = Object.assign({}, this.$props.ministry);
+      form.isNonMinistry = false;
     const inputMinistry = form.ministry || null;
     if (!inputMinistry) {
       form.ministry = new MinistryDto();

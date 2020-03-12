@@ -16,26 +16,11 @@ import store from '@/store';
 
 import VForm from '@/modules/widgets/Form.vue';
 import VField from '@/modules/widgets/Field.vue';
+import VueCurrencyInput from 'vue-currency-input'
+
 
 Vue.use(VueQuillEditor);
-Vue.filter('formatDate', function(value)
-{
-  if (value) {
-    return moment(String(value)).format('MM/DD/YYYY')
-  }
-}
-);
-Vue.filter('toCurrency', function (value) {
-  if (typeof value !== "number") {
-      return value;
-  }
-  var formatter = new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0
-  });
-  return formatter.format(value);
-});
+Vue.use(VueCurrencyInput, { globalOptions: { currency: 'CAD'}});
 
 Vue.component('v-form', VForm);
 Vue.component('v-field', VField);

@@ -1,9 +1,16 @@
 import { getRepository, Repository } from 'typeorm';
 import { Project } from '../../models/entities';
+import { Client } from '../../models/entities';
 import { IProject } from '../../models/interfaces/i-project';
+import { IClient } from '../../models/interfaces/i-client';
 
 const projectRepo = (): Repository<Project> => {
   return getRepository(Project);
+};
+
+
+const clientRepo = (): Repository<Client> => {
+  return getRepository(Client);
 };
 
 export const createProject = async (obj: IProject | IProject[]) => {
@@ -22,7 +29,7 @@ export const createProject = async (obj: IProject | IProject[]) => {
   return project;
 };
 
-export const updateProject = async (id: string, fields: any) => {
+export const updateProject = async (id: string, fields: any, clientFilds: any = null) => {
   const repo = projectRepo();
   const project: Project = await repo.findOne(id);
 
@@ -33,6 +40,19 @@ export const updateProject = async (id: string, fields: any) => {
   updatedProject.dateModified = new Date();
 
   await repo.save(updatedProject);
+ if (clientFilds) {
+  const repoClient = clientRepo();
+  const client: Client = await repoClient.findOne(clientFilds.id);
+
+  if (!client) {
+    throw Error('client not found');
+  }
+  const updatedClient = await repoClient.merge(client, clientFilds);
+  updatedClient.dateModified = new Date();
+
+  await repoClient.save(updatedClient);
+
+ }
   return updatedProject;
 };
 
@@ -58,7 +78,7 @@ export const retrieveProjectById = async (id: string | string[]) => {
   const res = await repo
     .createQueryBuilder('p')
     .innerJoinAndSelect('p.client', 'c')
-    .innerJoinAndSelect('c.ministry', 'm')
+    .leftJoinAndSelect('c.ministry', 'm')
     .where('p.id = :id', { id: id })
     .getOne();
   if (!res) {
@@ -72,7 +92,7 @@ export const retrieveProjects = async () => {
   return await repo
     .createQueryBuilder('p')
     .innerJoin('p.client', 'c')
-    .innerJoin('c.ministry', 'm')
+    .leftJoin('c.ministry', 'm')
     .innerJoin('p.projectSector', 'ps')
     .orderBy('p.dateModified', 'DESC')
     .select([
@@ -85,7 +105,15 @@ export const retrieveProjects = async () => {
       'm.ministryName',
       'p.leadUserId',
       'p.backupUserId',
-      'p.mouAmount'
+      'p."mouId"',
+      'p.isReprocurement',
+      'c.isNonMinistry',
+      'p.dateOfReprocurement',
+      'p.previousContractBackground',
+      'p.projectFailImpact',
+      'p.projectSuccess',
+      'p.otherProjectSectorName',
+      'c.nonMinistryName'
     ])
     .where('p.is_archived IS NULL OR p.is_archived = :is_archived', {is_archived : false})
     .getMany();
@@ -110,6 +138,13 @@ export const retrieveArchivedProjects = async () => {
       'p.leadUserId',
       'p.backupUserId',
       'p.mouAmount',
+      'p.isReprocurement',
+      'p.isMinistry',
+      'p.dateOfReprocurement',
+      'p.previousContractBackground',
+      'p.projectFailImpact',
+      'p.projectSuccess',
+      'p.otherProjectSectorName'
     ])
     .where('p.is_archived = :is_archived', {is_archived : true})
     .getMany();
@@ -120,9 +155,9 @@ export const retrieveProjectsByUserId = async (userId: string) => {
   return await repo
     .createQueryBuilder('p')
     .innerJoin('p.client', 'c')
-    .innerJoin('c.ministry', 'm')
-    .innerJoin('p.user','u')
-    .innerJoin('c.contact','uc')
+    .leftJoin('c.ministry', 'm')
+    .innerJoin('p.user', 'u')
+    .innerJoin('c.contact', 'uc')
     .innerJoin('p.projectSector', 'ps')
     .select([
       'p.id',
@@ -137,6 +172,14 @@ export const retrieveProjectsByUserId = async (userId: string) => {
       'p.leadUserId',
       'p.backupUserId',
       'p.mouAmount',
+      'p.isReprocurement',
+      'c.isNonMinistry',
+      'p.dateOfReprocurement',
+      'p.previousContractBackground',
+      'p.projectFailImpact',
+      'p.projectSuccess',
+      'p.otherProjectSectorName',
+      'c.nonMinistryName'
     ])
     .where('p."is_archived" = :is_archived, {is_archived : false}) AND p."leadUserId" = :userId OR p."backupUserId" = :userId', { userId: userId })
     .getMany();
@@ -157,7 +200,14 @@ export const retrieveArchivedProjectsByUserId = async (userId: string) => {
       'm.ministryName',
       'p.leadUserId',
       'p.backupUserId',
-      'p.mouAmount'
+      'p.mouAmount',
+      'p.isReprocurement',
+      'p.isMinistry',
+      'p.dateOfReprocurement',
+      'p.previousContractBackground',
+      'p.projectFailImpact',
+      'p.projectSuccess',
+      'p.otherProjectSectorName'
     ])
 
 //   From merge conflict, this line replaced below

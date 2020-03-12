@@ -1,6 +1,6 @@
 <template>
 <div class="review-submit">
-  <v-expansion-panel v-bind:value="0">
+  <v-expansion-panel v-model="panelState" expand>
     <v-expansion-panel-content>
       <template v-slot:header>
         <div class="panel-header">Project Information</div>
@@ -33,7 +33,7 @@
           </v-flex>
           <v-flex v-if="$props.intakeValues.chkReprocurement">
             <v-flex>
-              <v-flex sm12><h4>Date of Reprocurement</h4></v-flex>
+              <v-flex sm12><h4>Date original contract ends</h4></v-flex>
               <v-flex sm12>{{ $props.intakeValues.projectName }}</v-flex>
             </v-flex>
             <v-flex>
@@ -100,6 +100,7 @@
         </v-card-text>
       </v-card>
     </v-expansion-panel-content>
+  <v-btn flat icon @click='print()'><v-icon>print</v-icon>Print</v-btn>
   </v-expansion-panel>
   </div>
 </template>
@@ -121,10 +122,27 @@ export default {
     const form = Object.assign({}, this.$props.intakeValues);
     return {
       form: { ...form },
+      panelState: [true],
     };
   },
   watch: {},
 
-  methods: {},
+  methods: {
+    print(){
+      this.expandAll();
+      setTimeout(window.print, 500);
+    },
+    expandAll(){
+      this.panelState = [true, true, true, true, true];
+      console.log('set panel state', this.panelState)
+    }
+  },
 };
 </script>
+<style scoped>
+  @media print {
+    .application--wrap > aside {
+      display: none;
+    }
+  }
+</style>

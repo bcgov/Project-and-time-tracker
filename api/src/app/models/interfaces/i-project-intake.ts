@@ -30,4 +30,5 @@ export interface IProjectIntake {
   riskScore: number;
   riskLevel: number;
   otherProjectSectorName: string;
+  isNonMinistry: boolean;
 }

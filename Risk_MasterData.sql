@@ -1,23 +1,23 @@
 INSERT INTO public.risk_questions (id,question,category,"riskLevel","questionNo") VALUES 
-('7867249a-657a-489a-9203-1754ed8885cc','How many separate contracts are estimated for this project?',1,NULL,2)
-,('1cfc4878-0257-4da8-8838-1729be5b8ee1','From project defintion to project close-out, what is the expected duration of the project?',2,NULL,4)
-,('1f71e8bc-5b88-40c3-ab99-553368ebf685','How many Ministries or BPS Entities are directly involved in the project?',2,NULL,5)
-,('2d4fd180-ef23-4134-8014-be2ec8ed1ec5','Is their high public interest in the project?',4,NULL,3)
-,('e11046b5-dfcf-4343-aff8-651670cc783f','Does this project have a documented project plan with clearly identified Roles & Responsibilities?',3,NULL,2)
-,('a08e56db-b334-4270-affc-a8f6e2c0fd0a','What level of priority is the project to the owning Ministry?',3,NULL,3)
-,('ec300240-d516-40d4-b9b3-8a23d8f4e951','Will the resulting contract offer government opportunity for innovation or modernization',2,NULL,7)
-,('cf3e8c59-eefb-48cb-b427-4f1abdae2ed1','Does the organization anticipate a shortage of available personnel with appropriate skills during a significant period of the project?',3,NULL,4)
+('7867249a-657a-489a-9203-1754ed8885cc','How many separate contracts are estimated for this project?',1,1,2)
+,('1cfc4878-0257-4da8-8838-1729be5b8ee1','From project defintion to project close-out, what is the expected duration of the project?',2,2,4)
+,('1f71e8bc-5b88-40c3-ab99-553368ebf685','How many Ministries or BPS Entities are directly involved in the project?',2,2,5)
+,('2d4fd180-ef23-4134-8014-be2ec8ed1ec5','Is their high public interest in the project?',4,2,3)
+,('e11046b5-dfcf-4343-aff8-651670cc783f','Does this project have a documented project plan with clearly identified Roles & Responsibilities?',3,2,2)
+,('a08e56db-b334-4270-affc-a8f6e2c0fd0a','What level of priority is the project to the owning Ministry?',3,2,3)
+,('ec300240-d516-40d4-b9b3-8a23d8f4e951','Will the resulting contract offer government opportunity for innovation or modernization',2,2,7)
+,('cf3e8c59-eefb-48cb-b427-4f1abdae2ed1','Does the organization anticipate a shortage of available personnel with appropriate skills during a significant period of the project?',3,2,4)
 ,('6b8217b2-36e9-4e7b-80ee-4c60ced529af','Consider the following criteria regarding knowledge and experience:
 <ul>
 <li>The project will use a proven approach</li>
 <li>This type of project has been done before in the BC Gov</li>
 <li>The project will use resources that have been applied to this type of project before</li>
-</ul>',2,NULL,8)
-,('94ec86da-f955-4e3d-b0ba-932b3044abdb','Are the services public facing?',2,NULL,9)
+</ul>',2,2,8)
+,('94ec86da-f955-4e3d-b0ba-932b3044abdb','Are the services public facing?',2,2,9)
 ;
 INSERT INTO public.risk_questions (id,question,category,"riskLevel","questionNo") VALUES 
-('e969a6eb-2819-445f-a3f5-1aad40ad75b4','What is the estimated Total Contract Value of this procurement?',1,NULL,1)
-,('4170bc6a-3146-486a-89fe-d147718678cc','Will the project result in a contract that is one of a larger bundle of contracts supporting a strategic initiative? (i.e. requires an integrator)',2,NULL,1)
+('e969a6eb-2819-445f-a3f5-1aad40ad75b4','What is the estimated Total Contract Value of this procurement?',1,2,1)
+,('4170bc6a-3146-486a-89fe-d147718678cc','Will the project result in a contract that is one of a larger bundle of contracts supporting a strategic initiative? (i.e. requires an integrator)',2,2,1)
 ,('183b80f2-4688-41fd-ae1c-5a6e7f777c3f','Is the project susceptible to time delays? Time delays can have a number of causes, such as the following:
 <ul>
 <li>Crosses Election periods</li>
@@ -26,8 +26,8 @@ INSERT INTO public.risk_questions (id,question,category,"riskLevel","questionNo"
 <li>Known Capacity Issues</li>
 <li>Timelines are compressed or unattainable</li>
 <li>Involves emerging technologies</li>
-</ul>',1,NULL,3)
-,('3c998138-1cd7-4ae4-b86f-5b18c404b2c8','What is the anticipated procurement approach?',2,NULL,2)
+</ul>',1,1,3)
+,('3c998138-1cd7-4ae4-b86f-5b18c404b2c8','What is the anticipated procurement approach?',2,1,2)
 ,('b1298897-3bb9-4ccf-9a3c-fb0a72eb0dec','Are there unique complex variables within this project? Such as:
 <ul>
 <li>The services currently reside outside of government with a vendor</li>
@@ -35,12 +35,12 @@ INSERT INTO public.risk_questions (id,question,category,"riskLevel","questionNo"
 <li>There are a small number of individual requirements to define</li>
 <li>There is a potential labour impact to the procurement</li>
 <li>Other high impact unique feature not listed</li>
-</ul>',2,NULL,3)
-,('c81159f4-42bb-48b1-8338-592df3b43eff','What is the supplier capability and willingness?',2,NULL,6)
-,('f69586ae-dd89-44dc-8288-e4efe98984c2','How many total people (part-time or full-time on the project, including BC Gov employees and individual contractors) are required to complete this project at its peak activity?',3,NULL,1)
-,('dfd744a6-c142-42e9-9dc9-377407f8bceb','Has the assigned lead from the project team worked on a project of this size and complexity before?',3,NULL,5)
-,('82d17998-d5a7-4a15-830d-8a39d2e68a01','Are there unique challenges to ensure that this project complies with relevant Treasury Board policy requirements, such as those regarding security, GBA+, privacy, and management of government information?',4,NULL,1)
-,('a19f05bd-8172-4994-b991-fc717b0e46f2','Are there any unique socio-economic considerations that must be taken into account?',4,NULL,2)
+</ul>',2,1,3)
+,('c81159f4-42bb-48b1-8338-592df3b43eff','What is the supplier capability and willingness?',2,2,6)
+,('f69586ae-dd89-44dc-8288-e4efe98984c2','How many total people (part-time or full-time on the project, including BC Gov employees and individual contractors) are required to complete this project at its peak activity?',3,2,1)
+,('dfd744a6-c142-42e9-9dc9-377407f8bceb','Has the assigned lead from the project team worked on a project of this size and complexity before?',3,2,5)
+,('82d17998-d5a7-4a15-830d-8a39d2e68a01','Are there unique challenges to ensure that this project complies with relevant Treasury Board policy requirements, such as those regarding security, GBA+, privacy, and management of government information?',4,2,1)
+,('a19f05bd-8172-4994-b991-fc717b0e46f2','Are there any unique socio-economic considerations that must be taken into account?',4,2,2)
 ;
 
 

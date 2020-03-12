@@ -57,6 +57,28 @@ export class Project {
   @Column({ type: 'boolean', nullable: true })
   is_archived: boolean;
 
+  @Column({ type: 'boolean', nullable: true })
+  isReprocurement: boolean;
+
+  @Column({ type: 'boolean', nullable: true })
+  isMinistry: boolean;
+
+  @Column({ type: 'date', nullable: true })
+  dateOfReprocurement: Date;
+
+  @Column({ type: 'text', nullable: true })
+  previousContractBackground: string;
+
+  @Column({ type: 'text', nullable: true })
+  projectFailImpact: string;
+
+  @Column({ type: 'text', nullable: true })
+  projectSuccess: string;
+
+
+  @Column({ type: 'text', nullable: true })
+  otherProjectSectorName: string;
+
   @ManyToOne(type => MOU)
   mou: MOU;
 }

@@ -28,7 +28,8 @@ export default {
     selectedTab: 'tab-1',
   }),
   beforeMount() {
-    this.$store.state.collapseNavigationBar = true;
+    // Disabled per client request
+    // this.$store.state.collapseNavigationBar = true;
   },
   computed: {},
 };

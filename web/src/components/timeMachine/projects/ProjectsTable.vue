@@ -18,10 +18,10 @@
           disable-initial-sort
         >
           <template slot="items" slot-scope="props">
-            <td class="text-xs-left">{{ props.item.mouAmount | toCurrency }} </td>
+            <td class="text-xs-left">{{ props.item.mouId }} </td>
             <td v-bind:class="{ 'archived': props.item.is_archived}">{{ props.item.projectName }}</td>
             <td class="text-xs-left">{{ props.item.projectName}} </td>
-            <td class="text-xs-left">{{ [props.item.client.ministry.ministryName, props.item.orgDivision].join(" ") }}</td>
+            <td class="text-xs-left">{{ [props.item.client.ministry?props.item.client.ministry.ministryName: props.item.client.nonMinistryName, props.item.orgDivision].join(" ") }}</td>
             <td class="text-xs-left table-dropdown">
               <v-select
                 :items="userList"
@@ -50,10 +50,9 @@
                 item-text="contact.fullName"
               ></v-select>
             </td>
-            <td class="text-xs-left">{{ props.item.completionDate | formatDate }}</td>
-            <td class="text-xs-left">{{ props.item.dateModified | formatDate }}</td>
+            <td class="text-xs-left">{{ props.item.completionDate }}</td>
+            <td class="text-xs-left">{{ formatDate(props.item.dateModified) }}</td>
             <td class="text-xs-center">
-
               <v-btn flat icon color="grey" @click="editProject(props.item.id)">
                 <v-icon>edit</v-icon>
               </v-btn>
@@ -96,7 +95,7 @@ export default {
   data() {
     return {
       headers: [
-        { text: 'MOU', value: 'mouAmount', align: 'left', sortable: true },
+        { text: 'MOU', value: 'mouId', align: 'left', sortable: true },
         { text: 'Project Name', value: 'projectName', align: 'left', sortable: true },
         { text: 'Phase', value: 'rfxPhaseName', align: 'left', sortable: true },
         { text: 'Client', value: 'client.ministry.ministryName', sortable: true },
@@ -251,6 +250,13 @@ export default {
         this.$refs.snackbar.displaySnackbar('success', 'Deleted.');
       }
     },
+    formatDate(dateStr){
+      const split = dateStr.split("T")
+      if (split){
+        return split[0]
+      }
+      return dateStr;
+    }
   },
   created() {
     this.fetchData();

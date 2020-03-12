@@ -1,8 +1,8 @@
 // @flow
-import BaseDto from '../abstract/Base.dto';
+import BaseDto from "../abstract/Base.dto";
 
-import RFxPhaseDto from './RFxPhase.dto';
-import RFxTypeDto from './RFxType.dto';
+import RFxPhaseDto from "./RFxPhase.dto";
+import RFxTypeDto from "./RFxType.dto";
 
 export default class RFxDto extends BaseDto {
   static constructFromObject(data, obj) {
@@ -14,15 +14,17 @@ export default class RFxDto extends BaseDto {
     return obj;
   }
 
-  id = '';
+  id = "";
 
   rfxType = new RFxTypeDto();
 
   rfxPhase = new RFxPhaseDto();
 
-  rfxOverview = '';
+  rfxName = "";
 
-  clientResponsibilities = '';
+  rfxOverview = "";
 
-  psdResponsibilities = '';
+  clientResponsibilities = "";
+
+  psdResponsibilities = "";
 }

@@ -34,7 +34,7 @@
         <v-text-field
           :rules="requiredRule"
           class="required"
-          label="Postal (Zip Code)"
+          label="Postal"
           v-model="contact.postalCode"
         ></v-text-field>
       </div>

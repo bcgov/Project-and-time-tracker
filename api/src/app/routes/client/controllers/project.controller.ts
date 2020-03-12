@@ -73,7 +73,19 @@ export const updateProjectAction = async (ctx: Koa.Context) => {
       description: project.description,
       leadUserId: project.leadUserId,
       backupUserId: project.backupUserId,
-      modifiedUserId: auth.userId
+      modifiedUserId: auth.userId,
+      dateOfReprocurement: project.dateOfReprocurement,
+     
+      isReprocurement: project.isReprocurement,
+      previousContractBackground: project.previousContractBackground,
+      projectFailImpact: project.projectFailImpact,
+      projectSuccess: project.projectSuccess
+    };
+
+    const updateingClient = {
+      id: project.client.id,
+      isNonMinistry: project.client.isNonMinistry,
+      nonMinistryName: project.client.nonMinistryName,
     };
 
     const client = await retrieveClientByProjectId(ctx.params.id);
@@ -84,7 +96,7 @@ export const updateProjectAction = async (ctx: Koa.Context) => {
       }
     }
 
-    await updateProject(ctx.params.id, updatingFields);
+    await updateProject(ctx.params.id, updatingFields, updateingClient);
 
     ctx.body = 'success';
   } catch (err) {
@@ -163,10 +175,6 @@ const validateProject = (project: IProject) => {
   
   if (!project.completionDate) {
     validationErrors.push('Project Deadline is required.');
-  }
-
-  if (!project.description) {
-    validationErrors.push('Description is required.');
   }
 
   if (!(project.contractValue && project.contractValue > 0)) {

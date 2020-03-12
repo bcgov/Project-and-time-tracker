@@ -10,7 +10,7 @@ export const authorize = async (ctx: Koa.Context, next: () => Promise<any>) => {
     await next();
   } else {
     ctx.status = HttpStatus.FORBIDDEN;
-    ctx.throw('Don\'t have permission to perform this action.');
+    ctx.throw("Don't have permission to perform this action.");
   }
 };
 
@@ -52,12 +52,12 @@ const commonForPSBAdminAndUser = [
   'PATCH/timesheet/:id',
   'DELETE/timesheet/:id',
   'POST/MOU/',
-  'PATCH/intake/:id',
+  'PATCH/intake/:id'
 ];
 
 const permissions = {
   PSB_Admin: [
-    ...commonForAllUsers,    
+    ...commonForAllUsers,
     'GET/intake/',
     'GET/intake/:id',
     // 'PATCH/intake/:id',
@@ -68,16 +68,15 @@ const permissions = {
     'PATCH/ministry/:id/update',
     'POST/ministry/',
     'GET/project-risk/',
+    'GET/project-risk/:id',
+    'PATCH/project-risk/:id',
     ...commonForPSBAdminAndUser
   ],
   PSB_User: [
-    ...commonForAllUsers,    
+    ...commonForAllUsers,
     'POST/project/:id/assign-lead', // should be removed on 2nd phase based on the new requirement.
     'POST/project/:id/assign-backup', // should be removed on 2nd phase based on the new requirement.
     ...commonForPSBAdminAndUser
   ],
-  User: [
-    ...commonForAllUsers,
-    'POST/intake/'
-  ],
+  User: [...commonForAllUsers, 'POST/intake/']
 };
