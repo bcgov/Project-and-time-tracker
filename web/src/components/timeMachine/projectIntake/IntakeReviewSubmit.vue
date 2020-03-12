@@ -42,7 +42,7 @@
               ><!-- Parameter not known -->
             </v-flex>
             <v-flex>
-              <v-flex sm12><h4>What is the potential impact if this project fails?</h4></v-flex>
+              <v-flex sm12><h4>What is the potential risk of this procurement failing?</h4></v-flex>
               <v-flex sm12>{{ $props.intakeValues.projectFailImpact }}</v-flex>
             </v-flex>
             <v-flex>
