@@ -140,8 +140,8 @@
             <v-flex v-for="item in $props.intakeValues.risk" :key="item.id">
               <v-btn color="primary" @click="editItem(2)" class="edit-link">edit</v-btn>
               <v-flex sm12
-                ><b><div v-html="item.question" class="question-text"></div></b></v-flex
-              >
+                ><b><div v-html="item.question" class="question-text"></div></b
+              ></v-flex>
               <v-flex sm12>{{ item.answer }}</v-flex>
             </v-flex>
           </v-card-text>
@@ -153,42 +153,40 @@
         </template>
         <v-card>
           <v-card-text class="pl-4" v-if="$props.intakeValues.contacts">
-            <v-flex v-for="item in $props.intakeValues.contacts" :key="item.id" class="contacts">
-              <h3>{{ getContactType(item.contactType) }}</h3>
+            <v-flex
+              v-for="contactItem in $props.intakeValues.contacts"
+              :key="contactItem.contactType"
+              class="contacts"
+            >
+              <h3>{{ getContactType(contactItem.contactType) }}</h3>
               <v-flex>
                 <v-btn color="primary" @click="editItem(3)" class="edit-link">edit</v-btn>
                 <v-flex sm12><h4>Name</h4></v-flex>
-                <v-flex sm12>{{ item.fullName }}</v-flex>
+                <v-flex sm12>{{ contactItem.fullName }}</v-flex>
               </v-flex>
 
               <v-flex>
                 <v-btn color="primary" @click="editItem(3)" class="edit-link">edit</v-btn>
                 <v-flex sm12><h4>Email Address</h4></v-flex>
-                <v-flex sm12>{{ item.email }}</v-flex>
+                <v-flex sm12>{{ contactItem.email }}</v-flex>
               </v-flex>
 
               <v-flex>
                 <v-btn color="primary" @click="editItem(3)" class="edit-link">edit</v-btn>
                 <v-flex sm12><h4>Organization</h4></v-flex>
-                <v-flex sm12>{{ item.orgName }}</v-flex>
-              </v-flex>
-
-              <v-flex>
-                <v-btn color="primary" @click="editItem(3)" class="edit-link">edit</v-btn>
-                <v-flex sm12><h4>Name</h4></v-flex>
-                <v-flex sm12>{{ item.fullName }}</v-flex>
+                <v-flex sm12>{{ contactItem.orgName }}</v-flex>
               </v-flex>
 
               <v-flex>
                 <v-btn color="primary" @click="editItem(3)" class="edit-link">edit</v-btn>
                 <v-flex sm12><h4>Position Title</h4></v-flex>
-                <v-flex sm12>{{ item.orgPosition }}</v-flex>
+                <v-flex sm12>{{ contactItem.orgPosition }}</v-flex>
               </v-flex>
 
               <v-flex>
                 <v-btn color="primary" @click="editItem(3)" class="edit-link">edit</v-btn>
                 <v-flex sm12><h4>Phone Number</h4></v-flex>
-                <v-flex sm12>{{ item.phoneNumber }}</v-flex>
+                <v-flex sm12>{{ contactItem.phoneNumber }}</v-flex>
               </v-flex>
             </v-flex>
           </v-card-text>
