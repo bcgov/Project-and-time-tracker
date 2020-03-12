@@ -13,9 +13,9 @@
         <v-stepper v-model="e1" alt-labels>
           <v-stepper-header>
             <v-stepper-step
-              @click="checkedit(e1)"
+              @click="checkedit(1)"
               :editable="isEditPInnfo"
-              :edit-icon="'edit'"
+              edit-icon="1"
               :complete="e1 > 1"
               step="1"
             >
@@ -25,9 +25,9 @@
             <v-divider class="first-divider"></v-divider>
             <v-divider class="second-divider"></v-divider>
             <v-stepper-step
-              @click="checkedit(e1)"
+              @click="checkedit(2)"
               :editable="isEditMBInfo"
-              :edit-icon="'edit'"
+              edit-icon="2"
               :complete="e1 > 2"
               step="2"
               >Ministry/Branch Information</v-stepper-step
@@ -35,9 +35,9 @@
             <v-divider class="first-divider"></v-divider>
             <v-divider class="second-divider"></v-divider>
             <v-stepper-step
-              @click="checkedit(e1)"
+              @click="checkedit(3)"
               :editable="isEditRiskInfo"
-              :edit-icon="'edit'"
+              edit-icon="3"
               :complete="e1 > 3"
               step="3"
             >
@@ -47,9 +47,9 @@
             <v-divider class="first-divider"></v-divider>
             <v-divider class="second-divider"></v-divider>
             <v-stepper-step
-              @click="checkedit(e1)"
+              @click="checkedit(4)"
               :editable="isEditContactInfo"
-              :edit-icon="'edit'"
+              edit-icon="4"
               :complete="e1 > 4"
               step="4"
             >
@@ -90,6 +90,7 @@
                   <label class="sub-header-large">Ministry / Branch Information</label>
                 </div>
               </template>
+              <v-btn  @click="backfn(1)" flat large color="primary">>Project Information</v-btn>
               <v-card>
                 <v-card-text>
                   <!-- Only one client on the form for now, but there will be multiple in the future -->
@@ -109,6 +110,7 @@
                   <label class="sub-header-large">Risk Assessment</label>
                 </div>
               </template>
+              <v-btn flat large color="primary">>Ministry / Branch Information</v-btn>
               <v-card>
                 <v-card-text>
                   <!-- Only one client on the form for now, but there will be multiple in the future -->
@@ -309,21 +311,24 @@ export default {
   methods: {
     checkedit(msg) {
       if (msg == 1) {
-        this.isEditPInnfo = false;
+        console.log('am in step 1');
         this.isEditMBInfo = false;
         this.isEditContactInfo = false;
         this.isEditRiskInfo = false;
       } else if (msg == 2) {
+        console.log('am in step 2');
         this.isEditPInnfo = true;
         this.isEditMBInfo = false;
         this.isEditContactInfo = false;
         this.isEditRiskInfo = false;
       } else if (msg == 3) {
+        console.log('am in step 3');
         this.isEditPInnfo = true;
         this.isEditMBInfo = true;
         this.isEditContactInfo = false;
         this.isEditRiskInfo = false;
       } else if (msg == 4) {
+        console.log('am in step 4');
         this.isEditPInnfo = true;
         this.isEditMBInfo = true;
         this.isEditContactInfo = true;
@@ -467,12 +472,37 @@ export default {
       const clientInfo = contacts.find(contact => contact.contactType === infoType);
       return clientInfo;
     },
+    backfn(step) {
+      if (step - 1 == 1) {
+        this.isEditPInnfo = true;
+        this.isEditRiskInfo = false;
+        this.isEditContactInfo = false;
+      } else if (step - 1 == 2) {
+        this.isEditMBInfo = true;
+        this.isEditPInnfo = true;
+        this.isEditContactInfo = false;
+      } else if (step - 1 == 3) {
+        this.isEditMBInfo = true;
+        this.isEditPInnfo = true;
+        this.isEditRiskInfo = true;
+      } else {
+          this.isEditMBInfo = false;
+        this.isEditPInnfo = false;
+        this.isEditRiskInfo = false;
+        this.isEditContactInfo = false;
+      }
+      this.e1 = step;
+    },
     clickfnctn(step) {
       if (step === 5) {
         const value1 = this.$refs.projectLead.onNextClicked();
         const value2 = this.$refs.projectSponsor.onNextClicked();
         const value3 = this.$refs.projectFinance.onNextClicked();
         if (value1 && value2 && value3) {
+          this.isEditMBInfo = true;
+          this.isEditPInnfo = true;
+          this.isEditRiskInfo = true;
+          this.isEditContactInfo = true;
           this.e1 = step;
         }
         const riskAnalysis = this.getRiskAnalysis();
@@ -539,12 +569,12 @@ export default {
           this.isEditMBInfo = true;
           this.isEditPInnfo = true;
           this.isEditRiskInfo = true;
-        } else if (step - 1 == 4) {
-          this.isEditMBInfo = true;
-          this.isEditPInnfo = true;
-          this.isEditRiskInfo = true;
-          this.isEditContactInfo = true;
-        }
+        } else {
+          this.isEditMBInfo = false;
+        this.isEditPInnfo = false;
+        this.isEditRiskInfo = false;
+        this.isEditContactInfo = false;
+      }
         this.e1 = step;
       }
     },
