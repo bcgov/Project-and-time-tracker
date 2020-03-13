@@ -1,6 +1,8 @@
 <template>
-  <v-layout row wrap py-2>
-    <v-form id="intake-risk-assessment" ref="intakeRiskAssessment" v-model="valid" lazy-validation>
+  <v-layout class="risk-info-layout" row wrap py-2>
+    <v-flex md12 class="intake-base-info-header"><span class="intake-base-info-header-content">Risk Assessment</span>
+   </v-flex>
+    <v-form id="intake-risk-assessment" ref="intakeRiskAssessment" style="margin-left:10px" v-model="valid" lazy-validation>
       <v-flex sm12 v-for="item in intakeRiskQuestion" :key="item.id">
         <v-flex sm12>
           <div v-if="item.questionNo == 1">
@@ -116,3 +118,10 @@ export default {
   },
 };
 </script>
+<style scoped>
+.risk-info-layout {
+    -webkit-box-shadow: -2px 6px 12px 0px rgba(168,155,168,0.59);
+    -moz-box-shadow: -2px 6px 12px 0px rgba(168,155,168,0.59);
+    box-shadow: -2px 6px 12px 0px rgba(168,155,168,0.59);
+}
+</style>

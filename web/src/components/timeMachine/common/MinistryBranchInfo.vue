@@ -1,5 +1,6 @@
 <template>
-  <v-layout row wrap py-2>
+  <v-layout class="branch-info-layout"  row wrap py-2>
+     <v-flex md12 class="intake-base-info-header"><span class="intake-base-info-header-content">Ministry / Branch Information</span></v-flex>
     <v-form id="intake-client-info" ref="intakeClientInfo" v-model="valid" lazy-validation>
       <v-flex sm6>
         <div class="v-form-container">
@@ -139,3 +140,13 @@ export default {
   },
 };
 </script>
+<style scoped>
+.branch-info-layout {
+    -webkit-box-shadow: -2px 6px 12px 0px rgba(168,155,168,0.59);
+    -moz-box-shadow: -2px 6px 12px 0px rgba(168,155,168,0.59);
+    box-shadow: -2px 6px 12px 0px rgba(168,155,168,0.59);
+}
+.intake-base-info-header-content {
+  margin-left:38% !important;
+}
+</style>

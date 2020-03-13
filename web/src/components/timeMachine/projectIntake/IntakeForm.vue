@@ -132,6 +132,8 @@
                 </div>
               </template>
               <v-btn @click="backfn(3)" flat large color="primary">>Risk Assessment</v-btn>
+              <div class="intake-contact-layout">
+                <v-flex md12 class="intake-base-info-header"><span class="intake-base-info-header-content">Contact Information</span></v-flex>
               <v-card>
                 <v-card-text>
                   <div>
@@ -207,7 +209,7 @@
                     </v-layout>
                   </div>
                 </v-card-text>
-              </v-card>
+              </v-card></div>
             </v-stepper-content>
             <v-stepper-content step="5">
               <v-btn @click="backfn(4)" flat large color="primary">>Contact Information</v-btn>
@@ -604,5 +606,13 @@ export default {
 <style>
 legend {
   margin-left: 1em;
+}
+.intake-contact-layout {
+  width: 98%;
+  margin-left: 1%;
+  margin-bottom: 1%;
+  -webkit-box-shadow: -2px 6px 12px 0px rgba(168,155,168,0.59) !important;
+    -moz-box-shadow: -2px 6px 12px 0px rgba(168,155,168,0.59)!important;
+    box-shadow: -2px 6px 12px 0px rgba(168,155,168,0.59)!important;
 }
 </style>
