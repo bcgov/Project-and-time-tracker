@@ -26,8 +26,7 @@
             <td class="text-xs-left">{{ props.item.backupUserId }}</td>
             <td class="text-xs-left">{{props.item.completionDate | formatDate }}</td>
             <td class="text-xs-left">{{ props.item.dateModified | formatDate }}</td>
-            <!-- <td class="text-xs-left">{{ props.item.dateModified | dateParse('YYYY-MM-DD') }}</td> -->
-            <td class="text-xs-right">
+             <td class="text-xs-right">
               <v-btn flat icon color="grey" @click="archivePrompt(props.item, false)">
                 <v-icon>unarchive</v-icon>
               </v-btn>

@@ -21,7 +21,13 @@ import VueCurrencyInput from 'vue-currency-input'
 
 Vue.use(VueQuillEditor);
 Vue.use(VueCurrencyInput, { globalOptions: { currency: 'CAD'}});
-
+Vue.filter('formatDate', function(value)
+{
+  if (value) {
+    return moment(String(value)).format('MM/DD/YYYY')
+  }
+}
+);
 Vue.component('v-form', VForm);
 Vue.component('v-field', VField);
 

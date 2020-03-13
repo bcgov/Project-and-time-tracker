@@ -21,7 +21,7 @@
           </v-flex>
           <v-flex>
             <v-flex sm12><h4>Required Date of Completion</h4></v-flex>
-            <v-flex sm12>{{ $props.intakeValues.estimatedCompletionDate }}</v-flex>
+            <v-flex sm12>{{ $props.intakeValues.estimatedCompletionDate | formatDate }}</v-flex>
           </v-flex>
           <v-flex>
             <v-flex sm12><h4>Desired Date of Completion</h4></v-flex>

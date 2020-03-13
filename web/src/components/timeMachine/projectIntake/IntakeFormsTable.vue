@@ -66,7 +66,7 @@
                 item-text="contact.fullName"
               ></v-select>
             </td>
-            <td class="text-xs-left">{{ props.item.estimatedCompletionDate }}</td>
+            <td class="text-xs-left">{{ props.item.estimatedCompletionDate | formatDate }}</td>
             <td class="text-xs-center">
               <div v-if="(props.item.status === 'approved')" class="approved-label caption">Approved</div>
               <v-btn
