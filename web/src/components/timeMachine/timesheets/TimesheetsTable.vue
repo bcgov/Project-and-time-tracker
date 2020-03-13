@@ -47,7 +47,7 @@
               >{{ [props.item.client.ministry.ministryName, props.item.orgDivision].join(" ") }}</td>
               <td class="text-xs-left" v-text=" getFullname(props.item.leadUserId)"></td>
               <td class="text-xs-left">$ {{ props.item.mouAmount }}</td>
-              <td class="text-xs-left">{{ props.item.completionDate }}</td>
+              <td class="text-xs-left">{{ props.item.completionDate | formatDate }}</td>
               <td class="text-xs-right" :class="{'btntoggle': props.expanded}">
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on }">
