@@ -58,16 +58,14 @@
             </v-stepper-step>
             <v-divider class="first-divider"></v-divider>
             <v-divider class="second-divider"></v-divider>
-            <v-stepper-step
-             @click="checkedit(e1)"
-             step="5">
+            <v-stepper-step @click="checkedit(e1)" step="5">
               Review
               <br />& Submit
             </v-stepper-step>
           </v-stepper-header>
 
           <v-stepper-items>
-            <v-stepper-content  step="1">
+            <v-stepper-content step="1">
               <template v-slot:header>
                 <div class="primary-heading">
                   <img src="../../../images/projectinfo.svg" />
@@ -92,7 +90,7 @@
                   <label class="sub-header-large">Ministry / Branch Information</label>
                 </div>
               </template>
-              <v-btn  @click="backfn(1)" flat large color="primary">&lt; Project Information</v-btn>
+              <v-btn @click="backfn(1)" flat large color="primary">&lt; Project Information</v-btn>
               <v-card>
                 <v-card-text>
                   <!-- Only one client on the form for now, but there will be multiple in the future -->
@@ -112,7 +110,9 @@
                   <label class="sub-header-large">Risk Assessment</label>
                 </div>
               </template>
-              <v-btn  @click="backfn(2)" flat large color="primary">>Ministry / Branch Information</v-btn>
+              <v-btn @click="backfn(2)" flat large color="primary"
+                >>Ministry / Branch Information</v-btn
+              >
               <v-card>
                 <v-card-text>
                   <!-- Only one client on the form for now, but there will be multiple in the future -->
@@ -131,7 +131,7 @@
                   <label class="sub-header-large">Contact Information</label>
                 </div>
               </template>
-              <v-btn  @click="backfn(3)" flat large color="primary">>Risk Assessment</v-btn>
+              <v-btn @click="backfn(3)" flat large color="primary">>Risk Assessment</v-btn>
               <v-card>
                 <v-card-text>
                   <div>
@@ -210,9 +210,13 @@
               </v-card>
             </v-stepper-content>
             <v-stepper-content step="5">
-                 <v-btn  @click="backfn(4)" flat large color="primary">>Contact Information</v-btn>
+              <v-btn @click="backfn(4)" flat large color="primary">>Contact Information</v-btn>
               <v-card class="mb-12" color="grey lighten-1" height="200px">
-                <intake-review ref="intakeReview" :intakeValues="reviewSubmit"></intake-review>
+                <intake-review
+                  ref="intakeReview"
+                  :intakeValues="reviewSubmit"
+                  @switch="moveToComponent"
+                ></intake-review>
               </v-card>
             </v-stepper-content>
           </v-stepper-items>
@@ -247,7 +251,7 @@
 import assign from 'object-assign';
 import Vue from 'vue';
 import VeeValidate from 'vee-validate';
-import { setTimeout } from 'timers';
+// import { setTimeout } from 'timers';
 import IntakeBaseInfo from './IntakeBaseInfo.vue';
 import MinistryBranchInfo from '../common/MinistryBranchInfo.vue';
 import Snackbar from '../common/Snackbar.vue';
@@ -313,35 +317,34 @@ export default {
     },
   },
   methods: {
+    moveToComponent(item) {
+      this.clickfnctn(item);
+    },
     checkedit(msg) {
-      if (msg == 1) {
-        this.e1 =1;
-        console.log('am in step 1');
+      if (msg === 1) {
+        this.e1 = 1;
         this.isEditMBInfo = false;
         this.isEditContactInfo = false;
         this.isEditRiskInfo = false;
-      } else if (msg == 2) {
-        this.e1 =2;
-        console.log('am in step 2');
+      } else if (msg === 2) {
+        this.e1 = 2;
         this.isEditPInnfo = true;
         this.isEditMBInfo = false;
         this.isEditContactInfo = false;
         this.isEditRiskInfo = false;
-      } else if (msg == 3) {
-        this.e1 =3;
-        console.log('am in step 3');
+      } else if (msg === 3) {
+        this.e1 = 3;
         this.isEditPInnfo = true;
         this.isEditMBInfo = true;
         this.isEditContactInfo = false;
         this.isEditRiskInfo = false;
-      } else if (msg == 4) {
-        this.e1 =4;
-        console.log('am in step 4');
+      } else if (msg === 4) {
+        this.e1 = 4;
         this.isEditPInnfo = true;
         this.isEditMBInfo = true;
         this.isEditRiskInfo = true;
       } else {
-        this.e1 =5;
+        this.e1 = 5;
         //   this.isEditPInnfo = false;
         // this.isEditMBInfo = false;
         // this.isEditContactInfo = false;
@@ -486,20 +489,20 @@ export default {
       return clientInfo;
     },
     backfn(step) {
-      if (step - 1 == 1) {
+      if (step - 1 === 1) {
         this.isEditPInnfo = true;
         this.isEditRiskInfo = false;
         this.isEditContactInfo = false;
-      } else if (step - 1 == 2) {
+      } else if (step - 1 === 2) {
         this.isEditMBInfo = true;
         this.isEditPInnfo = true;
         this.isEditContactInfo = false;
-      } else if (step - 1 == 3) {
+      } else if (step - 1 === 3) {
         this.isEditMBInfo = true;
         this.isEditPInnfo = true;
         this.isEditRiskInfo = true;
       } else {
-          this.isEditMBInfo = false;
+        this.isEditMBInfo = false;
         this.isEditPInnfo = false;
         this.isEditRiskInfo = false;
         this.isEditContactInfo = false;
@@ -570,24 +573,24 @@ export default {
           this.reviewSubmit = formData;
         }
       } else {
-        if (step - 1 == 1) {
+        if (step - 1 === 1) {
           this.isEditPInnfo = true;
           this.isEditRiskInfo = false;
           this.isEditContactInfo = false;
-        } else if (step - 1 == 2) {
+        } else if (step - 1 === 2) {
           this.isEditMBInfo = true;
           this.isEditPInnfo = true;
           this.isEditContactInfo = false;
-        } else if (step - 1 == 3) {
+        } else if (step - 1 === 3) {
           this.isEditMBInfo = true;
           this.isEditPInnfo = true;
           this.isEditRiskInfo = true;
         } else {
           this.isEditMBInfo = false;
-        this.isEditPInnfo = false;
-        this.isEditRiskInfo = false;
-        this.isEditContactInfo = false;
-      }
+          this.isEditPInnfo = false;
+          this.isEditRiskInfo = false;
+          this.isEditContactInfo = false;
+        }
         this.e1 = step;
       }
     },

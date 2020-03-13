@@ -12,20 +12,12 @@
     </v-flex>
     <v-flex sm12>
       <div class="v-form-container">
-        <v-text-field
-          label="Address Line 2"
-          v-model="contact.addressLine2"
-        ></v-text-field>
+        <v-text-field label="Address Line 2" v-model="contact.addressLine2"></v-text-field>
       </div>
     </v-flex>
     <v-flex sm6>
       <div class="v-form-container">
-        <v-text-field
-          :rules="requiredRule"
-          class="required"
-          label="City"
-          v-model="contact.city"
-        >
+        <v-text-field :rules="requiredRule" class="required" label="City" v-model="contact.city">
         </v-text-field>
       </div>
     </v-flex>

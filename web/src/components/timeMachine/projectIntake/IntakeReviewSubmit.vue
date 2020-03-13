@@ -221,13 +221,13 @@ export default {
     editItem(itemIndex) {
       this.$emit('switch', itemIndex);
     },
-    checkBoolenValues(value: any) {
+    checkBoolenValues(value) {
       if (value) {
         return 'Yes';
       }
       return 'No';
     },
-    getContactType(contactType: any) {
+    getContactType(contactType) {
       if (contactType === 'clientfinance') {
         return 'Client Finance';
       }
@@ -279,7 +279,6 @@ export default {
     },
     expandAll() {
       this.panelState = [true, true, true, true, true];
-      console.log('set panel state', this.panelState);
     },
   },
 };
