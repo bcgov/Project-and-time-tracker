@@ -202,7 +202,7 @@
           <v-textarea
             class="required"
             name="project-description"
-            label="What is the potential if this project fails?"
+            label="What is the potential risk of this procurement failing?"
             no-resize
             :rules="requiredRule"
             v-model="form.projectFailImpact"
