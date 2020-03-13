@@ -236,7 +236,7 @@ const validateIntakeForm = (intake: IProjectIntake) => {
   }
   if (!intake.projectFailImpact) {
     validationErrors.push(
-      ' Potential impact if this project fails is required.'
+      ' Potential risk of this procurement failing is required.'
     );
   }
   if (!intake.projectSuccess) {
