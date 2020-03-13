@@ -197,7 +197,6 @@
   </div>
 </template>
 <script>
-import './intakeRisk.styl';
 import './intakeReviewSubmit.styl';
 
 export default {

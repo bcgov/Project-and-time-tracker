@@ -90,7 +90,7 @@
                   <label class="sub-header-large">Ministry / Branch Information</label>
                 </div>
               </template>
-              <v-btn @click="backfn(1)" flat large color="primary">&lt; Project Information</v-btn>
+              <v-btn @click="backfn(1)" flat large color="primary" class="back-link">&lt; Project Information</v-btn>
               <v-card>
                 <v-card-text>
                   <!-- Only one client on the form for now, but there will be multiple in the future -->
@@ -110,7 +110,7 @@
                   <label class="sub-header-large">Risk Assessment</label>
                 </div>
               </template>
-              <v-btn @click="backfn(2)" flat large color="primary"
+              <v-btn @click="backfn(2)" flat large color="primary"  class="back-link"
                 >>Ministry / Branch Information</v-btn
               >
               <v-card>
@@ -131,7 +131,7 @@
                   <label class="sub-header-large">Contact Information</label>
                 </div>
               </template>
-              <v-btn @click="backfn(3)" flat large color="primary">>Risk Assessment</v-btn>
+              <v-btn @click="backfn(3)" flat large color="primary"  class="back-link">>Risk Assessment</v-btn>
               <div class="intake-contact-layout">
                 <v-flex md12 class="intake-base-info-header"><span class="intake-base-info-header-content">Contact Information</span></v-flex>
               <v-card>
@@ -212,7 +212,7 @@
               </v-card></div>
             </v-stepper-content>
             <v-stepper-content step="5">
-              <v-btn @click="backfn(4)" flat large color="primary">>Contact Information</v-btn>
+              <v-btn @click="backfn(4)" flat large color="primary"  class="back-link">>Contact Information</v-btn>
               <v-card class="mb-12" color="grey lighten-1" height="200px">
                 <intake-review
                   ref="intakeReview"
