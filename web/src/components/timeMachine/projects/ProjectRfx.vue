@@ -57,7 +57,7 @@
           <v-textarea
             name="rfx-overview"
             class="required"
-            label="RFx Overview"
+            label="Summary of RFx"
             no-resize
             rows="4"
             :rules="required"

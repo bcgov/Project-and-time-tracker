@@ -84,7 +84,7 @@ const validateProjectRfx = (projectRfx: IProjectRfx) => {
     validationErrors.push('Rfx Name is required.');
   }
   if (!projectRfx.rfxOverview) {
-    validationErrors.push('Rfx Overview is required.');
+    validationErrors.push('Summary of RFx is required.');
   }
   if (!projectRfx.clientResponsibilities) {
     validationErrors.push('Client Responsibilities is required.');
