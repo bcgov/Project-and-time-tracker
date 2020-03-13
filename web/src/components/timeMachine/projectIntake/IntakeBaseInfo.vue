@@ -241,7 +241,7 @@
 </template>
 
 <script>
-import "./intakebaseinfo.styl";
+import './intakebaseinfo.styl';
 import ProjectSectorDto from "@/domain/models/ProjectSector.dto";
 import ProjectIntakeCategoryDto from "@/domain/models/ProjectIntakeCategory.dto";
 import ProjectIntakeServicesDto from "@/domain/models/ProjectIntakeServices.dto";
