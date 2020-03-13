@@ -611,8 +611,8 @@ legend {
   width: 98%;
   margin-left: 1%;
   margin-bottom: 1%;
-  -webkit-box-shadow: -2px 6px 12px 0px rgba(168,155,168,0.59) !important;
-    -moz-box-shadow: -2px 6px 12px 0px rgba(168,155,168,0.59)!important;
-    box-shadow: -2px 6px 12px 0px rgba(168,155,168,0.59)!important;
+   border: solid 1px #eae8e8;
+    border-radius: 6px;
+    box-shadow: none !important;
 }
 </style>

@@ -142,9 +142,9 @@ export default {
 </script>
 <style scoped>
 .branch-info-layout {
-    -webkit-box-shadow: -2px 6px 12px 0px rgba(168,155,168,0.59);
-    -moz-box-shadow: -2px 6px 12px 0px rgba(168,155,168,0.59);
-    box-shadow: -2px 6px 12px 0px rgba(168,155,168,0.59);
+   border: solid 1px #eae8e8;
+    border-radius: 6px;
+    box-shadow: none !important;
 }
 .intake-base-info-header-content {
   margin-left:38% !important;
