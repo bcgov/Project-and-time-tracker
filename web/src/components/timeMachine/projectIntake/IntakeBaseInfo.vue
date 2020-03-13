@@ -1,5 +1,6 @@
 <template>
   <v-layout row wrap py-2 class="custom-project-base-layout">
+     <v-flex md12 class="intake-base-info-header"><span class="intake-base-info-header-content">Project Information</span></v-flex>
     <v-form
       id="intake-base-info"
       ref="intakeBaseInfo"
