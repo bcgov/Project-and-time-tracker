@@ -129,7 +129,7 @@
                               <project-contact-info
                                 ref="projectFinancier"
                                 :contact="projectContactData('clientfinance')"
-                                :contactNameLabel="'Client Financiar Name'"
+                                :contactNameLabel="'Financial Contact Name'"
                               />
                             </v-flex>
                             <v-flex xs12 md6 my-3>

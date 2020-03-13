@@ -134,7 +134,7 @@
                         <project-contact-info
                           ref="projectFinance"
                           :contact="getClientInfo(CLIENT_FINANCE)"
-                          :contactNameLabel="'Client Finance Name'"
+                          :contactNameLabel="'Financial Contact Name'"
                           @next="clickfnctn(5)"
                         />
                       </v-flex>
