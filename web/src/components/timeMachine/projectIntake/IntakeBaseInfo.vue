@@ -1,6 +1,13 @@
 <template>
   <v-layout row wrap py-2 class="custom-project-base-layout">
-    <v-form id="intake-base-info" ref="intakeBaseInfo" v-model="valid" lazy-validation class="intake-base-info">
+     <v-flex md12 class="intake-base-info-header"><span class="intake-base-info-header-content">Project Information</span></v-flex>
+    <v-form
+      id="intake-base-info"
+      ref="intakeBaseInfo"
+      v-model="valid"
+      lazy-validation
+      class="intake-base-info"
+    >
       <v-flex md6>
         <div class="v-form-container">
           <v-text-field
@@ -19,23 +26,24 @@
             class="required"
             label="Project Sector"
             v-model="form.projectSector.id"
+            v-on="checksectorid()"
             item-value="id"
             item-text="projectSectorName"
           ></v-select>
-
         </div>
       </v-flex>
       <v-flex md6></v-flex>
-          <v-flex md6>
-             <div class="v-form-container">
-               <v-text-field
+      <v-flex md6>
+        <div class="v-form-container">
+          <v-text-field
             :rules="requiredRule"
-            v-if="form.projectSector.id =='8a00dd55-0818-4ab5-92da-c08f4a22a4e9'"
+            v-if="form.projectSector.id == otherSectorId"
             class="required"
             label="Other Project Sector Name"
             v-model="form.otherProjectSectorName"
-          ></v-text-field></div>
-          </v-flex>
+          ></v-text-field>
+        </div>
+      </v-flex>
       <!-- <v-flex md6>
         <div class="v-form-container">
           <v-select
@@ -104,7 +112,6 @@
             :rules="requiredRule"
             prepend-inner-icon="attach_money"
             label="Contract Amount"
-
             v-currency
             oninput="validity.valid||(value='');"
             v-model="form.estimatedContractValue"
@@ -123,7 +130,7 @@
             v-model="form.mouAmount"
           ></v-text-field>
         </div>
-      </v-flex> -->
+      </v-flex>-->
       <v-flex md6>
         <div>
           <v-container fluid>
@@ -136,8 +143,11 @@
         </div>
       </v-flex>
       <v-flex md6>
-        <div class="v-form-container pl-0" style="width: 95%;
-    margin-left: 5%;">
+        <div
+          class="v-form-container pl-0"
+          style="width: 95%;
+    margin-left: 5%;"
+        >
           <v-menu
             v-model="menu2"
             v-if="form.isReprocurement"
@@ -252,6 +262,7 @@ export default {
     computedDateFormatted() {
       return this.formatDate(this.date);
     },
+
     projectSectors() {
       return this.$store.state.projectSectors;
     },
@@ -293,6 +304,7 @@ export default {
       dateFormatted: undefined,
       projectInformation: this.$store.state.projectInformation,
       row: null,
+      otherSectorId: null,
     };
   },
   watch: {
@@ -311,6 +323,12 @@ export default {
     },
   },
   methods: {
+    checksectorid() {
+      const sector = this.$store.state.projectSectors.filter(
+        item => item.projectSectorName === 'Other',
+      );
+      if (sector[0]) this.otherSectorId = sector[0].id;
+    },
     formatDate(date) {
       if (!date) return null;
 

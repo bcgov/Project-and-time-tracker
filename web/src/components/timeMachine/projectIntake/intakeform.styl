@@ -1,16 +1,22 @@
 .intake-form
+  .back-link:before
+    background: none!important;
   .v-stepper__wrapper
     .mb-12.v-card.v-sheet.theme--light.grey.lighten-1
         height: auto  !important;
         background-color: transparent !important;
   width:100%
+  .intake-form-header-div
+    margin-top:15px;
   .intake-form-header
     font-size: 24px
-    margin-left: 35%
+    margin-left: 44%
 .intake-sub-header
   margin-top: 16px !important;
   margin-bottom: 16px !important;
-  margin-left:32%
+  margin-left:37%
+.v-stepper
+ box-shadow: none !important;
 .v-stepper__header
   width: 752px;
   box-shadow: none;
@@ -26,9 +32,19 @@
 
 .v-stepper__step.v-stepper__step--inactive .v-stepper__step__step
   background-color: #9E9E9E !important;
+.v-stepper__step.v-stepper__step--complete .v-stepper__step__step .material-icons
+  font-family: Nunito sans-serif;
+  font-size: 13px;
 .v-stepper__step.v-stepper__step--active + hr,.v-stepper__step.v-stepper__step--complete + hr
   border-width:3px !important;
   hr
     disply:none;
 .v-stepper__label
     text-align: center;
+.v-card__text
+    margin-top:0px;
+.v-form
+    background:white;
+.v-card
+    box-shadow:none !important;
+    

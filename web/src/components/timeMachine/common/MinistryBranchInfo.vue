@@ -1,5 +1,6 @@
 <template>
-  <v-layout row wrap py-2>
+  <v-layout class="branch-info-layout"  row wrap py-2>
+     <v-flex md12 class="intake-base-info-header"><span class="intake-base-info-header-content">Ministry / Branch Information</span></v-flex>
     <v-form id="intake-client-info" ref="intakeClientInfo" v-model="valid" lazy-validation>
       <v-flex sm6>
         <div class="v-form-container">
@@ -14,7 +15,7 @@
             item-text="ministryName"
           ></v-select>
 
-           <v-text-field
+          <v-text-field
             :rules="requiredRule"
             v-if="form.isNonMinistry"
             class="required"
@@ -22,11 +23,19 @@
             v-model="form.nonMinistryName"
           ></v-text-field>
 
-          <v-container fluid row wrap align-start justify-end fill-height style="padding:0px !important; margin-top: -10px;" class='mb-4 mt-0'>
+          <v-container
+            fluid
+            row
+            wrap
+            align-start
+            justify-end
+            fill-height
+            style="padding:0px !important; margin-top: -10px;"
+            class="mb-4 mt-0"
+          >
             <label class="v-label theme--light" style="margin-left: 2%;">Non-Ministry</label>
             <v-checkbox v-model="form.isNonMinistry"></v-checkbox>
           </v-container>
-
         </div>
         <!-- <div class="v-form-container">
         </div> -->
@@ -41,16 +50,14 @@
           ></v-text-field>
         </div>
       </v-flex>
-      <v-flex sm6>
-
-      </v-flex>
+      <v-flex sm6> </v-flex>
       <v-flex xs12>
         <h3 class="finance-header" style="margin-left: 3%;">Address Information</h3>
       </v-flex>
       <v-flex xs12>
         <generic-contact-info :contact="form"></generic-contact-info>
       </v-flex>
-      <v-flex xs12 pt-2  v-if="!form.isNonMinistry">
+      <v-flex xs12 pt-2 v-if="!form.isNonMinistry">
         <project-finance-info :financeInfo="form"></project-finance-info>
       </v-flex>
       <v-flex xs12 py-2>
@@ -71,7 +78,6 @@ import MinistryDto from '@/domain/models/Ministry.dto';
 import ProjectFinanceInfo from '../projects/ProjectFinanceInfo.vue';
 import GenericContactInfo from './GenericContactInfo.vue';
 
-
 export default {
   components: {
     ProjectFinanceInfo,
@@ -89,7 +95,7 @@ export default {
   },
   data() {
     const form = Object.assign({}, this.$props.ministry);
-      form.isNonMinistry = false;
+    form.isNonMinistry = false;
     const inputMinistry = form.ministry || null;
     if (!inputMinistry) {
       form.ministry = new MinistryDto();
@@ -134,3 +140,13 @@ export default {
   },
 };
 </script>
+<style scoped>
+.branch-info-layout {
+   border: solid 1px #eae8e8;
+    border-radius: 6px;
+    box-shadow: none !important;
+}
+.intake-base-info-header-content {
+  margin-left:38% !important;
+}
+</style>
