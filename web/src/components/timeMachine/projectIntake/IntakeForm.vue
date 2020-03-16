@@ -510,6 +510,9 @@ export default {
         this.isEditContactInfo = false;
       }
       this.e1 = step;
+
+      // Scroll to top after navigating
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     },
     clickfnctn(step) {
       if (step === 5) {
@@ -595,6 +598,8 @@ export default {
         }
         this.e1 = step;
       }
+      // Scroll to top of page after navigating
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     },
   },
   created() {
