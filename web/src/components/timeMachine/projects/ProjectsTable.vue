@@ -53,12 +53,23 @@
             <td class="text-xs-left">{{ props.item.completionDate | formatDate }}</td>
             <td class="text-xs-left">{{ props.item.dateModified | formatDate }}</td>
             <td class="text-xs-center">
-              <v-btn flat icon color="grey" @click="editProject(props.item.id)">
-                <v-icon>edit</v-icon>
-              </v-btn>
-              <v-btn flat icon color="grey" v-if="!props.item.is_archived" @click="archivePrompt(props.item, true)">
-                  <v-icon >archive</v-icon>
-                </v-btn>
+              <v-tooltip top>
+                <template v-slot:activator="{ on }">
+                  <v-btn flat icon color="grey" @click="editProject(props.item.id)" v-on="on">
+                    <v-icon>edit</v-icon>
+                  </v-btn>
+                </template>
+                <span>Edit</span>
+              </v-tooltip>
+
+              <v-tooltip top v-if="!props.item.is_archived">
+                <template v-slot:activator="{ on }">
+                  <v-btn flat icon color="grey" v-on="on" @click="archivePrompt(props.item, true)">
+                    <v-icon >archive</v-icon>
+                  </v-btn>
+                </template>
+                <span>Archive</span>
+              </v-tooltip>
               <v-btn flat v-else @click="archivePrompt(props.item, false)">
               Archived
               </v-btn>
