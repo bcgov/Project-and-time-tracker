@@ -50,8 +50,8 @@
                 item-text="contact.fullName"
               ></v-select>
             </td>
-            <td class="text-xs-left">{{ props.item.completionDate }}</td>
-            <td class="text-xs-left">{{ formatDate(props.item.dateModified) }}</td>
+            <td class="text-xs-left">{{ props.item.completionDate | formatDate }}</td>
+            <td class="text-xs-left">{{ props.item.dateModified | formatDate }}</td>
             <td class="text-xs-center">
               <v-btn flat icon color="grey" @click="editProject(props.item.id)">
                 <v-icon>edit</v-icon>

@@ -36,7 +36,7 @@
           <v-text-field
             :rules="requiredRule"
             :class="inputClass"
-            label="Position Title"
+            label="Position"
             v-model="form.orgPosition"
           ></v-text-field>
         </div>

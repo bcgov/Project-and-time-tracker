@@ -21,7 +21,7 @@
           </v-flex>
           <v-flex>
             <v-flex sm12><h4>Required Date of Completion</h4></v-flex>
-            <v-flex sm12>{{ $props.intakeValues.estimatedCompletionDate }}</v-flex>
+            <v-flex sm12>{{ $props.intakeValues.estimatedCompletionDate | formatDate }}</v-flex>
           </v-flex>
           <v-flex>
             <v-flex sm12><h4>Desired Date of Completion</h4></v-flex>
@@ -42,7 +42,7 @@
               ><!-- Parameter not known -->
             </v-flex>
             <v-flex>
-              <v-flex sm12><h4>What is the potential impact if this project fails?</h4></v-flex>
+              <v-flex sm12><h4>What is the potential risk of this procurement failing?</h4></v-flex>
               <v-flex sm12>{{ $props.intakeValues.projectFailImpact }}</v-flex>
             </v-flex>
             <v-flex>
@@ -93,7 +93,7 @@
           <v-flex sm12><span v-if="$props.intakeValues.contacts">{{ $props.intakeValues.contacts.email }}</span></v-flex>
           <v-flex sm12><h4>Organization</h4></v-flex>
           <v-flex sm12><span v-if="$props.intakeValues.contacts">{{ $props.intakeValues.contacts.orgName }}</span></v-flex>
-          <v-flex sm12><h4>Position Title</h4></v-flex>
+          <v-flex sm12><h4>Position</h4></v-flex>
           <v-flex sm12><span v-if="$props.intakeValues.contacts">{{ $props.intakeValues.contacts.orgPosition }}</span></v-flex>
           <v-flex sm12><h4>Phone Number</h4></v-flex>
           <v-flex sm12><span v-if="$props.intakeValues.contacts">{{ $props.intakeValues.contacts.phoneNumber }}</span></v-flex>

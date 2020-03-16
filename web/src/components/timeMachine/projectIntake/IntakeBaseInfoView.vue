@@ -26,14 +26,14 @@
       </v-flex>
     </v-layout>
 
-    <v-layout>
+    <!-- <v-layout>
       <v-flex md4>
         <div class="body-1">Commodity Code:</div>
       </v-flex>
       <v-flex md8 justify-center>
         <div class="body-2">{{form.commodityCode}}</div>
       </v-flex>
-    </v-layout>
+    </v-layout> -->
 
     <v-layout>
       <v-flex md4>
@@ -53,14 +53,14 @@
       </v-flex>
     </v-layout>
 
-    <v-layout>
+    <!-- <v-layout>
       <v-flex md4>
         <div class="body-1">Project Description:</div>
       </v-flex>
       <v-flex md8 align-content-end="true">
         <div class="body-2">{{form.description}}</div>
       </v-flex>
-    </v-layout>
+    </v-layout> -->
   </v-layout>
 </template>
 

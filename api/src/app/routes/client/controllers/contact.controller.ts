@@ -98,7 +98,7 @@ const validateContacts = (contacts: IContact[]) => {
       }
 
       if (!contact.orgPosition) {
-        validationErrors.push(contactTypeLabel + ' Position Title is required.');
+        validationErrors.push(contactTypeLabel + ' Position is required.');
       }
 
       if (!contact.email) {
