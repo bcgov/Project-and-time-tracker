@@ -44,7 +44,7 @@
         <div class="v-form-container">
            <v-text-field
             :rules="required"
-            class="inputClass"
+            class="inputClass required"
             label="RFx Name"
             v-model="rfxForm.rfxName"
           ></v-text-field>

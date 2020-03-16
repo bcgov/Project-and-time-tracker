@@ -30,6 +30,14 @@ Vue.filter('formatDate', function(value)
 );
 Vue.component('v-form', VForm);
 Vue.component('v-field', VField);
+// Useful for v-selects, this opens them when tabbed into them
+Vue.directive('open-on-focus', {
+  bind: function(el) {
+      el.addEventListener('focus', (event) => {
+          event.target.click();
+      }, true);
+  },
+});
 
 Vue.config.productionTip = false;
 

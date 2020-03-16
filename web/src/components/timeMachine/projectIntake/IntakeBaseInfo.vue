@@ -28,6 +28,7 @@
             v-model="form.projectSector.id"
             v-on="checksectorid()"
             item-value="id"
+            v-open-on-focus
             item-text="projectSectorName"
           ></v-select>
         </div>
@@ -177,7 +178,6 @@
               v-model="form.dateOfReprocurement"
               no-title
               @input="menu2 = false"
-              :min="new Date().toISOString()"
             ></v-date-picker>
           </v-menu>
         </div>
@@ -362,6 +362,9 @@ export default {
       const formData = this.form;
       this.$store.dispatch('addIntakeRequest', formData);
     },
+    sectorFocus(x){
+      x.target.click();
+    }
   },
 };
 </script>
