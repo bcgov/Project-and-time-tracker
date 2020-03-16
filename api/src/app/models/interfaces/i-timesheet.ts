@@ -8,8 +8,6 @@ export interface ITimesheet {
   projectRfx: IProjectRfx;
   project: IProject;
   mou: IMOU;
-  expenseAmount: number;
-  expenseComment: string;
   startDate: Date;
   endDate: Date;
   userId: string;

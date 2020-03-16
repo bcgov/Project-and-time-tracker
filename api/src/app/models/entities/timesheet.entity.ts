@@ -25,12 +25,6 @@ export class Timesheet {
   @ManyToOne(type => MOU, { nullable: true })
   mou: MOU;
 
-  @Column({ type: 'double precision', nullable: true })
-  expenseAmount: number;
-
-  @Column({ type: 'text', nullable: true })
-  expenseComment: string;
-
   @Column({ type: 'date', nullable: true })
   startDate: Date;
 

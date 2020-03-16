@@ -6,4 +6,6 @@ export interface ITimesheetEntry {
   hours: number;
   entryDate: Date;
   comments: string;
+  expenseAmount: number;
+  expenseComment: string;
 }

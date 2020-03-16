@@ -12,6 +12,12 @@ export class TimesheetEntry {
   @Column({ type: 'double precision', nullable: true })
   hours: number;
 
+  @Column({ type: 'double precision', nullable: true })
+  expenseAmount: number;
+
+  @Column({ type: 'text', nullable: true })
+  expenseComment: string;
+
   @Column({ type: 'date', nullable: true })
   entryDate: Date;
 
