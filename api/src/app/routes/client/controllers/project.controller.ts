@@ -1,9 +1,9 @@
 import * as Koa from 'koa';
 import * as Router from 'koa-router';
-import { 
-  retrieveProjects, 
-  retrieveProjectById, 
-  updateProject, 
+import {
+  retrieveProjects,
+  retrieveProjectById,
+  updateProject,
   retrieveProjectsByUserId,
   retrieveArchivedProjects
 } from '../../../services/client/project.service';
@@ -58,8 +58,8 @@ export const updateProjectAction = async (ctx: Koa.Context) => {
       ctx.throw('no data found');
       return;
     }
-    
-    const validationErrors = validateProject(project);    
+
+    const validationErrors = validateProject(project);
     if (validationErrors.length > 0) {
       ctx.throw(validationErrors.join(','));
       return;
@@ -75,7 +75,7 @@ export const updateProjectAction = async (ctx: Koa.Context) => {
       backupUserId: project.backupUserId,
       modifiedUserId: auth.userId,
       dateOfReprocurement: project.dateOfReprocurement,
-     
+
       isReprocurement: project.isReprocurement,
       previousContractBackground: project.previousContractBackground,
       projectFailImpact: project.projectFailImpact,
@@ -89,10 +89,12 @@ export const updateProjectAction = async (ctx: Koa.Context) => {
     };
 
     const client = await retrieveClientByProjectId(ctx.params.id);
-    if (project.leadUserId || project.backupUserId) {    
-      if (!(client.clientNo > 0 && client.responsibilityCenter > 0 && client.serviceCenter > 0 && client.stob > 0 && client.projectCode > 0)) {
-        ctx.throw('Project Lead/Backup cannot be assigned without providing all Finance Codes. Please fill the Finance Codes.');
-        return;
+    if (!client.isNonMinistry) {
+      if (project.leadUserId || project.backupUserId) {
+        if (!(client.clientNo > 0 && client.responsibilityCenter > 0 && client.serviceCenter > 0 && client.stob > 0 && client.projectCode > 0)) {
+          ctx.throw('Project Lead/Backup cannot be assigned without providing all Finance Codes. Please fill the Finance Codes.');
+          return;
+        }
       }
     }
 
@@ -106,7 +108,7 @@ export const updateProjectAction = async (ctx: Koa.Context) => {
 
 export const archiveProjectAction = async (ctx: Koa.Context) => {
   try {
-    await updateProject(ctx.params.id, {is_archived: ctx.request.body.is_archived});
+    await updateProject(ctx.params.id, { is_archived: ctx.request.body.is_archived });
     ctx.body = 'success';
   } catch (err) {
     ctx.throw(err.message);
@@ -123,15 +125,17 @@ export const assignLeadAction = async (ctx: Koa.Context) => {
       return;
     } else {
       const client = await retrieveClientByProjectId(ctx.params.id);
-      if (!(client.clientNo > 0 && client.responsibilityCenter > 0 && 
-        client.serviceCenter > 0 && client.stob > 0 && client.projectCode > 0)) {
+      if (!client.isNonMinistry) {
+        if (!(client.clientNo > 0 && client.responsibilityCenter > 0 &&
+          client.serviceCenter > 0 && client.stob > 0 && client.projectCode > 0)) {
           ctx.throw('Project Lead cannot be assigned without providing all Finance Codes. Please fill the Finance Codes in Project page.');
           return;
         }
+      }
     }
-    
+
     await updateProject(ctx.params.id, {
-        leadUserId: obj.userId
+      leadUserId: obj.userId
     });
 
     ctx.body = 'success';
@@ -148,11 +152,13 @@ export const assignBackupAction = async (ctx: Koa.Context) => {
       return;
     } else {
       const client = await retrieveClientByProjectId(ctx.params.id);
-      if (!(client.clientNo > 0 && client.responsibilityCenter > 0 && 
-        client.serviceCenter > 0 && client.stob > 0 && client.projectCode > 0)) {
+      if (!client.isNonMinistry) {
+        if (!(client.clientNo > 0 && client.responsibilityCenter > 0 &&
+          client.serviceCenter > 0 && client.stob > 0 && client.projectCode > 0)) {
           ctx.throw('Project Backup cannot be assigned without providing all Finance Codes. Please fill the Finance Codes in Project page.');
           return;
         }
+      }
     }
 
     await updateProject(ctx.params.id, {
@@ -166,13 +172,13 @@ export const assignBackupAction = async (ctx: Koa.Context) => {
 };
 
 const validateProject = (project: IProject) => {
-  
+
   const validationErrors = [];
-  
+
   if (!project.projectName) {
     validationErrors.push('Project Name is required.');
   }
-  
+
   if (!project.completionDate) {
     validationErrors.push('Project Deadline is required.');
   }
@@ -180,7 +186,7 @@ const validateProject = (project: IProject) => {
   if (!(project.contractValue && project.contractValue > 0)) {
     validationErrors.push('Contract Amount is required.');
   }
-  
+
   return validationErrors;
 };
 

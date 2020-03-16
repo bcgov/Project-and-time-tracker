@@ -51,7 +51,15 @@
                     </v-layout>
                   </div>
                   <v-layout row wrap>
-                    <v-flex xs12 md6 my-3 v-if="enabled">
+                    <v-flex xs12 md6 my-3 v-if="isEnabled(CLIENT_FINANCE)">
+                      <h3>Financial Contact Information</h3>
+                      <project-contact-info-view
+                        ref="projectSponsor"
+                        :contact="getClientInfo(CLIENT_FINANCE)"
+                        :contactNameLabel="'Executive Sponsor Name'"
+                      />
+                    </v-flex>
+                    <v-flex xs12 md6 my-3 v-if="isEnabled(CLIENT_CONTACT)">
                       <h3>Additional Contact</h3>
                       <project-additional-contact-info-view
                         ref="projectContact"
@@ -87,6 +95,7 @@ const CLIENT_INFO_TYPES = {
   CLIENT_LEAD: 'clientlead',
   CLIENT_SPONSOR: 'clientsponsor',
   CLIENT_CONTACT: 'clientcontact',
+  CLIENT_FINANCE: 'clientfinance',
 };
 
 export default {
@@ -131,13 +140,17 @@ export default {
         this.$store.dispatch('clearActiveIntakeRequest');
       }
     },
+    isEnabled(infoType) {
+      const contacts = this.$store.state.activeIntakeRequest.contacts || [];
+      const clientInfo = contacts.find(contact => contact.contactType === infoType);
+      if (clientInfo) return true;
+      return false;
+    },
     getClientInfo(infoType) {
       const contacts = this.$store.state.activeIntakeRequest.contacts || [];
-      const clientInfo = contacts.find(
-        contact => contact.contactType === infoType,
-      );
-      if (contacts.length === 3) this.enabled = true;
-      else this.enabled = false;
+      const clientInfo = contacts.find(contact => contact.contactType === infoType);
+      // if (contacts.length > 2) this.enabled = true;
+      // else this.enabled = false;
       return clientInfo;
     },
   },

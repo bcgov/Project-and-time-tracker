@@ -48,7 +48,7 @@
                   <v-tab ripple href="#finance" v-if="project.client && !project.client.isNonMinistry"
                     >Finance Codes</v-tab
                   >
-                  <v-tab ripple href="#risk" @click="calculateRisk()">Risk</v-tab>
+                  <v-tab ripple href="#risk" @click="initializeRisk()">Risk</v-tab>
                   <v-tab ripple href="#procurement">Procurement Log</v-tab>
                   <v-flex justify-end align-end>
                     <v-text-field
@@ -298,7 +298,7 @@ export default {
   },
   methods: {
     // saveProjectRfxData(index) {
-    //   debugger;
+    //
     //   const data = this.projectRfxData[index];
     // },
     projectContactData(contactType) {
@@ -397,19 +397,9 @@ export default {
         }
       }
     },
-    calculateRisk() {
-      for (let i = 0; i < this.$store.state.intakeRiskQuestions.length; i++) {
-        const selectedAnswer = this.$store.state.projectRiskAnswers.filter(
-          item => item.questionId === this.$store.state.intakeRiskQuestions[i].id,
-        );
-        if (selectedAnswer && selectedAnswer[0]) {
-          this.$store.state.intakeRiskQuestions[i].selectedAnswerId = selectedAnswer[0].answerid;
-          this.$store.state.intakeRiskQuestions[i].score = selectedAnswer[0].score;
-          this.$store.state.intakeRiskQuestions[i].analysisId = selectedAnswer[0].id;
-        }
-      }
+    initializeRisk() {
+      this.$refs.projectRiskAssessment.updateInitalData();
       this.$refs.projectRiskAssessment.editScreen = false;
-      this.$refs.projectRiskAssessment.calculateData();
     },
   },
   created() {

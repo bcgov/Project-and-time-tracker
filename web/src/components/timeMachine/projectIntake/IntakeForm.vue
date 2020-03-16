@@ -4,39 +4,61 @@
     <spinner ref="spinner"></spinner>
     <v-form>
       <v-layout>
-        <v-flex md12>
-          <h1 class="intake-form-header">Project Intake Form</h1>
+        <v-flex md12 class="intake-form-header-div">
+          <h1 class="intake-form-header">Intake Form</h1>
           <div class="intake-sub-header">Complete the intake form to submit your project</div>
         </v-flex>
       </v-layout>
       <v-container>
         <v-stepper v-model="e1" alt-labels>
           <v-stepper-header>
-            <v-stepper-step  :complete="e1 > 1" step="1">
+            <v-stepper-step
+              @click="checkedit(e1)"
+              :editable="isEditPInnfo"
+              edit-icon="1"
+              :complete="e1 > 1"
+              step="1"
+            >
               Project
               <br />Information
             </v-stepper-step>
             <v-divider class="first-divider"></v-divider>
             <v-divider class="second-divider"></v-divider>
             <v-stepper-step
-                            :complete="e1 > 2"
+              @click="checkedit(e1)"
+              :editable="isEditMBInfo"
+              edit-icon="2"
+              :complete="e1 > 2"
               step="2"
-            >Ministry/Branch Information</v-stepper-step>
+              >Ministry/Branch Information</v-stepper-step
+            >
             <v-divider class="first-divider"></v-divider>
             <v-divider class="second-divider"></v-divider>
-            <v-stepper-step  :complete="e1 > 3" step="3">
+            <v-stepper-step
+              @click="checkedit(e1)"
+              :editable="isEditRiskInfo"
+              edit-icon="3"
+              :complete="e1 > 3"
+              step="3"
+            >
               Risk
               <br />Assessment
             </v-stepper-step>
             <v-divider class="first-divider"></v-divider>
             <v-divider class="second-divider"></v-divider>
-            <v-stepper-step  :complete="e1 > 4" step="4">
+            <v-stepper-step
+              @click="checkedit(e1)"
+              :editable="isEditContactInfo"
+              edit-icon="4"
+              :complete="e1 > 4"
+              step="4"
+            >
               Contact
               <br />Information
             </v-stepper-step>
             <v-divider class="first-divider"></v-divider>
             <v-divider class="second-divider"></v-divider>
-            <v-stepper-step step="5">
+            <v-stepper-step @click="checkedit(e1)" step="5">
               Review
               <br />& Submit
             </v-stepper-step>
@@ -68,6 +90,7 @@
                   <label class="sub-header-large">Ministry / Branch Information</label>
                 </div>
               </template>
+              <v-btn @click="backfn(1)" flat large color="primary" class="back-link">&lt; Project Information</v-btn>
               <v-card>
                 <v-card-text>
                   <!-- Only one client on the form for now, but there will be multiple in the future -->
@@ -87,6 +110,9 @@
                   <label class="sub-header-large">Risk Assessment</label>
                 </div>
               </template>
+              <v-btn @click="backfn(2)" flat large color="primary"  class="back-link"
+                >>Ministry / Branch Information</v-btn
+              >
               <v-card>
                 <v-card-text>
                   <!-- Only one client on the form for now, but there will be multiple in the future -->
@@ -105,6 +131,9 @@
                   <label class="sub-header-large">Contact Information</label>
                 </div>
               </template>
+              <v-btn @click="backfn(3)" flat large color="primary"  class="back-link">>Risk Assessment</v-btn>
+              <div class="intake-contact-layout">
+                <v-flex md12 class="intake-base-info-header"><span class="intake-base-info-header-content">Contact Information</span></v-flex>
               <v-card>
                 <v-card-text>
                   <div>
@@ -171,45 +200,51 @@
                                 "
                                 color="primary"
                                 @click="clickfnctn(5)"
-                              >Next</v-btn>
+                                >Next</v-btn
+                              >
                             </v-flex>
                           </div>
                         </div>
                       </v-flex>
-
                     </v-layout>
                   </div>
                 </v-card-text>
-              </v-card>
+              </v-card></div>
             </v-stepper-content>
             <v-stepper-content step="5">
+              <v-btn @click="backfn(4)" flat large color="primary"  class="back-link">>Contact Information</v-btn>
               <v-card class="mb-12" color="grey lighten-1" height="200px">
-                <intake-review ref="intakeReview" :intakeValues="reviewSubmit"></intake-review>
+                <intake-review
+                  ref="intakeReview"
+                  :intakeValues="reviewSubmit"
+                  @switch="moveToComponent"
+                ></intake-review>
               </v-card>
             </v-stepper-content>
           </v-stepper-items>
         </v-stepper>
         <v-flex xs12 py-2>
-                        <div class="v-form-container">
-                          <div class="v-form-actions">
-                            <v-flex md12 mt-4 v-if="e1==5">
-                              <v-btn color="default" @click="discard">Discard</v-btn>
-                              <v-btn
-                                :disabled="
-                                  !(
-                                    $store.state.projectInformation &&
-                                    $store.state.ministryInformation &&
-                                    $store.state.contactInformation &&
-                                    this.$store.state.intakeRiskQuestions
-                                  )
-                                "
-                                color="primary"
-                                @click="submitForm"
-                              >Submit</v-btn>
-                            </v-flex>
-                          </div>
-                        </div>
-                      </v-flex>
+          <div class="v-form-container">
+            <div class="v-form-actions">
+              <v-flex md12 mt-4 v-if="e1 == 5">
+                <v-btn color="default" @click="discard">Discard</v-btn>
+                <v-btn
+                  :disabled="
+                    !(
+                      $store.state.projectInformation &&
+                      $store.state.ministryInformation &&
+                      $store.state.contactInformation &&
+                      this.$store.state.intakeRiskQuestions
+                    )
+                  "
+                  color="primary"
+                  @click="submitForm"
+                  >Submit</v-btn
+                >
+              </v-flex>
+            </div>
+          </div>
+        </v-flex>
       </v-container>
     </v-form>
   </div>
@@ -218,7 +253,7 @@
 import assign from 'object-assign';
 import Vue from 'vue';
 import VeeValidate from 'vee-validate';
-import { setTimeout } from 'timers';
+// import { setTimeout } from 'timers';
 import IntakeBaseInfo from './IntakeBaseInfo.vue';
 import MinistryBranchInfo from '../common/MinistryBranchInfo.vue';
 import Snackbar from '../common/Snackbar.vue';
@@ -268,6 +303,10 @@ export default {
       intakeRiskQuestions: this.$store.state.intakeRiskQuestions,
       valid: false,
       enabled: false,
+      isEditPInnfo: false,
+      isEditMBInfo: false,
+      isEditContactInfo: false,
+      isEditRiskInfo: false,
       ...INTAKE_FORM_PANELS,
       ...CLIENT_INFO_TYPES,
       e1: 1,
@@ -280,10 +319,43 @@ export default {
     },
   },
   methods: {
+    moveToComponent(item) {
+      this.clickfnctn(item);
+    },
+    checkedit(msg) {
+      if (msg === 1) {
+        this.e1 = 1;
+        this.isEditMBInfo = false;
+        this.isEditContactInfo = false;
+        this.isEditRiskInfo = false;
+      } else if (msg === 2) {
+        this.e1 = 2;
+        this.isEditPInnfo = true;
+        this.isEditMBInfo = false;
+        this.isEditContactInfo = false;
+        this.isEditRiskInfo = false;
+      } else if (msg === 3) {
+        this.e1 = 3;
+        this.isEditPInnfo = true;
+        this.isEditMBInfo = true;
+        this.isEditContactInfo = false;
+        this.isEditRiskInfo = false;
+      } else if (msg === 4) {
+        this.e1 = 4;
+        this.isEditPInnfo = true;
+        this.isEditMBInfo = true;
+        this.isEditRiskInfo = true;
+      } else {
+        this.e1 = 5;
+        //   this.isEditPInnfo = false;
+        // this.isEditMBInfo = false;
+        // this.isEditContactInfo = false;
+        // this.isEditRiskInfo = false;
+      }
+    },
     fetchData() {
       const { params } = this.$router.currentRoute;
       const id = params.id || undefined;
-
       if (!(id === undefined)) {
         this.$store.dispatch('fetchIntakeRequest', { id: params.id });
       } else {
@@ -295,18 +367,18 @@ export default {
       let riskAnalysisIndex = 0;
       let applicableQuestion = false;
       let scoreValue = 0;
+      let selectedanswerTxt = '';
       for (let i = 0; i < this.$store.state.intakeRiskQuestions.length; i++) {
         scoreValue = 0;
+        selectedanswerTxt = '';
         const question = this.$store.state.intakeRiskQuestions[i];
-        if (
-          typeof question.selectedAnswerId !== 'undefined'
-          || question.selectedAnswerId
-        ) {
+        if (typeof question.selectedAnswerId !== 'undefined' || question.selectedAnswerId) {
           const selectedAnswer = question.answer.filter(
             answer => answer.id === question.selectedAnswerId,
           );
           if (selectedAnswer && selectedAnswer[0]) {
             scoreValue = selectedAnswer[0].score;
+            selectedanswerTxt = selectedAnswer[0].answer;
           }
           if (question.questionNo === 1) {
             applicableQuestion = question.showStatus;
@@ -314,6 +386,8 @@ export default {
               questionId: question.id,
               answerId: question.selectedAnswerId,
               score: scoreValue,
+              question: question.question,
+              answer: selectedanswerTxt,
             };
             riskAnalysisIndex++;
           } else if (applicableQuestion) {
@@ -321,6 +395,8 @@ export default {
               questionId: question.id,
               answerId: question.selectedAnswerId,
               score: scoreValue,
+              question: question.question,
+              answer: selectedanswerTxt,
             };
             riskAnalysisIndex++;
           }
@@ -364,12 +440,9 @@ export default {
         projectContact.contactType = CLIENT_INFO_TYPES.CLIENT_CONTACT;
       }
 
-      const contacts = [
-        projectLead,
-        projectSponsor,
-        projectFinance,
-        projectContact,
-      ].filter(contact => contact !== undefined);
+      const contacts = [projectLead, projectSponsor, projectFinance, projectContact].filter(
+        contact => contact !== undefined,
+      );
 
       if (contacts instanceof Array && contacts.length > 0) {
         if (formData.contacts instanceof Array) {
@@ -384,15 +457,10 @@ export default {
         && this.$store.state.intakeRisk
       ) {
         this.$refs.spinner.open();
-        formData.estimatedContractValue = parseCurrencyFloat(
-          formData.estimatedContractValue,
-        );
+        formData.estimatedContractValue = parseCurrencyFloat(formData.estimatedContractValue);
         this.$store.dispatch('addIntakeRequest', formData).then(
           () => {
-            this.$refs.snackbar.displaySnackbar(
-              'success',
-              'Project Intake Form Submited.',
-            );
+            this.$refs.snackbar.displaySnackbar('success', 'Project Intake Form Submited.');
             this.$refs.spinner.close();
             this.$router.push('intake-success');
           },
@@ -402,10 +470,7 @@ export default {
               const { message } = err.response.data.error;
               this.$refs.snackbar.displaySnackbar('error', message);
             } else {
-              this.$refs.snackbar.displaySnackbar(
-                'error',
-                'Intake Request Error',
-              );
+              this.$refs.snackbar.displaySnackbar('error', 'Intake Request Error');
             }
           },
         );
@@ -422,17 +487,42 @@ export default {
     },
     getClientInfo(infoType) {
       const contacts = this.$store.state.activeIntakeRequest.contacts || [];
-      const clientInfo = contacts.find(
-        contact => contact.contactType === infoType,
-      );
+      const clientInfo = contacts.find(contact => contact.contactType === infoType);
       return clientInfo;
+    },
+    backfn(step) {
+      if (step - 1 === 1) {
+        this.isEditPInnfo = true;
+        this.isEditRiskInfo = false;
+        this.isEditContactInfo = false;
+      } else if (step - 1 === 2) {
+        this.isEditMBInfo = true;
+        this.isEditPInnfo = true;
+        this.isEditContactInfo = false;
+      } else if (step - 1 === 3) {
+        this.isEditMBInfo = true;
+        this.isEditPInnfo = true;
+        this.isEditRiskInfo = true;
+      } else {
+        this.isEditMBInfo = false;
+        this.isEditPInnfo = false;
+        this.isEditRiskInfo = false;
+        this.isEditContactInfo = false;
+      }
+      this.e1 = step;
     },
     clickfnctn(step) {
       if (step === 5) {
         const value1 = this.$refs.projectLead.onNextClicked();
         const value2 = this.$refs.projectSponsor.onNextClicked();
         const value3 = this.$refs.projectFinance.onNextClicked();
-        if (value1 && value2 && value3) { this.e1 = step; }
+        if (value1 && value2 && value3) {
+          this.isEditMBInfo = true;
+          this.isEditPInnfo = true;
+          this.isEditRiskInfo = true;
+          this.isEditContactInfo = true;
+          this.e1 = step;
+        }
         const riskAnalysis = this.getRiskAnalysis();
         const scoreSum = riskAnalysis.map(o => o.score).reduce((a, c) => a + c);
         const formData = assign({}, this.$refs.intakeBaseInfo.form, {
@@ -464,12 +554,9 @@ export default {
           projectContact.contactType = CLIENT_INFO_TYPES.CLIENT_CONTACT;
         }
 
-        const contacts = [
-          projectLead,
-          projectSponsor,
-          projectFinance,
-          projectContact,
-        ].filter(contact => contact !== undefined);
+        const contacts = [projectLead, projectSponsor, projectFinance, projectContact].filter(
+          contact => contact !== undefined,
+        );
 
         if (contacts instanceof Array && contacts.length > 0) {
           if (formData.contacts instanceof Array) {
@@ -484,12 +571,30 @@ export default {
           && this.$store.state.intakeRisk
         ) {
           // this.$refs.spinner.open();
-          formData.estimatedContractValue = parseCurrencyFloat(
-            formData.estimatedContractValue,
-          );
+          formData.estimatedContractValue = parseCurrencyFloat(formData.estimatedContractValue);
           this.reviewSubmit = formData;
         }
-      } else { this.e1 = step; }
+      } else {
+        if (step - 1 === 1) {
+          this.isEditPInnfo = true;
+          this.isEditRiskInfo = false;
+          this.isEditContactInfo = false;
+        } else if (step - 1 === 2) {
+          this.isEditMBInfo = true;
+          this.isEditPInnfo = true;
+          this.isEditContactInfo = false;
+        } else if (step - 1 === 3) {
+          this.isEditMBInfo = true;
+          this.isEditPInnfo = true;
+          this.isEditRiskInfo = true;
+        } else {
+          this.isEditMBInfo = false;
+          this.isEditPInnfo = false;
+          this.isEditRiskInfo = false;
+          this.isEditContactInfo = false;
+        }
+        this.e1 = step;
+      }
     },
   },
   created() {
@@ -501,5 +606,13 @@ export default {
 <style>
 legend {
   margin-left: 1em;
+}
+.intake-contact-layout {
+  width: 98%;
+  margin-left: 1%;
+  margin-bottom: 1%;
+   border: solid 1px #eae8e8;
+    border-radius: 6px;
+    box-shadow: none !important;
 }
 </style>
