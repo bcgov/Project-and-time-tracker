@@ -59,7 +59,6 @@ export const retrieveForLightTimesheet = async (
   projectId: string,
   projectRfxId: string,
   userId: string,
-  isBillable: boolean,
   entryDate: Date
 ) => {
   const repo = timesheetRepo();
@@ -70,13 +69,11 @@ export const retrieveForLightTimesheet = async (
       't."projectId" = :projectId AND' +
         ' t."projectRfxId" = :projectRfxId AND' +
         ' t."userId" = :userId AND' +
-        ' t."isBillable" = :isBillable AND' +
         ' t."startDate" <= :entryDate AND t."endDate" >= :entryDate',
       {
         projectId: projectId,
         projectRfxId: projectRfxId,
         userId: userId,
-        isBillable: isBillable,
         entryDate: entryDate
       }
     )

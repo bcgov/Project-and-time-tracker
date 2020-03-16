@@ -114,7 +114,6 @@ export const createLightTimesheet = async (ctx: Koa.Context) => {
       model.project.id,
       model.projectRfx.id,
       model.userId,
-      model.isBillable,
       entry.entryDate
     );
 
@@ -143,9 +142,9 @@ export const createLightTimesheet = async (ctx: Koa.Context) => {
     if (entry.id) {
       await updateTimesheetEntry(entry.id, {
         userId: model.userId,
-        hoursBilled: entry.hours,
+        hoursBilled: entry.hoursBillable,
         entryDate: entry.entryDate,
-        comments: entry.comments
+        comments: entry.commentsBillable
       });
     } else {
       entry.id = undefined;
@@ -227,7 +226,6 @@ export const updateTimesheetAction = async (ctx: Koa.Context) => {
 
     await updateTimesheet(ctx.params.id, {
       userId: model.userId,
-      isBillable: model.isBillable,
       modifiedUserId: auth.userId
     });
 
@@ -270,9 +268,9 @@ const createOrUpdateTimesheetEntries = async (
       if (entry.id) {
         await updateTimesheetEntry(entry.id, {
           userId: model.userId,
-          hoursBilled: entry.hours,
+          hoursBilled: entry.hoursBillable,
           entryDate: entry.entryDate,
-          comments: entry.comments
+          comments: entry.commentsBillable
         });
       } else {
         entry.id = undefined;
@@ -313,9 +311,6 @@ const validateUpdateTimesheet = async (timesheet: ITimesheet) => {
   if (!timesheet.userId) {
     validationErrors.push('User is required.');
   }
-  if (typeof timesheet.isBillable !== 'boolean') {
-    validationErrors.push('isBillable is required.');
-  }
 
   return validationErrors;
 };
@@ -343,9 +338,12 @@ const validateTimesheetEntries = async (timesheet: ITimesheet) => {
       const existingEntry = entriesForDate.find(value => {
         return value.id === entry.id;
       });
-      let totalTime = entriesForDate.map(m => m.hours).reduce((p, n) => p + n);
-      totalTime = totalTime - ((existingEntry && existingEntry.hours) || 0);
-      const calcTime = totalTime + entry.hours;
+      let totalTime = entriesForDate
+        .map(m => m.hoursBillable)
+        .reduce((p, n) => p + n);
+      totalTime =
+        totalTime - ((existingEntry && existingEntry.hoursBillable) || 0);
+      const calcTime = totalTime + entry.hoursBillable;
       if (calcTime > 24) {
         validationErrors.push({
           date: entry.entryDate,

@@ -1,10 +1,52 @@
-.v-dialog
-    margin-top: 23vh !important;    
+.v-dialog.add-time-record
+    max-width:850px;
+    margin-top: 151px !important;    
+  
+    background-color: white !important;
     .v-card
+        .card-contents
+            height: 785px;
+            padding: 0px 24px !important;
+            .v-window
+                background-color:white;
+                width: 100% !important;
+                height: 100% !important;
+                .v-radio
+                    display: flex;
+                .v-input.v-text-field.v-select
+                   width: 95%;
+                .date-picker-container
+                    margin:0 0 !important;
+        .v-tabs
+        .v-tabs__wrapper
+            height: 75px
+            .v-tabs__slider-wrapper
+                display none !important
+            .v-tabs__container
+                height : 35px
+                margin: 20px;
+                .v-tabs__item--active
+                    position: static
+                    background-color: #57789A;
+                    color: white
+                .v-tabs__div
+                    :first-child
+                        border-radius: 2px 0px 0px 2px;
+                    :last-child
+                        border-radius: 0px 2px 2px 0px;
+                    text-transform: none !important
+                    border: 1px solid #E2E2E2
+                    box-shadow: 0px 2px 2px #e2e2e26e
+                    font-weight: 700
+                    color: black;
+                    .v-tabs__item
+                        font-size: 14px
+        
         .v-card__title
             padding-left: 10% !important
             .headline
                 font-weight: 500
+                margin-top: 19px;
         .cardheadlabel1
             padding-left: 20%
             .haederinfo
@@ -13,16 +55,17 @@
         .cardheadlabel2
             padding-left: 25%
         .header-divider
-            margin-top: 3%;
-        .v-card__text
+            margin-top: 14px;
+        .v-card__text           
             padding: 0px 16px
             .container.grid-list-md
                 padding-bottom: 0px;
+            
         .v-card__actions
             padding: 8px 38px;
             margin-bottom: 15px;
             .add-btns
-                padding-left: 14%
+                padding-left: 107px;
             .add-new-row
                 margin-right: .5vw
                 margin-left: .5vw
@@ -54,8 +97,12 @@
                 font-weight: 600;
 
 @media screen and (max-width: 567px)
-    .new-time-record
+    .add-time-record
         margin-top: 37vh !important;
         padding-bottom: 7vw !important;
-    .new-time-record .v-card .v-card__title
+    .add-time-record .v-card .v-card__title
         padding-left: 24px;
+
+@media screen and (min-width: 960px)
+    .flex.md6 
+        max-width: 100%;

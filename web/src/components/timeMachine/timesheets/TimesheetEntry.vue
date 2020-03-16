@@ -2,7 +2,7 @@
   <v-layout row justify-center>
     <snackbar ref="snackbar"></snackbar>
 
-      <v-form ref="form" v-model="valid" lazy-validation   id="add-expense" class="add-expense"
+      <v-form ref="form" v-model="valid" lazy-validation   id="timesheet-entry" class="timesheet-entry"
      >
         <spinner ref="spinner"></spinner>
 
@@ -15,11 +15,7 @@
              Hours
             </v-flex>
 
-  <v-flex md3>
-            Category
-            </v-flex>
-
-            <v-flex md5>
+            <v-flex md8>
             Description
             </v-flex>
             <v-flex md1>
@@ -35,11 +31,7 @@
                <v-text-field v-model="item.hours"></v-text-field>
             </v-flex>
 
-
-            <v-flex md3>
-              <v-text-field v-model="item.category"></v-text-field>
-            </v-flex>
-            <v-flex md5>
+            <v-flex md8>
               <v-text-field v-model="item.description"></v-text-field>
             </v-flex>
             <v-flex md1>
@@ -55,9 +47,13 @@
   </v-layout>
 </template>
 <script>
+import TimesheetEntryDto from '@/domain/models/TimesheetEntry.dto';
+import RFxDto from '@/domain/models/RFx.dto';
+import RFxPhaseDto from '@/domain/models/RFxPhase.dto';
+import ProjectDto from '@/domain/models/Project.dto';
 
-
-import './AddExpense.styl';
+import merge from 'object-merge';
+import './TimesheetEntry.styl';
 import moment from 'moment';
 import Snackbar from '../common/Snackbar.vue';
 import Spinner from '../common/Spinner.vue';
@@ -86,7 +82,7 @@ export default {
 
   },
   data() {
-    const form = Object.assign({}, this.$props.expenseEntry);
+    const form = Object.assign({}, this.$props.timeEntry);
     if (!form.date) {
       form.date = moment().format('YYYY-MM-DD');
     }
@@ -103,13 +99,13 @@ export default {
       existingTimeEntries: [],
       addRecordLoading: false,
       //  weekData: {MondayHours:''}
-      weekData: [{ day: 'Mon', description: '', hours: '', category: '', date: '01-03-2020' },
-        { day: 'Tue', description: '', hours: '', category: '', date: '2-3-2020' },
-        { day: 'Wed', description: '', hours: '', category: '', date: '2-3-2020' },
-        { day: 'Thu', description: '', hours: '', category: '', date: '2-3-2020' },
-        { day: 'Fri', description: '', hours: '', category: '', date: '2-3-2020' },
-        { day: 'Sat', description: '', hours: '', category: '', date: '2-3-2020' },
-        { day: 'Sun', description: '', hours: '', category: '', date: '2-3-2020' },
+      weekData: [{ day: 'Mon', description: '', hours: '', date: '01-03-2020' },
+        { day: 'Tue', description: '', hours: '', date: '2-3-2020' },
+        { day: 'Wed', description: '', hours: '', date: '2-3-2020' },
+        { day: 'Thu', description: '', hours: '', date: '2-3-2020' },
+        { day: 'Fri', description: '', hours: '', date: '2-3-2020' },
+        { day: 'Sat', description: '', hours: '', date: '2-3-2020' },
+        { day: 'Sun', description: '', hours: '', date: '2-3-2020' },
       ],
     };
   },
@@ -122,12 +118,12 @@ export default {
     },
   },
   props: {
-    expenseEntry: Object,
+    timeEntry: Object,
     AddExpense: {
       type: Function,
       default: () => {},
     },
-    ExpenseEntry: {
+    TimesheetEntry: {
       type: Function,
       default: () => {},
     },

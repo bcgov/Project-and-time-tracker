@@ -3,9 +3,11 @@ import { ITimesheet } from './i-timesheet';
 export interface ITimesheetEntry {
   id: string;
   timesheet: ITimesheet;
-  hours: number;
+  hoursBillable: number;
+  commentsBillable: string;
+  hoursUnBillable: number;
+  commentsUnBillable: string;
   entryDate: Date;
-  comments: string;
   expenseAmount: number;
   expenseComment: string;
 }

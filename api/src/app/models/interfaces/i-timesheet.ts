@@ -11,7 +11,6 @@ export interface ITimesheet {
   startDate: Date;
   endDate: Date;
   userId: string;
-  isBillable: boolean;
   createdUserId: string;
   entries: ITimesheetEntry[];
 }

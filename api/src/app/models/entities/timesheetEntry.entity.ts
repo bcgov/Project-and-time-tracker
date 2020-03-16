@@ -10,7 +10,16 @@ export class TimesheetEntry {
   timesheet: Timesheet;
 
   @Column({ type: 'double precision', nullable: true })
-  hours: number;
+  hoursBillable: number;
+
+  @Column({ type: 'text', nullable: true })
+  commentsBillable: string;
+
+  @Column({ type: 'double precision', nullable: true })
+  hoursUnBillable: number;
+
+  @Column({ type: 'text', nullable: true })
+  commentsUnBillable: string;
 
   @Column({ type: 'double precision', nullable: true })
   expenseAmount: number;
@@ -20,9 +29,6 @@ export class TimesheetEntry {
 
   @Column({ type: 'date', nullable: true })
   entryDate: Date;
-
-  @Column({ type: 'text', nullable: true })
-  comments: string;
 
   @Column({ type: 'timestamp', nullable: true })
   dateCreated: Date;

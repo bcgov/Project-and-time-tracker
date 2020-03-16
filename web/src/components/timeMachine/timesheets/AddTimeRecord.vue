@@ -1,46 +1,38 @@
 <template>
   <v-layout row justify-center>
     <snackbar ref="snackbar"></snackbar>
-    <v-dialog id="AddTimeRecord" content-class="new-time-record" v-model="dialog" max-width="850">
+    <v-dialog id="AddTimeRecord" content-class="add-time-record" v-model="dialog">
       <v-form ref="form" v-model="valid" lazy-validation>
         <spinner ref="spinner"></spinner>
         <v-card>
-          <v-layout wrap>
-            <v-flex xs4>
-              <v-card-title>
-                <span class="headline">Add Time Record</span>
-              </v-card-title></v-flex
-            >
-            <v-flex xs8>
-              <v-flex class="d-flex cardheadlabel1" cols="12" sm="6">
-                <v-flex class="haederinfo"> Information being entered by:</v-flex>
-                <v-flex> <v-select></v-select></v-flex>
+          <v-card-text class="card-contents">
+            <v-layout wrap>
+              <v-flex md4>
+                <v-card-title>
+                  <span class="headline">Add Time Record</span>
+                </v-card-title></v-flex
+              >
+              <v-flex md8>
+                <v-flex class="d-flex cardheadlabel1">
+                  <v-flex md7 class="haederinfo"> Information being entered by:</v-flex>
+                  <v-flex md4> <v-select></v-select></v-flex>
+                </v-flex>
+                <v-flex class="d-flex cardheadlabel2">
+                  <v-flex><b>MOU amount: </b>$1,000,000</v-flex>
+                  <v-flex><b>Currently Billed:</b> $5000,000</v-flex>
+                </v-flex>
               </v-flex>
-              <v-flex class="d-flex cardheadlabel2" cols="12" sm="6">
-                <v-flex><b>MOU amount: </b>$1,000,000</v-flex>
-                <v-flex><b>Currently Billed:</b> $5000,000</v-flex>
-              </v-flex>
-            </v-flex>
-          </v-layout>
-          <v-divider class="header-divider"></v-divider>
-
-          <v-tabs>
-            <v-tab href="#batch">
-              Batch Entry
-            </v-tab>
-            <v-tab href="#weakily">
-              Weakily Entry
-            </v-tab>
-            <v-tab-item value="batch">
-              batch
-            </v-tab-item>
-            <v-tab-item value="weakily">
-              Weakily
-            </v-tab-item>
-          </v-tabs>
-          <v-card-text>
-            <v-container grid-list-md>
-              <v-layout wrap>
+            </v-layout>
+            <v-divider class="header-divider"></v-divider>
+            <v-tabs v-model="activeTab">
+              <v-tab href="#batch" :key=0>
+                Batch Entry
+              </v-tab>
+              <v-tab href="# weekly" :key=1>
+                weekly Entry
+              </v-tab>
+              <v-tab-item value="batch"> </v-tab-item>
+              <v-tab-item value=" weekly">
                 <v-flex class="d-flex" cols="12" sm="4">
                   <v-flex xs12>
                     <v-select label="MOU" v-model="form.project"></v-select>
@@ -56,30 +48,31 @@
                 </v-flex>
                 <v-flex>
                   <v-flex class="d-flex" cols="12" sm="6">
-                    <v-flex>
+                    <v-flex  md6>
                       <timesheets-calendar></timesheets-calendar>
                     </v-flex>
-                    <v-flex>
+                    <v-flex md6>
                       <v-radio-group row v-model="recordType">
                         <v-radio label="Hours" :value="1"></v-radio>
-                        <v-radio label="Expenses" :value="2" @change="expensePopup()"></v-radio>
+                        <v-radio label="Expenses" :value="2" ></v-radio>
                         <v-radio label="Unbillable Hours" :value="3"></v-radio>
                       </v-radio-group>
-                      <v-flex v-if="recordType === 1 ">
-                        <timesheet-billable ref="TimesheetBillable"></timesheet-billable
-                      ></v-flex>
-                      <v-flex >
-                        <add-expense ref="AddExpense"></add-expense>
-                        </v-flex>
-                      <v-flex v-if="recordType === 3 ">
-                        <timesheet-billable ref="TimesheetBillable"></timesheet-billable
-                      ></v-flex>
                     </v-flex>
                   </v-flex>
+                  <v-flex v-if="recordType === 1">
+                        <timesheet-entry ref="TimesheetEntry"></timesheet-entry
+                      ></v-flex>
+                      <v-flex  v-if="recordType === 2">
+                        <add-expense ref="AddExpense"></add-expense>
+                      </v-flex>
+                      <v-flex v-if="recordType === 3">
+                        <timesheet-entry ref="TimesheetEntry"></timesheet-entry
+                      ></v-flex>
                 </v-flex>
-              </v-layout>
-            </v-container>
+              </v-tab-item>
+            </v-tabs>
           </v-card-text>
+              <v-divider class="header-divider"></v-divider>
           <v-card-actions>
             <label class="btn-discard">
               DISCARD TIMESHEET
@@ -106,7 +99,7 @@ import Snackbar from '../common/Snackbar.vue';
 import Spinner from '../common/Spinner.vue';
 import TimesheetsCalendar from './TimesheetsCalendar.vue';
 import AddExpense from './AddExpense.vue';
-import TimesheetBillable from './TimesheetBillable.vue';
+import TimesheetEntry from './TimesheetEntry.vue';
 
 export default {
   computed: {},
@@ -115,7 +108,7 @@ export default {
     Spinner,
     TimesheetsCalendar,
     AddExpense,
-    TimesheetBillable,
+    TimesheetEntry,
   },
   data() {
     return this.initData();
@@ -125,10 +118,6 @@ export default {
     timeEntry: Object,
   },
   methods: {
-    expensePopup() {
-      this.$refs.AddExpense.reset();
-      this.$refs.AddExpense.open();
-    },
 
 
     open() {
@@ -159,6 +148,7 @@ export default {
       }
       const existingTimeEntries = [];
       return {
+        activeTab: 1,
         recordType: 1,
         valid: true,
         requiredRule: [v => !!v || 'This field required'],

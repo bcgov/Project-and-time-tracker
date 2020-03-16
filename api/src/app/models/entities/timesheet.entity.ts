@@ -34,9 +34,6 @@ export class Timesheet {
   @Column({ type: 'uuid', nullable: true })
   userId: string;
 
-  @Column({ type: 'boolean', nullable: true })
-  isBillable: boolean;
-
   @Column({ type: 'timestamp', nullable: true })
   dateCreated: Date;
 
