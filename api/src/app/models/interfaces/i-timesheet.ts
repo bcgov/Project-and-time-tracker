@@ -1,13 +1,15 @@
 import { IProjectRfx } from './i-project-rfx';
 import { IProject } from './i-project';
-import { IRfxPhase } from './i-rfx-phase';
+import { IMOU } from './i-mou';
 import { ITimesheetEntry } from './i-timesheet-entry';
 
 export interface ITimesheet {
   id: string;
   projectRfx: IProjectRfx;
   project: IProject;
-  rfxPhase: IRfxPhase;
+  mou: IMOU;
+  expenseAmount: number;
+  expenseComment: string;
   startDate: Date;
   endDate: Date;
   userId: string;
