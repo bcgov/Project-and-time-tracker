@@ -1,7 +1,7 @@
  <template>
   <v-layout row justify-center>
     <snackbar ref="snackbar"></snackbar>
-    <v-dialog id="AddExpense" content-class="new-time-record" v-model="dialog" max-width="600">
+    <v-dialog id="AddExpense" content-class="new-time-record"  max-width="600">
       <v-form ref="form" v-model="valid" lazy-validation>
         <spinner ref="spinner"></spinner>
         <v-card>
@@ -47,17 +47,17 @@
   </v-layout>
 </template>
 <script>
-import TimesheetEntryDto from "@/domain/models/TimesheetEntry.dto";
-import RFxDto from "@/domain/models/RFx.dto";
-import RFxPhaseDto from "@/domain/models/RFxPhase.dto";
-import ProjectDto from "@/domain/models/Project.dto";
+import TimesheetEntryDto from '@/domain/models/TimesheetEntry.dto';
+import RFxDto from '@/domain/models/RFx.dto';
+import RFxPhaseDto from '@/domain/models/RFxPhase.dto';
+import ProjectDto from '@/domain/models/Project.dto';
 
-import merge from "object-merge";
+import merge from 'object-merge';
 
-import "./addnewtimerecord.styl";
-import Snackbar from "../common/Snackbar.vue";
-import Spinner from "../common/Spinner.vue";
-import moment from "moment";
+import './addnewtimerecord.styl';
+import moment from 'moment';
+import Snackbar from '../common/Snackbar.vue';
+import Spinner from '../common/Spinner.vue';
 
 export default {
   computed: {
@@ -75,11 +75,11 @@ export default {
     },
     projects() {
       return this.$store.state.projects;
-    }
+    },
   },
   components: {
     Snackbar,
-    Spinner
+    Spinner,
   },
   data() {
     return this.initData();
@@ -89,14 +89,14 @@ export default {
       this.dateFormatted = this.formatDate(this.date);
     },
     project(val) {
-      this.$store.dispatch("fetchProjectRfx", { id: val });
-    }
+      this.$store.dispatch('fetchProjectRfx', { id: val });
+    },
   },
   props: {
-    timeEntry: Object
+    timeEntry: Object,
   },
   methods: {
-      open() {
+    open() {
       this.form.date = moment().format('YYYY-MM-DD');
       this.dialog = true;
       const referenceId = JSON.parse(localStorage.getItem('keycloak_user')).sub;
@@ -128,21 +128,21 @@ export default {
     initData() {
       const form = Object.assign({}, this.$props.timeEntry);
       if (!form.date) {
-        form.date = moment().format("YYYY-MM-DD");
+        form.date = moment().format('YYYY-MM-DD');
       }
       const existingTimeEntries = [];
       return {
         valid: true,
-        requiredRule: [v => !!v || "This field required"],
+        requiredRule: [v => !!v || 'This field required'],
         requireRadioButtondRule: [
-          v => ((v || !v) && v != null) || "This field required"
+          v => ((v || !v) && v != null) || 'This field required',
         ],
         dialog: false,
         menu1: false,
         form: { ...form },
         dateFormatted: undefined,
         existingTimeEntries,
-        addRecordLoading: false
+        addRecordLoading: false,
       };
     },
     saveNewRow() {
@@ -150,15 +150,15 @@ export default {
         const formData = this.form;
         formData.hour = parseFloat(formData.hour.toFixed(2));
         const payload = this.timesheetUpdatePayload(formData);
-       // this.updateTimesheet(payload);
+        // this.updateTimesheet(payload);
       } else {
         this.dialog = true;
       }
     },
     handleMultipleErrors(errorList) {
-      this.$refs.snackbar.displayMultipleErrorSnackbar("error", errorList);
+      this.$refs.snackbar.displayMultipleErrorSnackbar('error', errorList);
     },
-  }
+  },
 };
 </script>
 <style scoped>

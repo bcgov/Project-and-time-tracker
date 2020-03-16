@@ -3,26 +3,8 @@
     <v-flex d-flex justify-center align-start>
       <timesheets-calendar></timesheets-calendar>
     </v-flex>
-     <v-flex d-flex justify-end>
-      <timesheet-billable ref="TimesheetBillable"></timesheet-billable>
-      <v-btn
-        class="add-timesheet-button"
-        color="btnPrimary"
-        dark
-        @click="newTimeSheetBillable"
-      >billable</v-btn>
-    </v-flex>
-     <v-flex d-flex justify-end>
-      <add-expense ref="AddExpense"></add-expense>
-      <v-btn
-        class="add-timesheet-button"
-        color="btnPrimary"
-        dark
-        @click="newExpenses"
-      >Add Expense</v-btn>
-    </v-flex>
     <v-flex d-flex justify-end>
-      <add-new-time-record ref="AddNewTimeRecord"></add-new-time-record>
+      <add-time-record ref="AddTimeRecord"></add-time-record>
       <v-btn
         class="add-timesheet-button"
         color="btnPrimary"
@@ -35,9 +17,8 @@
 
 <script>
 import TimesheetsCalendar from './TimesheetsCalendar.vue';
-import AddExpense from './AddExpense.vue';
-import AddNewTimeRecord from './AddNewTimeRecord.vue';
-import TimesheetBillable from './TimesheetBillable.vue';
+import AddTimeRecord from './AddTimeRecord.vue';
+
 
 export default {
   data() {
@@ -45,9 +26,8 @@ export default {
   },
   components: {
     TimesheetsCalendar,
-    AddNewTimeRecord,
-    AddExpense,
-   TimesheetBillable
+    AddTimeRecord,
+
   },
   props: {
     title: String,
@@ -55,29 +35,14 @@ export default {
       type: Function,
       default: () => {},
     },
-      AddExpense: {
-      type: Function,
-      default: () => {},
-    },
-      TimesheetBillable: {
-      type: Function,
-      default: () => {},
-    },
+
   },
   methods: {
     newTimeRecord() {
-      this.$refs.AddNewTimeRecord.reset();
-      this.$refs.AddNewTimeRecord.open();
+      this.$refs.AddTimeRecord.reset();
+      this.$refs.AddTimeRecord.open();
     },
-    newExpenses() {
-      console
-      this.$refs.AddExpense.reset();
-      this.$refs.AddExpense.open();
-    },
-    newTimeSheetBillable() {
-      this.$refs.TimesheetBillable.reset();
-      this.$refs.TimesheetBillable.open();
-    },
+
   },
 };
 </script>

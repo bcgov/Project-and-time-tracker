@@ -1,8 +1,9 @@
  <template>
   <v-layout row justify-center>
     <snackbar ref="snackbar"></snackbar>
-    <v-dialog id="AddExpense" class="timesheet-billable" v-model="dialog" max-width="65%">
-      <v-form ref="form" v-model="valid" lazy-validation>
+
+      <v-form ref="form" v-model="valid" lazy-validation   id="timesheet-billable"
+     >
         <spinner ref="spinner"></spinner>
 
         <v-container grid-list-xl>
@@ -17,7 +18,7 @@
                 <v-card-text>Hours</v-card-text>
               </v-card>
             </v-flex>
-             
+
             <v-flex md6>
               <v-card>
                 <v-card-text>Description</v-card-text>
@@ -43,7 +44,7 @@
                 </v-card-text>
               </v-card>
             </v-flex>
-            
+
             <v-flex md6>
               <v-card>
                 <v-card-text>
@@ -74,7 +75,7 @@
                 </v-card-text>
               </v-card>
             </v-flex>
-            
+
             <v-flex md6>
               <v-card>
                 <v-card-text>
@@ -105,7 +106,7 @@
                 </v-card-text>
               </v-card>
             </v-flex>
-           
+
             <v-flex md6>
               <v-card>
                 <v-card-text>
@@ -136,7 +137,7 @@
                 </v-card-text>
               </v-card>
             </v-flex>
-            
+
             <v-flex md6>
               <v-card>
                 <v-card-text>
@@ -167,7 +168,7 @@
                 </v-card-text>
               </v-card>
             </v-flex>
-             
+
             <v-flex md6>
               <v-card>
                 <v-card-text>
@@ -198,7 +199,7 @@
                 </v-card-text>
               </v-card>
             </v-flex>
-            
+
             <v-flex md6>
               <v-card>
                 <v-card-text>
@@ -229,7 +230,7 @@
                 </v-card-text>
               </v-card>
             </v-flex>
-          
+
             <v-flex md6>
               <v-card>
                 <v-card-text>
@@ -259,21 +260,21 @@
           <v-btn @click="closeDialog">Cancel</v-btn>
         </v-card-actions>
       </v-form>
-    </v-dialog>
+
   </v-layout>
 </template>
 <script>
-import TimesheetEntryDto from "@/domain/models/TimesheetEntry.dto";
-import RFxDto from "@/domain/models/RFx.dto";
-import RFxPhaseDto from "@/domain/models/RFxPhase.dto";
-import ProjectDto from "@/domain/models/Project.dto";
+import TimesheetEntryDto from '@/domain/models/TimesheetEntry.dto';
+import RFxDto from '@/domain/models/RFx.dto';
+import RFxPhaseDto from '@/domain/models/RFxPhase.dto';
+import ProjectDto from '@/domain/models/Project.dto';
 
-import merge from "object-merge";
+import merge from 'object-merge';
 
-import "./addnewtimerecord.styl";
-import Snackbar from "../common/Snackbar.vue";
-import Spinner from "../common/Spinner.vue";
-import moment from "moment";
+import './addnewtimerecord.styl';
+import moment from 'moment';
+import Snackbar from '../common/Snackbar.vue';
+import Spinner from '../common/Spinner.vue';
 
 export default {
   computed: {
@@ -291,48 +292,83 @@ export default {
     },
     projects() {
       return this.$store.state.projects;
-    }
+    },
   },
   components: {
     Snackbar,
-    Spinner
+    Spinner,
+
   },
   data() {
-    return this.initData();
+    const form = Object.assign({}, this.$props.timeEntry);
+    if (!form.date) {
+      form.date = moment().format('YYYY-MM-DD');
+    }
+    return {
+      valid: true,
+      requiredRule: [v => !!v || 'This field required'],
+      requireRadioButtondRule: [
+        v => ((v || !v) && v != null) || 'This field required',
+      ],
+      dialog: false,
+      menu1: false,
+      form: { ...form },
+      dateFormatted: undefined,
+      existingTimeEntries: [],
+      addRecordLoading: false,
+      //  weekData: {MondayHours:''}
+      weekData: [{ day: 'Mon', description: '', hours: '', date: '01-03-2020' },
+        { day: 'Tue', description: '', hours: '', date: '2-3-2020' },
+        { day: 'Wed', description: '', hours: '', date: '2-3-2020' },
+        { day: 'Thu', description: '', hours: '', date: '2-3-2020' },
+        { day: 'Fri', description: '', hours: '', date: '2-3-2020' },
+        { day: 'Sat', description: '', hours: '', date: '2-3-2020' },
+        { day: 'Sun', description: '', hours: '', date: '2-3-2020' },
+      ],
+    };
   },
   watch: {
     date() {
       this.dateFormatted = this.formatDate(this.date);
     },
     project(val) {
-      this.$store.dispatch("fetchProjectRfx", { id: val });
-    }
+      this.$store.dispatch('fetchProjectRfx', { id: val });
+    },
   },
   props: {
-    timeEntry: Object
+    timeEntry: Object,
+    AddExpense: {
+      type: Function,
+      default: () => {},
+    },
+    TimesheetBillable: {
+      type: Function,
+      default: () => {},
+    },
+  },
+  created() {
+    this.form.date = moment().format('YYYY-MM-DD');
+
+    const referenceId = JSON.parse(localStorage.getItem('keycloak_user')).sub;
+    const user = this.$store.state.users.find(
+      value => value.referenceId === referenceId,
+    );
+    if (user && user.id) {
+      this.form.userId = user.id;
+    }
+    // setTimeout(() => {
+    //   document.getElementsByClassName(
+    //     'v-dialog v-dialog--active',
+    //   )[0].scrollTop = 0;
+    // }, 400);
   },
   methods: {
-    open() {
-      this.form.date = moment().format("YYYY-MM-DD");
-      this.dialog = true;
-      const referenceId = JSON.parse(localStorage.getItem("keycloak_user")).sub;
-      const user = this.$store.state.users.find(
-        value => value.referenceId === referenceId
-      );
-      if (user && user.id) {
-        this.form.userId = user.id;
-      }
-      setTimeout(() => {
-        document.getElementsByClassName(
-          "v-dialog v-dialog--active"
-        )[0].scrollTop = 0;
-      }, 400);
-    },
+
     closeDialog() {
       this.dialog = false;
     },
     reset() {
-     // this.$refs.form.resetValidation();
+      // this.$refs.form.resetValidation();
       const data = this.initData();
       this.$data.valid = data.valid;
       this.$data.requiredRule = data.requiredRule;
@@ -343,35 +379,7 @@ export default {
       this.$data.dateFormatted = data.dateFormatted;
       this.$data.existingTimeEntries = data.existingTimeEntries;
     },
-    initData() {
-      const form = Object.assign({}, this.$props.timeEntry);
-      if (!form.date) {
-        form.date = moment().format("YYYY-MM-DD");
-      }
-      const existingTimeEntries = [];
-      return {
-        valid: true,
-        requiredRule: [v => !!v || "This field required"],
-        requireRadioButtondRule: [
-          v => ((v || !v) && v != null) || "This field required"
-        ],
-        dialog: false,
-        menu1: false,
-        form: { ...form },
-        dateFormatted: undefined,
-        existingTimeEntries,
-        addRecordLoading: false,
-        //  weekData: {MondayHours:''}
-      weekData: [{ 'day':'Mon', 'description':'' , 'hours':'','date':'01-03-2020'},
-                 { 'day':'Tue', 'description':'' , 'hours':'','date':'2-3-2020'},
-                 { 'day':'Wed', 'description':'' , 'hours':'','date':'2-3-2020'},
-                 { 'day':'Thu', 'description':'', 'hours':'','date':'2-3-2020'},
-                 { 'day':'Fri', 'description':'', 'hours':'','date':'2-3-2020'},
-                 { 'day':'Sat', 'description':'', 'hours':'','date':'2-3-2020'},
-                 { 'day':'Sun', 'description':'', 'hours':'','date':'2-3-2020'}
-]
-      };
-    },
+
     saveNewRow() {
       if (this.$refs.form.validate()) {
         const formData = this.form;
@@ -383,9 +391,9 @@ export default {
       }
     },
     handleMultipleErrors(errorList) {
-      this.$refs.snackbar.displayMultipleErrorSnackbar("error", errorList);
-    }
-  }
+      this.$refs.snackbar.displayMultipleErrorSnackbar('error', errorList);
+    },
+  },
 };
 </script>
 <style scoped>
