@@ -11,6 +11,7 @@
             class="required"
             :rules="requiredRule"
             v-model="form.ministry.id"
+            v-open-on-focus
             item-value="id"
             item-text="ministryName"
           ></v-select>

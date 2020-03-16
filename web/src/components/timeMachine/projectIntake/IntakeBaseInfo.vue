@@ -28,6 +28,7 @@
             v-model="form.projectSector.id"
             v-on="checksectorid()"
             item-value="id"
+            v-open-on-focus
             item-text="projectSectorName"
           ></v-select>
         </div>
@@ -362,6 +363,9 @@ export default {
       const formData = this.form;
       this.$store.dispatch('addIntakeRequest', formData);
     },
+    sectorFocus(x){
+      x.target.click();
+    }
   },
 };
 </script>
