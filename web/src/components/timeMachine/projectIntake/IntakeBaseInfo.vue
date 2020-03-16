@@ -178,7 +178,6 @@
               v-model="form.dateOfReprocurement"
               no-title
               @input="menu2 = false"
-              :min="new Date().toISOString()"
             ></v-date-picker>
           </v-menu>
         </div>
