@@ -20,12 +20,8 @@
                   </v-flex>
                 </v-flex>
                 <v-flex class="d-flex cardheadlabel2">
-                  <v-flex>
-                    <b>MOU amount:</b>$1,000,000
-                  </v-flex>
-                  <v-flex>
-                    <b>Currently Billed:</b> $5000,000
-                  </v-flex>
+                  <v-flex> <b>MOU amount:</b>$1,000,000 </v-flex>
+                  <v-flex> <b>Currently Billed:</b> $5000,000 </v-flex>
                 </v-flex>
               </v-flex>
             </v-layout>
@@ -104,7 +100,9 @@
             <v-flex class="add-btns">
               <v-btn class="btn-normal">EXPORT TIMESHEET</v-btn>
               <v-btn class="btn-normal">SAVE AND COPY</v-btn>
-              <v-btn class="add-new-row" color="primary" @click="checkbillnobill()">SAVE AND CLOSE</v-btn>
+              <v-btn class="add-new-row" color="primary" @click="submitForm()"
+                >SAVE AND CLOSE</v-btn
+              >
             </v-flex>
           </v-card-actions>
         </v-card>
@@ -113,8 +111,6 @@
   </v-layout>
 </template>
 <script>
-
-
 import './addtimerecord.styl';
 import moment from 'moment';
 import Snackbar from '../common/Snackbar.vue';
@@ -129,12 +125,13 @@ export default {
       return this.$store.state.mouList;
     },
     projectList() {
+      debugger;
       if (typeof this.form.mou !== 'undefined') {
         const mouProjects = this.$store.state.projects.filter(item => item.mou);
         if (mouProjects.length === 0) {
           return [];
         }
-        const Projects = mouProjects.filter(item => (item.mou.id === this.form.mou));
+        const Projects = mouProjects.filter(item => item.mou.id === this.form.mou);
         if (Projects.length > 0) {
           return Projects;
         }
@@ -142,7 +139,9 @@ export default {
       return [];
     },
     projectRfx() {
-      if (typeof this.form.project !== 'undefined') { return this.$store.state.activeProjectRfxData; }
+      if (typeof this.form.project !== 'undefined') {
+        return this.$store.state.activeProjectRfxData;
+      }
       return [];
     },
   },
@@ -164,17 +163,39 @@ export default {
     onChangeProject(projectId) {
       this.$store.dispatch('fetchProjectRFxData', { id: projectId });
     },
-    checkbillnobill() {
+    submitForm() {
       debugger;
       const billableDetails = this.$refs.Billable.onBillableclick();
       const nonBillableDetails = this.$refs.NonBillable.nonBillableclick();
+
+      const formData = {
+        billableHours: billableDetails,
+        nonBillableHours: nonBillableDetails,
+        mou: this.form.mou,
+        project: this.form.project,
+        projectRfx: this.form.Rfx,
+      };
+      this.$refs.spinner.open();
+      this.$store.dispatch('addTimesheetEntry', formData).then(
+        () => {
+          this.$refs.snackbar.displaySnackbar('success', 'Successfully added time entries.');
+          this.$refs.spinner.close();
+        },
+        (err) => {
+          this.$refs.spinner.close();
+          if (err && err.response && err.response.data) {
+            const { message } = err.response.data.error;
+            this.$refs.snackbar.displaySnackbar('error', message);
+          } else {
+            this.$refs.snackbar.displaySnackbar('error', 'Timesheet entery Error');
+          }
+        },
+      );
     },
     open() {
       this.dialog = true;
       setTimeout(() => {
-        document.getElementsByClassName(
-          'v-dialog v-dialog--active',
-        )[0].scrollTop = 0;
+        document.getElementsByClassName('v-dialog v-dialog--active')[0].scrollTop = 0;
       }, 400);
     },
     closeDialog() {
@@ -203,9 +224,7 @@ export default {
         recordType: 1,
         valid: true,
         requiredRule: [v => !!v || 'This field required'],
-        requireRadioButtondRule: [
-          v => ((v || !v) && v != null) || 'This field required',
-        ],
+        requireRadioButtondRule: [v => ((v || !v) && v != null) || 'This field required'],
         dialog: false,
         menu1: false,
         form: { ...form },
