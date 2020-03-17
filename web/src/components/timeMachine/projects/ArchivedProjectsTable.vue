@@ -37,7 +37,7 @@
                 </template>
                 <span>Un-archive</span>
               </v-tooltip>
-
+<!--
                 <v-tooltip top>
                 <template v-slot:activator="{ on }">
                   <v-btn flat icon color="grey" v-on="on" @click="deleteProject(props.item.id)">
@@ -45,7 +45,7 @@
                   </v-btn>
                 </template>
                 <span>Delete</span>
-              </v-tooltip>
+              </v-tooltip> -->
 
             </td>
           </template>
