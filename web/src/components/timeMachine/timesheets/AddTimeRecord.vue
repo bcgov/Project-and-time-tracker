@@ -113,17 +113,15 @@
   </v-layout>
 </template>
 <script>
-import TimesheetEntryDto from "@/domain/models/TimesheetEntry.dto";
-import RFxDto from "@/domain/models/RFx.dto";
-import ProjectDto from "@/domain/models/Project.dto";
 
-import "./addtimerecord.styl";
-import moment from "moment";
-import Snackbar from "../common/Snackbar.vue";
-import Spinner from "../common/Spinner.vue";
-import TimesheetsCalendar from "./TimesheetsCalendar.vue";
-import AddExpense from "./AddExpense.vue";
-import TimesheetEntry from "./TimesheetEntry.vue";
+
+import './addtimerecord.styl';
+import moment from 'moment';
+import Snackbar from '../common/Snackbar.vue';
+import Spinner from '../common/Spinner.vue';
+import TimesheetsCalendar from './TimesheetsCalendar.vue';
+import AddExpense from './AddExpense.vue';
+import TimesheetEntry from './TimesheetEntry.vue';
 
 export default {
   computed: {
@@ -153,20 +151,21 @@ export default {
     Spinner,
     TimesheetsCalendar,
     AddExpense,
-    TimesheetEntry
+    TimesheetEntry,
   },
   data() {
     return this.initData();
   },
   watch: {},
   props: {
-    timeEntry: Object
+    timeEntry: Object,
   },
   methods: {
     onChangeProject(projectId) {
       this.$store.dispatch('fetchProjectRFxData', { id: projectId });
     },
     checkbillnobill() {
+      debugger;
       const billableDetails = this.$refs.Billable.onBillableclick();
       const nonBillableDetails = this.$refs.NonBillable.nonBillableclick();
     },
@@ -174,7 +173,7 @@ export default {
       this.dialog = true;
       setTimeout(() => {
         document.getElementsByClassName(
-          "v-dialog v-dialog--active"
+          'v-dialog v-dialog--active',
         )[0].scrollTop = 0;
       }, 400);
     },
@@ -196,25 +195,25 @@ export default {
     initData() {
       const form = Object.assign({}, this.$props.timeEntry);
       if (!form.date) {
-        form.date = moment().format("YYYY-MM-DD");
+        form.date = moment().format('YYYY-MM-DD');
       }
       const existingTimeEntries = [];
       return {
         activeTab: 'weekly',
         recordType: 1,
         valid: true,
-        requiredRule: [v => !!v || "This field required"],
+        requiredRule: [v => !!v || 'This field required'],
         requireRadioButtondRule: [
-          v => ((v || !v) && v != null) || "This field required"
+          v => ((v || !v) && v != null) || 'This field required',
         ],
         dialog: false,
         menu1: false,
         form: { ...form },
         dateFormatted: undefined,
         existingTimeEntries,
-        addRecordLoading: false
+        addRecordLoading: false,
       };
-    }
-  }
+    },
+  },
 };
 </script>
