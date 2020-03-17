@@ -18,14 +18,14 @@
           disable-initial-sort
         >
           <template slot="items" slot-scope="props">
-            <td class='pl-3'>
+            <!-- <td class='pl-3'>
               <v-btn v-if='!props.item.mouName'  color="btnPrimary"
                 class="white--text intake-table-approve-btn ma-0"
                 @click.native='showMOUModal(props.item)'>
                   ASSIGN MOU
                </v-btn>
                <span v-else @click='showMOUModal(props.item)'>{{ props.item.mouName }}</span>
-            </td>
+            </td> -->
             <td>
               <!-- {{ props.item.projectName }} -->
               <span class="clickable" @click="viewRequest(props.item.id)">{{ props.item.projectName }}</span>
@@ -177,7 +177,7 @@ export default {
   data() {
     return {
       headers: [
-        { text: 'MOU', value: 'mou', align: 'left', sortable: true },
+        // { text: 'MOU', value: 'mou', align: 'left', sortable: true },
         { text: 'Project Name', value: 'projectName', align: 'left', sortable: true },
         { text: 'Client', value: 'ministryName', sortable: true },
         { text: 'Project Lead', value: 'projectLeadId', sortable: false },
