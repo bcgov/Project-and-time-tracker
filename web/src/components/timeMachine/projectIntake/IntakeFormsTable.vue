@@ -26,7 +26,10 @@
                </v-btn>
                <span v-else @click='showMOUModal(props.item)'>{{ props.item.mouName }}</span>
             </td>
-            <td>{{ props.item.projectName }}</td>
+            <td>
+              <!-- {{ props.item.projectName }} -->
+              <span class="clickable" @click="viewRequest(props.item.id)">{{ props.item.projectName }}</span>
+             </td>
             <td
               class="text-xs-left"
             >{{ [props.item.ministryName|| props.item.nonMinistryName, props.item.orgDivision].join(" ") }}</td>
@@ -152,7 +155,7 @@
 
 
   </v-card>
- </template>
+</template>
 
 <script>
 import Vue from 'vue';
