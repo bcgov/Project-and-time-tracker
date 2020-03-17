@@ -18,7 +18,7 @@
           disable-initial-sort
         >
           <template slot="items" slot-scope="props">
-            <td class="text-xs-left">{{ props.item.mou.name }} </td>
+            <td class="text-xs-left">{{ props.item.mou ? props.item.mou.name : 'n/a' }} </td>
             <td v-bind:class="{ 'archived': props.item.is_archived}"  >
               <span class="clickable" @click="editProject(props.item.id)">{{ props.item.projectName }}</span>
             </td>

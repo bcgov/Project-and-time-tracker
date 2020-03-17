@@ -104,7 +104,7 @@ export const retrieveKeycloakAdminToken = async () => {
       body: tokenParams
     });
 
-    console.log('retrieveKeycloakAdminToken RESPONSE', { response })
+    // console.log('retrieveKeycloakAdminToken RESPONSE', { response })
     
     if (response.status !== 200) {
       throw Error(response.statusText);
