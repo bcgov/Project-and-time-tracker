@@ -111,7 +111,7 @@
                 </div>
               </template>
               <v-btn @click="backfn(2)" flat large color="primary"  class="back-link"
-                >>Ministry / Branch Information</v-btn
+                >&lt; Ministry / Branch Information</v-btn
               >
               <v-card>
                 <v-card-text>
@@ -131,7 +131,7 @@
                   <label class="sub-header-large">Contact Information</label>
                 </div>
               </template>
-              <v-btn @click="backfn(3)" flat large color="primary"  class="back-link">>Risk Assessment</v-btn>
+              <v-btn @click="backfn(3)" flat large color="primary"  class="back-link">&lt;Risk Assessment</v-btn>
               <div class="intake-contact-layout">
                 <v-flex md12 class="intake-base-info-header"><span class="intake-base-info-header-content">Contact Information</span></v-flex>
               <v-card>
@@ -163,7 +163,7 @@
                         <project-contact-info
                           ref="projectFinance"
                           :contact="getClientInfo(CLIENT_FINANCE)"
-                          :contactNameLabel="'Client Finance Name'"
+                          :contactNameLabel="'Financial Contact Name'"
                           @next="clickfnctn(5)"
                         />
                       </v-flex>
@@ -212,7 +212,7 @@
               </v-card></div>
             </v-stepper-content>
             <v-stepper-content step="5">
-              <v-btn @click="backfn(4)" flat large color="primary"  class="back-link">>Contact Information</v-btn>
+              <v-btn @click="backfn(4)" flat large color="primary"  class="back-link">&lt;Contact Information</v-btn>
               <v-card class="mb-12" color="grey lighten-1" height="200px">
                 <intake-review
                   ref="intakeReview"
@@ -510,6 +510,9 @@ export default {
         this.isEditContactInfo = false;
       }
       this.e1 = step;
+
+      // Scroll to top after navigating
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     },
     clickfnctn(step) {
       if (step === 5) {
@@ -595,6 +598,8 @@ export default {
         }
         this.e1 = step;
       }
+      // Scroll to top of page after navigating
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     },
   },
   created() {

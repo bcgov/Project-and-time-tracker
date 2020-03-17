@@ -26,14 +26,26 @@
             <td class="text-xs-left">{{ props.item.backupUserId }}</td>
             <td class="text-xs-left">{{props.item.completionDate | formatDate }}</td>
             <td class="text-xs-left">{{ props.item.dateModified | formatDate }}</td>
-            <!-- <td class="text-xs-left">{{ props.item.dateModified | dateParse('YYYY-MM-DD') }}</td> -->
-            <td class="text-xs-right">
-              <v-btn flat icon color="grey" @click="archivePrompt(props.item, false)">
-                <v-icon>unarchive</v-icon>
-              </v-btn>
-              <v-btn flat icon color="grey" @click="deleteProject(props.item.id)">
-                <v-icon>delete</v-icon>
-              </v-btn>
+             <td class="text-xs-right">
+
+              <v-tooltip top>
+                <template v-slot:activator="{ on }">
+                  <v-btn flat icon color="grey" v-on="on" @click="archivePrompt(props.item, false)">
+                    <v-icon >unarchive</v-icon>
+                  </v-btn>
+                </template>
+                <span>Un-archive</span>
+              </v-tooltip>
+
+                <v-tooltip top>
+                <template v-slot:activator="{ on }">
+                  <v-btn flat icon color="grey" v-on="on" @click="deleteProject(props.item.id)">
+                    <v-icon >delete</v-icon>
+                  </v-btn>
+                </template>
+                <span>Delete</span>
+              </v-tooltip>
+
             </td>
           </template>
         </v-data-table>
@@ -100,7 +112,7 @@ export default {
       this.selectedProjectBackup = projectBackupId;
     },
 
-    // Vue.filter('formatDate', function(value) 
+    // Vue.filter('formatDate', function(value)
     // {
     // if (value) {
     // return moment(String(value)).format('MM/DD/YYYY hh:mm')

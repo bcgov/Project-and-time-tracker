@@ -28,6 +28,7 @@
             v-model="form.projectSector.id"
             v-on="checksectorid()"
             item-value="id"
+            v-open-on-focus
             item-text="projectSectorName"
           ></v-select>
         </div>
@@ -177,7 +178,6 @@
               v-model="form.dateOfReprocurement"
               no-title
               @input="menu2 = false"
-              :min="new Date().toISOString()"
             ></v-date-picker>
           </v-menu>
         </div>
@@ -212,7 +212,7 @@
           <v-textarea
             class="required"
             name="project-description"
-            label="What is the potential if this project fails?"
+            label="What is the potential risk of this procurement failing?"
             no-resize
             :rules="requiredRule"
             v-model="form.projectFailImpact"
@@ -362,6 +362,9 @@ export default {
       const formData = this.form;
       this.$store.dispatch('addIntakeRequest', formData);
     },
+    sectorFocus(x){
+      x.target.click();
+    }
   },
 };
 </script>

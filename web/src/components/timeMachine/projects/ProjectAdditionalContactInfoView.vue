@@ -26,7 +26,7 @@
     </div>
     <div class="layout">
       <v-flex md4>
-        <div class="body-1">Position Title:</div>
+        <div class="body-1">Position:</div>
       </v-flex>
       <v-flex md8>
         <div class="body-2">{{form.orgPosition}}</div>

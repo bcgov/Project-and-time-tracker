@@ -45,6 +45,7 @@ Make sure you have docker and docker-compose installed (`docker-compose --versio
     # import sql - tip: use tab completion
     \i BC_Timesheet_MasterData.sql
     \i Risk_MasterData.sql 
+    \i RiskUpdate.sql
 
     # log out of container
     exit

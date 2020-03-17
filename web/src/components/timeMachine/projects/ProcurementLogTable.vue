@@ -19,7 +19,7 @@
             <td class="text-xs-left">{{ props.item.logType }}</td>
             <td class="text-xs-left">{{ props.item.riskOwner }}</td>
             <td class="text-xs-left">{{ props.item.issueDescription }}</td>
-            <td class="text-xs-left">{{ props.item.clientDate }}</td>
+            <td class="text-xs-left">{{ props.item.clientDate | formatDate }}</td>
             <td class="text-xs-center">
               <a href>Download</a>
             </td>
@@ -66,7 +66,7 @@ export default {
         {
           id: 1,
           logType: 'Contact Update',
-          riskOwner: 'Jan 20,2020',
+          riskOwner: 'Manager',
           issueDescription: '',
           clientDate: '',
           notificationMethod: '',
@@ -77,7 +77,7 @@ export default {
         {
           id: 2,
           logType: 'RFx update',
-          riskOwner: 'Jan 20,2020',
+          riskOwner: 'Manager',
           issueDescription: '',
           clientDate: '',
           notificationMethod: '',
@@ -88,7 +88,7 @@ export default {
         {
           id: 3,
           logType: 'Project lead',
-          riskOwner: 'Jan 20,2020',
+          riskOwner: 'Manager',
           issueDescription: '',
           clientDate: '',
           notificationMethod: '',
@@ -99,7 +99,7 @@ export default {
         {
           id: 4,
           logType: 'Risk Assessment',
-          riskOwner: 'Jan 20,2020',
+          riskOwner: 'Manager',
           issueDescription: '',
           clientDate: '',
           notificationMethod: '',

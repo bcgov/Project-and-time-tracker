@@ -83,14 +83,14 @@
                         </template>
                         <v-card>
                           <v-card-text>
-                            <project-rfx :rfxData="rfx" :project="project"></project-rfx>
+                            <project-rfx :rfxData="rfx" :project="project" ref="rfxForm"></project-rfx>
                           </v-card-text>
                         </v-card>
                       </v-expansion-panel-content>
                     </v-expansion-panel>
                     <v-card>
                       <v-flex xs12>
-                        <div class="v-form-actions">
+                        <div>
                           <v-flex md12 py-3 px-4>
                             <v-btn color="primary" @click="addNewRFx">
                               <v-icon left dark>add</v-icon>Add Another RFx Type
@@ -129,7 +129,7 @@
                               <project-contact-info
                                 ref="projectFinancier"
                                 :contact="projectContactData('clientfinance')"
-                                :contactNameLabel="'Client Financiar Name'"
+                                :contactNameLabel="'Financial Contact Name'"
                               />
                             </v-flex>
                             <v-flex xs12 md6 my-3>
@@ -343,7 +343,24 @@ export default {
       return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
     },
     addNewRFx() {
-      this.projectRfxData.push(new RFxDto());
+      const allRFXValid = this.validateRFXForm();
+      if (allRFXValid){
+        this.projectRfxData.push(new RFxDto());
+      }
+      console.log({allRFXValid});
+    },
+    validateRFXForm(){
+      // Validates all RFX Forms, true only if all forms are valid.
+      // If one form is valid, return false
+
+      if (this.$refs.rfxForm){
+        return this.$refs.rfxForm.map(x => {
+          return x.$refs.form.validate();
+        })
+          .filter(x => !x) // Remove truthy values
+          .length === 0; // See if any falsy values remain
+      }
+      return true;
     },
     async saveProjectContacts() {
       this.$refs.projectLead.Validate();
@@ -405,6 +422,12 @@ export default {
   created() {
     while (this.$store.state.activeProjectContacts.length > 0) {
       this.$store.state.activeProjectContacts.pop();
+    }
+
+    // if no rfx, add one
+    if (this.projectRfxData.length === 0){
+      console.log('addinging initial rfx');
+      this.addNewRFx();
     }
 
     this.fetchData();

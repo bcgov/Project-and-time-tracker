@@ -21,9 +21,23 @@ import VueCurrencyInput from 'vue-currency-input'
 
 Vue.use(VueQuillEditor);
 Vue.use(VueCurrencyInput, { globalOptions: { currency: 'CAD'}});
-
+Vue.filter('formatDate', function(value)
+{
+  if (value) {
+    return moment(String(value)).format('MM/DD/YYYY')
+  }
+}
+);
 Vue.component('v-form', VForm);
 Vue.component('v-field', VField);
+// Useful for v-selects, this opens them when tabbed into them
+Vue.directive('open-on-focus', {
+  bind: function(el) {
+      el.addEventListener('focus', (event) => {
+          event.target.click();
+      }, true);
+  },
+});
 
 Vue.config.productionTip = false;
 

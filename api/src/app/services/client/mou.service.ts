@@ -18,7 +18,7 @@ export const retrieveMOUs = async () => {
 
 // Goal -> create MOU if not exist, then assign mouID to project.
 // 
-export const createMOU = async obj => {
+export const createMOU = async (obj: {name: string}) => {
     const repo = mouRepo();
     const mou = repo.create(obj);
     const ret = await repo.save(mou);

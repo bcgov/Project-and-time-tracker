@@ -44,7 +44,7 @@
         <div class="v-form-container">
            <v-text-field
             :rules="required"
-            class="inputClass"
+            class="inputClass required"
             label="RFx Name"
             v-model="rfxForm.rfxName"
           ></v-text-field>
@@ -57,7 +57,7 @@
           <v-textarea
             name="rfx-overview"
             class="required"
-            label="RFx Overview"
+            label="Summary of RFx"
             no-resize
             rows="4"
             :rules="required"

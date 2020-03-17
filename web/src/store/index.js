@@ -21,6 +21,7 @@ import moment from 'moment';
 import IntakeRequestDto from '@/domain/models/Intake.dto';
 
 import HashTable from '@/utils/HashTable';
+import RFxDto from '@/domain/models/RFx.dto';
 
 const API_URI = process.env.VUE_APP_API_URI || 'http://localhost:3000';
 console.log('API URL:', { API_URI })
@@ -119,12 +120,12 @@ const store = new Vuex.Store({
     },
     // Verify data
     verifyTokenServer(state, data) {
-      console.log('verifyTokenServer called', {state, data})
+      // console.log('verifyTokenServer called', {state, data})
       state.verifyTokenServer = data;
     },
     // Master data
     fetchMinistries(state, data) {
-      console.log('fetchMinistries called', data);
+      // console.log('fetchMinistries called', data);
       state.ministries = data;
     },
     fetchAllMinistries(state, data){
@@ -143,7 +144,7 @@ const store = new Vuex.Store({
       state.rfxTypes = data;
     },
     fetchProjectSectors(state, data) {
-      console.log('fetchProjectSectors called', {state, data})
+      // console.log('fetchProjectSectors called', {state, data})
       state.projectSectors = data;
       // TODO: Remove me! I'm just for backward compat right now...
       state.services = data;
@@ -193,7 +194,7 @@ const store = new Vuex.Store({
     },
     // User contacts (profiles?)
     fetchUsers(state, data) {
-      console.log('fetchUsers called', { state, data } )
+      // console.log('fetchUsers called', { state, data } )
       state.users = data;
     },
     addUser() {
@@ -243,6 +244,7 @@ const store = new Vuex.Store({
     createMOU(state, data){
       console.log('createMOU mutation', data);
       // state.mouList = data;
+      state.mouList.push(data);
     },
     // Projects
     fetchProjects(state, data) {
@@ -298,6 +300,12 @@ const store = new Vuex.Store({
     },
     // Project RFx
     fetchProjectRFxData(state, data) {
+      // if it's an empty array, need to add blank rfX type
+      console.log('fetchProjectRFxData', {data})
+      if (data && data.length === 0){
+        data.push(new RFxDto());
+      }
+
       state.activeProjectRfxData = data;
     },
     addProjectRFxData() {
@@ -647,7 +655,7 @@ const store = new Vuex.Store({
       $http
         .get(`${API_URI}/MOU`)
         .then((res) => {
-          console.log('fetch MOUs', res);
+          // console.log('fetch MOUs', res);
           const content = res.data;
           ctx.commit('fetchMOUs', content);
         })

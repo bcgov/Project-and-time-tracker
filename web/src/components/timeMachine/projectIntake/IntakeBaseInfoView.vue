@@ -26,6 +26,7 @@
       </v-flex>
     </v-layout>
 
+
     <v-layout>
       <v-flex md6>
         <div class="body-1">Contract Amount:</div>
@@ -82,6 +83,7 @@
         <div class="body-2">{{ form.projectFailImpact }}</div>
       </v-flex>
     </v-layout>
+
 
     <v-layout>
       <v-flex md6>

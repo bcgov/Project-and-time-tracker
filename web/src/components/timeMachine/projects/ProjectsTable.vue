@@ -18,9 +18,11 @@
           disable-initial-sort
         >
           <template slot="items" slot-scope="props">
-            <td class="text-xs-left">{{ props.item.mouAmount }} </td>
-            <td v-bind:class="{ 'archived': props.item.is_archived}">{{ props.item.projectName }}</td>
-            <td class="text-xs-left">{{ props.item.projectName}} </td>
+            <td class="text-xs-left">{{ props.item.mou ? props.item.mou.name : 'n/a' }} </td>
+            <td v-bind:class="{ 'archived': props.item.is_archived}"  >
+              <span class="clickable" @click="editProject(props.item.id)">{{ props.item.projectName }}</span>
+            </td>
+            <!-- <td class="text-xs-left">{{ props.item.projectName}} </td> -->
             <td class="text-xs-left">{{ [props.item.client.ministry?props.item.client.ministry.ministryName: props.item.client.nonMinistryName, props.item.orgDivision].join(" ") }}</td>
             <td class="text-xs-left table-dropdown">
               <v-select
@@ -50,15 +52,26 @@
                 item-text="contact.fullName"
               ></v-select>
             </td>
-            <td class="text-xs-left">{{ props.item.completionDate }}</td>
-            <td class="text-xs-left">{{ formatDate(props.item.dateModified) }}</td>
+            <td class="text-xs-left">{{ props.item.completionDate | formatDate }}</td>
+            <td class="text-xs-left">{{ props.item.dateModified | formatDate }}</td>
             <td class="text-xs-center">
-              <v-btn flat icon color="grey" @click="editProject(props.item.id)">
-                <v-icon>edit</v-icon>
-              </v-btn>
-              <v-btn flat icon color="grey" v-if="!props.item.is_archived" @click="archivePrompt(props.item, true)">
-                  <v-icon >archive</v-icon>
-                </v-btn>
+              <v-tooltip top>
+                <template v-slot:activator="{ on }">
+                  <v-btn flat icon color="grey" @click="editProject(props.item.id)" v-on="on">
+                    <v-icon>edit</v-icon>
+                  </v-btn>
+                </template>
+                <span>Edit</span>
+              </v-tooltip>
+
+              <v-tooltip top v-if="!props.item.is_archived">
+                <template v-slot:activator="{ on }">
+                  <v-btn flat icon color="grey" v-on="on" @click="archivePrompt(props.item, true)">
+                    <v-icon >archive</v-icon>
+                  </v-btn>
+                </template>
+                <span>Archive</span>
+              </v-tooltip>
               <v-btn flat v-else @click="archivePrompt(props.item, false)">
               Archived
               </v-btn>
@@ -95,9 +108,9 @@ export default {
   data() {
     return {
       headers: [
-        { text: 'MOU', value: 'mouAmount', align: 'left', sortable: true },
+        { text: 'MOU / Contract', value: 'mou', align: 'left', sortable: true },
         { text: 'Project Name', value: 'projectName', align: 'left', sortable: true },
-        { text: 'Phase', value: 'rfxPhaseName', align: 'left', sortable: true },
+        // { text: 'Phase', value: 'rfxPhaseName', align: 'left', sortable: true },
         { text: 'Client', value: 'client.ministry.ministryName', sortable: true },
         { text: 'Project Lead', value: 'projectLeadId', sortable: false },
         { text: 'Project Backup', value: 'projectBackup', sortable: false },
@@ -109,6 +122,7 @@ export default {
       selectedLeadUser: '',
       selectedProjectBackup: '',
     };
+
   },
   computed: {
     projects() {
@@ -117,7 +131,7 @@ export default {
     userList() {
       return this.$store.state.users;
     },
-  },
+    },
   methods: {
     fetchData() {
       this.$store.dispatch('fetchProjects');
@@ -127,15 +141,15 @@ export default {
     editProject(id) {
       this.$router.push({ path: `project/${id}` });
     },
-    async archivePrompt(item, archiveVal) {
+    async archivePrompt(item, archiveVal){
       if (
         await this.$refs.confirm.open(
-          'info',
-          `Are you sure to archive project: ${item.projectName}?`,
-        )
-      ) {
+          "info",
+          `Are you sure to archive project: ${item.projectName}?`)
+      )
+      {
         item.is_archived = archiveVal;
-        await this.$store.dispatch('archiveProject', item.id, archiveVal);
+        await this.$store.dispatch("archiveProject", item.id, archiveVal);
         this.$store.dispatch('fetchProjects');
       }
     },
@@ -249,13 +263,13 @@ export default {
         this.$refs.snackbar.displaySnackbar('success', 'Deleted.');
       }
     },
-    formatDate(dateStr) {
-      const split = dateStr.split('T');
-      if (split) {
-        return split[0];
+    formatDate(dateStr){
+      const split = dateStr.split("T")
+      if (split){
+        return split[0]
       }
       return dateStr;
-    },
+    }
   },
   created() {
     this.fetchData();
