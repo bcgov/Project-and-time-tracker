@@ -276,10 +276,3 @@ export default {
   },
 };
 </script>
-<style scoped>
-.clickable {
-  cursor: pointer;
-  color: var(--v-primary-base);
-  text-decoration: underline;
-}
-</style>
