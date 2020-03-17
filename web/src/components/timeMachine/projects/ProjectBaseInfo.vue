@@ -16,6 +16,33 @@
           </div>
         </div>
       </v-flex>
+      <v-flex xs12>
+        <v-flex md6>
+          <div class="v-form-container">
+            <v-combobox
+                v-model="project.mou"
+                :items="mouList"
+                label='Assign or Create MOU'
+                persistent-hint
+                item-text='name'
+                v-on:keyup.enter='createMOU'
+                :search-input.sync="mouSearch">
+
+                <template v-slot:no-data v-if='mouSearch && mouSearch.length'>
+                  <v-list-tile>
+                    <v-list-tile-content>
+                      <v-list-tile-title>
+                        No results matching "<strong>{{mouSearch}}</strong>".
+                        Press <kbd>enter</kbd> to create a new one
+                      </v-list-tile-title>
+                    </v-list-tile-content>
+                  </v-list-tile>
+                </template>
+
+              </v-combobox>
+          </div>
+        </v-flex>
+      </v-flex>
       <v-flex md6>
         <div class="v-form-container">
           <v-text-field
@@ -271,6 +298,9 @@ export default {
     ministries() {
       return this.$store.state.ministries;
     },
+    mouList(){
+      return this.$store.state.mouList;
+    }
   },
   data() {
     const form = Object.assign({}, this.$props.project);
@@ -298,6 +328,7 @@ export default {
         : form.client.nonMinistryName,
       saveProjectLoading: false,
       ministryInformation: this.$store.state.ministryInformation,
+      mouSearch: null,
     };
   },
   watch: {
@@ -341,10 +372,10 @@ export default {
         this.amount = this.temp;
     },
     thousandSeprator(amount) {
-    if (amount !== '' || amount !== undefined || amount !== 0 || amount !== '0' || amount !== null) 
+    if (amount !== '' || amount !== undefined || amount !== 0 || amount !== '0' || amount !== null)
     {
         return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    } else 
+    } else
     {
         return amount;
     }
@@ -377,7 +408,8 @@ export default {
         this.$store.dispatch('updateProject', projectData).then(
           () => {
             this.saveProjectLoading = false;
-            scope.$store.dispatch('updateProject', projectData);
+            // Commented out - this is just duplicating the above store.dispatch.  Why do it twice?
+            // scope.$store.dispatch('updateProject', projectData);
             scope.$refs.snackbar.displaySnackbar('success', 'Updated');
             scope.$store.dispatch('fetchProjects');
           },
@@ -401,6 +433,12 @@ export default {
             }
           },
         );
+      }
+    },
+    async createMOU(){
+      // TODO - Check that pre-existing MOU doesn't already exist
+      if (this.project.mou){
+        const newMouID = await this.$store.dispatch('createMOU', {name: this.project.mou});
       }
     },
     fetchData() {

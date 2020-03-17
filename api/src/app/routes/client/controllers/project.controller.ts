@@ -12,6 +12,7 @@ import { retrieveClientByProjectId } from '../../../services/client/client.servi
 import { Role } from '../../roles';
 import { IAuth } from '../../../models/interfaces/i-auth';
 import { authorize } from '../../../services/common/authorize.service';
+import { createMOU } from '../../../services/client/mou.service';
 
 export const getProjects = async (ctx: Koa.Context) => {
   try {
@@ -65,6 +66,15 @@ export const updateProjectAction = async (ctx: Koa.Context) => {
       return;
     }
 
+    // See if mou exists, if so assign ID
+    // See if MOU doesn't exist.  Can happen if user doesn't press 'Enter' and just clicks on save for a new MOU
+    let mou = project.mou;
+    if (typeof project.mou === 'string'){
+      // It's a new MOU w/o ID, instead of an object
+      // Create new MOU
+      mou = await createMOU({name: project.mou});
+    }
+
     const updatingFields = {
       projectName: project.projectName,
       completionDate: project.completionDate,
@@ -79,7 +89,9 @@ export const updateProjectAction = async (ctx: Koa.Context) => {
       isReprocurement: project.isReprocurement,
       previousContractBackground: project.previousContractBackground,
       projectFailImpact: project.projectFailImpact,
-      projectSuccess: project.projectSuccess
+      projectSuccess: project.projectSuccess,
+
+      mou: mou,
     };
 
     const updateingClient = {

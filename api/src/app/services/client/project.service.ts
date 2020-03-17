@@ -79,6 +79,7 @@ export const retrieveProjectById = async (id: string | string[]) => {
     .createQueryBuilder('p')
     .innerJoinAndSelect('p.client', 'c')
     .leftJoinAndSelect('c.ministry', 'm')
+    .innerJoinAndSelect('p.mou', 'o')
     .where('p.id = :id', { id: id })
     .getOne();
   if (!res) {

@@ -244,6 +244,7 @@ const store = new Vuex.Store({
     createMOU(state, data){
       console.log('createMOU mutation', data);
       // state.mouList = data;
+      state.mouList.push(data);
     },
     // Projects
     fetchProjects(state, data) {
