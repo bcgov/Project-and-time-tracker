@@ -18,7 +18,8 @@
           disable-initial-sort
         >
           <template slot="items" slot-scope="props">
-            <td class="text-xs-left">{{ props.item.mouAmount }} </td>
+            <td class="text-xs-left">{{ props.item.mou ? props.item.mou.name : 'n/a' }} </td>
+            <!-- <td class="text-xs-left">{{ props.item.mouAmount }} </td> -->
             <td v-bind:class="{ 'archived': props.item.is_archived}">{{ props.item.projectName }}</td>
             <td class="text-xs-left">{{ props.item.projectName }}</td>
             <td class="text-xs-left">{{ [props.item.client.ministry.ministryName, props.item.orgDivision].join(" ") }}</td>
@@ -133,8 +134,8 @@ export default {
       )
       {
         item.is_archived = archiveVal;
-        await this.$store.dispatch("archiveProject", item.id, archiveVal);
-        this.$store.dispatch('fetchProjects');
+        await this.$store.dispatch("archiveProject", {id: item.id, is_archived: archiveVal});
+        this.fetchArchivedData();
       }
     },
   },
