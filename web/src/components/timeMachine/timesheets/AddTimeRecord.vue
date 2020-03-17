@@ -10,16 +10,22 @@
               <v-flex md4>
                 <v-card-title>
                   <span class="headline">Add Time Record</span>
-                </v-card-title></v-flex
-              >
+                </v-card-title>
+              </v-flex>
               <v-flex md8>
                 <v-flex class="d-flex cardheadlabel1">
-                  <v-flex md7 class="haederinfo"> Information being entered by:</v-flex>
-                  <v-flex md4> <v-select></v-select></v-flex>
+                  <v-flex md7 class="haederinfo">Information being entered by:</v-flex>
+                  <v-flex md4>
+                    <v-select></v-select>
+                  </v-flex>
                 </v-flex>
                 <v-flex class="d-flex cardheadlabel2">
-                  <v-flex><b>MOU amount: </b>$1,000,000</v-flex>
-                  <v-flex><b>Currently Billed:</b> $5000,000</v-flex>
+                  <v-flex>
+                    <b>MOU amount:</b>$1,000,000
+                  </v-flex>
+                  <v-flex>
+                    <b>Currently Billed:</b> $5000,000
+                  </v-flex>
                 </v-flex>
               </v-flex>
             </v-layout>
@@ -78,15 +84,15 @@
                       </v-radio-group>
                     </v-flex>
                   </v-flex>
-                  <v-flex v-if="recordType === 1">
-                    <timesheet-entry ref="TimesheetEntry"></timesheet-entry
-                  ></v-flex>
+                  <v-flex v-show="recordType === 1">
+                    <timesheet-entry ref="Billable"></timesheet-entry>
+                  </v-flex>
                   <v-flex v-if="recordType === 2">
                     <add-expense ref="AddExpense"></add-expense>
                   </v-flex>
-                  <v-flex v-if="recordType === 3">
-                    <timesheet-entry ref="TimesheetEntry"></timesheet-entry
-                  ></v-flex>
+                  <v-flex v-show="recordType === 3">
+                    <timesheet-entry ref="NonBillable"></timesheet-entry>
+                  </v-flex>
                 </v-flex>
               </v-tab-item>
               <v-tab-item value="batch"> </v-tab-item>
@@ -94,13 +100,11 @@
           </v-card-text>
           <v-divider class="header-divider"></v-divider>
           <v-card-actions>
-            <label class="btn-discard">
-              DISCARD TIMESHEET
-            </label>
+            <label class="btn-discard">DISCARD TIMESHEET</label>
             <v-flex class="add-btns">
-              <v-btn class="btn-normal">EXPORT TIMESHEET </v-btn>
-              <v-btn class="btn-normal">SAVE AND COPY </v-btn>
-              <v-btn class="add-new-row" color="primary">SAVE AND CLOSE </v-btn>
+              <v-btn class="btn-normal">EXPORT TIMESHEET</v-btn>
+              <v-btn class="btn-normal">SAVE AND COPY</v-btn>
+              <v-btn class="add-new-row" color="primary" @click="checkbillnobill()">SAVE AND CLOSE</v-btn>
             </v-flex>
           </v-card-actions>
         </v-card>
@@ -109,17 +113,17 @@
   </v-layout>
 </template>
 <script>
-import TimesheetEntryDto from '@/domain/models/TimesheetEntry.dto';
-import RFxDto from '@/domain/models/RFx.dto';
-import ProjectDto from '@/domain/models/Project.dto';
+import TimesheetEntryDto from "@/domain/models/TimesheetEntry.dto";
+import RFxDto from "@/domain/models/RFx.dto";
+import ProjectDto from "@/domain/models/Project.dto";
 
-import './addtimerecord.styl';
-import moment from 'moment';
-import Snackbar from '../common/Snackbar.vue';
-import Spinner from '../common/Spinner.vue';
-import TimesheetsCalendar from './TimesheetsCalendar.vue';
-import AddExpense from './AddExpense.vue';
-import TimesheetEntry from './TimesheetEntry.vue';
+import "./addtimerecord.styl";
+import moment from "moment";
+import Snackbar from "../common/Snackbar.vue";
+import Spinner from "../common/Spinner.vue";
+import TimesheetsCalendar from "./TimesheetsCalendar.vue";
+import AddExpense from "./AddExpense.vue";
+import TimesheetEntry from "./TimesheetEntry.vue";
 
 export default {
   computed: {
@@ -149,23 +153,29 @@ export default {
     Spinner,
     TimesheetsCalendar,
     AddExpense,
-    TimesheetEntry,
+    TimesheetEntry
   },
   data() {
     return this.initData();
   },
   watch: {},
   props: {
-    timeEntry: Object,
+    timeEntry: Object
   },
   methods: {
     onChangeProject(projectId) {
       this.$store.dispatch('fetchProjectRFxData', { id: projectId });
     },
+    checkbillnobill() {
+      const billableDetails = this.$refs.Billable.onBillableclick();
+      const nonBillableDetails = this.$refs.NonBillable.nonBillableclick();
+    },
     open() {
       this.dialog = true;
       setTimeout(() => {
-        document.getElementsByClassName('v-dialog v-dialog--active')[0].scrollTop = 0;
+        document.getElementsByClassName(
+          "v-dialog v-dialog--active"
+        )[0].scrollTop = 0;
       }, 400);
     },
     closeDialog() {
@@ -186,23 +196,25 @@ export default {
     initData() {
       const form = Object.assign({}, this.$props.timeEntry);
       if (!form.date) {
-        form.date = moment().format('YYYY-MM-DD');
+        form.date = moment().format("YYYY-MM-DD");
       }
       const existingTimeEntries = [];
       return {
         activeTab: 'weekly',
         recordType: 1,
         valid: true,
-        requiredRule: [v => !!v || 'This field required'],
-        requireRadioButtondRule: [v => ((v || !v) && v != null) || 'This field required'],
+        requiredRule: [v => !!v || "This field required"],
+        requireRadioButtondRule: [
+          v => ((v || !v) && v != null) || "This field required"
+        ],
         dialog: false,
         menu1: false,
         form: { ...form },
         dateFormatted: undefined,
         existingTimeEntries,
-        addRecordLoading: false,
+        addRecordLoading: false
       };
-    },
-  },
+    }
+  }
 };
 </script>

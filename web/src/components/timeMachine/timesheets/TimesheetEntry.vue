@@ -4,7 +4,7 @@
 
     <v-form ref="form" v-model="valid" lazy-validation id="timesheet-entry" class="timesheet-entry">
       <spinner ref="spinner"></spinner>
-
+      {{formatDate($store.state.timesheetsWeek.startDate)}}
       <v-container grid-list-xl>
         <v-layout row wrap>
           <v-flex md1>Day</v-flex>
@@ -96,6 +96,7 @@ export default {
       addRecordLoading: false,
       itemHours: "",
       itemDescription: "",
+      startDate: sessionStorage.getItem("selectedStartDate"),
       //  weekData: {MondayHours:''}
       weekData: [
         { day: "Mon", description: "", hours: "", date: "01-03-2020" },
@@ -118,6 +119,8 @@ export default {
   },
   props: {
     timeEntry: Object,
+    billableDetails: Object,
+    nonBillableDetails: Object,
     AddExpense: {
       type: Function,
       default: () => {}
@@ -144,12 +147,39 @@ export default {
     // }, 400);
   },
   methods: {
+    formatDate(date) {
+      date = new Date(date);
+      var dates = [];
+      for (let I = 0; I < Math.abs(-7); I++) {
+        var d = new Date(
+          new Date(
+            date - (-7 >= 0 ? I : I - I - I) * 24 * 60 * 60 * 1000
+          ).toLocaleString()
+        );
+        var month = "" + (d.getMonth() + 1),
+          day = "" + d.getDate(),
+          year = d.getFullYear();
+
+        if (month.length < 2) month = "0" + month;
+        if (day.length < 2) day = "0" + day;
+        dates.push([year, month, day].join("-"));
+      }
+      return dates;
+    },
+    onBillableclick() {
+      // this.$store.state.billableDetails = this.weekData;
+      return this.weekData;
+    },
+    nonBillableclick() {
+      // this.$store.state.billableDetails = this.weekData;
+     return this.weekData;
+    },
     copyfunc(hours, description) {
       this.itemHours = hours;
       this.itemDescription = description;
     },
     pastefunc(index) {
-      console.log('index:', index );
+      console.log("index:", index);
       this.weekData[index].hours = this.itemHours;
       this.weekData[index].description = this.itemDescription;
     },
