@@ -18,7 +18,7 @@
           disable-initial-sort
         >
           <template slot="items" slot-scope="props">
-            <td class="text-xs-left">{{ props.item.mouId }} </td>
+            <td class="text-xs-left">{{ props.item.mou.name }} </td>
             <td v-bind:class="{ 'archived': props.item.is_archived}"  >
               <span class="clickable" @click="editProject(props.item.id)">{{ props.item.projectName }}</span>
             </td>
@@ -108,7 +108,7 @@ export default {
   data() {
     return {
       headers: [
-        { text: 'MOU', value: 'mouId', align: 'left', sortable: true },
+        { text: 'MOU / Contract', value: 'mou', align: 'left', sortable: true },
         { text: 'Project Name', value: 'projectName', align: 'left', sortable: true },
         // { text: 'Phase', value: 'rfxPhaseName', align: 'left', sortable: true },
         { text: 'Client', value: 'client.ministry.ministryName', sortable: true },
