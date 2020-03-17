@@ -19,7 +19,9 @@
         >
           <template slot="items" slot-scope="props">
             <td class="text-xs-left">{{ props.item.mouId }} </td>
-            <td v-bind:class="{ 'archived': props.item.is_archived}">{{ props.item.projectName }}</td>
+            <td v-bind:class="{ 'archived': props.item.is_archived}"  >
+              <span class="clickable" @click="editProject(props.item.id)">{{ props.item.projectName }}</span>
+            </td>
             <td class="text-xs-left">{{ props.item.projectName}} </td>
             <td class="text-xs-left">{{ [props.item.client.ministry?props.item.client.ministry.ministryName: props.item.client.nonMinistryName, props.item.orgDivision].join(" ") }}</td>
             <td class="text-xs-left table-dropdown">
@@ -274,3 +276,10 @@ export default {
   },
 };
 </script>
+<style scoped>
+.clickable {
+  cursor: pointer;
+  color: var(--v-primary-base);
+  text-decoration: underline;
+}
+</style>
