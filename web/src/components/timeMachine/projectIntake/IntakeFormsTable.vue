@@ -349,8 +349,9 @@ export default {
       }
     },
     async deleteRequest(id) {
-      if (await this.$refs.confirm.open('danger', '')) {
-        this.$store.dispatch('deleteIntakeRequest', { id });
+      if (await this.$refs.confirm.open('danger', 'Are you sure you wish to delete this Intake Request? Note: If it has already been approved into a Project, the Project will be unaffected.')) {
+        await this.$store.dispatch('deleteIntakeRequest', { id });
+        this.fetchData();
         this.$refs.snackbar.displaySnackbar('success', 'Deleted.');
         this.$router.push({ path: 'intake-requests' });
       }

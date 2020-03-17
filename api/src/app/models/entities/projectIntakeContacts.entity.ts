@@ -8,7 +8,7 @@ export class ProjectIntakeContacts {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(type => ProjectIntake)
+  @ManyToOne(type => ProjectIntake, { onDelete: 'CASCADE' })
   projectIntake: ProjectIntake;
 
   @ManyToOne(type => Contact)
