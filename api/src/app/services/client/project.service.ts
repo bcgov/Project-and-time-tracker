@@ -79,6 +79,7 @@ export const retrieveProjectById = async (id: string | string[]) => {
     .createQueryBuilder('p')
     .innerJoinAndSelect('p.client', 'c')
     .leftJoinAndSelect('c.ministry', 'm')
+    .innerJoinAndSelect('p.mou', 'o')
     .where('p.id = :id', { id: id })
     .getOne();
   if (!res) {
@@ -93,6 +94,7 @@ export const retrieveProjects = async () => {
     .createQueryBuilder('p')
     .innerJoin('p.client', 'c')
     .leftJoin('c.ministry', 'm')
+    .innerJoinAndSelect('p.mou', 'o')
     .innerJoin('p.projectSector', 'ps')
     .orderBy('p.dateModified', 'DESC')
     .select([
@@ -105,7 +107,8 @@ export const retrieveProjects = async () => {
       'm.ministryName',
       'p.leadUserId',
       'p.backupUserId',
-      'p."mouId"',
+      // 'p."mou"',
+      'o.name',
       'p.isReprocurement',
       'c.isNonMinistry',
       'p.dateOfReprocurement',
