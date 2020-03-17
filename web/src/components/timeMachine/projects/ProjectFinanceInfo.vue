@@ -16,9 +16,9 @@
       <v-flex xs12>
         <div class="v-form-container">
           <v-text-field
-            label="Client No. (3 digits)"
+            label="Client No. (3 characters)"
             :rules="[rules.clientNoRules]"
-            :mask="maskClient"
+            
             v-model="financeInfo.clientNo"
           ></v-text-field>
         </div>
@@ -26,9 +26,9 @@
       <v-flex xs6>
         <div class="v-form-container">
           <v-text-field
-            label="Responsibility Center (5 digits)"
+            label="Responsibility Center (5 characters)"
             :rules="[rules.responsibilityCenterRules]"
-            :mask="maskResponsibility"
+            
             v-model="financeInfo.responsibilityCenter"
           ></v-text-field>
         </div>
@@ -36,9 +36,9 @@
       <v-flex xs6>
         <div class="v-form-container">
           <v-text-field
-            label="Service Center (5 digits)"
+            label="Service Center (5 characters)"
             :rules="[rules.serviceCenterRules]"
-            :mask="maskService"
+    
             v-model="financeInfo.serviceCenter"
           ></v-text-field>
         </div>
@@ -46,9 +46,9 @@
       <v-flex xs6>
         <div class="v-form-container">
           <v-text-field
-            label="STOB (4 digits)"
+            label="STOB (4 characters)"
             :rules="[rules.stobRules]"
-            :mask="maskStob"
+        
             v-model="financeInfo.stob"
           ></v-text-field>
         </div>
@@ -56,9 +56,9 @@
       <v-flex xs6>
         <div class="v-form-container">
           <v-text-field
-            label="Project Code (7 digits)"
+            label="Project Code (7 characters)"
             :rules="[rules.projectCodeRules]"
-            :mask="maskProject"
+ 
             v-model="financeInfo.projectCode"
           ></v-text-field>
         </div>
@@ -76,11 +76,11 @@ export default {
     const form = Object.assign({}, this.$props.financeInfo);
     return {
       valid: true,
-      maskClient: '###',
-      maskStob: '####',
-      maskResponsibility: '#####',
-      maskService: '#####',
-      maskProject: '#######',
+      // maskClient: '###',
+      // maskStob: '####',
+      // maskResponsibility: '#####',
+      // maskService: '#####',
+      // maskProject: '#######',
       rules: {
         clientNoRules: v => this.showValidationMessage(v, 3),
         responsibilityCenterRules: v => this.showValidationMessage(v, 5),
@@ -99,9 +99,9 @@ export default {
   methods: {
     showValidationMessage(value, count) {
       if (value && value.length && value.length !== count) {
-        return `Min ${count} digits required`;
+        return `Exactly ${count} characters required`;
       }
-      return true; // added to avoid warning 'rules can't be undefined' after typing valid value
+      return true; // added to avoid warning 'rules can't be undefined' after atyping valid value
     },
     validate() {
       return this.$refs.projectFinance.validate();
