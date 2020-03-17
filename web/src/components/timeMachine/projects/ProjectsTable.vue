@@ -22,7 +22,7 @@
             <td v-bind:class="{ 'archived': props.item.is_archived}"  >
               <span class="clickable" @click="editProject(props.item.id)">{{ props.item.projectName }}</span>
             </td>
-            <td class="text-xs-left">{{ props.item.projectName}} </td>
+            <!-- <td class="text-xs-left">{{ props.item.projectName}} </td> -->
             <td class="text-xs-left">{{ [props.item.client.ministry?props.item.client.ministry.ministryName: props.item.client.nonMinistryName, props.item.orgDivision].join(" ") }}</td>
             <td class="text-xs-left table-dropdown">
               <v-select
@@ -110,7 +110,7 @@ export default {
       headers: [
         { text: 'MOU', value: 'mouId', align: 'left', sortable: true },
         { text: 'Project Name', value: 'projectName', align: 'left', sortable: true },
-        { text: 'Phase', value: 'rfxPhaseName', align: 'left', sortable: true },
+        // { text: 'Phase', value: 'rfxPhaseName', align: 'left', sortable: true },
         { text: 'Client', value: 'client.ministry.ministryName', sortable: true },
         { text: 'Project Lead', value: 'projectLeadId', sortable: false },
         { text: 'Project Backup', value: 'projectBackup', sortable: false },
