@@ -2,61 +2,56 @@
   <v-layout row justify-center>
     <snackbar ref="snackbar"></snackbar>
 
-      <v-form ref="form" v-model="valid" lazy-validation   id="timesheet-entry" class="timesheet-entry"
-     >
-        <spinner ref="spinner"></spinner>
+    <v-form ref="form" v-model="valid" lazy-validation id="timesheet-entry" class="timesheet-entry">
+      <spinner ref="spinner"></spinner>
 
-        <v-container grid-list-xl>
-          <v-layout row wrap>
-            <v-flex md1>
-             Day
-            </v-flex>
-            <v-flex md2>
-             Hours
-            </v-flex>
+      <v-container grid-list-xl>
+        <v-layout row wrap>
+          <v-flex md1>Day</v-flex>
+          <v-flex md2>Hours</v-flex>
 
-            <v-flex md8>
-            Description
-            </v-flex>
-            <v-flex md1>
+          <v-flex md8>Description</v-flex>
+          <v-flex md1></v-flex>
+        </v-layout>
 
-            </v-flex>
-          </v-layout>
+        <v-layout v-for="(item, index) in weekData" :key="item.day" class="time-records">
+          <v-flex md1>{{item.day}}</v-flex>
+          <v-flex md2>
+            <v-text-field v-model="item.hours"></v-text-field>
+          </v-flex>
 
-           <v-layout v-for="item in weekData" :key="item.day" class="time-records">
-            <v-flex md1>
-             {{item.day}}
-            </v-flex>
-            <v-flex md2>
-               <v-text-field v-model="item.hours"></v-text-field>
-            </v-flex>
-
-            <v-flex md8>
-              <v-text-field v-model="item.description"></v-text-field>
-            </v-flex>
-            <v-flex md1>
-               <i class="material-icons">file_copy</i>
-               <i class="material-icons">post_add</i>
-            </v-flex>
-          </v-layout>
-
-
-        </v-container>
-      </v-form>
-
+          <v-flex md8>
+            <v-text-field v-model="item.description"></v-text-field>
+          </v-flex>
+          <v-flex md2>
+            <v-btn icon>
+              <i
+                class="material-icons mouseover"
+                @click="copyfunc(item.hours,item.description)"
+              >file_copy</i>
+            </v-btn>
+            <v-btn icon>
+              <i class="material-icons mouseover" @click="pastefunc(index)">post_add</i>
+            </v-btn>
+            <!-- <i class="material-icons mouseover" @click="yoursFunc()">file_copy</i> -->
+            <!-- <i class="material-icons mouseover" @click="yoursFunc()">post_add</i> -->
+          </v-flex>
+        </v-layout>
+      </v-container>
+    </v-form>
   </v-layout>
 </template>
 <script>
-import TimesheetEntryDto from '@/domain/models/TimesheetEntry.dto';
-import RFxDto from '@/domain/models/RFx.dto';
-import RFxPhaseDto from '@/domain/models/RFxPhase.dto';
-import ProjectDto from '@/domain/models/Project.dto';
+import TimesheetEntryDto from "@/domain/models/TimesheetEntry.dto";
+import RFxDto from "@/domain/models/RFx.dto";
+import RFxPhaseDto from "@/domain/models/RFxPhase.dto";
+import ProjectDto from "@/domain/models/Project.dto";
 
-import merge from 'object-merge';
-import './TimesheetEntry.styl';
-import moment from 'moment';
-import Snackbar from '../common/Snackbar.vue';
-import Spinner from '../common/Spinner.vue';
+import merge from "object-merge";
+import "./TimesheetEntry.styl";
+import moment from "moment";
+import Snackbar from "../common/Snackbar.vue";
+import Spinner from "../common/Spinner.vue";
 
 export default {
   computed: {
@@ -74,23 +69,24 @@ export default {
     },
     projects() {
       return this.$store.state.projects;
-    },
+    }
   },
   components: {
     Snackbar,
-    Spinner,
-
+    Spinner
   },
   data() {
     const form = Object.assign({}, this.$props.timeEntry);
+    // let itemHours ='';
+    // let itemDescription = '';
     if (!form.date) {
-      form.date = moment().format('YYYY-MM-DD');
+      form.date = moment().format("YYYY-MM-DD");
     }
     return {
       valid: true,
-      requiredRule: [v => !!v || 'This field required'],
+      requiredRule: [v => !!v || "This field required"],
       requireRadioButtondRule: [
-        v => ((v || !v) && v != null) || 'This field required',
+        v => ((v || !v) && v != null) || "This field required"
       ],
       dialog: false,
       menu1: false,
@@ -98,15 +94,18 @@ export default {
       dateFormatted: undefined,
       existingTimeEntries: [],
       addRecordLoading: false,
+      itemHours: "",
+      itemDescription: "",
       //  weekData: {MondayHours:''}
-      weekData: [{ day: 'Mon', description: '', hours: '', date: '01-03-2020' },
-        { day: 'Tue', description: '', hours: '', date: '2-3-2020' },
-        { day: 'Wed', description: '', hours: '', date: '2-3-2020' },
-        { day: 'Thu', description: '', hours: '', date: '2-3-2020' },
-        { day: 'Fri', description: '', hours: '', date: '2-3-2020' },
-        { day: 'Sat', description: '', hours: '', date: '2-3-2020' },
-        { day: 'Sun', description: '', hours: '', date: '2-3-2020' },
-      ],
+      weekData: [
+        { day: "Mon", description: "", hours: "", date: "01-03-2020" },
+        { day: "Tue", description: "", hours: "", date: "2-3-2020" },
+        { day: "Wed", description: "", hours: "", date: "2-3-2020" },
+        { day: "Thu", description: "", hours: "", date: "2-3-2020" },
+        { day: "Fri", description: "", hours: "", date: "2-3-2020" },
+        { day: "Sat", description: "", hours: "", date: "2-3-2020" },
+        { day: "Sun", description: "", hours: "", date: "2-3-2020" }
+      ]
     };
   },
   watch: {
@@ -114,26 +113,26 @@ export default {
       this.dateFormatted = this.formatDate(this.date);
     },
     project(val) {
-      this.$store.dispatch('fetchProjectRfx', { id: val });
-    },
+      this.$store.dispatch("fetchProjectRfx", { id: val });
+    }
   },
   props: {
     timeEntry: Object,
     AddExpense: {
       type: Function,
-      default: () => {},
+      default: () => {}
     },
     TimesheetEntry: {
       type: Function,
-      default: () => {},
-    },
+      default: () => {}
+    }
   },
   created() {
-    this.form.date = moment().format('YYYY-MM-DD');
+    this.form.date = moment().format("YYYY-MM-DD");
 
-    const referenceId = JSON.parse(localStorage.getItem('keycloak_user')).sub;
+    const referenceId = JSON.parse(localStorage.getItem("keycloak_user")).sub;
     const user = this.$store.state.users.find(
-      value => value.referenceId === referenceId,
+      value => value.referenceId === referenceId
     );
     if (user && user.id) {
       this.form.userId = user.id;
@@ -145,7 +144,15 @@ export default {
     // }, 400);
   },
   methods: {
-
+    copyfunc(hours, description) {
+      this.itemHours = hours;
+      this.itemDescription = description;
+    },
+    pastefunc(index) {
+      console.log('index:', index );
+      this.weekData[index].hours = this.itemHours;
+      this.weekData[index].description = this.itemDescription;
+    },
     reset() {
       // this.$refs.form.resetValidation();
       const data = this.initData();
@@ -170,8 +177,8 @@ export default {
       }
     },
     handleMultipleErrors(errorList) {
-      this.$refs.snackbar.displayMultipleErrorSnackbar('error', errorList);
-    },
-  },
+      this.$refs.snackbar.displayMultipleErrorSnackbar("error", errorList);
+    }
+  }
 };
 </script>
