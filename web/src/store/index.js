@@ -233,7 +233,8 @@ const store = new Vuex.Store({
       // throw new Error('Not implemented!');
     },
     deleteIntakeRequest() {
-      throw new Error('Not implemented!');
+      // throw new Error('Not implemented!');
+
     },
     approveIntakeRequest() {
       throw new Error('Not implemented!');
@@ -248,6 +249,8 @@ const store = new Vuex.Store({
     },
     // Projects
     fetchProjects(state, data) {
+      state.projects = []; //reset state, helps when archiving/deleting.
+      console.log('fetchProjects called', {state: state.projects, data})
       if (data instanceof Array) {
         data.forEach((project) => {
           project.projectLeadUserId = project.leadUserId;
@@ -255,6 +258,7 @@ const store = new Vuex.Store({
           project.projectBackupUserId = project.backupUserId;
 
           const exists = state.projects.filter(item => item.id === project.id) || [];
+          console.log('fetchProjects, exists?', exists.length > 0)
 
           if (exists.length > 0) {
             const itemIdx = state.projects.indexOf(exists[0]);
@@ -770,9 +774,13 @@ const store = new Vuex.Store({
           ctx.commit('fetchArchivedProjects', content);
         });
     },
-    archiveProject(ctx, id, is_archived){
-      $http
-        .patch(`${API_URI}/project/${id}/archive`, {is_archived: true})
+    archiveProject(ctx, {id, is_archived}){
+      if ( !(is_archived === true || is_archived === false)){
+        throw new Error(`is_archived must be boolean, instead you provided: ${typeof is_archived}`)
+      }
+
+      return $http
+        .patch(`${API_URI}/project/${id}/archive`, {is_archived})
         .then((res) => {
           const content = res.data;
           ctx.commit('archiveProject', content);

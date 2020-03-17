@@ -94,7 +94,6 @@ export const retrieveProjects = async () => {
     .createQueryBuilder('p')
     .innerJoin('p.client', 'c')
     .leftJoin('c.ministry', 'm')
-    // .innerJoinAndSelect('p.mou', 'o')
     .leftJoinAndSelect('p.mou', 'o')
     .innerJoin('p.projectSector', 'ps')
     .orderBy('p.dateModified', 'DESC')
@@ -108,7 +107,6 @@ export const retrieveProjects = async () => {
       'm.ministryName',
       'p.leadUserId',
       'p.backupUserId',
-      // 'p."mou"',
       'o.name',
       'p.isReprocurement',
       'c.isNonMinistry',
@@ -129,6 +127,7 @@ export const retrieveArchivedProjects = async () => {
     .createQueryBuilder('p')
     .innerJoin('p.client', 'c')
     .innerJoin('c.ministry', 'm')
+    .leftJoinAndSelect('p.mou', 'o')
     .innerJoin('p.projectSector', 'ps')
     .orderBy('p.dateModified', 'DESC')
     .select([
@@ -148,7 +147,8 @@ export const retrieveArchivedProjects = async () => {
       'p.previousContractBackground',
       'p.projectFailImpact',
       'p.projectSuccess',
-      'p.otherProjectSectorName'
+      'p.otherProjectSectorName',
+      'o.name'
     ])
     .where('p.is_archived = :is_archived', {is_archived : true})
     .getMany();

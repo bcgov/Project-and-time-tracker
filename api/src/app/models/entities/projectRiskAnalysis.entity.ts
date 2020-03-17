@@ -14,7 +14,7 @@ export class ProjectRiskAnalysis {
   @ManyToOne(type => RiskAnswers)
   answer: RiskAnswers;
 
-  @ManyToOne(type => ProjectIntake)
+  @ManyToOne(type => ProjectIntake, {onDelete: 'CASCADE'})
   intake: ProjectIntake;
 
   @Column({ type: 'int', nullable: false })

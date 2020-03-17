@@ -5,7 +5,8 @@ import {
   createIntake,
   retrieveIntakes,
   retrieveIntakeById,
-  updateIntake
+  updateIntake,
+  deleteIntake
 } from '../../../services/client/intake.service';
 import { IProjectIntake } from '../../../models/interfaces/i-project-intake';
 import { IProjectIntakeContact } from '../../../models/interfaces/i-project-intake-contact';
@@ -50,6 +51,15 @@ export const updateIntakeByIdAction = async (ctx: Koa.Context) => {
   try {
     const body = ctx.request.body;
     ctx.body = await updateIntake(ctx.params.id, body);
+  } catch (err) {
+    ctx.throw(err.message);
+  }
+};
+
+export const deleteIntakeByIdAction = async (ctx: Koa.Context) => {
+  try { 
+    await deleteIntake(ctx.params.id);
+    ctx.body = 'success';
   } catch (err) {
     ctx.throw(err.message);
   }
@@ -306,6 +316,7 @@ const router: Router = new Router(routerOpts);
 router.get('/', authorize, getIntakesAction);
 router.get('/:id', authorize, getIntakeByIdAction);
 router.patch('/:id', authorize, updateIntakeByIdAction);
+router.delete('/:id', authorize, deleteIntakeByIdAction);
 router.post('/', authorize, createIntakeAction);
 router.post('/:id/approve', authorize, updateApproveStatus);
 

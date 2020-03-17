@@ -50,7 +50,7 @@ export default {
         }
       } else if (type === 'danger') {
         this.title = 'Delete';
-        this.message = 'Are you sure you want to delete this record?';
+        this.message = message || 'Are you sure you want to delete this record?';
         this.color = 'red';
         this.icon = 'delete';
       } else if (type === 'warning') {
