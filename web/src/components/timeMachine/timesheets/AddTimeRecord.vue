@@ -24,55 +24,75 @@
               </v-flex>
             </v-layout>
             <v-divider class="header-divider"></v-divider>
-            <v-tabs v-model="activeTab">
-              <v-tab href="#batch" :key=0>
-                Batch Entry
-              </v-tab>
-              <v-tab href="# weekly" :key=1>
+            <v-tabs>
+              <v-tab href="# weekly">
                 weekly Entry
               </v-tab>
-              <v-tab-item value="batch"> </v-tab-item>
+              <v-tab href="#batch">
+                Batch Entry
+              </v-tab>
+
               <v-tab-item value=" weekly">
                 <v-flex class="d-flex" cols="12" sm="4">
                   <v-flex xs12>
-                    <v-select label="MOU" v-model="form.project"></v-select>
+                    <v-select
+                      v-model="form.mou"
+                      :items="mouList"
+                      item-text="name"
+                      item-value="id"
+                      label="MOU"
+                    ></v-select>
                   </v-flex>
 
                   <v-flex xs12>
-                    <v-select label="Project Name" v-model="form.projectRfx"></v-select>
+                    <v-select
+                      v-model="form.project"
+                      :items="projectList"
+                      item-text="projectName"
+                      item-value="id"
+                      label="Project Name"
+                      @change="onChangeProject(form.project)"
+                    ></v-select>
                   </v-flex>
 
                   <v-flex xs12>
-                    <v-select label="RFx Document"></v-select>
+                    <v-select
+                      v-model="form.Rfx"
+                      :items="projectRfx"
+                      item-text="rfxName"
+                      item-value="id"
+                      label="Project Rfx"
+                    ></v-select>
                   </v-flex>
                 </v-flex>
                 <v-flex>
                   <v-flex class="d-flex" cols="12" sm="6">
-                    <v-flex  md6>
+                    <v-flex md6>
                       <timesheets-calendar></timesheets-calendar>
                     </v-flex>
                     <v-flex md6>
                       <v-radio-group row v-model="recordType">
                         <v-radio label="Hours" :value="1"></v-radio>
-                        <v-radio label="Expenses" :value="2" ></v-radio>
+                        <v-radio label="Expenses" :value="2"></v-radio>
                         <v-radio label="Unbillable Hours" :value="3"></v-radio>
                       </v-radio-group>
                     </v-flex>
                   </v-flex>
                   <v-flex v-if="recordType === 1">
-                        <timesheet-entry ref="TimesheetEntry"></timesheet-entry
-                      ></v-flex>
-                      <v-flex  v-if="recordType === 2">
-                        <add-expense ref="AddExpense"></add-expense>
-                      </v-flex>
-                      <v-flex v-if="recordType === 3">
-                        <timesheet-entry ref="TimesheetEntry"></timesheet-entry
-                      ></v-flex>
+                    <timesheet-entry ref="TimesheetEntry"></timesheet-entry
+                  ></v-flex>
+                  <v-flex v-if="recordType === 2">
+                    <add-expense ref="AddExpense"></add-expense>
+                  </v-flex>
+                  <v-flex v-if="recordType === 3">
+                    <timesheet-entry ref="TimesheetEntry"></timesheet-entry
+                  ></v-flex>
                 </v-flex>
               </v-tab-item>
+              <v-tab-item value="batch"> </v-tab-item>
             </v-tabs>
           </v-card-text>
-              <v-divider class="header-divider"></v-divider>
+          <v-divider class="header-divider"></v-divider>
           <v-card-actions>
             <label class="btn-discard">
               DISCARD TIMESHEET
@@ -102,7 +122,28 @@ import AddExpense from './AddExpense.vue';
 import TimesheetEntry from './TimesheetEntry.vue';
 
 export default {
-  computed: {},
+  computed: {
+    mouList() {
+      return this.$store.state.mouList;
+    },
+    projectList() {
+      if (typeof this.form.mou !== 'undefined') {
+        const mouProjects = this.$store.state.projects.filter(item => item.mou);
+        if (mouProjects.length === 0) {
+          return [];
+        }
+        const Projects = mouProjects.filter(item => (item.mou.id === this.form.mou));
+        if (Projects.length > 0) {
+          return Projects;
+        }
+      }
+      return [];
+    },
+    projectRfx() {
+      if (typeof this.form.project !== 'undefined') { return this.$store.state.activeProjectRfxData; }
+      return [];
+    },
+  },
   components: {
     Snackbar,
     Spinner,
@@ -118,8 +159,9 @@ export default {
     timeEntry: Object,
   },
   methods: {
-
-
+    onChangeProject(projectId) {
+      this.$store.dispatch('fetchProjectRFxData', { id: projectId });
+    },
     open() {
       this.dialog = true;
       setTimeout(() => {
@@ -148,7 +190,7 @@ export default {
       }
       const existingTimeEntries = [];
       return {
-        activeTab: 1,
+        activeTab: 'weekly',
         recordType: 1,
         valid: true,
         requiredRule: [v => !!v || 'This field required'],

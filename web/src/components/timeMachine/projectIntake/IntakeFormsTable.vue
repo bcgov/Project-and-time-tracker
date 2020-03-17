@@ -18,18 +18,26 @@
           disable-initial-sort
         >
           <template slot="items" slot-scope="props">
-            <td class='pl-3'>
-              <v-btn v-if='!props.item.mouName'  color="btnPrimary"
+            <td class="pl-3">
+              <v-btn
+                v-if="!props.item.mouName"
+                color="btnPrimary"
                 class="white--text intake-table-approve-btn ma-0"
-                @click.native='showMOUModal(props.item)'>
-                  ASSIGN MOU
-               </v-btn>
-               <span v-else @click='showMOUModal(props.item)'>{{ props.item.mouName }}</span>
+                @click.native="showMOUModal(props.item)"
+              >
+                ASSIGN MOU
+              </v-btn>
+              <span v-else @click="showMOUModal(props.item)">{{ props.item.mouName }}</span>
             </td>
             <td>{{ props.item.projectName }}</td>
-            <td
-              class="text-xs-left"
-            >{{ [props.item.ministryName|| props.item.nonMinistryName, props.item.orgDivision].join(" ") }}</td>
+            <td class="text-xs-left">
+              {{
+                [
+                  props.item.ministryName || props.item.nonMinistryName,
+                  props.item.orgDivision
+                ].join(" ")
+              }}
+            </td>
             <td class="text-xs-left table-dropdown">
               <!-- TODO: is below v-if necessary on v-select?
 
@@ -68,14 +76,17 @@
             </td>
             <td class="text-xs-left">{{ props.item.estimatedCompletionDate }}</td>
             <td class="text-xs-center">
-              <div v-if="(props.item.status === 'approved')" class="approved-label caption">Approved</div>
+              <div v-if="props.item.status === 'approved'" class="approved-label caption">
+                Approved
+              </div>
               <v-btn
                 small
-                v-if="(props.item.status === 'submitted')"
+                v-if="props.item.status === 'submitted'"
                 color="btnPrimary"
                 class="white--text intake-table-approve-btn ma-0"
                 @click="approveRequest(props.item.id)"
-              >APPROVE</v-btn>
+                >APPROVE</v-btn
+              >
             </td>
             <td class="text-xs-center">
               <v-btn flat icon color="grey" @click="viewRequest(props.item.id)">
@@ -90,12 +101,9 @@
         <v-dialog v-if="dialog" v-model="dialog" width="800" margin-top="91px">
           <v-card>
             <v-card-text>
-              <v-icon
-                class="v-model-close-icon"
-                color="blue darken-1"
-                flat
-                @click="dialog = false"
-              >close</v-icon>
+              <v-icon class="v-model-close-icon" color="blue darken-1" flat @click="dialog = false"
+                >close</v-icon
+              >
               <intake-form-view :id="id"></intake-form-view>
             </v-card-text>
           </v-card>
@@ -104,7 +112,7 @@
       <v-divider></v-divider>
     </v-card-text>
 
-  <v-dialog v-model="mouDialog" persistent max-width="600px">
+    <v-dialog v-model="mouDialog" persistent max-width="600px">
       <v-card>
         <v-card-title>
           <span class="headline">Assign or Create</span>
@@ -118,41 +126,38 @@
                 <v-select
                   v-model="mou"
                   :items="mouList"
-                  item-text='name'
-                  item-value='name'
+                  item-text="name"
+                  item-value="id"
                   label="Assign MOU"
                   ref="mouCombobox"
                   v-if="!isNewMOU"
                 ></v-select>
                 <v-text-field
                   v-model="mou"
-                  item-text='name'
+                  item-text="name"
                   label="New MOU"
                   ref="mouCombobox"
                   v-else
                 ></v-text-field>
 
-                <v-checkbox v-model='isNewMOU'
-                            :label="`${isNewMOU ? 'Create' : 'Assign'} MOU`"
-                 ></v-checkbox>
+                <v-checkbox
+                  v-model="isNewMOU"
+                  :label="`${isNewMOU ? 'Create' : 'Assign'} MOU`"
+                ></v-checkbox>
               </v-flex>
-               <v-flex xs12>
-              </v-flex>
+              <v-flex xs12> </v-flex>
             </v-layout>
           </v-container>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="blue darken-1" flat @click="mouDialog = false">Close</v-btn>
-          <v-btn color="blue darken-1" flat
-           @click="assignMOU()">Save</v-btn>
+          <v-btn color="blue darken-1" flat @click="assignMOU()">Save</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
-
-
   </v-card>
- </template>
+</template>
 
 <script>
 import Vue from 'vue';
@@ -207,9 +212,9 @@ export default {
       // potentially issue is 'contact' is null. How to get it non-null?
       return this.$store.state.users;
     },
-    mouList(){
+    mouList() {
       return this.$store.state.mouList;
-    }
+    },
   },
   methods: {
     fetchData() {
@@ -221,12 +226,7 @@ export default {
       this.dialog = true;
     },
     async approveRequest(id) {
-      if (
-        await this.$refs.confirm.open(
-          'info',
-          'Are you sure to approve this request?',
-        )
-      ) {
+      if (await this.$refs.confirm.open('info', 'Are you sure to approve this request?')) {
         this.$store.dispatch('approveIntakeRequest', { id }).then(() => {
           this.$store.dispatch('fetchIntakeRequests');
           this.$refs.snackbar.displaySnackbar('success', 'Request Approved.');
@@ -239,7 +239,9 @@ export default {
     async assignLead(projectLead, project) {
       const projectId = project && project.projectId ? project.projectId : '';
       const projectName = project && project.projectName ? project.projectName : '';
-      const leadName = projectLead && projectLead.contact && projectLead.contact.fullName ? projectLead.contact.fullName : '';
+      const leadName = projectLead && projectLead.contact && projectLead.contact.fullName
+        ? projectLead.contact.fullName
+        : '';
       const leadId = projectLead && projectLead.id ? projectLead.id : '';
       if (projectId && leadId) {
         if (
@@ -254,10 +256,7 @@ export default {
               userId: leadId,
             })
             .then(() => {
-              this.$refs.snackbar.displaySnackbar(
-                'success',
-                'Project lead succesfully assigned.',
-              );
+              this.$refs.snackbar.displaySnackbar('success', 'Project lead succesfully assigned.');
             })
             .catch((err) => {
               if (
@@ -272,20 +271,14 @@ export default {
                 project.projectLeadId = this.selectedLeadUser;
               } else {
                 project.projectLeadId = this.selectedLeadUser;
-                this.$refs.snackbar.displaySnackbar(
-                  'error',
-                  'Unable to assign Project Lead',
-                );
+                this.$refs.snackbar.displaySnackbar('error', 'Unable to assign Project Lead');
               }
             });
         } else {
           project.projectLeadId = this.selectedLeadUser;
         }
       } else {
-        this.$refs.snackbar.displaySnackbar(
-          'error',
-          'Unable to assign Project Lead',
-        );
+        this.$refs.snackbar.displaySnackbar('error', 'Unable to assign Project Lead');
       }
     },
     getProjectBackup(projectBackupId) {
@@ -329,20 +322,14 @@ export default {
                 project.projectBackupId = this.selectedProjectBackup;
               } else {
                 project.projectBackupId = this.selectedProjectBackup;
-                this.$refs.snackbar.displaySnackbar(
-                  'error',
-                  'Unable to assign Project Backup',
-                );
+                this.$refs.snackbar.displaySnackbar('error', 'Unable to assign Project Backup');
               }
             });
         } else {
           project.projectBackupId = this.selectedProjectBackup;
         }
       } else {
-        this.$refs.snackbar.displaySnackbar(
-          'error',
-          'Unable to assign Project Backup',
-        );
+        this.$refs.snackbar.displaySnackbar('error', 'Unable to assign Project Backup');
       }
     },
     async deleteRequest(id) {
@@ -356,46 +343,57 @@ export default {
       this.mouProjectName = item.projectName;
       this.mouProjectId = item.id;
       this.mouProject = item;
-
-      if (item.mouName){
+      if (item.mouName) {
         console.log('has mou!', item);
-        this.mou = {id: item.mouId, name: item.mouName};
+        this.mou = { id: item.mouId, name: item.mouName };
       }
 
       this.mouDialog = true;
     },
-    async assignMOU(){
+    async assignMOU() {
       // We have to use blur/nextTick in order to force the combobox to update it's value
       // This only happens if user goes from focusing on combobox to directly clicking 'Save'
       this.$refs.mouCombobox.blur();
+      const vm = this;
       this.$nextTick(async () => {
-
-        if (!this.mou || this.mou === '') return;
-        console.log('assignMOU', {project: this.mouProject, mou: this.mou})
-        let mouID = this.mou.id;
-
+        if (!vm.mou || vm.mou === '') return;
+        console.log('assignMOU', { project: vm.mouProject, mou: vm.mou });
         // Create MOU if does not exist.
-        if (!mouID && this.mou){
-          console.log('creating mou', {mouID, mou: this.mou})
-          mouID = await this.$store.dispatch('createMOU', {name: this.mou});
-        }
+        let mouID;
+        let mou = '';
 
-        const project = this.mouProject;
-        project.mou = {id: mouID, name: this.mou}
-        const projResponse = await this.$store.dispatch('updateIntakeRequest', project);
+        if (vm.isNewMOU) {
+          console.log('creating mou', { mouID, mou: vm.mou });
+          mouID = await vm.$store.dispatch('createMOU', { name: vm.mou });
+          mou = vm.mou;
+        } else {
+          const selectedMou = vm.$store.state.mouList.filter(item => item.id === vm.mou);
+          if (selectedMou[0]) {
+            mouID = selectedMou[0].id;
+            mou = selectedMou[0].name;
+          } else {
+            return;
+          }
+        }
+        const project = vm.mouProject;
+        project.mou = { id: mouID, name: mou };
+        project.mouId = mouID;
+        project.mouName = mou;
+        project.mouAmount = mou;
+        const projResponse = await vm.$store.dispatch('updateIntakeRequest', project);
         // console.log('assignMOU projResponse', {projResponse});
 
-        this.fetchData();
-        this.mouDialog = false;
+        vm.fetchData();
+        vm.mouDialog = false;
         // Clear modal for next time
-        this.mou = undefined;
-      })
+        vm.mou = undefined;
+      });
     },
-    toggleNewMou(event){
+    toggleNewMou(event) {
       console.log('toggle called');
       // this.isNewMOU = !this.isNewMOU;
       this.mou = undefined;
-    }
+    },
   },
   created() {
     this.fetchData();
