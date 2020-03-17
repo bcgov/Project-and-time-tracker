@@ -18,7 +18,7 @@
           <v-text-field
             label="Client No. (3 characters)"
             :rules="[rules.clientNoRules]"
-            
+            maxlength = 3
             v-model="financeInfo.clientNo"
           ></v-text-field>
         </div>
@@ -28,7 +28,7 @@
           <v-text-field
             label="Responsibility Center (5 characters)"
             :rules="[rules.responsibilityCenterRules]"
-            
+            maxlength = 5
             v-model="financeInfo.responsibilityCenter"
           ></v-text-field>
         </div>
@@ -38,7 +38,7 @@
           <v-text-field
             label="Service Center (5 characters)"
             :rules="[rules.serviceCenterRules]"
-    
+            maxlength = 5
             v-model="financeInfo.serviceCenter"
           ></v-text-field>
         </div>
@@ -48,7 +48,7 @@
           <v-text-field
             label="STOB (4 characters)"
             :rules="[rules.stobRules]"
-        
+            maxlength = 4
             v-model="financeInfo.stob"
           ></v-text-field>
         </div>
@@ -58,7 +58,7 @@
           <v-text-field
             label="Project Code (7 characters)"
             :rules="[rules.projectCodeRules]"
- 
+            maxlength = 7
             v-model="financeInfo.projectCode"
           ></v-text-field>
         </div>
