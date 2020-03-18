@@ -39,7 +39,7 @@
               <v-tab href="#batch">
                 Batch Entry
               </v-tab>
-<v-btn class="btn-normal" @click="getallDataByDate($store.state.timesheetsWeek.startDate)">fetch data</v-btn>
+<v-btn class="btn-normal" @click="getTimeEntries()">fetch data</v-btn>
               <v-tab-item value=" weekly">
                 <v-flex class="d-flex" cols="12" sm="4">
                   <v-flex xs12>
@@ -132,6 +132,9 @@ export default {
     userList() {
       return this.$store.state.users;
     },
+    timesheetEntryData() {
+      return this.$store.state.timesheetEntryData;
+    },
     projectList() {
       if (typeof this.form.mou !== 'undefined') {
         const mouProjects = this.$store.state.projects.filter(item => item.mou);
@@ -167,16 +170,45 @@ export default {
     timeEntry: Object,
   },
   methods: {
-    getallDataByDate(date) {
-       const formData = {
+    async getTimeEntries() {
+      const formData = {
         mou: this.form.mou,
         project: this.form.project,
         projectRfx: this.form.Rfx,
-        startDate:date,
-        userId:this.form.userId
+        startDate: this.$store.state.timesheetsWeek.startDate,
+        userId: this.form.userId,
       };
-    const fullData =  this.$store.dispatch('fetchTimesheetEntryByDate', formData);
-    console.log(fullData);
+      const vm = this;
+      vm.$store.dispatch('fetchTimesheetEntries', formData)
+        .then(() => {
+          vm.initTimeEntries(vm.$store.state.timesheetEntryData);
+        });
+    },
+    initTimeEntries(timesheetEntryData) {
+      debugger;
+      const billableDetails = [];
+      const nonBillableDetails = [];
+      if (timesheetEntryData && timesheetEntryData.timesheetEntries) {
+        for (let index = 0; index < timesheetEntryData.timesheetEntries.length; index++) {
+          const entry = timesheetEntryData.timesheetEntries[index];
+          const billable = {
+            entryDate: entry.entryDate,
+            hours: entry.hoursBillable,
+            description: entry.commentsBillable,
+          };
+          billableDetails.push(billable);
+
+          const nonBillable = {
+            entryDate: entry.entryDate,
+            hours: entry.hoursUnBillable,
+            description: entry.commentsUnBillable,
+          };
+          nonBillableDetails.push(nonBillable);
+        }
+      }
+
+    // this.$refs.Billable.(billableDetails)
+    // this.$refs.NonBillable.(nonBillableDetails)
     },
     onChangeProject(projectId) {
       this.$store.dispatch('fetchProjectRFxData', { id: projectId });
@@ -201,7 +233,6 @@ export default {
       const nonBillableDetails = this.$refs.NonBillable.nonBillableclick();
 
       const timeEntries = [];
-      debugger;
       const startDate = new Date(this.$store.state.timesheetsWeek.startDate);
       for (let index = 0; index < 7; index++) {
         const entryDate = new Date();
