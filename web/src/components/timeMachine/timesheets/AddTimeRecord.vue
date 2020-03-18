@@ -178,7 +178,7 @@ export default {
       this.getTimeEntries();
     },
     async getTimeEntries() {
-      let weekData: [
+      const weekData = [
         { day: 'Mon', description: '', hours: '', date: '' },
         { day: 'Tue', description: '', hours: '', date: '' },
         { day: 'Wed', description: '', hours: '', date: '' },
