@@ -31,14 +31,24 @@
             <v-text-field v-model="item.description"></v-text-field>
           </v-flex>
           <v-flex md2>
-            <v-btn icon>
-              <i class="material-icons mouseover" @click="copyfunc(item.hours, item.description)"
-                >file_copy</i
-              >
-            </v-btn>
-            <v-btn icon>
-              <i class="material-icons mouseover" @click="pastefunc(index)">post_add</i>
-            </v-btn>
+            <v-tooltip top>
+              <template v-slot:activator="{ on }">
+                <v-btn flat icon @click="copyfunc(item.hours, item.description)" v-on="on">
+                  <v-icon>file_copy</v-icon>
+                </v-btn>
+              </template>
+              <span>Copy</span>
+            </v-tooltip>
+
+            <v-tooltip top>
+              <template v-slot:activator="{ on }">
+                <v-btn flat icon @click="pastefunc(index)" v-on="on">
+                  <v-icon>post_add</v-icon>
+                </v-btn>
+              </template>
+              <span>Paste</span>
+            </v-tooltip>
+
             <!-- <i class="material-icons mouseover" @click="yoursFunc()">file_copy</i> -->
             <!-- <i class="material-icons mouseover" @click="yoursFunc()">post_add</i> -->
           </v-flex>
@@ -48,16 +58,16 @@
   </v-layout>
 </template>
 <script>
-import TimesheetEntryDto from '@/domain/models/TimesheetEntry.dto';
-import RFxDto from '@/domain/models/RFx.dto';
-import RFxPhaseDto from '@/domain/models/RFxPhase.dto';
-import ProjectDto from '@/domain/models/Project.dto';
+import TimesheetEntryDto from "@/domain/models/TimesheetEntry.dto";
+import RFxDto from "@/domain/models/RFx.dto";
+import RFxPhaseDto from "@/domain/models/RFxPhase.dto";
+import ProjectDto from "@/domain/models/Project.dto";
 
-import merge from 'object-merge';
-import './TimesheetEntry.styl';
-import moment from 'moment';
-import Snackbar from '../common/Snackbar.vue';
-import Spinner from '../common/Spinner.vue';
+import merge from "object-merge";
+import "./TimesheetEntry.styl";
+import moment from "moment";
+import Snackbar from "../common/Snackbar.vue";
+import Spinner from "../common/Spinner.vue";
 
 export default {
   computed: {
@@ -75,43 +85,45 @@ export default {
     },
     projects() {
       return this.$store.state.projects;
-    },
+    }
   },
   components: {
     Snackbar,
-    Spinner,
+    Spinner
   },
   data() {
     const form = Object.assign({}, this.$props.timeEntry);
     // let itemHours ='';
     // let itemDescription = '';
     if (!form.date) {
-      form.date = moment().format('YYYY-MM-DD');
+      form.date = moment().format("YYYY-MM-DD");
     }
     return {
       valid: true,
-      requiredRule: [v => !!v || 'This field required'],
-      requireRadioButtondRule: [v => ((v || !v) && v != null) || 'This field required'],
+      requiredRule: [v => !!v || "This field required"],
+      requireRadioButtondRule: [
+        v => ((v || !v) && v != null) || "This field required"
+      ],
       dialog: false,
       menu1: false,
       form: { ...form },
       dateFormatted: undefined,
       existingTimeEntries: [],
       addRecordLoading: false,
-      itemHours: '',
-      itemDescription: '',
+      itemHours: "",
+      itemDescription: "",
       weekDates: [],
-      startDate: sessionStorage.getItem('selectedStartDate'),
+      startDate: sessionStorage.getItem("selectedStartDate"),
       //  weekData: {MondayHours:''}
       weekData: [
-        { day: 'Mon', description: '', hours: 0, date: '' },
-        { day: 'Tue', description: '', hours: 0, date: '' },
-        { day: 'Wed', description: '', hours: 0, date: '' },
-        { day: 'Thu', description: '', hours: 0, date: '' },
-        { day: 'Fri', description: '', hours: 0, date: '' },
-        { day: 'Sat', description: '', hours: 0, date: '' },
-        { day: 'Sun', description: '', hours: 0, date: '' },
-      ],
+        { day: "Mon", description: "", hours: 0, date: "" },
+        { day: "Tue", description: "", hours: 0, date: "" },
+        { day: "Wed", description: "", hours: 0, date: "" },
+        { day: "Thu", description: "", hours: 0, date: "" },
+        { day: "Fri", description: "", hours: 0, date: "" },
+        { day: "Sat", description: "", hours: 0, date: "" },
+        { day: "Sun", description: "", hours: 0, date: "" }
+      ]
     };
   },
   watch: {
@@ -119,8 +131,8 @@ export default {
       this.dateFormatted = this.formatDate(this.date);
     },
     project(val) {
-      this.$store.dispatch('fetchProjectRfx', { id: val });
-    },
+      this.$store.dispatch("fetchProjectRfx", { id: val });
+    }
   },
   props: {
     timeEntry: Object,
@@ -128,18 +140,20 @@ export default {
     nonBillableDetails: Object,
     AddExpense: {
       type: Function,
-      default: () => {},
+      default: () => {}
     },
     TimesheetEntry: {
       type: Function,
-      default: () => {},
-    },
+      default: () => {}
+    }
   },
   created() {
-    this.form.date = moment().format('YYYY-MM-DD');
+    this.form.date = moment().format("YYYY-MM-DD");
 
-    const referenceId = JSON.parse(localStorage.getItem('keycloak_user')).sub;
-    const user = this.$store.state.users.find(value => value.referenceId === referenceId);
+    const referenceId = JSON.parse(localStorage.getItem("keycloak_user")).sub;
+    const user = this.$store.state.users.find(
+      value => value.referenceId === referenceId
+    );
     if (user && user.id) {
       this.form.userId = user.id;
     }
@@ -155,7 +169,9 @@ export default {
       const dates = [];
       for (let I = 0; I < Math.abs(-7); I++) {
         const d = new Date(
-          new Date(date - (-7 >= 0 ? I : I - I - I) * 24 * 60 * 60 * 1000).toLocaleString(),
+          new Date(
+            date - (-7 >= 0 ? I : I - I - I) * 24 * 60 * 60 * 1000
+          ).toLocaleString()
         );
         let month = `${d.getMonth() + 1}`;
         let day = `${d.getDate()}`;
@@ -163,7 +179,7 @@ export default {
 
         if (month.length < 2) month = `0${month}`;
         if (day.length < 2) day = `0${day}`;
-        dates.push([year, month, day].join('-'));
+        dates.push([year, month, day].join("-"));
       }
       this.weekDates = dates;
       return dates;
@@ -199,7 +215,7 @@ export default {
       this.itemDescription = description;
     },
     pastefunc(index) {
-      console.log('index:', index);
+      console.log("index:", index);
       this.weekData[index].hours = this.itemHours;
       this.weekData[index].description = this.itemDescription;
     },
@@ -227,8 +243,8 @@ export default {
       }
     },
     handleMultipleErrors(errorList) {
-      this.$refs.snackbar.displayMultipleErrorSnackbar('error', errorList);
-    },
-  },
+      this.$refs.snackbar.displayMultipleErrorSnackbar("error", errorList);
+    }
+  }
 };
 </script>
