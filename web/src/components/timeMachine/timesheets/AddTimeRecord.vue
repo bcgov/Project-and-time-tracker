@@ -108,7 +108,7 @@
             <v-flex class="add-btns">
               <v-btn class="btn-normal">EXPORT TIMESHEET</v-btn>
               <v-btn class="btn-normal">SAVE AND COPY</v-btn>
-              <v-btn class="add-new-row" color="primary" @click="submitForm()"
+              <v-btn class="add-new-row" color="primary" @click="saveAndClose()"
                 >SAVE AND CLOSE</v-btn
               >
             </v-flex>
@@ -177,17 +177,26 @@ export default {
       this.getTimeEntries(e._i);
     },
     async getTimeEntries(date) {
-      const weekData = [
-        { day: 'Mon', description: '', hours: '', date: '' },
-        { day: 'Tue', description: '', hours: '', date: '' },
-        { day: 'Wed', description: '', hours: '', date: '' },
-        { day: 'Thu', description: '', hours: '', date: '' },
-        { day: 'Fri', description: '', hours: '', date: '' },
-        { day: 'Sat', description: '', hours: '', date: '' },
-        { day: 'Sun', description: '', hours: '', date: '' },
+      const weekDataBillable = [
+        { day: 'Mon', description: '', hours: 0, date: '' },
+        { day: 'Tue', description: '', hours: 0, date: '' },
+        { day: 'Wed', description: '', hours: 0, date: '' },
+        { day: 'Thu', description: '', hours: 0, date: '' },
+        { day: 'Fri', description: '', hours: 0, date: '' },
+        { day: 'Sat', description: '', hours: 0, date: '' },
+        { day: 'Sun', description: '', hours: 0, date: '' },
       ];
-      this.$refs.Billable.weekData = weekData;
-      this.$refs.NonBillable.weekData = weekData;
+      const weekDataUnBillable = [
+        { day: 'Mon', description: '', hours: 0, date: '' },
+        { day: 'Tue', description: '', hours: 0, date: '' },
+        { day: 'Wed', description: '', hours: 0, date: '' },
+        { day: 'Thu', description: '', hours: 0, date: '' },
+        { day: 'Fri', description: '', hours: 0, date: '' },
+        { day: 'Sat', description: '', hours: 0, date: '' },
+        { day: 'Sun', description: '', hours: 0, date: '' },
+      ];
+      this.$refs.Billable.weekData = weekDataBillable;
+      this.$refs.NonBillable.weekData = weekDataUnBillable;
       const formData = {
         mou: this.form.mou,
         project: this.form.project,
@@ -253,7 +262,10 @@ export default {
 
       return `${yyyy}-${mm}-${dd}`;
     },
-
+    saveAndClose() {
+      this.submitForm();
+      this.closeDialog();
+    },
     submitForm() {
       if (this.$refs.AddimeRecords.validate()) {
         const billableDetails = this.$refs.Billable.onBillableclick();
