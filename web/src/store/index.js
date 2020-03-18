@@ -255,7 +255,6 @@ const store = new Vuex.Store({
     // Projects
     fetchProjects(state, data) {
       state.projects = []; //reset state, helps when archiving/deleting.
-      console.log('fetchProjects called', {state: state.projects, data})
       if (data instanceof Array) {
         data.forEach((project) => {
           project.projectLeadUserId = project.leadUserId;
@@ -263,7 +262,6 @@ const store = new Vuex.Store({
           project.projectBackupUserId = project.backupUserId;
 
           const exists = state.projects.filter(item => item.id === project.id) || [];
-          console.log('fetchProjects, exists?', exists.length > 0)
 
           if (exists.length > 0) {
             const itemIdx = state.projects.indexOf(exists[0]);

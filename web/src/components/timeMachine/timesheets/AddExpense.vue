@@ -103,7 +103,7 @@ export default {
       existingTimeEntries: [],
       addRecordLoading: false,
       //  weekData: {MondayHours:''}
-      weekData: [{ day: 'Mon', description: '', hours: '', category: '', date: '01-03-2020' },
+      weekData: this.singleRow ? [{ day: 'Day', description: '', hours: '', category: '', date: '01-03-2020' }] : [{ day: 'Mon', description: '', hours: '', category: '', date: '01-03-2020' },
         { day: 'Tue', description: '', hours: '', category: '', date: '2-3-2020' },
         { day: 'Wed', description: '', hours: '', category: '', date: '2-3-2020' },
         { day: 'Thu', description: '', hours: '', category: '', date: '2-3-2020' },
@@ -123,6 +123,7 @@ export default {
   },
   props: {
     expenseEntry: Object,
+    singleRow: Boolean,
     AddExpense: {
       type: Function,
       default: () => {},

@@ -137,9 +137,9 @@
                 </v-flex>
                 <v-flex>
                   <v-flex class="d-flex" cols="12" sm="6">
-                    <v-flex md6>
-                      <timesheets-calendar @next="checkWeekChange"></timesheets-calendar>
-                    </v-flex>
+                      <!-- <v-flex md6>
+                        <timesheets-calendar @next="checkWeekChange"></timesheets-calendar>
+                      </v-flex> -->
                     <v-flex md6>
                       <v-radio-group row v-model="recordType">
                         <v-radio label="Hours" :value="1"></v-radio>
@@ -149,34 +149,37 @@
                     </v-flex>
                   </v-flex>
 
+                  <v-flex v-show="recordType === 1">
+                    <timesheet-entry ref="Billable" single-row></timesheet-entry>
+                  </v-flex>
+                  <v-flex v-if="recordType === 2">
+                    <add-expense ref="AddExpense" single-row></add-expense>
+                  </v-flex>
+                  <v-flex v-show="recordType === 3">
+                    <timesheet-entry ref="NonBillable" single-row></timesheet-entry>
+                  </v-flex>
+
+                </v-flex>
+
                       <v-layout row>
-                        <v-flex xs6>
+                        <v-flex xs6 sm9>
                           <vc-date-picker
                             mode="range"
                             v-model="dateRange"
                             is-inline
+                            is-expanded
                           />
                         </v-flex>
-                        <v-flex xs6>
-                          <p>Start date: {{ dateRange.start | formatDate }}</p>
-                          <p>End date: {{ dateRange.end | formatDate }}</p>
-                          <p>Total days: {{ dateRangeDiffInDays }} </p>
+                        <v-flex xs6 sm3>
+                          <v-card>
+                            <v-card-text>
+                              <p>Start date: {{ dateRange.start | formatDate }}</p>
+                              <p>End date: {{ dateRange.end | formatDate }}</p>
+                              <p>Total days: {{ dateRangeDiffInDays }} </p>
+                            </v-card-text>
+                          </v-card>
                         </v-flex>
                       </v-layout>
-
-
-
-
-                  <!-- <v-flex v-show="recordType === 1">
-                    <timesheet-entry ref="Billable"></timesheet-entry>
-                  </v-flex>
-                  <v-flex v-if="recordType === 2">
-                    <add-expense ref="AddExpense"></add-expense>
-                  </v-flex>
-                  <v-flex v-show="recordType === 3">
-                    <timesheet-entry ref="NonBillable"></timesheet-entry>
-                  </v-flex> -->
-                </v-flex>
 
 
               </v-tab-item>
@@ -209,12 +212,7 @@ import TimesheetEntry from './TimesheetEntry.vue';
 
 import Calendar from 'v-calendar/lib/components/calendar.umd'
 import DatePicker from 'v-calendar/lib/components/date-picker.umd'
-// import { setupCalendar} from 'v-calendar'
 
-// // main.js
-// setupCalendar({
-//   componentPrefix: 'vc'
-// });
 
 export default {
   computed: {
@@ -229,7 +227,7 @@ export default {
     },
     dateRangeDiffInDays(){
       if (this.dateRange.start && this.dateRange.end){
-        return Math.abs(moment(this.dateRange.start).diff(this.dateRange.end, 'days'));
+        return Math.abs(moment(this.dateRange.start).diff(moment(this.dateRange.end), 'days'));
       }
     },
     projectList() {
@@ -264,8 +262,6 @@ export default {
     TimesheetsCalendar,
     AddExpense,
     TimesheetEntry,
-    // Calendar,
-    // DatePicker
   },
   data() {
     return this.initData();
