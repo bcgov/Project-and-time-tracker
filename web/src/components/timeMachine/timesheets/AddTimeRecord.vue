@@ -279,31 +279,34 @@ export default {
       this.submitForm();
     },
     saveAndClose() {
-      this.submitForm();
-      this.closeDialog();
-      const weekDataBillable = [
-        { day: 'Mon', description: '', hours: 0, date: '' },
-        { day: 'Tue', description: '', hours: 0, date: '' },
-        { day: 'Wed', description: '', hours: 0, date: '' },
-        { day: 'Thu', description: '', hours: 0, date: '' },
-        { day: 'Fri', description: '', hours: 0, date: '' },
-        { day: 'Sat', description: '', hours: 0, date: '' },
-        { day: 'Sun', description: '', hours: 0, date: '' },
-      ];
-      const weekDataUnBillable = [
-        { day: 'Mon', description: '', hours: 0, date: '' },
-        { day: 'Tue', description: '', hours: 0, date: '' },
-        { day: 'Wed', description: '', hours: 0, date: '' },
-        { day: 'Thu', description: '', hours: 0, date: '' },
-        { day: 'Fri', description: '', hours: 0, date: '' },
-        { day: 'Sat', description: '', hours: 0, date: '' },
-        { day: 'Sun', description: '', hours: 0, date: '' },
-      ];
-      this.$refs.Billable.weekData = weekDataBillable;
-      this.$refs.NonBillable.weekData = weekDataUnBillable;
+      if (this.$refs.AddimeRecords.validate()) {
+        this.submitForm();
+        this.closeDialog();
+        const weekDataBillable = [
+          { day: 'Mon', description: '', hours: 0, date: '' },
+          { day: 'Tue', description: '', hours: 0, date: '' },
+          { day: 'Wed', description: '', hours: 0, date: '' },
+          { day: 'Thu', description: '', hours: 0, date: '' },
+          { day: 'Fri', description: '', hours: 0, date: '' },
+          { day: 'Sat', description: '', hours: 0, date: '' },
+          { day: 'Sun', description: '', hours: 0, date: '' },
+        ];
+        const weekDataUnBillable = [
+          { day: 'Mon', description: '', hours: 0, date: '' },
+          { day: 'Tue', description: '', hours: 0, date: '' },
+          { day: 'Wed', description: '', hours: 0, date: '' },
+          { day: 'Thu', description: '', hours: 0, date: '' },
+          { day: 'Fri', description: '', hours: 0, date: '' },
+          { day: 'Sat', description: '', hours: 0, date: '' },
+          { day: 'Sun', description: '', hours: 0, date: '' },
+        ];
+        this.$refs.Billable.weekData = weekDataBillable;
+        this.$refs.NonBillable.weekData = weekDataUnBillable;
+      }
     },
     submitForm() {
       if (this.$refs.AddimeRecords.validate()) {
+        console.log('submitForm called, valid');
         const billableDetails = this.$refs.Billable.onBillableclick();
         const nonBillableDetails = this.$refs.NonBillable.nonBillableclick();
 
