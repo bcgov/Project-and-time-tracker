@@ -8,7 +8,8 @@ import {
   deleteTimesheet,
   updateTimesheet,
   retrieveForLightTimesheet,
-  retrieveForLightTimesheetPreview
+  retrieveForLightTimesheetPreview,
+  retrieveAllTimesheets
 } from '../../../services/client/timesheet.service';
 import { ITimesheet } from '../../../models/interfaces/i-timesheet';
 import {
@@ -22,11 +23,19 @@ import { authorize } from '../../../services/common/authorize.service';
 
 export const getTimesheets = async (ctx: Koa.Context) => {
   try {
-    const timesheets = await retrieveTimesheets(
-      ctx.query.projectId,
-      ctx.query.startDate,
-      ctx.query.endDate
-    );
+
+    // If user passes up query params, all are required and filter
+    let timesheets;
+    if (ctx.query.projectId && ctx.query.startDate && ctx.query.endDate) {      
+          timesheets = await retrieveTimesheets(
+            ctx.query.projectId,
+            ctx.query.startDate,
+            ctx.query.endDate
+          );
+    }
+    else {
+      timesheets = await retrieveTimesheets();
+    }
     ctx.body = timesheets;
   } catch (err) {
     ctx.throw(err.message);
@@ -49,6 +58,13 @@ export const getTimesheetEntries = async (ctx: Koa.Context) => {
     }
     console.log(model);
     ctx.body = await retrieveForLightTimesheet(model);
+  } catch (err) {
+    ctx.throw(err.message);
+  }
+};
+export const getAllTimesheets = async (ctx: Koa.Context) => {
+  try {
+    ctx.body = await retrieveAllTimesheets();
   } catch (err) {
     ctx.throw(err.message);
   }
@@ -108,6 +124,9 @@ export const createLightTimesheet = async (ctx: Koa.Context) => {
 
     let timesheet = await retrieveForLightTimesheet(model);
 
+
+    console.log('createLightTimesheet, does timesheet exist?', {timesheet})
+
     let timesheetId: string;
     if (timesheet) {
       timesheetId = timesheet.id;
@@ -117,6 +136,7 @@ export const createLightTimesheet = async (ctx: Koa.Context) => {
       model.createdUserId = auth.userId;
 
       timesheet = await createTimesheet(model);
+      console.log('createLightTimesheet, CREATED new timesheet', {timesheet})
       timesheetId = timesheet.id;
       model.id = timesheetId;
     }
@@ -370,6 +390,7 @@ const routerOpts: Router.IRouterOptions = {
 const router: Router = new Router(routerOpts);
 
 router.get('/', authorize, getTimesheets);
+router.get('/all', authorize, getAllTimesheets);
 router.get('/:id', authorize, getTimesheetById);
 router.post('/timesheetentries', authorize, getTimesheetEntries);
 router.post('/', authorize, createTimesheetAction);

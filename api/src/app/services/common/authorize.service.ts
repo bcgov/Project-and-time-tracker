@@ -72,6 +72,7 @@ const permissions = {
     'GET/project-risk/',
     'GET/project-risk/:id',
     'PATCH/project-risk/:id',
+    'GET/timesheet/all',
     ...commonForPSBAdminAndUser
   ],
   PSB_User: [

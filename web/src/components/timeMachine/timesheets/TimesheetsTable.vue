@@ -6,6 +6,7 @@
         <h4>{{ title }}</h4>
       </v-toolbar-title>
     </v-toolbar>
+
     <v-card-title>
       <v-layout class="timesheets-toolbar" d-flex style="width: 100%;">
         <v-flex d-flex justify-start align-start>
@@ -24,49 +25,62 @@
     <v-divider></v-divider>
     <v-card-text class="pa-0">
       <template>
-        <v-data-table
-          class="pb-3 tm-v-datatable"
+
+        <!-- <v-layout> -->
+          <v-flex xs3 md1>
+              <span>Sort by</span>
+            <v-select :items='["Day", "Week"]'>
+            </v-select>
+            </v-flex>
+
+        <!-- </v-layout> -->
+
+
+
+          <v-data-table
           :headers="headers"
-          :items="projects"
-          :expand="expand"
+          :items="allTimesheets"
+          hide-actions
+          class="elevation-0 tm-v-datatable"
+
           item-key="id"
-          :pagination.sync="pagination"
-          :search="search"
         >
-          <v-progress-linear v-slot:progress color="blue" indeterminate></v-progress-linear>
           <template slot="items" slot-scope="props">
-            <tr class="row-background-lightgrey" @click="onToggleRow(props)">
-              <td>
-                <span
-                  @click="goToProject(props.item.id)"
-                  class="projectname"
-                >{{ props.item.projectName }}</span>
-              </td>
-              <td
-                class="text-xs-left" v-if ="props.item.client.ministry"
-              >{{ [props.item.client.ministry.ministryName, props.item.orgDivision].join(" ") }}</td>
-              <td class="text-xs-left" v-text=" getFullname(props.item.leadUserId)"></td>
-              <td class="text-xs-left">$ {{ props.item.mouAmount }}</td>
-              <td class="text-xs-left">{{ props.item.completionDate | formatDate }}</td>
-              <td class="text-xs-right" :class="{'btntoggle': props.expanded}">
-                <v-tooltip bottom>
-                  <template v-slot:activator="{ on }">
-                    <v-icon v-on="on">keyboard_arrow_down</v-icon>
-                  </template>
-                  <span>Expand to enter time</span>
-                </v-tooltip>
-              </td>
-            </tr>
-          </template>
-          <!-- Expanded rows -->
-          <template v-slot:expand="props">
-            <project-expansion-row :project="props.item"></project-expansion-row>
-          </template>
-          <!-- No data -->
-          <template v-slot:no-data>
-            <v-alert :value="true" color="error" icon="warning">Sorry, there is no data to display!</v-alert>
-          </template>
+            <td class="text-xs-left">{{ props.item.startDate }} </td>
+            <td class="text-xs-left"> {{ props.item.mou.name }} </td>
+            <!-- <td class="text-xs-left">{{ props.item.projectName}} </td> -->
+            <td class="text-xs-left"> {{ props.item.project.projectName }} </td>
+            <td class="text-xs-left">
+              description
+            </td>
+            <td class="text-xs-left">
+              $$$
+            </td>
+            <td class="text-xs-left"> legal $$$ </td>
+            <td class="text-xs-left"> hours </td>
+            <td class="text-xs-center">
+              <v-tooltip top>
+                <template v-slot:activator="{ on }">
+                  <v-btn flat icon color="grey" @click="editProject(props.item.id)" v-on="on">
+                    <v-icon>edit</v-icon>
+                  </v-btn>
+                </template>
+                <span>Edit</span>
+              </v-tooltip>
+
+              <v-tooltip top>
+                <template v-slot:activator="{ on }">
+                  <v-btn flat icon color="grey" v-on="on" @click="archivePrompt(props.item, true)">
+                    <v-icon >delete</v-icon>
+                  </v-btn>
+                </template>
+                <span>delete</span>
+              </v-tooltip>
+            </td>
+
+            </template>
         </v-data-table>
+
       </template>
       <v-divider></v-divider>
     </v-card-text>
@@ -97,35 +111,18 @@ export default {
       dialog: false,
       search: '',
       headers: [
-        {
-          text: 'Project Name',
-          value: 'projectName',
-          align: 'left',
-          width: '280px',
-          sortable: false,
-        },
-        {
-          text: 'Client',
-          value: 'client',
-          width: '320px',
-          sortable: false,
-        },
-        {
-          text: 'Project Lead',
-          value: 'projectLeadId',
-          width: '280px',
-          sortable: false,
-        },
-        { text: 'Budget Remaining', value: 'budgetRemaining', sortable: false },
-        { text: 'Est. Completion', value: 'projectDeadline', sortable: false },
-        {
-          text: '',
-          value: 'action',
-          align: 'right',
-          width: '120px',
-          sortable: false,
+        // TODO: UPDATE VALUES HERE!
+        { text: 'Date of Entry', value: 'mou', align: 'left', sortable: true },
+        { text: 'MOU', value: 'projectName', align: 'left', sortable: true },
+        { text: 'Proj. Name', value: 'client.ministry.ministryName', sortable: true },
+        { text: 'Description', value: 'projectLeadId', sortable: false },
+        { text: 'Budget Remaining', value: 'projectBackup', sortable: false },
+        { text: 'Legal Billing', value: 'completionDate', sortable: true },
+        { text: 'Hours Accrued', value: 'dateModified', sortable: true },
+        { text: 'Actions', value: 'is_archived', align: 'center', width: '145px', sortable: false,
         },
       ],
+      timesheets: [],
       projects: [],
       expand: false,
       rfxExpand: false,
@@ -135,6 +132,9 @@ export default {
     projectsRfx() {
       return this.$store.state.projectsRfx;
     },
+    allTimesheets() {
+      return this.$store.state.allTimesheets;
+    }
   },
   methods: {
     getFullname(projectLeadId) {
@@ -154,12 +154,16 @@ export default {
       if (this.$refs.spinner) {
         this.$refs.spinner.open();
       }
-      this.$store
-        .dispatch('fetchProjects')
-        .then(() => {
-          this.projects = this.$store.state.projects;
-          this.$refs.spinner.close();
-        });
+      let timesheets = await this.$store.dispatch('fetchAllTimesheets');
+      console.log('gottimesheets', {timesheets})
+      this.$refs.spinner.close();
+
+      // this.$store
+      //   .dispatch('fetchProjects')
+      //   .then(() => {
+      //     this.projects = this.$store.state.projects;
+      //     this.$refs.spinner.close();
+      //   });
     },
     goToProject(projectId) {
       this.$router.push({ path: `project/${projectId}` });
