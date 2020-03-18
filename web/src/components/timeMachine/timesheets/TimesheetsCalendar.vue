@@ -107,7 +107,7 @@ export default {
       sessionStorage.setItem('selectedEndDate', endDate.format('YYYY-MM-DD'));
 
       this.$store.dispatch('setTimesheetsWeek', { startDate, endDate });
-      this.$emit('next');
+      this.$emit('next', moment(sessionStorage.getItem('selectedStartDate')).subtract(14, 'days'))
     },
     setNextTimesheetsWeek() {
       // Set start day to start of week, which in our case is Monday
@@ -120,7 +120,7 @@ export default {
       sessionStorage.setItem('selectedEndDate', endDate.format('YYYY-MM-DD'));
 
       this.$store.dispatch('setTimesheetsWeek', { startDate, endDate });
-      this.$emit('next');
+      this.$emit('next', moment(sessionStorage.getItem('selectedStartDate')).add(14, 'days'))
     },
     setTimesheetsWeek(dateString, isToggle = true) {
       // Set start day to start of week, which in our case is Monday

@@ -79,7 +79,7 @@
                 <v-flex>
                   <v-flex class="d-flex" cols="12" sm="6">
                     <v-flex md6>
-                      <timesheets-calendar @next="checkWeekChange()"></timesheets-calendar>
+                      <timesheets-calendar @next="checkWeekChange"></timesheets-calendar>
                     </v-flex>
                     <v-flex md6>
                       <v-radio-group row v-model="recordType">
@@ -174,10 +174,10 @@ export default {
     timeEntry: Object,
   },
   methods: {
-    async checkWeekChange() {
-      this.getTimeEntries();
+    async checkWeekChange(e) {
+     this.getTimeEntries(e._i);
     },
-    async getTimeEntries() {
+    async getTimeEntries(date) {
       const weekData = [
         { day: 'Mon', description: '', hours: '', date: '' },
         { day: 'Tue', description: '', hours: '', date: '' },
@@ -239,7 +239,7 @@ export default {
       this.$store.dispatch('fetchProjectRFxData', { id: projectId });
     },
     onChangeProjectRfx() {
-      this.getTimeEntries();
+      this.getTimeEntries(date);
     },
     getDateInYYYYMMDD(date) {
       // year
