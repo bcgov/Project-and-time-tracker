@@ -39,7 +39,7 @@
               <v-tab href="#batch">
                 Batch Entry
               </v-tab>
-
+<v-btn class="btn-normal" @click="getallDataByDate($store.state.timesheetsWeek.startDate)">fetch data</v-btn>
               <v-tab-item value=" weekly">
                 <v-flex class="d-flex" cols="12" sm="4">
                   <v-flex xs12>
@@ -51,7 +51,6 @@
                       label="MOU"
                     ></v-select>
                   </v-flex>
-
                   <v-flex xs12>
                     <v-select
                       v-model="form.project"
@@ -168,6 +167,17 @@ export default {
     timeEntry: Object,
   },
   methods: {
+    getallDataByDate(date) {
+       const formData = {
+        mou: this.form.mou,
+        project: this.form.project,
+        projectRfx: this.form.Rfx,
+        startDate:date,
+        userId:this.form.userId
+      };
+    const fullData =  this.$store.dispatch('fetchTimesheetEntryByDate', formData);
+    console.log(fullData);
+    },
     onChangeProject(projectId) {
       this.$store.dispatch('fetchProjectRFxData', { id: projectId });
     },

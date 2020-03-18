@@ -45,6 +45,7 @@ const commonForPSBAdminAndUser = [
   'PATCH/project-rfx/:id',
   'DELETE/project-rfx/:id',
   'GET/timesheet/',
+  'POST/timesheet/timesheetentries',
   'GET/timesheet/:id',
   'POST/timesheet/',
   'POST/timesheet/light',

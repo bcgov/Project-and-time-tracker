@@ -40,7 +40,20 @@ export const getTimesheetById = async (ctx: Koa.Context) => {
     ctx.throw(err.message);
   }
 };
+export const getTimesheetEntriesByDate = async (ctx: Koa.Context) => {
+  try {
+    const model = ctx.request.body as ITimesheet;
+    if (!model) {
+      ctx.throw('no data Found');
+      return;
+    }
+    console.log(model);
+    ctx.body = await retrieveForLightTimesheet(model);
 
+  } catch (err) {
+    ctx.throw(err.message);
+  }
+};
 export const getTimeSheetLight = async (ctx: Koa.Context) => {
   try {
     const model = ctx.request.body;
@@ -359,6 +372,7 @@ const router: Router = new Router(routerOpts);
 
 router.get('/', authorize, getTimesheets);
 router.get('/:id', authorize, getTimesheetById);
+router.post('/timesheetentries', authorize, getTimesheetEntriesByDate);
 router.post('/', authorize, createTimesheetAction);
 router.post('/light', authorize, createLightTimesheet);
 router.post('/getLight', authorize, getTimeSheetLight);
