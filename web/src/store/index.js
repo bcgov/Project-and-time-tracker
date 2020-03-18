@@ -51,6 +51,7 @@ const store = new Vuex.Store({
     allMinistries: [],
     rfxPhases: [],
     rfxTypes: [],
+    timesheetEntryByDate:[],
     projectRiskAnswers:[],
     intakeRiskQuestions:[],
     mouList: [],
@@ -136,6 +137,9 @@ const store = new Vuex.Store({
     },
     fetchprojectRiskAnswers(state, data) {
       state.projectRiskAnswers = data;
+    },
+    fetchTimesheetEntryByDate(state,data) {
+      state.timesheetEntryByDate = data;
     },
     fetchRFxPhases(state, data) {
       state.rfxPhases = data;
@@ -488,6 +492,18 @@ const store = new Vuex.Store({
         const content = res.data;
         ctx.commit("fetchprojectRiskAnswers", content);
       });
+    },
+   async fetchTimesheetEntryByDate(ctx, req) {
+      const body = req;
+      const api = await $http
+        .post(`${API_URI}/timesheet/timesheetentries`, body)
+        .then((res) => {
+          const content = res.data;
+          ctx.commit('fetchTimesheetEntryByDate', content);
+          return Promise.resolve(content);
+        })
+        .catch(err => Promise.reject(err.response));
+      return Promise.resolve(api);
     },
     fetchRFxPhases(ctx) {
       $http.get(`${API_URI}/rfx-phase`)
