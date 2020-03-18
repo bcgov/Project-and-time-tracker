@@ -103,7 +103,7 @@ export const updateProjectAction = async (ctx: Koa.Context) => {
     const client = await retrieveClientByProjectId(ctx.params.id);
     if (!client.isNonMinistry) {
       if (project.leadUserId || project.backupUserId) {
-        if (!(client.clientNo > 0 && client.responsibilityCenter > 0 && client.serviceCenter > 0 && client.stob > 0 && client.projectCode > 0)) {
+        if (!(client.clientNo.length > 0 && client.responsibilityCenter.length > 0 && client.serviceCenter.length > 0 && client.stob.length > 0 && client.projectCode.length > 0)) {
           ctx.throw('Project Lead/Backup cannot be assigned without providing all Finance Codes. Please fill the Finance Codes.');
           return;
         }
@@ -138,8 +138,8 @@ export const assignLeadAction = async (ctx: Koa.Context) => {
     } else {
       const client = await retrieveClientByProjectId(ctx.params.id);
       if (!client.isNonMinistry) {
-        if (!(client.clientNo > 0 && client.responsibilityCenter > 0 &&
-          client.serviceCenter > 0 && client.stob > 0 && client.projectCode > 0)) {
+        if (!(client.clientNo.length > 0 && client.responsibilityCenter.length > 0 &&
+          client.serviceCenter.length > 0 && client.stob.length > 0 && client.projectCode.length > 0)) {
           ctx.throw('Project Lead cannot be assigned without providing all Finance Codes. Please fill the Finance Codes in Project page.');
           return;
         }
@@ -165,8 +165,8 @@ export const assignBackupAction = async (ctx: Koa.Context) => {
     } else {
       const client = await retrieveClientByProjectId(ctx.params.id);
       if (!client.isNonMinistry) {
-        if (!(client.clientNo > 0 && client.responsibilityCenter > 0 &&
-          client.serviceCenter > 0 && client.stob > 0 && client.projectCode > 0)) {
+        if (!(client.clientNo.length > 0 && client.responsibilityCenter.length > 0 &&
+          client.serviceCenter.length > 0 && client.stob.length > 0 && client.projectCode.length > 0)) {
           ctx.throw('Project Backup cannot be assigned without providing all Finance Codes. Please fill the Finance Codes in Project page.');
           return;
         }

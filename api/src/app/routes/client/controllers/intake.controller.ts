@@ -187,24 +187,24 @@ const validateIntakeForm = (intake: IProjectIntake) => {
     // Business validation: Start.
     if (!client.isNonMinistry) {
     if (client.clientNo && client.clientNo.toString().length !== 3) {
-      validationErrors.push('Client No should be a 3 digit number.');
+      validationErrors.push('Client No should be exactly 3 characters.');
     }
     if (
       client.responsibilityCenter &&
       client.responsibilityCenter.toString().length !== 5
     ) {
       validationErrors.push(
-        'Responsibility Center should be a 5 digit number.'
+        'Responsibility Center should be exactly 5 characters.'
       );
     }
     if (client.serviceCenter && client.serviceCenter.toString().length !== 5) {
-      validationErrors.push('Service Center should be a 5 digit number.');
+      validationErrors.push('Service Center should be exactly 5 characters.');
     }
     if (client.stob && client.stob.toString().length !== 4) {
-      validationErrors.push('STOB should be a 4 digit number.');
+      validationErrors.push('STOB should be exactly 4 characters.');
     }
     if (client.projectCode && client.projectCode.toString().length !== 7) {
-      validationErrors.push('Project Code should be a 7 digit number.');
+      validationErrors.push('Project Code should be exactly 7 characters.');
     }
   }
 
@@ -250,7 +250,7 @@ const validateIntakeForm = (intake: IProjectIntake) => {
     );
   }
   if (!intake.projectSuccess) {
-    validationErrors.push('success look like for this project is required.');
+    validationErrors.push('Success look like for this project is required.');
   }
 
   if (!intake.dateOfReprocurement && intake.isReprocurement) {
