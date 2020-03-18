@@ -178,6 +178,17 @@ export default {
       this.getTimeEntries();
     },
     async getTimeEntries() {
+      let weekData: [
+        { day: 'Mon', description: '', hours: '', date: '' },
+        { day: 'Tue', description: '', hours: '', date: '' },
+        { day: 'Wed', description: '', hours: '', date: '' },
+        { day: 'Thu', description: '', hours: '', date: '' },
+        { day: 'Fri', description: '', hours: '', date: '' },
+        { day: 'Sat', description: '', hours: '', date: '' },
+        { day: 'Sun', description: '', hours: '', date: '' },
+      ];
+      this.$refs.Billable.weekData = weekData;
+      this.$refs.NonBillable.weekData = weekData;
       const formData = {
         mou: this.form.mou,
         project: this.form.project,
@@ -190,6 +201,13 @@ export default {
         .then(() => {
           vm.initTimeEntries(vm.$store.state.timesheetEntryData);
         });
+    },
+    formatWeekData(weekData) {
+      const weeks = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+      for (let i = 0; i < 7; i++) {
+        weekData[i].day = weeks[i];
+      }
+      return weekData;
     },
     initTimeEntries(timesheetEntryData) {
       const billableDetails = [];
@@ -211,10 +229,10 @@ export default {
           };
           nonBillableDetails.push(nonBillable);
         }
-      }
 
-      // this.$refs.Billable.(billableDetails)
-      // this.$refs.NonBillable.(nonBillableDetails)
+        this.$refs.Billable.weekData = this.formatWeekData(billableDetails);
+        this.$refs.NonBillable.weekData = this.formatWeekData(nonBillableDetails);
+      }
     },
 
     onChangeProject(projectId) {
