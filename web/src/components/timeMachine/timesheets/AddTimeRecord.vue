@@ -168,7 +168,9 @@
                             v-model="dateRange"
                             is-inline
                             is-expanded
+                            :excludeDates='{ weekdays: [1, 7] }'
                           />
+                            <!-- :available-dates='{ weekdays: [2,3,4,5,6] }' -->
                         </v-flex>
                         <v-flex xs6 sm3>
                           <v-card>
@@ -176,6 +178,7 @@
                               <p>Start date: {{ dateRange.start | formatDate }}</p>
                               <p>End date: {{ dateRange.end | formatDate }}</p>
                               <p>Total days: {{ dateRangeDiffInDays }} </p>
+                              <p>Total hours: {{ hoursForRange }}</p>
                             </v-card-text>
                           </v-card>
                         </v-flex>
@@ -254,6 +257,10 @@ export default {
         return '';
       }
       return this.mouList[this.form.mou - 1].name.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+    },
+    hoursForRange(){
+      // const hours = this.dateRangeDiffInDays * days... how to get days from <timesheet-entry> or similar?
+      return 'todo';
     }
   },
   components: {
