@@ -16,7 +16,13 @@
                 <v-flex class="d-flex cardheadlabel1">
                   <v-flex md7 class="haederinfo">Information being entered by:</v-flex>
                   <v-flex md4>
-                    <v-select></v-select>
+                     <v-select
+                      v-model="form.userId"
+                      :items="userList"
+                      item-value="id"
+                      item-text="contact.fullName"
+                      label="User"
+                    ></v-select>
                   </v-flex>
                 </v-flex>
                 <v-flex class="d-flex cardheadlabel2">
@@ -124,8 +130,10 @@ export default {
     mouList() {
       return this.$store.state.mouList;
     },
+    userList() {
+      return this.$store.state.users;
+    },
     projectList() {
-      debugger;
       if (typeof this.form.mou !== 'undefined') {
         const mouProjects = this.$store.state.projects.filter(item => item.mou);
         if (mouProjects.length === 0) {
@@ -168,15 +176,44 @@ export default {
       const billableDetails = this.$refs.Billable.onBillableclick();
       const nonBillableDetails = this.$refs.NonBillable.nonBillableclick();
 
+      const timeEntries = [];
+
+      for (let index = 0; index < 7; index++) {
+        timeEntries.entryDate = this.$store.state.timesheetsWeek.startDate.get('date') + index;
+        timeEntries.hoursBillable = 0;
+        timeEntries.hoursUnBillable = 0;
+        timeEntries.commentsBillable = '';
+        timeEntries.commentsUnBillable = '';
+        timeEntries.hoursBillable = 0;
+        if (billableDetails.length > 0) {
+          const billable = billableDetails.filter(item => item.date === this.form.entryDate);
+          if (billable[0]) {
+            timeEntries.hoursBillable = billable[0].hours;
+            timeEntries.commentsBillable = billable[0].description;
+          }
+        }
+        if (nonBillableDetails.length > 0) {
+          const unBillable = nonBillableDetails.filter(item => item.date === this.form.entryDate);
+          if (unBillable[0]) {
+            timeEntries.hoursUnBillable = unBillable[0].hours;
+            timeEntries.commentsUnBillable = unBillable[0].description;
+          }
+        }
+      }
+
       const formData = {
-        billableHours: billableDetails,
-        nonBillableHours: nonBillableDetails,
+        entries: timeEntries,
         mou: this.form.mou,
         project: this.form.project,
         projectRfx: this.form.Rfx,
+        startDate: this.$store.state.timesheetsWeek.startDate,
+        endDate: this.$store.state.timesheetsWeek.endDate,
+        userId: this.form.userId,
+
+
       };
       this.$refs.spinner.open();
-      this.$store.dispatch('addTimesheetEntry', formData).then(
+      this.$store.dispatch('addLightTimesheet', formData).then(
         () => {
           this.$refs.snackbar.displaySnackbar('success', 'Successfully added time entries.');
           this.$refs.spinner.close();
@@ -218,6 +255,7 @@ export default {
       if (!form.date) {
         form.date = moment().format('YYYY-MM-DD');
       }
+      form.userId = this.$store.state.activeUser.id;
       const existingTimeEntries = [];
       return {
         activeTab: 'weekly',

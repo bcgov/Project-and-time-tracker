@@ -93,6 +93,7 @@ export const createLightTimesheet = async (ctx: Koa.Context) => {
       ctx.throw(validationErrors.join(','));
       return;
     }
+
     const validationErrorsEntity = await validateTimesheetEntries(model);
     if (validationErrorsEntity.length > 0) {
       ctx.response.status = HttpStatus.PRECONDITION_FAILED;
@@ -285,10 +286,10 @@ const createOrUpdateTimesheetEntries = async (
 const validateCreateTimesheet = async (timesheet: ITimesheet) => {
   const validationErrors = [];
 
-  if (!(timesheet.project && timesheet.project.id)) {
+  if (!timesheet.project) {
     validationErrors.push('Project is required.');
   }
-  if (!(timesheet.projectRfx && timesheet.projectRfx.id)) {
+  if (!timesheet.projectRfx) {
     validationErrors.push('ProjectRfx is required.');
   }
   if (!timesheet.startDate) {
@@ -297,10 +298,14 @@ const validateCreateTimesheet = async (timesheet: ITimesheet) => {
   if (!timesheet.endDate) {
     validationErrors.push('End Date is required.');
   }
-  if (timesheet.entries && timesheet.entries.length > 0) {
-    const errors = await validateUpdateTimesheet(timesheet);
-    validationErrors.push(...errors);
+  if (!timesheet.mou) {
+    validationErrors.push('MOU is required.');
   }
+
+  // if (timesheet.entries && timesheet.entries.length > 0) {
+  //   const errors = await validateUpdateTimesheet(timesheet);
+  //   validationErrors.push(...errors);
+  // }
 
   return validationErrors;
 };
