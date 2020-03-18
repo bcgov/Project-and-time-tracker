@@ -41,10 +41,11 @@ export const deleteTimesheet = async (id: string) => {
 
 export const retrieveTimesheetById = async (id: string) => {
   const repo = timesheetRepo();
-  const res = await repo.createQueryBuilder('t')
+  const res = await repo
+    .createQueryBuilder('t')
     .innerJoinAndSelect('t.projectRfx', 'pr')
     .innerJoinAndSelect('t.project', 'p')
-    .innerJoinAndSelect('t.rfxPhase', 'rp')
+    .innerJoinAndSelect('t.mou', 'm')
     .leftJoinAndSelect('t.timesheetEntries', 'te')
     .where('t.id = :id', { id: id })
     .getOne();
@@ -54,54 +55,72 @@ export const retrieveTimesheetById = async (id: string) => {
   return res;
 };
 
-export const retrieveForLightTimesheet = async (projectId: string, projectRfxId: string, 
-    rfxPhaseId: string, userId: string, isBillable: boolean, entryDate: Date) => {
+export const retrieveForLightTimesheet = async model => {
   const repo = timesheetRepo();
-  const res = await repo.createQueryBuilder('t')
+  const res = await repo
+    .createQueryBuilder('t')
     .leftJoinAndSelect('t.timesheetEntries', 'te')
-    .where('t."projectId" = :projectId AND' + 
-          ' t."projectRfxId" = :projectRfxId AND' + 
-          ' t."rfxPhaseId" = :rfxPhaseId AND' +
-          ' t."userId" = :userId AND' +
-          ' t."isBillable" = :isBillable AND' +
-          ' t."startDate" <= :entryDate AND t."endDate" >= :entryDate', { 
-            projectId: projectId, 
-            projectRfxId: projectRfxId, 
-            rfxPhaseId: rfxPhaseId, 
-            userId: userId, 
-            isBillable: isBillable, 
-            entryDate: entryDate })
+    .where(
+      't."mouId" = :mouId AND ' +
+        't."projectId" = :projectId AND' +
+        ' t."projectRfxId" = :projectRfxId AND' +
+        ' t."userId" = :userId AND' +
+        ' t."startDate" = :entryDate AND t."endDate" >= :entryDate',
+      {
+        mouId: model.mou,
+        projectId: model.project,
+        projectRfxId: model.projectRfx,
+        userId: model.userId,
+        entryDate: model.startDate
+      }
+    )
     .getOne();
   return res;
 };
 
-export const retrieveForLightTimesheetPreview = async (projectId: string, projectRfxId: string, 
-    rfxPhaseId: string, userId: string, entryDate: Date) => {
+export const retrieveForLightTimesheetPreview = async (
+  projectId: string,
+  projectRfxId: string,
+  userId: string,
+  entryDate: Date
+) => {
   const repo = timesheetRepo();
-  const res = await repo.createQueryBuilder('t')
+  const res = await repo
+    .createQueryBuilder('t')
     .leftJoinAndSelect('t.timesheetEntries', 'te')
-    .where('t."projectId" = :projectId AND' + 
-          ' t."projectRfxId" = :projectRfxId AND' + 
-          ' t."rfxPhaseId" = :rfxPhaseId AND' +
-          ' t."userId" = :userId AND' +
-          ' t."startDate" <= :entryDate AND t."endDate" >= :entryDate', { 
-            projectId: projectId, 
-            projectRfxId: projectRfxId, 
-            rfxPhaseId: rfxPhaseId, 
-            userId: userId,
-            entryDate: entryDate })
+    .where(
+      't."projectId" = :projectId AND' +
+        ' t."projectRfxId" = :projectRfxId AND' +
+        ' t."rfxPhaseId" = :rfxPhaseId AND' +
+        ' t."userId" = :userId AND' +
+        ' t."startDate" <= :entryDate AND t."endDate" >= :entryDate',
+      {
+        projectId: projectId,
+        projectRfxId: projectRfxId,
+        userId: userId,
+        entryDate: entryDate
+      }
+    )
     .getMany();
   return res;
 };
 
-export const retrieveTimesheets = async (projectId: string, startDate: Date, endDate: Date) => {
+export const retrieveTimesheets = async (
+  projectId: string,
+  startDate: Date,
+  endDate: Date
+) => {
   const repo = timesheetRepo();
 
-  return await repo.createQueryBuilder('t')
+  return await repo
+    .createQueryBuilder('t')
     .innerJoinAndSelect('t.projectRfx', 'pr')
     .innerJoinAndSelect('t.project', 'p')
     .innerJoinAndSelect('t.rfxPhase', 'rp')
     .leftJoinAndSelect('t.timesheetEntries', 'te')
-    .where('t."projectId" = :projectId AND t."startDate" >= :startDate AND t."endDate" <= :endDate', { projectId: projectId, startDate: startDate, endDate: endDate })
+    .where(
+      't."projectId" = :projectId AND t."startDate" >= :startDate AND t."endDate" <= :endDate',
+      { projectId: projectId, startDate: startDate, endDate: endDate }
+    )
     .getMany();
 };

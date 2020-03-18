@@ -46,6 +46,7 @@ export const retrieveIntakeById = async (intakeId: string) => {
     .innerJoinAndSelect('i.client', 'c')
     .innerJoinAndSelect('i.projectSector', 'ps')
     .leftJoinAndSelect('c.ministry', 'm')
+    .leftJoinAndSelect('i.mou', 'mou')
     .where('i.id = :id', { id: intakeId })
     .getOne();
   if (!res) {
@@ -72,7 +73,7 @@ export const updateIntake = async (id: string, fields: any) => {
   const updatedIntake = await repo.merge(intake, fields);
   updatedIntake.dateModified = new Date();
 
-  console.log('\n\nupdateIntake in service', fields)
+  console.log('\n\nupdateIntake in service', fields);
 
   await repo.save(updatedIntake);
   return updatedIntake;

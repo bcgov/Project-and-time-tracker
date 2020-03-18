@@ -3,43 +3,36 @@ import { Timesheet } from './timesheet.entity';
 
 @Entity()
 export class TimesheetEntry {
-
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @ManyToOne(type => Timesheet)
   timesheet: Timesheet;
 
-  @Column({ type: 'text', nullable: true })
-  projectRfxId: string;
+  @Column({ type: 'double precision', nullable: true })
+  hoursBillable: number;
 
   @Column({ type: 'text', nullable: true })
-  projectId: string;
-  
-  @Column({ type: 'text', nullable: true })
-  rfxPhaseId: string;
-  
-  @Column({ type: 'uuid', nullable: true })
-  userId: string;
+  commentsBillable: string;
 
   @Column({ type: 'double precision', nullable: true })
-  hoursBilled: number;
+  hoursUnBillable: number;
+
+  @Column({ type: 'text', nullable: true })
+  commentsUnBillable: string;
+
+  @Column({ type: 'double precision', nullable: true })
+  expenseAmount: number;
+
+  @Column({ type: 'text', nullable: true })
+  expenseComment: string;
 
   @Column({ type: 'date', nullable: true })
   entryDate: Date;
-  
-  @Column({ type: 'time', nullable: true })
-  startTime: string;
-  
-  @Column({ type: 'time', nullable: true })
-  endTime: string;
-  
-  @Column({ type: 'text', nullable: true })
-  comments: string;
 
   @Column({ type: 'timestamp', nullable: true })
   dateCreated: Date;
-  
+
   @Column({ type: 'timestamp', nullable: true })
   dateModified: Date;
 }

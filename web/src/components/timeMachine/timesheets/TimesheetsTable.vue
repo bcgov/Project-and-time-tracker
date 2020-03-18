@@ -43,7 +43,7 @@
                 >{{ props.item.projectName }}</span>
               </td>
               <td
-                class="text-xs-left"
+                class="text-xs-left" v-if ="props.item.client.ministry"
               >{{ [props.item.client.ministry.ministryName, props.item.orgDivision].join(" ") }}</td>
               <td class="text-xs-left" v-text=" getFullname(props.item.leadUserId)"></td>
               <td class="text-xs-left">$ {{ props.item.mouAmount }}</td>

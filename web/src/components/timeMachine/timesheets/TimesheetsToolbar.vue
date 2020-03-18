@@ -4,7 +4,7 @@
       <timesheets-calendar></timesheets-calendar>
     </v-flex>
     <v-flex d-flex justify-end>
-      <add-new-time-record ref="AddNewTimeRecord"></add-new-time-record>
+      <add-time-record ref="AddTimeRecord"></add-time-record>
       <v-btn
         class="add-timesheet-button"
         color="btnPrimary"
@@ -17,7 +17,8 @@
 
 <script>
 import TimesheetsCalendar from './TimesheetsCalendar.vue';
-import AddNewTimeRecord from './AddNewTimeRecord.vue';
+import AddTimeRecord from './AddTimeRecord.vue';
+
 
 export default {
   data() {
@@ -25,7 +26,8 @@ export default {
   },
   components: {
     TimesheetsCalendar,
-    AddNewTimeRecord,
+    AddTimeRecord,
+
   },
   props: {
     title: String,
@@ -33,12 +35,14 @@ export default {
       type: Function,
       default: () => {},
     },
+
   },
   methods: {
     newTimeRecord() {
-      this.$refs.AddNewTimeRecord.reset();
-      this.$refs.AddNewTimeRecord.open();
+      this.$refs.AddTimeRecord.reset();
+      this.$refs.AddTimeRecord.open();
     },
+
   },
 };
 </script>
