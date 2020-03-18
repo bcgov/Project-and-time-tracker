@@ -148,6 +148,7 @@ export default {
         this.$refs.spinner.open();
       }
       let timesheets = await this.$store.dispatch('fetchAllTimesheets');
+      await this.$store.dispatch('fetchProjects'); // Needed in AddTimeRecord
       console.log('gottimesheets', {timesheets})
       this.$refs.spinner.close();
 

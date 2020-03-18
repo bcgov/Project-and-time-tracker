@@ -29,7 +29,7 @@
                 <v-flex v-if="form.mou" class="d-flex cardheadlabel2">
                   <v-flex>
                     <b>MOU amount:</b>
-                    ${{ mouList[form.mou - 1].name.replace(/\B(?=(\d{3})+(?!\d))/g, ",") }}
+                    ${{ mouAmount }}
                   </v-flex>
                   <v-flex> <b>Currently Billed:</b> $0 </v-flex>
                 </v-flex>
@@ -138,17 +138,24 @@ export default {
     timesheetEntryData() {
       return this.$store.state.timesheetEntryData;
     },
+    // Had issue with this not updating on change, so saving to local var
     projectList() {
+      // console.log('projectList called', this.form.mou);
       if (typeof this.form.mou !== 'undefined') {
         const mouProjects = this.$store.state.projects.filter(item => item.mou);
+        // console.log('projectList, @mouProj', {mouProjects, projects: this.$store.state.projects})
         if (mouProjects.length === 0) {
+          // console.log('projectList @mouProj EMPTY, RETURN []')
           return [];
         }
+        // console.log('projectList, before Projects');
         const Projects = mouProjects.filter(item => item.mou.id === this.form.mou);
+        // console.log('projectList END', {mouProjects, Projects})
         if (Projects.length > 0) {
           return Projects;
         }
       }
+      // console.log('projectList return []')
       return [];
     },
     projectRfx() {
@@ -157,6 +164,12 @@ export default {
       }
       return [];
     },
+    mouAmount() {
+      if (!this.form || !this.form.mou || !this.mouList[this.form.mou - 1]){
+        return '';
+      }
+      return this.mouList[this.form.mou - 1].name.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+    }
   },
   components: {
     Snackbar,
@@ -415,7 +428,7 @@ export default {
         existingTimeEntries,
         addRecordLoading: false,
       };
-    },
+    }
   },
 };
 </script>
