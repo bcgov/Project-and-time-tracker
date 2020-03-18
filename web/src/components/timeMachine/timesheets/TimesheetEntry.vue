@@ -17,7 +17,14 @@
         <v-layout v-for="(item, index) in weekData" :key="item.day" class="time-records">
           <v-flex md1>{{item.day}}</v-flex>
           <v-flex md2>
-            <v-text-field v-model="item.hours"></v-text-field>
+            <v-text-field
+              type="number"
+              max="24"
+              step="0.1"
+              min="0"
+              oninput="validity.valid||(value=0);"
+              v-model="item.hours"
+            ></v-text-field>
           </v-flex>
 
           <v-flex md8>
@@ -191,7 +198,7 @@ export default {
       this.weekData[5].date = this.weekDates[5];
       this.weekData[6].date = this.weekDates[6];
       // this.$store.state.billableDetails = this.weekData;
-       console.log(this.weekData);
+      console.log(this.weekData);
       return this.weekData;
     },
     copyfunc(hours, description) {
