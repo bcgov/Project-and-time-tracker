@@ -26,14 +26,11 @@
     <v-card-text class="pa-0">
       <template>
 
-        <!-- <v-layout> -->
-          <v-flex xs3 md1>
+          <!-- <v-flex xs3 md1>
               <span>Sort by</span>
             <v-select :items='["Day", "Week"]'>
             </v-select>
-            </v-flex>
-
-        <!-- </v-layout> -->
+            </v-flex> -->
 
 
 
@@ -51,13 +48,10 @@
             <!-- <td class="text-xs-left">{{ props.item.projectName}} </td> -->
             <td class="text-xs-left"> {{ props.item.project.projectName }} </td>
             <td class="text-xs-left">
-              description
-            </td>
-            <td class="text-xs-left">
               $$$
             </td>
             <td class="text-xs-left"> legal $$$ </td>
-            <td class="text-xs-left"> hours </td>
+            <td class="text-xs-left"> TODO hours for  </td>
             <td class="text-xs-center">
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
@@ -70,7 +64,7 @@
 
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
-                  <v-btn flat icon color="grey" v-on="on" @click="archivePrompt(props.item, true)">
+                  <v-btn flat icon color="grey" v-on="on" @click="deleteTimesheet(props.item.id)">
                     <v-icon >delete</v-icon>
                   </v-btn>
                 </template>
@@ -112,10 +106,9 @@ export default {
       search: '',
       headers: [
         // TODO: UPDATE VALUES HERE!
-        { text: 'Date of Entry', value: 'mou', align: 'left', sortable: true },
-        { text: 'MOU', value: 'projectName', align: 'left', sortable: true },
-        { text: 'Proj. Name', value: 'client.ministry.ministryName', sortable: true },
-        { text: 'Description', value: 'projectLeadId', sortable: false },
+        { text: 'Date of Entry', value: 'startDate', align: 'left', sortable: true },
+        { text: 'MOU', value: 'mou.name', align: 'left', sortable: true },
+        { text: 'Proj. Name', value: 'project.projectName', sortable: true },
         { text: 'Budget Remaining', value: 'projectBackup', sortable: false },
         { text: 'Legal Billing', value: 'completionDate', sortable: true },
         { text: 'Hours Accrued', value: 'dateModified', sortable: true },
@@ -168,14 +161,20 @@ export default {
     goToProject(projectId) {
       this.$router.push({ path: `project/${projectId}` });
     },
-    async onToggleRow(props) {
-      this.$store
-        .dispatch('fetchProjectRfx', { id: props.item.id })
-        .then((ret) => {
-          props.expanded = !props.expanded;
-          props.item.projectRfxData = ret;
-        });
-    },
+    // async onToggleRow(props) {
+    //   this.$store
+    //     .dispatch('fetchProjectRfx', { id: props.item.id })
+    //     .then((ret) => {
+    //       props.expanded = !props.expanded;
+    //       props.item.projectRfxData = ret;
+    //     });
+    // },
+    async deleteTimesheet(id) {
+      // TODO - Confirm popup
+      await this.$store.dispatch('deleteTimesheet', {id});
+      await this.fetchData();
+      // TODO - Show notification (snackbar?) to user.
+    }
   },
   created() {
     this.fetchData();
