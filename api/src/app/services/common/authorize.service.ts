@@ -52,7 +52,8 @@ const commonForPSBAdminAndUser = [
   'PATCH/timesheet/:id',
   'DELETE/timesheet/:id',
   'POST/MOU/',
-  'PATCH/intake/:id'
+  'PATCH/intake/:id',
+  'DELETE/intake/:id'
 ];
 
 const permissions = {

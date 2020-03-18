@@ -189,14 +189,15 @@
           ></v-select>
         </div>
       </v-flex>
-      <v-flex md6>
-        <div class="v-form-container fluid">
-            <v-flex md6 style="display:inline-block">
-            <label class="v-label theme--light" style="margin-left: 4%;">Reprocurement?</label></v-flex>
-          <v-flex md6 style="display:inline-block">  <v-radio-group v-model="form.isReprocurement" row>
+       <v-flex md6>
+        <div>
+          <v-container fluid>
+            <label class="v-label theme--light" style="margin-left: 4%;">Reprocurement?</label>
+            <v-radio-group v-model="form.isReprocurement" row>
               <v-radio label=" Yes" :value="true" form.isReprocurement></v-radio>
               <v-radio label=" No" :value="false" form.isReprocurement></v-radio>
-            </v-radio-group></v-flex>
+            </v-radio-group>
+          </v-container>
         </div>
       </v-flex>
       <v-menu
