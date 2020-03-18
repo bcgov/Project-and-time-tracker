@@ -173,12 +173,23 @@ export default {
     timeEntry: Object,
   },
   methods: {
-    async checkWeekChange() {
+    getDatePart(date) {
       debugger;
-      // const date = this.$store.state.timesheetsWeek.startDate.add(7, 'days');
-      this.getTimeEntries(this.$store.state.timesheetsWeek.startDate);
+      const dateTime = moment(date);
+
+      const dateValue = moment({
+        year: dateTime.year(),
+        month: dateTime.month(),
+        day: dateTime.date(),
+      });
+      return dateValue;
     },
-    async getTimeEntries(date) {
+    async checkWeekChange() {
+      // const date = this.$store.state.timesheetsWeek.startDate.add(7, 'days');
+      this.getTimeEntries();
+    },
+    async getTimeEntries() {
+      const date = this.getDatePart(this.$store.state.timesheetsWeek.startDate);
       const weekDataBillable = [
         { day: 'Mon', description: '', hours: 0, date: '' },
         { day: 'Tue', description: '', hours: 0, date: '' },
@@ -248,7 +259,7 @@ export default {
       this.$store.dispatch('fetchProjectRFxData', { id: projectId });
     },
     onChangeProjectRfx() {
-      this.getTimeEntries(this.$store.state.timesheetsWeek.startDate);
+      this.getTimeEntries();
     },
     getDateInYYYYMMDD(date) {
       // year
@@ -332,12 +343,13 @@ export default {
           }
         }
 
+        const dateValue = this.getDatePart(this.$store.state.timesheetsWeek.startDate);
         const formData = {
           entries: timeEntries,
           mou: this.form.mou,
           project: this.form.project,
           projectRfx: this.form.Rfx,
-          startDate: this.$store.state.timesheetsWeek.startDate,
+          startDate: dateValue,
           endDate: this.$store.state.timesheetsWeek.endDate,
           userId: this.form.userId,
         };
