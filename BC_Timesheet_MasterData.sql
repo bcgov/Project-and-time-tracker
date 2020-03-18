@@ -42,12 +42,13 @@ INSERT INTO rfx_type("rfxTypeName") VALUES ('SA (Standing Agreement)');
 INSERT INTO rfx_type("rfxTypeName") VALUES ('SOW (Statement of Work)');
 INSERT INTO rfx_type("rfxTypeName") VALUES ('Pre-Qualification List');
 INSERT INTO rfx_type("rfxTypeName") VALUES ('Direct Award');
-
+INSERT INTO rfx_type("rfxTypeName") VALUES ('RCSA (Request for Corporate Supply Arrangement)');
 --Making edits to the existing project phases
 ---INSERT INTO rfx_phase("rfxPhaseName") VALUES ('On-boarding');
 INSERT INTO rfx_phase("rfxPhaseName") VALUES ('Planning');
 INSERT INTO rfx_phase("rfxPhaseName") VALUES ('Drafting');
 INSERT INTO rfx_phase("rfxPhaseName") VALUES ('Posted');
+INSERT INTO rfx_phase("rfxPhaseName") VALUES ('Evaluation');
 -- INSERT INTO rfx_phase("rfxPhaseName") VALUES ('Evaluation');
 INSERT INTO rfx_phase("rfxPhaseName") VALUES ('Award');
 -- INSERT INTO rfx_phase("rfxPhaseName") VALUES ('Contract Management');
