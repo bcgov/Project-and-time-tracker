@@ -191,7 +191,7 @@ export default {
         mou: this.form.mou,
         project: this.form.project,
         projectRfx: this.form.Rfx,
-        startDate: this.$store.state.timesheetsWeek.startDate,
+        startDate: date,
         userId: this.form.userId,
       };
       const vm = this;
