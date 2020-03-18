@@ -99,7 +99,93 @@
                   </v-flex>
                 </v-flex>
               </v-tab-item>
-              <v-tab-item value="batch"></v-tab-item>
+              <v-tab-item value="batch">
+                  <v-flex class="d-flex" cols="12" sm="4">
+                  <v-flex xs12>
+                    <v-select
+                      v-model="form.mou"
+                      :rules="requiredRule"
+                      :items="mouList"
+                      item-text="name"
+                      item-value="id"
+                      label="MOU"
+                    ></v-select>
+                  </v-flex>
+                  <v-flex xs12>
+                    <v-select
+                      v-model="form.project"
+                      :rules="requiredRule"
+                      :items="projectList"
+                      item-text="projectName"
+                      item-value="id"
+                      label="Project Name"
+                      @change="onChangeProject(form.project)"
+                    ></v-select>
+                  </v-flex>
+
+                  <v-flex xs12>
+                    <v-select
+                      v-model="form.Rfx"
+                      :rules="requiredRule"
+                      :items="projectRfx"
+                      item-text="rfxName"
+                      item-value="id"
+                      label="Project Rfx"
+                      @change="onChangeProjectRfx()"
+                    ></v-select>
+                  </v-flex>
+                </v-flex>
+                <v-flex>
+                  <v-flex class="d-flex" cols="12" sm="6">
+                      <!-- <v-flex md6>
+                        <timesheets-calendar @next="checkWeekChange"></timesheets-calendar>
+                      </v-flex> -->
+                    <v-flex md6>
+                      <v-radio-group row v-model="recordType">
+                        <v-radio label="Hours" :value="1"></v-radio>
+                        <v-radio label="Expenses" :value="2"></v-radio>
+                        <v-radio label="Unbillable Hours" :value="3"></v-radio>
+                      </v-radio-group>
+                    </v-flex>
+                  </v-flex>
+
+                  <v-flex v-show="recordType === 1">
+                    <timesheet-entry ref="Billable" single-row></timesheet-entry>
+                  </v-flex>
+                  <v-flex v-if="recordType === 2">
+                    <add-expense ref="AddExpense" single-row></add-expense>
+                  </v-flex>
+                  <v-flex v-show="recordType === 3">
+                    <timesheet-entry ref="NonBillable" single-row></timesheet-entry>
+                  </v-flex>
+
+                </v-flex>
+
+                      <v-layout row>
+                        <v-flex xs6 sm9>
+                          <vc-date-picker
+                            mode="range"
+                            v-model="dateRange"
+                            is-inline
+                            is-expanded
+                            :excludeDates='{ weekdays: [1, 7] }'
+                          />
+                            <!-- :available-dates='{ weekdays: [2,3,4,5,6] }' -->
+                        </v-flex>
+                        <v-flex xs6 sm3>
+                          <v-card>
+                            <v-card-text>
+                              <p>Start date: {{ dateRange.start | formatDate }}</p>
+                              <p>End date: {{ dateRange.end | formatDate }}</p>
+                              <p>Total days: {{ dateRangeDiffInDays }} </p>
+                              <p>Total hours: {{ hoursForRange }}</p>
+                            </v-card-text>
+                          </v-card>
+                        </v-flex>
+                      </v-layout>
+
+
+              </v-tab-item>
             </v-tabs>
           </v-card-text>
           <v-divider class="header-divider"></v-divider>
@@ -127,6 +213,10 @@ import TimesheetsCalendar from './TimesheetsCalendar.vue';
 import AddExpense from './AddExpense.vue';
 import TimesheetEntry from './TimesheetEntry.vue';
 
+import Calendar from 'v-calendar/lib/components/calendar.umd'
+import DatePicker from 'v-calendar/lib/components/date-picker.umd'
+
+
 export default {
   computed: {
     mouList() {
@@ -137,6 +227,11 @@ export default {
     },
     timesheetEntryData() {
       return this.$store.state.timesheetEntryData;
+    },
+    dateRangeDiffInDays(){
+      if (this.dateRange.start && this.dateRange.end){
+        return Math.abs(moment(this.dateRange.start).diff(moment(this.dateRange.end), 'days'));
+      }
     },
     projectList() {
       if (typeof this.form.mou !== 'undefined') {
@@ -162,6 +257,10 @@ export default {
         return '';
       }
       return this.mouList[this.form.mou - 1].name.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+    },
+    hoursForRange(){
+      // const hours = this.dateRangeDiffInDays * days... how to get days from <timesheet-entry> or similar?
+      return 'todo';
     }
   },
   components: {
@@ -420,6 +519,7 @@ export default {
         dateFormatted: undefined,
         existingTimeEntries,
         addRecordLoading: false,
+        dateRange: {start: null, end: null}
       };
     }
   },

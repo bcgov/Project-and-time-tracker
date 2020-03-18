@@ -2,7 +2,7 @@
   <v-layout row justify-center>
     <snackbar ref="snackbar"></snackbar>
 
-    <v-form ref="form" v-model="valid" lazy-validation id="timesheet-entry" class="timesheet-entry">
+    <v-form ref="form" v-model="valid" lazy-validation class="timesheet-entry">
       <spinner ref="spinner"></spinner>
       <!-- {{formatDate($store.state.timesheetsWeek.startDate)}} -->
       <v-container grid-list-xl>
@@ -98,6 +98,7 @@ export default {
     if (!form.date) {
       form.date = moment().format("YYYY-MM-DD");
     }
+    console.log('Timesheet entry data, singlerow?', this.singleRow);
     return {
       valid: true,
       requiredRule: [v => !!v || "This field required"],
@@ -114,8 +115,7 @@ export default {
       itemDescription: "",
       weekDates: [],
       startDate: sessionStorage.getItem("selectedStartDate"),
-      //  weekData: {MondayHours:''}
-      weekData: [
+      weekData: this.singleRow ? [{ day: "Day", description: "", hours: 0, date: "" }] : [
         { day: "Mon", description: "", hours: 0, date: "" },
         { day: "Tue", description: "", hours: 0, date: "" },
         { day: "Wed", description: "", hours: 0, date: "" },
@@ -138,6 +138,7 @@ export default {
     timeEntry: Object,
     billableDetails: Object,
     nonBillableDetails: Object,
+    singleRow: Boolean,
     AddExpense: {
       type: Function,
       default: () => {}

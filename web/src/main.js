@@ -17,7 +17,13 @@ import store from '@/store';
 import VForm from '@/modules/widgets/Form.vue';
 import VField from '@/modules/widgets/Field.vue';
 import VueCurrencyInput from 'vue-currency-input'
+import VCalendar from 'v-calendar';
 
+
+Vue.use(VCalendar, {
+  componentPrefix: 'vc',  // Use <vc-calendar /> instead of <v-calendar />
+  // ...,                // ...other defaults
+});
 
 Vue.use(VueQuillEditor);
 Vue.use(VueCurrencyInput, { globalOptions: { currency: 'CAD'}});
