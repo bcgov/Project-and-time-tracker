@@ -107,7 +107,7 @@
             <label class="btn-discard">DISCARD TIMESHEET</label>
             <v-flex class="add-btns">
               <v-btn class="btn-normal">EXPORT TIMESHEET</v-btn>
-              <v-btn class="btn-normal">SAVE AND COPY</v-btn>
+              <v-btn class="btn-normal"  @click="saveAndCopy()">SAVE AND COPY</v-btn>
               <v-btn class="add-new-row" color="primary" @click="saveAndClose()"
                 >SAVE AND CLOSE</v-btn
               >
@@ -173,8 +173,10 @@ export default {
     timeEntry: Object,
   },
   methods: {
-    async checkWeekChange(e) {
-      this.getTimeEntries(e._i);
+    async checkWeekChange() {
+      debugger;
+      // const date = this.$store.state.timesheetsWeek.startDate.add(7, 'days');
+      this.getTimeEntries(this.$store.state.timesheetsWeek.startDate);
     },
     async getTimeEntries(date) {
       const weekDataBillable = [
@@ -262,9 +264,32 @@ export default {
 
       return `${yyyy}-${mm}-${dd}`;
     },
+    saveAndCopy() {
+      this.submitForm();
+    },
     saveAndClose() {
       this.submitForm();
       this.closeDialog();
+      const weekDataBillable = [
+        { day: 'Mon', description: '', hours: 0, date: '' },
+        { day: 'Tue', description: '', hours: 0, date: '' },
+        { day: 'Wed', description: '', hours: 0, date: '' },
+        { day: 'Thu', description: '', hours: 0, date: '' },
+        { day: 'Fri', description: '', hours: 0, date: '' },
+        { day: 'Sat', description: '', hours: 0, date: '' },
+        { day: 'Sun', description: '', hours: 0, date: '' },
+      ];
+      const weekDataUnBillable = [
+        { day: 'Mon', description: '', hours: 0, date: '' },
+        { day: 'Tue', description: '', hours: 0, date: '' },
+        { day: 'Wed', description: '', hours: 0, date: '' },
+        { day: 'Thu', description: '', hours: 0, date: '' },
+        { day: 'Fri', description: '', hours: 0, date: '' },
+        { day: 'Sat', description: '', hours: 0, date: '' },
+        { day: 'Sun', description: '', hours: 0, date: '' },
+      ];
+      this.$refs.Billable.weekData = weekDataBillable;
+      this.$refs.NonBillable.weekData = weekDataUnBillable;
     },
     submitForm() {
       if (this.$refs.AddimeRecords.validate()) {

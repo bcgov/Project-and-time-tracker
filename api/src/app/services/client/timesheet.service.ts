@@ -65,7 +65,7 @@ export const retrieveForLightTimesheet = async model => {
         't."projectId" = :projectId AND' +
         ' t."projectRfxId" = :projectRfxId AND' +
         ' t."userId" = :userId AND' +
-        ' t."startDate" <= :entryDate AND t."endDate" >= :entryDate',
+        ' t."startDate" = :entryDate AND t."endDate" >= :entryDate',
       {
         mouId: model.mou,
         projectId: model.project,
