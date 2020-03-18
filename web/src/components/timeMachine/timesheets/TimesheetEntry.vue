@@ -104,13 +104,13 @@ export default {
       startDate: sessionStorage.getItem('selectedStartDate'),
       //  weekData: {MondayHours:''}
       weekData: [
-        { day: 'Mon', description: '', hours: '', date: '' },
-        { day: 'Tue', description: '', hours: '', date: '' },
-        { day: 'Wed', description: '', hours: '', date: '' },
-        { day: 'Thu', description: '', hours: '', date: '' },
-        { day: 'Fri', description: '', hours: '', date: '' },
-        { day: 'Sat', description: '', hours: '', date: '' },
-        { day: 'Sun', description: '', hours: '', date: '' },
+        { day: 'Mon', description: '', hours: 0, date: '' },
+        { day: 'Tue', description: '', hours: 0, date: '' },
+        { day: 'Wed', description: '', hours: 0, date: '' },
+        { day: 'Thu', description: '', hours: 0, date: '' },
+        { day: 'Fri', description: '', hours: 0, date: '' },
+        { day: 'Sat', description: '', hours: 0, date: '' },
+        { day: 'Sun', description: '', hours: 0, date: '' },
       ],
     };
   },
