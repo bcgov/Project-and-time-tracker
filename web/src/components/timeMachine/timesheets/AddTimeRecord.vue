@@ -171,32 +171,53 @@ export default {
     onChangeProject(projectId) {
       this.$store.dispatch('fetchProjectRFxData', { id: projectId });
     },
+    getDateInYYYYMMDD(date) {
+      // year
+      const yyyy = `${date.getFullYear()}`;
+
+      // month
+      let mm = (`0${date.getMonth() + 1}`); // prepend 0 // +1 is because Jan is 0
+      mm = mm.substr(mm.length - 2); // take last 2 chars
+
+      // day
+      let dd = (`0${date.getDate()}`); // prepend 0
+      dd = dd.substr(dd.length - 2); // take last 2 chars
+
+      return `${yyyy}-${mm}-${dd}`;
+    },
+
     submitForm() {
-      debugger;
       const billableDetails = this.$refs.Billable.onBillableclick();
       const nonBillableDetails = this.$refs.NonBillable.nonBillableclick();
 
       const timeEntries = [];
-
+      debugger;
+      const startDate = new Date(this.$store.state.timesheetsWeek.startDate);
       for (let index = 0; index < 7; index++) {
-        timeEntries.entryDate = this.$store.state.timesheetsWeek.startDate.get('date') + index;
-        timeEntries.hoursBillable = 0;
-        timeEntries.hoursUnBillable = 0;
-        timeEntries.commentsBillable = '';
-        timeEntries.commentsUnBillable = '';
-        timeEntries.hoursBillable = 0;
+        const entryDate = new Date();
+        entryDate.setDate(startDate.getDate() + index);
+        const entry = {
+          entryDate: this.getDateInYYYYMMDD(entryDate),
+          hoursBillable: 0,
+          hoursUnBillable: 0,
+          commentsBillable: '',
+          commentsUnBillable: '',
+          expenseAmount: 0,
+          expenseComment: '',
+        };
+        timeEntries.push(entry);
         if (billableDetails.length > 0) {
-          const billable = billableDetails.filter(item => item.date === this.form.entryDate);
+          const billable = billableDetails.filter(item => item.date === timeEntries[index].entryDate);
           if (billable[0]) {
-            timeEntries.hoursBillable = billable[0].hours;
-            timeEntries.commentsBillable = billable[0].description;
+            timeEntries[index].hoursBillable = billable[0].hours === '' ? 0 : billable[0].hours;
+            timeEntries[index].commentsBillable = billable[0].description;
           }
         }
         if (nonBillableDetails.length > 0) {
-          const unBillable = nonBillableDetails.filter(item => item.date === this.form.entryDate);
+          const unBillable = nonBillableDetails.filter(item => item.date === timeEntries[index].entryDate);
           if (unBillable[0]) {
-            timeEntries.hoursUnBillable = unBillable[0].hours;
-            timeEntries.commentsUnBillable = unBillable[0].description;
+            timeEntries[index].hoursUnBillable = unBillable[0].hours === '' ? 0 : unBillable[0].hours;
+            timeEntries[index].commentsUnBillable = unBillable[0].description;
           }
         }
       }

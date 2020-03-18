@@ -45,7 +45,7 @@ export const retrieveTimesheetById = async (id: string) => {
     .createQueryBuilder('t')
     .innerJoinAndSelect('t.projectRfx', 'pr')
     .innerJoinAndSelect('t.project', 'p')
-    .innerJoinAndSelect('t.rfxPhase', 'rp')
+    .innerJoinAndSelect('t.mou', 'm')
     .leftJoinAndSelect('t.timesheetEntries', 'te')
     .where('t.id = :id', { id: id })
     .getOne();
@@ -55,26 +55,23 @@ export const retrieveTimesheetById = async (id: string) => {
   return res;
 };
 
-export const retrieveForLightTimesheet = async (
-  projectId: string,
-  projectRfxId: string,
-  userId: string,
-  entryDate: Date
-) => {
+export const retrieveForLightTimesheet = async model => {
   const repo = timesheetRepo();
   const res = await repo
     .createQueryBuilder('t')
     .leftJoinAndSelect('t.timesheetEntries', 'te')
     .where(
-      't."projectId" = :projectId AND' +
+      't."mouId" = :mouId AND ' +
+        't."projectId" = :projectId AND' +
         ' t."projectRfxId" = :projectRfxId AND' +
         ' t."userId" = :userId AND' +
         ' t."startDate" <= :entryDate AND t."endDate" >= :entryDate',
       {
-        projectId: projectId,
-        projectRfxId: projectRfxId,
-        userId: userId,
-        entryDate: entryDate
+        mouId: model.mou,
+        projectId: model.project,
+        projectRfxId: model.projectRfx,
+        userId: model.userId,
+        entryDate: model.startDate
       }
     )
     .getOne();

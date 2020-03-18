@@ -94,63 +94,52 @@ export const createLightTimesheet = async (ctx: Koa.Context) => {
       return;
     }
 
-    const validationErrorsEntity = await validateTimesheetEntries(model);
-    if (validationErrorsEntity.length > 0) {
-      ctx.response.status = HttpStatus.PRECONDITION_FAILED;
-      ctx.body = {
-        entityValidationErrors: validationErrorsEntity,
-        status: HttpStatus.PRECONDITION_FAILED
-      };
-      return;
-    }
-
-    if (!(model.entries && model.entries.length === 1)) {
-      ctx.throw('This request expects one entry in the entries array.');
-      return;
-    }
-
-    const entry = model.entries[0];
-
-    const timesheet = await retrieveForLightTimesheet(
-      model.project.id,
-      model.projectRfx.id,
-      model.userId,
-      entry.entryDate
-    );
+    let timesheet = await retrieveForLightTimesheet(model);
 
     let timesheetId: string;
     if (timesheet) {
       timesheetId = timesheet.id;
       model.id = timesheetId;
-      const existingEntry = timesheet.timesheetEntries.find((value, i, arr) => {
-        return (
-          Date.parse(value.entryDate.toString()) ===
-          Date.parse(entry.entryDate.toString())
-        );
-      });
-      if (existingEntry) {
-        entry.id = existingEntry.id;
-      }
     } else {
       model.id = undefined;
       model.createdUserId = auth.userId;
 
-      const createdTimesheet = await createTimesheet(model);
-      timesheetId = createdTimesheet.id;
+      timesheet = await createTimesheet(model);
+      timesheetId = timesheet.id;
       model.id = timesheetId;
     }
+    for (let entryIndex = 0; entryIndex < model.entries.length; entryIndex++) {
+      const entry = model.entries[entryIndex];
+      if (timesheet.timesheetEntries) {
+        const existingEntry = timesheet.timesheetEntries.find(
+          (value, i, arr) => {
+            return (
+              Date.parse(value.entryDate.toString()) ===
+              Date.parse(entry.entryDate.toString())
+            );
+          }
+        );
+        if (existingEntry) {
+          entry.id = existingEntry.id;
+        }
+      }
 
-    if (entry.id) {
-      await updateTimesheetEntry(entry.id, {
-        userId: model.userId,
-        hoursBilled: entry.hoursBillable,
-        entryDate: entry.entryDate,
-        comments: entry.commentsBillable
-      });
-    } else {
-      entry.id = undefined;
-      entry.timesheet = model;
-      await createTimesheetEntry(entry);
+      if (entry.id) {
+        await updateTimesheetEntry(entry.id, {
+          userId: model.userId,
+          hoursBillable: entry.hoursBillable,
+          hoursUnBillable: entry.hoursUnBillable,
+          expenseAmount: entry.expenseAmount,
+          entryDate: entry.entryDate,
+          commentsBillable: entry.commentsBillable,
+          commentsUnBillable: entry.commentsUnBillable,
+          expenseComment: entry.expenseComment
+        });
+      } else {
+        entry.id = undefined;
+        entry.timesheet = model;
+        await createTimesheetEntry(entry);
+      }
     }
 
     ctx.body = await retrieveTimesheetById(timesheetId);
