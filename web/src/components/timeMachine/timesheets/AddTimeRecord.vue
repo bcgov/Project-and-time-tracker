@@ -99,7 +99,87 @@
                   </v-flex>
                 </v-flex>
               </v-tab-item>
-              <v-tab-item value="batch"></v-tab-item>
+              <v-tab-item value="batch">
+                  <v-flex class="d-flex" cols="12" sm="4">
+                  <v-flex xs12>
+                    <v-select
+                      v-model="form.mou"
+                      :rules="requiredRule"
+                      :items="mouList"
+                      item-text="name"
+                      item-value="id"
+                      label="MOU"
+                    ></v-select>
+                  </v-flex>
+                  <v-flex xs12>
+                    <v-select
+                      v-model="form.project"
+                      :rules="requiredRule"
+                      :items="projectList"
+                      item-text="projectName"
+                      item-value="id"
+                      label="Project Name"
+                      @change="onChangeProject(form.project)"
+                    ></v-select>
+                  </v-flex>
+
+                  <v-flex xs12>
+                    <v-select
+                      v-model="form.Rfx"
+                      :rules="requiredRule"
+                      :items="projectRfx"
+                      item-text="rfxName"
+                      item-value="id"
+                      label="Project Rfx"
+                      @change="onChangeProjectRfx()"
+                    ></v-select>
+                  </v-flex>
+                </v-flex>
+                <v-flex>
+                  <v-flex class="d-flex" cols="12" sm="6">
+                    <v-flex md6>
+                      <timesheets-calendar @next="checkWeekChange"></timesheets-calendar>
+                    </v-flex>
+                    <v-flex md6>
+                      <v-radio-group row v-model="recordType">
+                        <v-radio label="Hours" :value="1"></v-radio>
+                        <v-radio label="Expenses" :value="2"></v-radio>
+                        <v-radio label="Unbillable Hours" :value="3"></v-radio>
+                      </v-radio-group>
+                    </v-flex>
+                  </v-flex>
+
+                      <v-layout row>
+                        <v-flex xs6>
+                          <vc-date-picker
+                            mode="range"
+                            v-model="dateRange"
+                            is-inline
+                          />
+                        </v-flex>
+                        <v-flex xs6>
+                          <p>Start date: {{ dateRange.start | formatDate }}</p>
+                          <p>End date: {{ dateRange.end | formatDate }}</p>
+                          <p>Total days: {{ dateRangeDiffInDays }} </p>
+                        </v-flex>
+                      </v-layout>
+
+
+
+
+                  <!-- <v-flex v-show="recordType === 1">
+                    <timesheet-entry ref="Billable"></timesheet-entry>
+                  </v-flex>
+                  <v-flex v-if="recordType === 2">
+                    <add-expense ref="AddExpense"></add-expense>
+                  </v-flex>
+                  <v-flex v-show="recordType === 3">
+                    <timesheet-entry ref="NonBillable"></timesheet-entry>
+                  </v-flex> -->
+                </v-flex>
+
+
+              </v-tab-item>
             </v-tabs>
           </v-card-text>
           <v-divider class="header-divider"></v-divider>
@@ -127,6 +207,15 @@ import TimesheetsCalendar from './TimesheetsCalendar.vue';
 import AddExpense from './AddExpense.vue';
 import TimesheetEntry from './TimesheetEntry.vue';
 
+import Calendar from 'v-calendar/lib/components/calendar.umd'
+import DatePicker from 'v-calendar/lib/components/date-picker.umd'
+// import { setupCalendar} from 'v-calendar'
+
+// // main.js
+// setupCalendar({
+//   componentPrefix: 'vc'
+// });
+
 export default {
   computed: {
     mouList() {
@@ -137,6 +226,11 @@ export default {
     },
     timesheetEntryData() {
       return this.$store.state.timesheetEntryData;
+    },
+    dateRangeDiffInDays(){
+      if (this.dateRange.start && this.dateRange.end){
+        return Math.abs(moment(this.dateRange.start).diff(this.dateRange.end, 'days'));
+      }
     },
     projectList() {
       if (typeof this.form.mou !== 'undefined') {
@@ -170,6 +264,8 @@ export default {
     TimesheetsCalendar,
     AddExpense,
     TimesheetEntry,
+    // Calendar,
+    // DatePicker
   },
   data() {
     return this.initData();
@@ -420,6 +516,7 @@ export default {
         dateFormatted: undefined,
         existingTimeEntries,
         addRecordLoading: false,
+        dateRange: {start: null, end: null}
       };
     }
   },
