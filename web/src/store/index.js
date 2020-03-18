@@ -73,6 +73,7 @@ const store = new Vuex.Store({
     timesheets: [],
     unbilledTimesheets: [],
     timesheetEntries: [],
+    allTimesheets: [], // used in table view of all timesheets
     collapseNavigationBar: false,
     projectInformation: false,
     ministryInformation: false,
@@ -338,6 +339,10 @@ const store = new Vuex.Store({
           });
         }
       }
+    },
+    fetchAllTimesheets(state, data){
+      console.log('fetchAllTimesheets', data);
+      state.allTimesheets = data;
     },
     getTimeLogOfSelectedDate(state, data) {
       state.timeLogOfSelectedDate = data;
@@ -951,6 +956,11 @@ const store = new Vuex.Store({
       ctx.commit('fetchTimesheets', { data: res.data, replace: req.replace });
 
       return Promise.resolve();
+    },
+    async fetchAllTimesheets(ctx){
+      const res = await $http.get(`${API_URI}/timesheet/all`)
+      ctx.commit('fetchAllTimesheets', res.data);
+      return Promise.resolve(res.data);
     },
     async addLightTimesheet(ctx, req) {
       const body = req;

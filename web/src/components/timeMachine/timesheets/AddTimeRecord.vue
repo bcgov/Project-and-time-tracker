@@ -29,7 +29,7 @@
                 <v-flex v-if="form.mou" class="d-flex cardheadlabel2">
                   <v-flex>
                     <b>MOU amount:</b>
-                    ${{ mouList[form.mou - 1].name.replace(/\B(?=(\d{3})+(?!\d))/g, ",") }}
+                    ${{ mouAmount }}
                   </v-flex>
                   <v-flex> <b>Currently Billed:</b> $0 </v-flex>
                 </v-flex>
@@ -37,7 +37,7 @@
             </v-layout>
             <v-divider class="header-divider"></v-divider>
             <v-tabs>
-              <v-tab href="# weekly">weekly Entry</v-tab>
+              <v-tab href="# weekly">Weekly Entry</v-tab>
               <v-tab href="#batch">Batch Entry</v-tab>
               <v-tab-item value=" weekly">
                 <v-flex class="d-flex" cols="12" sm="4">
@@ -157,6 +157,12 @@ export default {
       }
       return [];
     },
+    mouAmount() {
+      if (!this.form || !this.form.mou || !this.mouList[this.form.mou - 1]){
+        return '';
+      }
+      return this.mouList[this.form.mou - 1].name.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+    }
   },
   components: {
     Snackbar,
@@ -279,31 +285,34 @@ export default {
       this.submitForm();
     },
     saveAndClose() {
-      this.submitForm();
-      this.closeDialog();
-      const weekDataBillable = [
-        { day: 'Mon', description: '', hours: 0, date: '' },
-        { day: 'Tue', description: '', hours: 0, date: '' },
-        { day: 'Wed', description: '', hours: 0, date: '' },
-        { day: 'Thu', description: '', hours: 0, date: '' },
-        { day: 'Fri', description: '', hours: 0, date: '' },
-        { day: 'Sat', description: '', hours: 0, date: '' },
-        { day: 'Sun', description: '', hours: 0, date: '' },
-      ];
-      const weekDataUnBillable = [
-        { day: 'Mon', description: '', hours: 0, date: '' },
-        { day: 'Tue', description: '', hours: 0, date: '' },
-        { day: 'Wed', description: '', hours: 0, date: '' },
-        { day: 'Thu', description: '', hours: 0, date: '' },
-        { day: 'Fri', description: '', hours: 0, date: '' },
-        { day: 'Sat', description: '', hours: 0, date: '' },
-        { day: 'Sun', description: '', hours: 0, date: '' },
-      ];
-      this.$refs.Billable.weekData = weekDataBillable;
-      this.$refs.NonBillable.weekData = weekDataUnBillable;
+      if (this.$refs.AddimeRecords.validate()) {
+        this.submitForm();
+        this.closeDialog();
+        const weekDataBillable = [
+          { day: 'Mon', description: '', hours: 0, date: '' },
+          { day: 'Tue', description: '', hours: 0, date: '' },
+          { day: 'Wed', description: '', hours: 0, date: '' },
+          { day: 'Thu', description: '', hours: 0, date: '' },
+          { day: 'Fri', description: '', hours: 0, date: '' },
+          { day: 'Sat', description: '', hours: 0, date: '' },
+          { day: 'Sun', description: '', hours: 0, date: '' },
+        ];
+        const weekDataUnBillable = [
+          { day: 'Mon', description: '', hours: 0, date: '' },
+          { day: 'Tue', description: '', hours: 0, date: '' },
+          { day: 'Wed', description: '', hours: 0, date: '' },
+          { day: 'Thu', description: '', hours: 0, date: '' },
+          { day: 'Fri', description: '', hours: 0, date: '' },
+          { day: 'Sat', description: '', hours: 0, date: '' },
+          { day: 'Sun', description: '', hours: 0, date: '' },
+        ];
+        this.$refs.Billable.weekData = weekDataBillable;
+        this.$refs.NonBillable.weekData = weekDataUnBillable;
+      }
     },
     submitForm() {
       if (this.$refs.AddimeRecords.validate()) {
+        console.log('submitForm called, valid');
         const billableDetails = this.$refs.Billable.onBillableclick();
         const nonBillableDetails = this.$refs.NonBillable.nonBillableclick();
 
@@ -412,7 +421,7 @@ export default {
         existingTimeEntries,
         addRecordLoading: false,
       };
-    },
+    }
   },
 };
 </script>

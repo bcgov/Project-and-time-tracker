@@ -55,6 +55,17 @@ export const retrieveTimesheetById = async (id: string) => {
   return res;
 };
 
+export const retrieveAllTimesheets = async () => {
+  const repo = timesheetRepo();
+  return await repo
+    .createQueryBuilder('t')
+    .innerJoinAndSelect('t.projectRfx', 'pr')
+    .innerJoinAndSelect('t.project', 'p')
+    .innerJoinAndSelect('t.mou', 'm')
+    .leftJoinAndSelect('t.timesheetEntries', 'te')
+    .getMany()
+};
+
 export const retrieveForLightTimesheet = async model => {
   const repo = timesheetRepo();
   const res = await repo
@@ -106,21 +117,32 @@ export const retrieveForLightTimesheetPreview = async (
 };
 
 export const retrieveTimesheets = async (
-  projectId: string,
-  startDate: Date,
-  endDate: Date
+  projectId?: string,
+  startDate?: Date,
+  endDate?: Date
 ) => {
   const repo = timesheetRepo();
 
-  return await repo
+  let ret = await repo
     .createQueryBuilder('t')
     .innerJoinAndSelect('t.projectRfx', 'pr')
     .innerJoinAndSelect('t.project', 'p')
     .innerJoinAndSelect('t.rfxPhase', 'rp')
     .leftJoinAndSelect('t.timesheetEntries', 'te')
-    .where(
-      't."projectId" = :projectId AND t."startDate" >= :startDate AND t."endDate" <= :endDate',
-      { projectId: projectId, startDate: startDate, endDate: endDate }
-    )
-    .getMany();
+    // .where(
+    //   't."projectId" = :projectId AND t."startDate" >= :startDate AND t."endDate" <= :endDate',
+    //   { projectId: projectId, startDate: startDate, endDate: endDate }
+    // )
+    // .getMany();
+
+
+  // Only use query params if provided, otherwise return all items
+  if (projectId && startDate && endDate ){
+    ret = ret.where(
+        't."projectId" = :projectId AND t."startDate" >= :startDate AND t."endDate" <= :endDate',
+        { projectId: projectId, startDate: startDate, endDate: endDate }
+      )
+  }
+
+  return ret.getMany();
 };
