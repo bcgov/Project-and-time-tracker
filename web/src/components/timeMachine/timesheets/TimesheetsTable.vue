@@ -14,7 +14,7 @@
             class="search-bar"
             v-model="search"
             append-icon="search"
-            label="Filter Projects"
+            label="Search Project"
             single-line
             hide-details
           ></v-text-field>
@@ -44,13 +44,13 @@
         >
           <template slot="items" slot-scope="props">
             <td class="text-xs-left">{{ props.item.startDate }} </td>
-            <td class="text-xs-left"> {{ props.item.mou.name }} </td>
+            <!-- <td class="text-xs-left"> {{ props.item.mou.name }} </td> -->
             <!-- <td class="text-xs-left">{{ props.item.projectName}} </td> -->
             <td class="text-xs-left"> {{ props.item.project.projectName }} </td>
             <td class="text-xs-left">
               $$$
             </td>
-            <td class="text-xs-left"> legal $$$ </td>
+            <!-- <td class="text-xs-left"> legal $$$ </td> -->
             <td class="text-xs-left"> TODO hours for  </td>
             <td class="text-xs-center">
               <v-tooltip top>
@@ -105,12 +105,11 @@ export default {
       dialog: false,
       search: '',
       headers: [
-        // TODO: UPDATE VALUES HERE!
         { text: 'Date of Entry', value: 'startDate', align: 'left', sortable: true },
-        { text: 'MOU', value: 'mou.name', align: 'left', sortable: true },
+        // { text: 'MOU', value: 'mou.name', align: 'left', sortable: true },
         { text: 'Proj. Name', value: 'project.projectName', sortable: true },
         { text: 'Budget Remaining', value: 'projectBackup', sortable: false },
-        { text: 'Legal Billing', value: 'completionDate', sortable: true },
+        // { text: 'Legal Billing', value: 'completionDate', sortable: true },
         { text: 'Hours Accrued', value: 'dateModified', sortable: true },
         { text: 'Actions', value: 'is_archived', align: 'center', width: '145px', sortable: false,
         },
@@ -126,6 +125,14 @@ export default {
       return this.$store.state.projectsRfx;
     },
     allTimesheets() {
+      if (this.search){
+        return this.$store.state.allTimesheets
+          .filter(item => {
+            return item.project.projectName
+              .toLowerCase()
+              .includes(this.search.toLowerCase())
+          });
+      }
       return this.$store.state.allTimesheets;
     }
   },
