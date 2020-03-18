@@ -47,9 +47,9 @@
             <!-- <td class="text-xs-left"> {{ props.item.mou.name }} </td> -->
             <!-- <td class="text-xs-left">{{ props.item.projectName}} </td> -->
             <td class="text-xs-left"> {{ props.item.project.projectName }} </td>
-            <td class="text-xs-left">
+            <!-- <td class="text-xs-left">
               $$$
-            </td>
+            </td> -->
             <!-- <td class="text-xs-left"> legal $$$ </td> -->
             <td class="text-xs-left"> TODO hours for  </td>
             <td class="text-xs-center">
@@ -108,7 +108,7 @@ export default {
         { text: 'Date of Entry', value: 'startDate', align: 'left', sortable: true },
         // { text: 'MOU', value: 'mou.name', align: 'left', sortable: true },
         { text: 'Proj. Name', value: 'project.projectName', sortable: true },
-        { text: 'Budget Remaining', value: 'projectBackup', sortable: false },
+        // { text: 'Budget Remaining', value: 'projectBackup', sortable: false },
         // { text: 'Legal Billing', value: 'completionDate', sortable: true },
         { text: 'Hours Accrued', value: 'dateModified', sortable: true },
         { text: 'Actions', value: 'is_archived', align: 'center', width: '145px', sortable: false,
