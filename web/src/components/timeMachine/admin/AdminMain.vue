@@ -7,7 +7,7 @@
     </v-layout>
     <v-layout row wrap>
       <v-flex xs12>
-        <a href="AUTH_URL">Keycloak - IAM</a>
+        <a v-bind:href='AUTH_URL'>Keycloak - IAM</a>
 
         <br>
         <!-- <a href="">Ministries</a> -->
@@ -27,7 +27,7 @@ export default {
   data: () => ({
     color: Material,
     selectedTab: 'tab-1',
-    AUTH_URL: getAuthURL()
+    AUTH_URL: getAuthURL() + '/admin'
   }),
   beforeMount() {
     // this.$store.state.collapseNavigationBar = true;
