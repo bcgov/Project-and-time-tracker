@@ -8,13 +8,21 @@
     </v-layout>
     <v-layout row wrap>
       <v-flex xs12>
-        <p>Welcome to ministries list</p>
-        <ul>
-          <li><b>TODO</b></li>
-          <li>Create New Ministries</li>
-        </ul>
-
-        <v-btn @click="createMinistryPrompt()">Create New Ministry</v-btn>
+        <v-layout>
+          <v-flex sm-6>
+            <v-btn @click="createMinistryPrompt()">Create New Ministry</v-btn>
+          </v-flex>
+          <v-flex sm-6>
+            <v-text-field
+              class="search-bar"
+              v-model="search"
+              append-icon="search"
+              label="Search Project"
+              single-line
+              hide-details
+            ></v-text-field>
+          </v-flex>
+        </v-layout>
 
         <v-data-table :headers="headers" :items="allMinistries" class="elevation-1">
           <template v-slot:items="props">
@@ -22,26 +30,21 @@
 
             <td v-if="!props.item.is_archived" @click="archivePrompt(props.item, true)">
               <v-btn flat color="grey">
-                <v-icon>archive</v-icon>
-                Archive
+                <v-icon>archive</v-icon>Archive
               </v-btn>
             </td>
             <td v-else @click="archivePrompt(props.item, false)">
-              <v-btn flat >
-              Restore
-              </v-btn>
+              <v-btn flat>Restore</v-btn>
             </td>
           </template>
         </v-data-table>
       </v-flex>
     </v-layout>
 
-
-
-   <v-dialog v-model="dialog" persistent max-width="600px">
+    <v-dialog v-model="dialog" persistent max-width="600px">
       <!-- <template v-slot:activator="{ on }">
         <v-btn color="primary" dark v-on="on">Open Dialog</v-btn>
-      </template> -->
+      </template>-->
       <v-card>
         <v-card-title>
           <span class="headline">Create Ministry</span>
@@ -62,8 +65,6 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-
-
   </v-container>
 </template>
 
@@ -85,25 +86,35 @@ export default {
         { text: "Actions", value: "actions", value: "is_archived" }
       ],
       dialog: false,
-      newMinistryName: '',
+      newMinistryName: "",
+      search: '',
     };
   },
   computed: {
-    ministries() {
-      return this.$store.state.ministries;
-    },
-    allMinistries(){
+    // ministries() {
+    //   return this.$store.state.ministries;
+    // },
+    allMinistries() {
       // TODO - Need to
+      if (this.search){
+        return this.$store.state.allMinistries
+          .filter(item => {
+            return item.ministryName
+              .toLowerCase()
+              .includes(this.search.toLowerCase())
+          });
+      }
       return this.$store.state.allMinistries;
-    },
+    }
   },
   methods: {
     async archivePrompt(item, archiveVal) {
       if (
         await this.$refs.confirm.open(
           "info",
-          archiveVal ? `Are you sure to archive ${item.ministryName}?`
-          : `Are you sure you wish to UN-ARCHIVE (i.e. restore) ${item.ministryName}?`
+          archiveVal
+            ? `Are you sure to archive ${item.ministryName}?`
+            : `Are you sure you wish to UN-ARCHIVE (i.e. restore) ${item.ministryName}?`
         )
       ) {
         item.is_archived = archiveVal;
@@ -111,20 +122,20 @@ export default {
         this.$store.dispatch("fetchAllMinistries");
       }
     },
-    createMinistryPrompt(){
-      console.log('create ministry!');
+    createMinistryPrompt() {
+      console.log("create ministry!");
       this.dialog = true;
     },
-    async createMinistry(name){
-      console.log('createMinistry', {name});
-      await this.$store.dispatch('addMinistry', {ministryName: name});
+    async createMinistry(name) {
+      console.log("createMinistry", { name });
+      await this.$store.dispatch("addMinistry", { ministryName: name });
       this.dialog = false; // Close window
-      this.$store.dispatch('fetchAllMinistries');
+      this.$store.dispatch("fetchAllMinistries");
       // TODO - Need to refresh!
     }
   },
-  created(){
-    this.$store.dispatch('fetchAllMinistries');
+  created() {
+    this.$store.dispatch("fetchAllMinistries");
   }
 };
 </script>
