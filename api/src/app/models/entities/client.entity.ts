@@ -6,20 +6,20 @@ export class Client {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'int', nullable: true })
-  clientNo: number;
+  @Column({ type: 'text', nullable: true })
+  clientNo: string;
 
-  @Column({ type: 'int', nullable: true })
-  responsibilityCenter: number;
+  @Column({ type: 'text', nullable: true })
+  responsibilityCenter: string;
 
-  @Column({ type: 'int', nullable: true })
-  serviceCenter: number;
+  @Column({ type: 'text', nullable: true })
+  serviceCenter: string;
 
-  @Column({ type: 'int', nullable: true })
-  stob: number;
+  @Column({ type: 'text', nullable: true })
+  stob: string;
 
-  @Column({ type: 'int', nullable: true })
-  projectCode: number;
+  @Column({ type: 'text', nullable: true })
+  projectCode: string;
 
   @ManyToOne(type => Ministry)
   ministry: Ministry;

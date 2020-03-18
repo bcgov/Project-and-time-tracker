@@ -37,11 +37,11 @@ export namespace IntakeData {
 
   export const genClients = (ministry: IMinistry): IClient => ({
     id: chance.guid(),
-    clientNo: chance.integer({ min: 3, max: 3 }),
-    responsibilityCenter: chance.integer({ min: 5, max: 5 }),
-    serviceCenter: chance.integer({ min: 5, max: 5 }),
-    stob: chance.integer({ min: 4, max: 4 }),
-    projectCode: chance.integer({ min: 7, max: 7 }),
+    clientNo: chance.string(),
+    responsibilityCenter: chance.string(),
+    serviceCenter: chance.string(),
+    stob: chance.string(),
+    projectCode: chance.string(),
     // end finance codes
     ministry,
     orgDivision: chance.word({ length: 4 }),

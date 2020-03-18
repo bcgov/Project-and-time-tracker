@@ -50,19 +50,19 @@ const validateFinanceCodes = (client: IClient) => {
 
   // Business validation: Start.
   if (client.clientNo.toString().length !== 3) {
-    validationErrors.push('Client No should be a 3 digit number.');
+    validationErrors.push('Client No should be exactly 3 characters.');
   }
   if (client.responsibilityCenter.toString().length !== 5) {
-    validationErrors.push('Responsibility Center should be a 5 digit number.');
+    validationErrors.push('Responsibility Center should be exactly 5 characters.');
   }
   if (client.serviceCenter.toString().length !== 5) {
-    validationErrors.push('Service Center should be a 5 digit number.');
+    validationErrors.push('Service Center should be exactly 5 characters.');
   }
   if (client.stob.toString().length !== 4) {
-    validationErrors.push('STOB should be a 4 digit number.');
+    validationErrors.push('STOB should be exactly 4 characters.');
   }
   if (client.projectCode.toString().length !== 7) {
-    validationErrors.push('Project Code should be a 7 digit number.');
+    validationErrors.push('Project Code should be exactly 7 characters.');
   }
   // Business validation: End.
 

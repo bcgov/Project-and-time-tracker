@@ -2,11 +2,11 @@ import { IMinistry } from './i-ministry';
 
 export interface IClient {
   id: string;
-  clientNo: number;
-  responsibilityCenter: number;
-  serviceCenter: number;
-  stob: number;
-  projectCode: number;
+  clientNo: string;
+  responsibilityCenter: string;
+  serviceCenter: string;
+  stob: string;
+  projectCode: string;
   ministry?: IMinistry;
   orgDivision: string;
   email: string;
