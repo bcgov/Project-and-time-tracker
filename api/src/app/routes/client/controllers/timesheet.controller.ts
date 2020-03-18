@@ -290,7 +290,9 @@ const validateCreateTimesheet = async (timesheet: ITimesheet) => {
   if (!timesheet.mou) {
     validationErrors.push('MOU is required.');
   }
-
+  if (!timesheet.userId) {
+    validationErrors.push('User is required.');
+  }
   // if (timesheet.entries && timesheet.entries.length > 0) {
   //   const errors = await validateUpdateTimesheet(timesheet);
   //   validationErrors.push(...errors);
