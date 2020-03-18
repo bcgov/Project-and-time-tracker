@@ -64,6 +64,7 @@ export const getTimesheetEntries = async (ctx: Koa.Context) => {
 };
 export const getAllTimesheets = async (ctx: Koa.Context) => {
   try {
+    // TODO - If user is NOT admin, return only the sheets by user id?
     ctx.body = await retrieveAllTimesheets();
   } catch (err) {
     ctx.throw(err.message);

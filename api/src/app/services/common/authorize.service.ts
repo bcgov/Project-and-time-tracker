@@ -50,6 +50,7 @@ const commonForPSBAdminAndUser = [
   'POST/timesheet/',
   'POST/timesheet/light',
   'POST/timesheet/getLight',
+  'GET/timesheet/all',
   'PATCH/timesheet/:id',
   'DELETE/timesheet/:id',
   'POST/MOU/',
@@ -72,7 +73,6 @@ const permissions = {
     'GET/project-risk/',
     'GET/project-risk/:id',
     'PATCH/project-risk/:id',
-    'GET/timesheet/all',
     ...commonForPSBAdminAndUser
   ],
   PSB_User: [
