@@ -67,3 +67,6 @@ export default (next, roles, isLoggedIn = false) => {
       console.log('failed to login');
     });
 };
+
+/** Returns link to Keycloak server, useful for admins to login */
+export function getAuthURL() { return keycloakAuth.authServerUrl}
