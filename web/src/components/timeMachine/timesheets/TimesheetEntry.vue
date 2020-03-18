@@ -31,7 +31,7 @@
             <v-text-field v-model="item.description"></v-text-field>
           </v-flex>
           <v-flex md2>
-            <v-tooltip top>
+            <v-tooltip top open-delay='500'>
               <template v-slot:activator="{ on }">
                 <v-btn flat icon @click="copyfunc(item.hours, item.description)" v-on="on">
                   <v-icon>file_copy</v-icon>
@@ -40,7 +40,7 @@
               <span>Copy</span>
             </v-tooltip>
 
-            <v-tooltip top>
+            <v-tooltip top open-delay='500'>
               <template v-slot:activator="{ on }">
                 <v-btn flat icon @click="pastefunc(index)" v-on="on">
                   <v-icon>post_add</v-icon>

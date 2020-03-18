@@ -37,7 +37,7 @@
             </v-layout>
             <v-divider class="header-divider"></v-divider>
             <v-tabs>
-              <v-tab href="# weekly">weekly Entry</v-tab>
+              <v-tab href="# weekly">Weekly Entry</v-tab>
               <v-tab href="#batch">Batch Entry</v-tab>
               <v-tab-item value=" weekly">
                 <v-flex class="d-flex" cols="12" sm="4">
