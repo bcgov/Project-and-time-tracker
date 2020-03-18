@@ -29,11 +29,9 @@
                 <v-flex v-if="form.mou" class="d-flex cardheadlabel2">
                   <v-flex>
                     <b>MOU amount:</b>
-                    ${{mouList[form.mou-1].name.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}}
+                    ${{ mouList[form.mou - 1].name.replace(/\B(?=(\d{3})+(?!\d))/g, ",") }}
                   </v-flex>
-                  <v-flex>
-                    <b>Currently Billed:</b> $0
-                  </v-flex>
+                  <v-flex> <b>Currently Billed:</b> $0 </v-flex>
                 </v-flex>
               </v-flex>
             </v-layout>
@@ -72,7 +70,7 @@
                       item-text="rfxName"
                       item-value="id"
                       label="Project Rfx"
-                       @change="onChangeProjectRfx()"
+                      @change="onChangeProjectRfx()"
                     ></v-select>
                   </v-flex>
                 </v-flex>
@@ -109,7 +107,9 @@
             <v-flex class="add-btns">
               <v-btn class="btn-normal">EXPORT TIMESHEET</v-btn>
               <v-btn class="btn-normal">SAVE AND COPY</v-btn>
-              <v-btn class="add-new-row" color="primary" @click="submitForm()">SAVE AND CLOSE</v-btn>
+              <v-btn class="add-new-row" color="primary" @click="submitForm()"
+                >SAVE AND CLOSE</v-btn
+              >
             </v-flex>
           </v-card-actions>
         </v-card>
@@ -143,9 +143,7 @@ export default {
         if (mouProjects.length === 0) {
           return [];
         }
-        const Projects = mouProjects.filter(
-          item => item.mou.id === this.form.mou,
-        );
+        const Projects = mouProjects.filter(item => item.mou.id === this.form.mou);
         if (Projects.length > 0) {
           return Projects;
         }
@@ -175,7 +173,7 @@ export default {
   },
   methods: {
     async checkWeekChange(e) {
-     this.getTimeEntries(e._i);
+      this.getTimeEntries(e._i);
     },
     async getTimeEntries(date) {
       const weekData = [
@@ -197,10 +195,9 @@ export default {
         userId: this.form.userId,
       };
       const vm = this;
-      vm.$store.dispatch('fetchTimesheetEntries', formData)
-        .then(() => {
-          vm.initTimeEntries(vm.$store.state.timesheetEntryData);
-        });
+      vm.$store.dispatch('fetchTimesheetEntries', formData).then(() => {
+        vm.initTimeEntries(vm.$store.state.timesheetEntryData);
+      });
     },
     formatWeekData(weekData) {
       const weeks = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -239,7 +236,7 @@ export default {
       this.$store.dispatch('fetchProjectRFxData', { id: projectId });
     },
     onChangeProjectRfx() {
-      this.getTimeEntries(date);
+      this.getTimeEntries(this.$store.state.timesheetsWeek.startDate);
     },
     getDateInYYYYMMDD(date) {
       // year
@@ -277,62 +274,57 @@ export default {
           };
           timeEntries.push(entry);
           if (billableDetails.length > 0) {
-            const billable = billableDetails.filter(item => item.date === timeEntries[index].entryDate);
+            const billable = billableDetails.filter(
+              item => item.date === timeEntries[index].entryDate,
+            );
             if (billable[0]) {
               timeEntries[index].hoursBillable = billable[0].hours === '' ? 0 : billable[0].hours;
               timeEntries[index].commentsBillable = billable[0].description;
             }
-            if (nonBillableDetails.length > 0) {
-              const unBillable = nonBillableDetails.filter(
-                item => item.date === timeEntries[index].entryDate,
-              );
-              if (unBillable[0]) {
-                timeEntries[index].hoursUnBillable = unBillable[0].hours === '' ? 0 : unBillable[0].hours;
-                timeEntries[index].commentsUnBillable = unBillable[0].description;
-              }
-            }
           }
 
-          const formData = {
-            entries: timeEntries,
-            mou: this.form.mou,
-            project: this.form.project,
-            projectRfx: this.form.Rfx,
-            startDate: this.$store.state.timesheetsWeek.startDate,
-            endDate: this.$store.state.timesheetsWeek.endDate,
-            userId: this.form.userId,
-          };
-          this.$refs.spinner.open();
-          this.$store.dispatch('addLightTimesheet', formData).then(
-            () => {
-              this.$refs.snackbar.displaySnackbar(
-                'success',
-                'Successfully added time entries.',
-              );
-              this.$refs.spinner.close();
-            },
-            (err) => {
-              this.$refs.spinner.close();
-              if (err && err.response && err.response.data) {
-                const { message } = err.response.data.error;
-                this.$refs.snackbar.displaySnackbar('error', message);
-              } else {
-                this.$refs.snackbar.displaySnackbar(
-                  'error',
-                  'Timesheet entery Error',
-                );
-              }
-            },
-          );
+          if (nonBillableDetails.length > 0) {
+            const unBillable = nonBillableDetails.filter(
+              item => item.date === timeEntries[index].entryDate,
+            );
+            if (unBillable[0]) {
+              timeEntries[index].hoursUnBillable = unBillable[0].hours === '' ? 0 : unBillable[0].hours;
+              timeEntries[index].commentsUnBillable = unBillable[0].description;
+            }
+          }
         }
+
+        const formData = {
+          entries: timeEntries,
+          mou: this.form.mou,
+          project: this.form.project,
+          projectRfx: this.form.Rfx,
+          startDate: this.$store.state.timesheetsWeek.startDate,
+          endDate: this.$store.state.timesheetsWeek.endDate,
+          userId: this.form.userId,
+        };
+        this.$refs.spinner.open();
+        this.$store.dispatch('addLightTimesheet', formData).then(
+          () => {
+            this.$refs.snackbar.displaySnackbar('success', 'Successfully added time entries.');
+            this.$refs.spinner.close();
+          },
+          (err) => {
+            this.$refs.spinner.close();
+            if (err && err.response && err.response.data) {
+              const { message } = err.response.data.error;
+              this.$refs.snackbar.displaySnackbar('error', message);
+            } else {
+              this.$refs.snackbar.displaySnackbar('error', 'Timesheet entery Error');
+            }
+          },
+        );
       }
     },
     open() {
       this.dialog = true;
       setTimeout(() => {
-        document.getElementsByClassName(
-          'v-dialog v-dialog--active',
-        )[0].scrollTop = 0;
+        document.getElementsByClassName('v-dialog v-dialog--active')[0].scrollTop = 0;
       }, 400);
     },
     closeDialog() {
@@ -362,9 +354,7 @@ export default {
         recordType: 1,
         valid: true,
         requiredRule: [v => !!v || 'This field required'],
-        requireRadioButtondRule: [
-          v => ((v || !v) && v != null) || 'This field required',
-        ],
+        requireRadioButtondRule: [v => ((v || !v) && v != null) || 'This field required'],
         dialog: false,
         menu1: false,
         form: { ...form },
