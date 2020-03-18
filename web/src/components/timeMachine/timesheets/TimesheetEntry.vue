@@ -4,7 +4,7 @@
 
     <v-form ref="form" v-model="valid" lazy-validation id="timesheet-entry" class="timesheet-entry">
       <spinner ref="spinner"></spinner>
-      {{formatDate($store.state.timesheetsWeek.startDate)}}
+      <!-- {{formatDate($store.state.timesheetsWeek.startDate)}} -->
       <v-container grid-list-xl>
         <v-layout row wrap>
           <v-flex md1>Day</v-flex>
@@ -96,6 +96,7 @@ export default {
       addRecordLoading: false,
       itemHours: "",
       itemDescription: "",
+      weekDates: [],
       startDate: sessionStorage.getItem("selectedStartDate"),
       //  weekData: {MondayHours:''}
       weekData: [
@@ -164,15 +165,34 @@ export default {
         if (day.length < 2) day = "0" + day;
         dates.push([year, month, day].join("-"));
       }
+      this.weekDates = dates;
       return dates;
     },
     onBillableclick() {
+      this.formatDate(this.$store.state.timesheetsWeek.startDate);
+      this.weekData[0].date = this.weekDates[0];
+      this.weekData[1].date = this.weekDates[1];
+      this.weekData[2].date = this.weekDates[2];
+      this.weekData[3].date = this.weekDates[3];
+      this.weekData[4].date = this.weekDates[4];
+      this.weekData[5].date = this.weekDates[5];
+      this.weekData[6].date = this.weekDates[6];
+      console.log(this.weekData);
       // this.$store.state.billableDetails = this.weekData;
       return this.weekData;
     },
     nonBillableclick() {
+      this.formatDate(this.$store.state.timesheetsWeek.startDate);
+      this.weekData[0].date = this.weekDates[0];
+      this.weekData[1].date = this.weekDates[1];
+      this.weekData[2].date = this.weekDates[2];
+      this.weekData[3].date = this.weekDates[3];
+      this.weekData[4].date = this.weekDates[4];
+      this.weekData[5].date = this.weekDates[5];
+      this.weekData[6].date = this.weekDates[6];
       // this.$store.state.billableDetails = this.weekData;
-     return this.weekData;
+       console.log(this.weekData);
+      return this.weekData;
     },
     copyfunc(hours, description) {
       this.itemHours = hours;
