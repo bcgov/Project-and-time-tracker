@@ -138,24 +138,17 @@ export default {
     timesheetEntryData() {
       return this.$store.state.timesheetEntryData;
     },
-    // Had issue with this not updating on change, so saving to local var
     projectList() {
-      // console.log('projectList called', this.form.mou);
       if (typeof this.form.mou !== 'undefined') {
         const mouProjects = this.$store.state.projects.filter(item => item.mou);
-        // console.log('projectList, @mouProj', {mouProjects, projects: this.$store.state.projects})
         if (mouProjects.length === 0) {
-          // console.log('projectList @mouProj EMPTY, RETURN []')
           return [];
         }
-        // console.log('projectList, before Projects');
         const Projects = mouProjects.filter(item => item.mou.id === this.form.mou);
-        // console.log('projectList END', {mouProjects, Projects})
         if (Projects.length > 0) {
           return Projects;
         }
       }
-      // console.log('projectList return []')
       return [];
     },
     projectRfx() {
