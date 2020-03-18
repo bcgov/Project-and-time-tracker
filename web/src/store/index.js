@@ -261,7 +261,7 @@ const store = new Vuex.Store({
           project.projectLeadUserId = project.leadUserId;
 
           project.projectBackupUserId = project.backupUserId;
-
+          project.ministryInformation = project.ministryInformation
           const exists = state.projects.filter(item => item.id === project.id) || [];
           console.log('fetchProjects, exists?', exists.length > 0)
 
