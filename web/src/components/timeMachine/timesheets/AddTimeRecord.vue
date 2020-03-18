@@ -66,6 +66,7 @@
                   <v-flex xs12>
                     <v-select
                       v-model="form.Rfx"
+                      :rules="requiredRule"
                       :items="projectRfx"
                       item-text="rfxName"
                       item-value="id"
