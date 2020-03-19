@@ -210,8 +210,9 @@ const store = new Vuex.Store({
       // state.ministries = data;
       // throw new Error('Not implemented');
     },
-    updateUser() {
-      throw new Error('Not implemented!');
+    updateUser(state, data) {
+      // throw new Error('Not implemented!');
+      console.log('TODO', {users: state.users, data});
     },
     deleteUser() {
       throw new Error('Not implemented!');
@@ -630,6 +631,11 @@ const store = new Vuex.Store({
           const content = res.data;
           ctx.commit('updateContact', content);
         });
+    },
+    updateContactPartial(ctx, req) {
+      const body = req;
+      return $http
+        .patch(`${API_URI}/contact/${req.id}/partial`, body)
     },
     deleteContact(ctx, req) {
       $http

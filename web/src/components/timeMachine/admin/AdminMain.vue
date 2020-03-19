@@ -2,7 +2,7 @@
   <v-container grid-list-xl fluid class="custom-manage-projects-container">
     <v-layout>
       <v-flex md12>
-        <h1 class="projects-header">Admin Main</h1>
+        <h1 class="projects-header">Admin</h1>
       </v-flex>
     </v-layout>
     <v-layout row wrap>
@@ -25,6 +25,17 @@
                 <a v-bind:href="AUTH_URL">Keycloak - IAM</a>
               </v-list-tile-title>
               <v-list-tile-sub-title>Login to Keycloak - to manage users.</v-list-tile-sub-title>
+            </v-list-tile-content>
+          </v-list-tile>
+
+
+
+          <v-list-tile avatar>
+            <v-list-tile-content>
+              <v-list-tile-title>
+                <router-link to="admin/hourly-rates">Set hourly rates</router-link>
+              </v-list-tile-title>
+              <v-list-tile-sub-title>Set hourly rates for users.</v-list-tile-sub-title>
             </v-list-tile-content>
           </v-list-tile>
         </v-list>
