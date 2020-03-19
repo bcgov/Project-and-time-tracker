@@ -282,7 +282,7 @@ export default {
   },
   methods: {
     getDatePart(date) {
-      debugger;
+      // debugger;
       const dateTime = moment(date);
 
       const dateValue = moment({

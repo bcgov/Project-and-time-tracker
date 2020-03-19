@@ -13,6 +13,7 @@
                         :items="allProjects"
                         item-text="projectName"
                         item-value="id"
+                        v-model="props.item.projectId"
                         label="Project Name">
                         <!-- TODO - Truncate name if Proj name too long -->
                         <!-- <template v-slot:selection='{item}'>
@@ -21,19 +22,19 @@
                   </v-select>
               </td>
               <td>
-                <v-text-field type='number' single-line label='Hours'></v-text-field>
+                <v-text-field type='number' single-line label='Hours' v-model="props.item.monday.hoursBillable"></v-text-field>
               </td>
               <td>
-                <v-text-field type='number' single-line label='Hours'></v-text-field>
+                <v-text-field type='number' single-line label='Hours' v-model="props.item.tuesday.hoursBillable"></v-text-field>
               </td>
               <td>
-                <v-text-field type='number' single-line label='Hours'></v-text-field>
+                <v-text-field type='number' single-line label='Hours' v-model="props.item.wednesday.hoursBillable"></v-text-field>
               </td>
               <td>
-                <v-text-field type='number' single-line label='Hours'></v-text-field>
+                <v-text-field type='number' single-line label='Hours' v-model="props.item.thursday.hoursBillable"></v-text-field>
               </td>
               <td>
-                <v-text-field type='number' single-line label='Hours'></v-text-field>
+                <v-text-field type='number' single-line label='Hours' v-model="props.item.friday.hoursBillable"></v-text-field>
               </td>
               <td>
 
@@ -47,7 +48,7 @@
                   >
                     <v-text-field
                       v-model="props.item.commentsBillable"
-                      label="Rate"
+                      label="Comments"
                       single-line
                     ></v-text-field>
                   </template>
@@ -60,68 +61,27 @@
 
     <v-flex>
         <v-btn @click='addRow'>Add another entry</v-btn>
+        <pre>
+          {{ weekEntries }}
+          <!-- {{ submit() }} -->
+        </pre>
     </v-flex>
-
-
-
-
-
-     <!-- <v-form ref="form" v-model="valid" lazy-validation class="timesheet-entry">
-      <spinner ref="spinner"></spinner>
-      <v-container grid-list-xl>
-        <v-layout row wrap>
-          <v-flex md1>Day</v-flex>
-          <v-flex md2>Hours</v-flex>
-
-          <v-flex md8>Description</v-flex>
-          <v-flex md1></v-flex>
-        </v-layout>
-
-        <v-layout v-for="(item, index) in weekData" :key="item.day" class="time-records">
-          <v-flex md1>{{ item.day }}</v-flex>
-          <v-flex md2>
-            <v-text-field
-              type="number"
-              max="24"
-              step="0.1"
-              min="0"
-              oninput="validity.valid||(value=0);"
-              v-model="item.hours"
-            ></v-text-field>
-          </v-flex>
-
-          <v-flex md8>
-            <v-text-field v-model="item.description"></v-text-field>
-          </v-flex>
-          <v-flex md2>
-            <v-tooltip top open-delay='500'>
-              <template v-slot:activator="{ on }">
-                <v-btn flat icon @click="copyfunc(item.hours, item.description)" v-on="on">
-                  <v-icon>file_copy</v-icon>
-                </v-btn>
-              </template>
-              <span>Copy</span>
-            </v-tooltip>
-
-            <v-tooltip top open-delay='500'>
-              <template v-slot:activator="{ on }">
-                <v-btn flat icon @click="pastefunc(index)" v-on="on">
-                  <v-icon>post_add</v-icon>
-                </v-btn>
-              </template>
-              <span>Paste</span>
-            </v-tooltip>
-
-          </v-flex>
-        </v-layout>
-      </v-container>
-    </v-form> -->
 
 
   </v-layout>
 </template>
 <script>
-import Spinner from '../common/Spinner'
+import Spinner from '../common/Spinner';
+import moment from 'moment';
+
+const timesheetEntryDays = [
+  'monday',
+  'tuesday',
+  'wednesday',
+  'thursday',
+  'friday'
+];
+
 export default {
   components: {
     Spinner
@@ -129,6 +89,9 @@ export default {
   computed: {
     allProjects() {
       return this.$store.state.projects;
+    },
+    selectedStartDate(){
+      return this.$store.state.timesheetsWeek.startDate;
     }
   },
   data(){
@@ -155,20 +118,77 @@ export default {
       ]
     }
   },
+  watch: {
+    selectedStartDate(newDate, oldDate){
+      console.log('WATCH, selected start date', {newDate, oldDate, calculated: this.calculateDate()});
+    }
+  },
   methods: {
     createEmptyWeekEntry(){
+
+        return timesheetEntryDays.map(dayString => {
+          const obj = {}
+          obj[dayString] = {
+            hoursBillable: undefined,
+            hoursUnBillable: undefined,
+          }
+          return obj;
+        })[0];
+    },
+    calculateDate(){
+      const startDate = this.selectedStartDate;
+      const monday = moment(startDate).startOf('week')
+      const tuesday = monday.clone().add('1', 'day');
+      const wednesday = tuesday.clone().add('1', 'day');
+      const thursday = wednesday.clone().add('1', 'day');
+      const friday = thursday.clone().add('1', 'day');
       return {
-        // project: undefined
-        // monday: undefined,
-        // tuesday: undefined,
-        // wednesday: undefined,
-        // thursday: undefined
-        // friday: undefined
-        // comments: undefined
+        monday,
+        tuesday,
+        wednesday,
+        thursday,
+        friday
       }
     },
     addRow(){
       this.weekEntries.push(this.createEmptyWeekEntry());
+    },
+    submit(){
+      // TODO - validate
+
+      // GOAL: Prepare data similar to DB structure, make inserting easier.
+
+      // create one Timesheet per row
+        // create one Timesheet entry per day
+
+      const calendarDates = this.calculateDate();
+
+      const timesheets = this.weekEntries.map(weekEntry => {
+
+        const timesheetEntry = timesheetEntryDays.map(dayString => {
+          const day = weekEntry[dayString];
+          // debugger;
+          return {day}
+
+          // return {
+          //   // TODO - Also need non-billable + revenue
+          //   hoursBillable: day.hoursBillable,
+          //   entryDate: calendarDates[dayString]
+          // }
+        })
+
+
+        return {
+          startDate: calendarDates.monday,
+          endDate: calendarDates.friday,
+          projectId: weekEntry.projectId,
+          timesheetEntry
+          // userId: TODO
+        }
+
+      });
+
+      return timesheets;
     }
   }
 }
