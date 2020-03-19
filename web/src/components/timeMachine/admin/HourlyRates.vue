@@ -37,7 +37,7 @@
                 @open="open"
                 @close="close"
               >
-                {{ props.item.contact.hourlyRate ? `$${props.item.contact.hourlyRate}/hr` : 'n/a' }}
+                {{ props.item.contact.hourlyRate ? `$${props.item.contact.hourlyRate}/hr` : 'n/a - click to set' }}
                 <template
                   v-slot:input
                 >
@@ -91,9 +91,11 @@ export default {
       this.$store.dispatch("fetchUsers");
     },
     async save(contact) {
+      let hourlyRate = parseInt(contact.hourlyRate, 10);
+      hourlyRate = !isNaN(hourlyRate) ? hourlyRate : null;
       await this.$store.dispatch("updateContactPartial", {
         id: contact.id,
-        hourlyRate: contact.hourlyRate
+        hourlyRate
       });
       this.$refs.snackbar.displaySnackbar("success", "Data saved");
     },
