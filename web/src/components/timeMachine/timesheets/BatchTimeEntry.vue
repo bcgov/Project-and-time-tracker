@@ -22,6 +22,7 @@
                   </v-select>
               </td>
               <td>
+                <!-- TODO - Swap the below out with "hoursUnbillable" if above is selected. Maybe with a prop, "isUnbillable"?-->
                 <v-text-field type='number' single-line label='Hours' v-model="props.item.monday.hoursBillable"></v-text-field>
               </td>
               <td>
@@ -62,8 +63,8 @@
     <v-flex>
         <v-btn @click='addRow'>Add another entry</v-btn>
         <pre>
-          {{ weekEntries }}
-          <!-- {{ submit() }} -->
+          <!-- {{ weekEntries }} -->
+          {{ prepareDataForSubmission() }}
         </pre>
     </v-flex>
 
@@ -116,6 +117,7 @@ export default {
       weekEntries: [
         this.createEmptyWeekEntry()
       ]
+      // weekEntries: this.cre
     }
   },
   watch: {
@@ -125,15 +127,12 @@ export default {
   },
   methods: {
     createEmptyWeekEntry(){
-
-        return timesheetEntryDays.map(dayString => {
-          const obj = {}
-          obj[dayString] = {
-            hoursBillable: undefined,
-            hoursUnBillable: undefined,
-          }
-          return obj;
-        })[0];
+        const obj = {}
+        timesheetEntryDays.map(dayString => obj[dayString] = {
+          hoursBillable: undefined,
+          hoursUnBillable: undefined,
+        });
+        return obj;
     },
     calculateDate(){
       const startDate = this.selectedStartDate;
@@ -153,7 +152,7 @@ export default {
     addRow(){
       this.weekEntries.push(this.createEmptyWeekEntry());
     },
-    submit(){
+    prepareDataForSubmission(){
       // TODO - validate
 
       // GOAL: Prepare data similar to DB structure, make inserting easier.
@@ -167,14 +166,12 @@ export default {
 
         const timesheetEntry = timesheetEntryDays.map(dayString => {
           const day = weekEntry[dayString];
-          // debugger;
-          return {day}
-
-          // return {
-          //   // TODO - Also need non-billable + revenue
-          //   hoursBillable: day.hoursBillable,
-          //   entryDate: calendarDates[dayString]
-          // }
+          return {
+            // TODO - A lso need non-billable + revenue
+            hoursBillable: day.hoursBillable,
+            entryDate: calendarDates[dayString],
+            commentsBillable: weekEntry.commentsBillable,
+          }
         })
 
 
@@ -183,7 +180,7 @@ export default {
           endDate: calendarDates.friday,
           projectId: weekEntry.projectId,
           timesheetEntry
-          // userId: TODO
+          // userId: TODO, is "form.userId" in AddTimeRecord.vue (this comps parent)
         }
 
       });
