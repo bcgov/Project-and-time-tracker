@@ -233,8 +233,7 @@
                     !(
                       $store.state.projectInformation &&
                       $store.state.ministryInformation &&
-                      $store.state.contactInformation &&
-                      this.$store.state.intakeRiskQuestions
+                      $store.state.contactInformation
                     )
                   "
                   color="primary"
@@ -410,8 +409,13 @@ export default {
       this.$refs.projectFinance.onNextClicked();
 
       const riskAnalysis = this.getRiskAnalysis();
-      const scoreSum = riskAnalysis.map(o => o.score).reduce((a, c) => a + c);
-      const formData = assign({}, this.$refs.intakeBaseInfo.form, {
+      const mappedScores = riskAnalysis.map(o => o.score)
+      let scoreSum = 0;
+      if (mappedScores.length != 0 )
+      {
+      const scoreSum = mappedScores.reduce((a, c) => a + c);
+      }
+      const formData = assign({}, this.$refs.intakeBaseInfo.form, { 
         client: this.$refs.intakeClientInfo.form,
         contacts: [],
         risk: riskAnalysis,
@@ -527,7 +531,12 @@ export default {
           this.e1 = step;
         }
         const riskAnalysis = this.getRiskAnalysis();
-        const scoreSum = riskAnalysis.map(o => o.score).reduce((a, c) => a + c);
+        const mappedScores = riskAnalysis.map(o => o.score)
+        let scoreSum = 0;
+        if (mappedScores.length != 0)
+        {
+        const scoreSum = mappedScores.reduce((a, c) => a + c);
+        }
         const formData = assign({}, this.$refs.intakeBaseInfo.form, {
           client: this.$refs.intakeClientInfo.form,
           contacts: [],
@@ -571,7 +580,7 @@ export default {
           this.$store.state.projectInformation
           && this.$store.state.ministryInformation
           && this.$store.state.contactInformation
-          && this.$store.state.intakeRisk
+          // && this.$store.state.intakeRisk
         ) {
           // this.$refs.spinner.open();
           formData.estimatedContractValue = parseCurrencyFloat(formData.estimatedContractValue);
