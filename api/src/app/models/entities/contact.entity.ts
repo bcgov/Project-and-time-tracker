@@ -41,6 +41,9 @@ export class Contact {
   @Column({ type: 'text', nullable: true })
   postalCode: string;
 
+  @Column({ type: 'text', nullable: true })
+  roleName: string;
+
   @Column({ type: 'timestamp', nullable: true })
   dateCreated: Date;
 

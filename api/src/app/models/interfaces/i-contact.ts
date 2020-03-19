@@ -15,4 +15,5 @@ export interface IContact {
   province: string;
   country: string;
   postalCode: string;
+  roleName: string;
 }
