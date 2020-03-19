@@ -68,8 +68,8 @@ export default {
   data() {
     return {
       headers: [
-        { text: "Name", value: "name" },
-        { text: "Rate", value: "rate" }
+        { text: "Name", value: "contact.fullName" },
+        { text: "Rate", value: "contact.hourlyRate" }
       ],
       search: ""
     };
