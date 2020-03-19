@@ -411,11 +411,10 @@ export default {
       const riskAnalysis = this.getRiskAnalysis();
       const mappedScores = riskAnalysis.map(o => o.score)
       let scoreSum = 0;
-      if (mappedScores.length != 0 )
-      {
-      const scoreSum = mappedScores.reduce((a, c) => a + c);
+      if (mappedScores.length != 0 ) {
+        scoreSum = mappedScores.reduce((a, c) => a + c);
       }
-      const formData = assign({}, this.$refs.intakeBaseInfo.form, { 
+      const formData = assign({}, this.$refs.intakeBaseInfo.form, {
         client: this.$refs.intakeClientInfo.form,
         contacts: [],
         risk: riskAnalysis,
@@ -533,9 +532,8 @@ export default {
         const riskAnalysis = this.getRiskAnalysis();
         const mappedScores = riskAnalysis.map(o => o.score)
         let scoreSum = 0;
-        if (mappedScores.length != 0)
-        {
-        const scoreSum = mappedScores.reduce((a, c) => a + c);
+        if (mappedScores.length != 0) {
+          scoreSum = mappedScores.reduce((a, c) => a + c);
         }
         const formData = assign({}, this.$refs.intakeBaseInfo.form, {
           client: this.$refs.intakeClientInfo.form,
