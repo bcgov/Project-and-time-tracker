@@ -42,7 +42,6 @@ export const getArchivedProjects = async (ctx: Koa.Context) => {
   }
 };
 
-
 export const getProjectById = async (ctx: Koa.Context) => {
   try {
     ctx.body = await retrieveProjectById(ctx.params.id);
@@ -69,10 +68,10 @@ export const updateProjectAction = async (ctx: Koa.Context) => {
     // See if mou exists, if so assign ID
     // See if MOU doesn't exist.  Can happen if user doesn't press 'Enter' and just clicks on save for a new MOU
     let mou = project.mou;
-    if (typeof project.mou === 'string'){
+    if (typeof project.mou === 'string') {
       // It's a new MOU w/o ID, instead of an object
       // Create new MOU
-      mou = await createMOU({name: project.mou});
+      mou = await createMOU({ name: project.mou });
     }
 
     const updatingFields = {
@@ -91,20 +90,35 @@ export const updateProjectAction = async (ctx: Koa.Context) => {
       projectFailImpact: project.projectFailImpact,
       projectSuccess: project.projectSuccess,
 
-      mou: mou,
+      mou: mou
     };
 
     const updateingClient = {
       id: project.client.id,
       isNonMinistry: project.client.isNonMinistry,
-      nonMinistryName: project.client.nonMinistryName,
+      nonMinistryName: project.client.nonMinistryName
     };
 
     const client = await retrieveClientByProjectId(ctx.params.id);
-    if (!client.isNonMinistry) {
+    if (!project.client.isNonMinistry) {
       if (project.leadUserId || project.backupUserId) {
-        if (!(client.clientNo.length > 0 && client.responsibilityCenter.length > 0 && client.serviceCenter.length > 0 && client.stob.length > 0 && client.projectCode.length > 0)) {
-          ctx.throw('Project Lead/Backup cannot be assigned without providing all Finance Codes. Please fill the Finance Codes.');
+        if (
+          !(
+            client.clientNo &&
+            client.clientNo.length > 0 &&
+            client.responsibilityCenter &&
+            client.responsibilityCenter.length > 0 &&
+            client.serviceCenter &&
+            client.serviceCenter.length > 0 &&
+            client.stob &&
+            client.stob.length > 0 &&
+            client.projectCode &&
+            client.projectCode.length > 0
+          )
+        ) {
+          ctx.throw(
+            'Project Lead/Backup cannot be assigned without providing all Finance Codes. Please fill the Finance Codes.'
+          );
           return;
         }
       }
@@ -120,27 +134,36 @@ export const updateProjectAction = async (ctx: Koa.Context) => {
 
 export const archiveProjectAction = async (ctx: Koa.Context) => {
   try {
-    await updateProject(ctx.params.id, { is_archived: ctx.request.body.is_archived });
+    await updateProject(ctx.params.id, {
+      is_archived: ctx.request.body.is_archived
+    });
     ctx.body = 'success';
   } catch (err) {
     ctx.throw(err.message);
   }
 };
 
-
-
 export const assignLeadAction = async (ctx: Koa.Context) => {
   try {
     const obj = ctx.request.body as any;
-    if (!(obj)) {
+    if (!obj) {
       ctx.throw('no data found');
       return;
     } else {
       const client = await retrieveClientByProjectId(ctx.params.id);
       if (!client.isNonMinistry) {
-        if (!(client.clientNo.length > 0 && client.responsibilityCenter.length > 0 &&
-          client.serviceCenter.length > 0 && client.stob.length > 0 && client.projectCode.length > 0)) {
-          ctx.throw('Project Lead cannot be assigned without providing all Finance Codes. Please fill the Finance Codes in Project page.');
+        if (
+          !(
+            client.clientNo.length > 0 &&
+            client.responsibilityCenter.length > 0 &&
+            client.serviceCenter.length > 0 &&
+            client.stob.length > 0 &&
+            client.projectCode.length > 0
+          )
+        ) {
+          ctx.throw(
+            'Project Lead cannot be assigned without providing all Finance Codes. Please fill the Finance Codes in Project page.'
+          );
           return;
         }
       }
@@ -159,15 +182,24 @@ export const assignLeadAction = async (ctx: Koa.Context) => {
 export const assignBackupAction = async (ctx: Koa.Context) => {
   try {
     const obj = ctx.request.body as any;
-    if (!(obj)) {
+    if (!obj) {
       ctx.throw('no data found');
       return;
     } else {
       const client = await retrieveClientByProjectId(ctx.params.id);
       if (!client.isNonMinistry) {
-        if (!(client.clientNo.length > 0 && client.responsibilityCenter.length > 0 &&
-          client.serviceCenter.length > 0 && client.stob.length > 0 && client.projectCode.length > 0)) {
-          ctx.throw('Project Backup cannot be assigned without providing all Finance Codes. Please fill the Finance Codes in Project page.');
+        if (
+          !(
+            client.clientNo.length > 0 &&
+            client.responsibilityCenter.length > 0 &&
+            client.serviceCenter.length > 0 &&
+            client.stob.length > 0 &&
+            client.projectCode.length > 0
+          )
+        ) {
+          ctx.throw(
+            'Project Backup cannot be assigned without providing all Finance Codes. Please fill the Finance Codes in Project page.'
+          );
           return;
         }
       }
@@ -184,7 +216,6 @@ export const assignBackupAction = async (ctx: Koa.Context) => {
 };
 
 const validateProject = (project: IProject) => {
-
   const validationErrors = [];
 
   if (!project.projectName) {

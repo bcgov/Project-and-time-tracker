@@ -14,6 +14,7 @@ import userController from './client/controllers/user.controller';
 import authController from './client/controllers/auth.controller';
 import projectRiskController from './client/controllers/projectRisk.controller';
 import mouController from './client/controllers/mou.controller';
+import procurementController from './client/controllers/procurement.controller';
 
 export const appRoutes = [
   projectController.routes(),
@@ -31,7 +32,8 @@ export const appRoutes = [
   projectRiskController.routes(),
   projectIntakeCategoryController.routes(),
   projectIntakeServicesController.routes(),
-  mouController.routes()
+  mouController.routes(),
+  procurementController.routes()
 ];
 
 export const allowedMethods = [
@@ -50,5 +52,6 @@ export const allowedMethods = [
   projectRiskController.allowedMethods(),
   projectIntakeCategoryController.allowedMethods(),
   projectIntakeServicesController.allowedMethods(),
-  mouController.allowedMethods()
+  mouController.allowedMethods(),
+  procurementController.allowedMethods()
 ];
