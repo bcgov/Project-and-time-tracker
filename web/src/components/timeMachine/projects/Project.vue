@@ -246,7 +246,7 @@ import VeeValidate from "vee-validate";
 import RFxDto from "@/domain/models/RFx.dto";
 import ContactDto from "@/domain/models/Contact.dto";
 import Material from "vuetify/es5/util/colors";
-import ProcurementLog from "./ProcurementLog.vue";
+import ProcurementLog from "./Procurementlog.vue";
 import ProjectBaseInfo from "./ProjectBaseInfo.vue";
 import ProjectContactInfo from "./ProjectContactInfo.vue";
 import ProjectRfx from "./ProjectRfx.vue";
