@@ -78,6 +78,17 @@ export const saveContactAction = async (ctx: Koa.Context) => {
   }
 };
 
+// Allow partially updating some contact fields
+// Specifically used for updating "Rate" in admin section.
+export const updateContactActionPartial = async (ctx: Koa.Context) => {
+  try {
+    const contact = ctx.request.body as Partial<IContact>;
+    ctx.body = await updateContact(ctx.params.id, contact);
+  } catch (err) {
+    ctx.throw(err.message);
+  }
+};
+
 const validateContacts = (contacts: IContact[]) => {
   
   const validationErrors = [];
@@ -124,5 +135,6 @@ const router: Router = new Router(routerOpts);
 
 router.get('/:id/by-project-id', authorize, getContactByProjectId);
 router.patch('/:id', authorize, saveContactAction);
+router.patch('/:id/partial', authorize, updateContactActionPartial);
 
 export default router;
