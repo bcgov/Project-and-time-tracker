@@ -2,7 +2,8 @@ import * as Koa from 'koa';
 import * as Router from 'koa-router';
 import {
   retrieveQuestions,
-  retrieveProjectQuestions
+  retrieveProjectQuestions,
+  updateRiskAnalysis
 } from '../../../services/client/projectRisk.service';
 
 import { authorize } from '../../../services/common/authorize.service';
@@ -25,9 +26,12 @@ export const getProjectRiskQuestions = async (ctx: Koa.Context) => {
   }
 };
 
-export const updateProjectRiskQuestions = async (ctx: Koa.Context) => {
+export const updateProjectRiskAnalysis = async (ctx: Koa.Context) => {
   try {
-    ctx.body = 'success';
+    const projectId = ctx.params.id;
+    await updateRiskAnalysis(ctx.request.body, projectId);
+    const questions = await retrieveProjectQuestions(projectId);
+    ctx.body = questions;
   } catch (err) {
     ctx.throw(err.message);
   }
@@ -41,6 +45,6 @@ const router: Router = new Router(routerOpts);
 
 router.get('/', authorize, getRiskQuestions);
 router.get('/:id', authorize, getProjectRiskQuestions);
-router.patch('/:id/update', authorize, updateProjectRiskQuestions);
+router.patch('/:id/update', authorize, updateProjectRiskAnalysis);
 
 export default router;

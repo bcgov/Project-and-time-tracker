@@ -2,6 +2,7 @@ import { getRepository, Repository } from 'typeorm';
 import { RiskQuestions } from '../../models/entities/riskQuestions.entity';
 import { RiskAnswers } from '../../models/entities/riskAnswers.entity';
 import { ProjectRiskAnalysis } from '../../models/entities/projectRiskAnalysis.entity';
+import { ProjectIntake } from '../../models/entities/projectIntake.entity';
 import { IProjectRiskAnalysis } from '../../models/interfaces/i-project-risk-analysis';
 
 const riskRepo = (): Repository<RiskQuestions> => {
@@ -12,6 +13,9 @@ const riskAnsRespo = (): Repository<RiskAnswers> => {
 };
 const riskAnalysisRespo = (): Repository<ProjectRiskAnalysis> => {
   return getRepository(ProjectRiskAnalysis);
+};
+const intakeRepo = (): Repository<ProjectIntake> => {
+  return getRepository(ProjectIntake);
 };
 export const retrieveQuestions = async () => {
   const repo = riskRepo();
@@ -67,7 +71,8 @@ export const retrieveProjectQuestions = async (id: string) => {
       'a.id AS "answerid"',
       'a.score AS "score"',
       'q.riskLevel AS "riskLevel"',
-      'q.questionNo AS "questionNo"'
+      'q.questionNo AS "questionNo"',
+      'i.id AS "intakeId"'
     ])
     .where('i.projectId = :id', { id: id })
     .getRawMany();
@@ -88,4 +93,44 @@ export const CreateRiskAnalysis = async (
   ProjectRisk.dateModified = new Date();
   await riskAnalysisRespo().save(ProjectRisk);
   return ProjectRisk;
+};
+
+export const updateRiskAnalysis = async (obj, projectId) => {
+  const repoIntake = intakeRepo();
+  const intakeRes = await repoIntake
+    .createQueryBuilder('i')
+    .where('i.projectId = :id', { id: projectId })
+    .getOne();
+  if (!intakeRes)
+    throw Error(`Intake entry not found for project : ${projectId}`);
+  for (let index = 0; index < obj.length; index++) {
+    const repo = riskAnalysisRespo();
+    if (obj[index].id) {
+      const res = await repo
+        .createQueryBuilder('an')
+        .innerJoinAndSelect('an.question', 'q')
+        .leftJoinAndSelect('an.answer', 'a')
+        .innerJoinAndSelect('an.intake', 'i')
+        .where('an.id = :id and an.intake = :intakeId', {
+          id: obj[index].id,
+          intakeId: intakeRes.id
+        })
+        .getOne();
+      if (!res) {
+        throw Error(`risk analysis not found for : ${obj[index].id}`);
+      }
+      res.answer = obj[index].answerId;
+      res.score = obj[index].score;
+      await riskAnalysisRespo().save(res);
+    } else if (obj[index].answerId != null) {
+      let ProjectRisk: ProjectRiskAnalysis = riskAnalysisRespo().create();
+      ProjectRisk.answer = obj[index].answerId;
+      ProjectRisk.intake = intakeRes;
+      ProjectRisk.question = obj[index].questionId;
+      ProjectRisk.score = obj[index].score;
+      ProjectRisk.dateCreated = new Date();
+      ProjectRisk.dateModified = new Date();
+      await riskAnalysisRespo().save(ProjectRisk);
+    }
+  }
 };

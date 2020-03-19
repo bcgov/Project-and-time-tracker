@@ -1,5 +1,7 @@
 <template>
   <v-layout row wrap py-2>
+       <snackbar ref="snackbar"></snackbar>
+       <spinner ref="spinner"></spinner>
     <!-- <h2>Risk Assessment</h2> -->
     <v-flex class="mb-4">
       <label class="primary-heading sub-header-large">Risk Assessment</label>
@@ -162,9 +164,14 @@ Developer only (TODO Remove)
 </template>
 <script>
 import './ProjectRisk.styl';
+import Snackbar from '../common/Snackbar.vue';
+import Spinner from '../common/Spinner.vue';
 
 export default {
-  components: {},
+  components: {
+    Snackbar,
+    Spinner,
+  },
   props: {
     intakeRisk: Array,
     projectId: String,
@@ -227,11 +234,20 @@ export default {
       let riskAnalysisIndex = 0;
       for (let i = 0; i < this.intakeRiskQuestions.length; i++) {
         const question = this.intakeRiskQuestions[i];
+
+        let scoreValue = 0;
+        const selectedAnswer = question.answer.filter(
+          answer => answer.id === question.selectedAnswerId,
+        );
+        if (selectedAnswer && selectedAnswer[0]) {
+          scoreValue = selectedAnswer[0].score;
+        }
+
         const analysisId = question.analysisId ? question.analysisId : null;
         riskAnalysis[riskAnalysisIndex] = {
           questionId: question.id,
           answerId: question.selectedAnswerId,
-          score: question.score,
+          score: scoreValue,
           id: analysisId,
         };
         riskAnalysisIndex++;
@@ -240,6 +256,29 @@ export default {
     },
     onSave() {
       const riskAnalysis = this.prepareRiskAnalysis();
+      this.$refs.spinner.open();
+      const projectId = this.$store.state.activeProject.id;
+      const formData = {
+        projectId,
+        risk: riskAnalysis,
+      };
+      this.$store.dispatch('updateRiskAnalysis', formData).then(
+        (res) => {
+          this.$store.state.projectRiskAnswers = res;
+          this.updateInitalData();
+          this.$refs.snackbar.displaySnackbar('success', 'Successfully saved risk analysis.');
+          this.$refs.spinner.close();
+        },
+        (err) => {
+          this.$refs.spinner.close();
+          if (err && err.response && err.response.data) {
+            const { message } = err.response.data.error;
+            this.$refs.snackbar.displaySnackbar('error', message);
+          } else {
+            this.$refs.snackbar.displaySnackbar('error', 'Risk analysis Error');
+          }
+        },
+      );
       this.editScreen = false;
       this.updateInitalData();
     },
@@ -307,6 +346,7 @@ export default {
           }
           return 0;
         })
+
         // Sum all the scores
         .reduce((a, cur) => a + cur);
       const percentage = ((score / totalPossibleScore) * 100).toFixed(2);

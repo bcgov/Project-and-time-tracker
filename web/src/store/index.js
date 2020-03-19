@@ -960,6 +960,17 @@ const store = new Vuex.Store({
       ctx.commit('fetchAllTimesheets', res.data);
       return Promise.resolve(res.data);
     },
+    async updateRiskAnalysis(ctx, req) {
+      const body = req.risk;
+      const api = await $http
+        .patch(`${API_URI}/project-risk/${req.projectId}/update`, body)
+        .then(res => {
+          const content = res.data;
+          return Promise.resolve(content);
+        })
+        .catch(err => Promise.reject(err.response));
+      return Promise.resolve(api);
+    },
     async addLightTimesheet(ctx, req) {
       const body = req;
 
