@@ -65,6 +65,7 @@ const permissions = {
     'GET/intake/:id',
     // 'PATCH/intake/:id',
     'POST/intake/',
+    'POST/procurement/',
     'POST/intake/:id/approve',
     'POST/project/:id/assign-lead',
     'POST/project/:id/assign-backup',
