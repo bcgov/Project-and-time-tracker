@@ -51,9 +51,9 @@ const store = new Vuex.Store({
     allMinistries: [],
     rfxPhases: [],
     rfxTypes: [],
-    timesheetEntryData:[],
-    projectRiskAnswers:[],
-    intakeRiskQuestions:[],
+    timesheetEntryData: [],
+    projectRiskAnswers: [],
+    intakeRiskQuestions: [],
     mouList: [],
     // Intake form component
     activeIntakeRequestId: null,
@@ -78,7 +78,7 @@ const store = new Vuex.Store({
     projectInformation: false,
     ministryInformation: false,
     contactInformation: false,
-    intakeRisk:false,
+    intakeRisk: false,
     timesheetsWeek: {
       startDate: null,
       endDate: null,
@@ -130,7 +130,7 @@ const store = new Vuex.Store({
       // console.log('fetchMinistries called', data);
       state.ministries = data;
     },
-    fetchAllMinistries(state, data){
+    fetchAllMinistries(state, data) {
       state.allMinistries = data;
     },
     fetchintakeRiskQuestions(state, data) {
@@ -139,7 +139,7 @@ const store = new Vuex.Store({
     fetchprojectRiskAnswers(state, data) {
       state.projectRiskAnswers = data;
     },
-    fetchTimesheetEntries(state,data) {
+    fetchTimesheetEntries(state, data) {
       state.timesheetEntryData = data;
     },
     fetchRFxPhases(state, data) {
@@ -162,7 +162,7 @@ const store = new Vuex.Store({
     fetchProjectIntakeServices(state, data) {
       state.projectIntakeServices = data;
       // TODO: Remove me! I'm just for backward compat right now...
-       state.services = data;
+      state.services = data;
     },
     fetchProjectRfx(state, data) {
       state.projectsRfx.set(data.projectId, data.content);
@@ -173,7 +173,7 @@ const store = new Vuex.Store({
     },
     fetchClient() {
     },
-    fetchMOUs(state, data){
+    fetchMOUs(state, data) {
       state.mouList = data;
     },
     addClient() {
@@ -205,8 +205,8 @@ const store = new Vuex.Store({
     addUser() {
       throw new Error('Not implemented!');
     },
-    addMinistry(state, data){
-      console.log('TODO - NOT SURE IF COMPLETE - addMinistry MUTATION called', {state, data});
+    addMinistry(state, data) {
+      console.log('TODO - NOT SURE IF COMPLETE - addMinistry MUTATION called', { state, data });
       // state.ministries = data;
       // throw new Error('Not implemented');
     },
@@ -247,7 +247,7 @@ const store = new Vuex.Store({
     assignContactToIntakeRequest() {
       throw new Error('Not implemented!');
     },
-    createMOU(state, data){
+    createMOU(state, data) {
       console.log('createMOU mutation', data);
       // state.mouList = data;
       state.mouList.push(data);
@@ -276,7 +276,7 @@ const store = new Vuex.Store({
       // TODO: Overwrite projects entry
       state.activeProject = data;
     },
-    fetchArchivedProjects(state, data){
+    fetchArchivedProjects(state, data) {
       state.archivedProjects = data;
     },
     addProject() {
@@ -305,11 +305,13 @@ const store = new Vuex.Store({
     },
     updateProjectFinanceCodes() {
     },
+    updateProcurementLog() {
+    },
     // Project RFx
     fetchProjectRFxData(state, data) {
       // if it's an empty array, need to add blank rfX type
-      console.log('fetchProjectRFxData', {data})
-      if (data && data.length === 0){
+      console.log('fetchProjectRFxData', { data })
+      if (data && data.length === 0) {
         data.push(new RFxDto());
       }
 
@@ -338,7 +340,7 @@ const store = new Vuex.Store({
         }
       }
     },
-    fetchAllTimesheets(state, data){
+    fetchAllTimesheets(state, data) {
       console.log('fetchAllTimesheets', data);
       state.allTimesheets = data;
     },
@@ -406,7 +408,7 @@ const store = new Vuex.Store({
     deleteTimesheetEntryComment() {
       throw new Error('Not implemented!');
     },
-    archiveProject(state, data){
+    archiveProject(state, data) {
       console.log('archiveProject response', data);
     }
   },
@@ -452,7 +454,7 @@ const store = new Vuex.Store({
         });
     },
     // Returns archived ministries + unarchived
-    fetchAllMinistries(ctx){
+    fetchAllMinistries(ctx) {
       $http
         .get(`${API_URI}/ministry/all`)
         .then((res) => {
@@ -460,7 +462,7 @@ const store = new Vuex.Store({
           ctx.commit('fetchAllMinistries', content);
         });
     },
-    async addMinistry(ctx, req){
+    async addMinistry(ctx, req) {
       const body = req;
       const api = $http
         .post(`${API_URI}/ministry`, body)
@@ -470,17 +472,17 @@ const store = new Vuex.Store({
           return Promise.resolve(res.data);
         })
         .catch(err => Promise.reject(err));
-        return Promise.resolve(api);
+      return Promise.resolve(api);
     },
-    async updateMinistries(ctx, req){
+    async updateMinistries(ctx, req) {
       const api = await $http
         .patch(`${API_URI}/ministry/${req.id}/update`, req)
         .then((res) => {
-          console.log('updateMinistires RESPONSE', {res})
+          console.log('updateMinistires RESPONSE', { res })
           return Promise.resolve(res.data)
         })
         .catch(err => Promise.reject(err));
-        return Promise.resolve(api);
+      return Promise.resolve(api);
     },
     fetchintakeRiskQuestions(ctx) {
       $http
@@ -490,13 +492,13 @@ const store = new Vuex.Store({
           ctx.commit('fetchintakeRiskQuestions', content);
         });
     },
-     fetchprojectRiskAnswers(ctx, req) {
+    fetchprojectRiskAnswers(ctx, req) {
       $http.get(`${API_URI}/project-risk/${req.id}`).then(res => {
         const content = res.data;
         ctx.commit("fetchprojectRiskAnswers", content);
       });
     },
-   async fetchTimesheetEntries(ctx, req) {
+    async fetchTimesheetEntries(ctx, req) {
       const body = req;
       const api = await $http
         .post(`${API_URI}/timesheet/timesheetentries`, body)
@@ -674,7 +676,7 @@ const store = new Vuex.Store({
           ctx.commit('deleteUser', content);
         });
     },
-    fetchMOUs(ctx, req){
+    fetchMOUs(ctx, req) {
       $http
         .get(`${API_URI}/MOU`)
         .then((res) => {
@@ -683,7 +685,7 @@ const store = new Vuex.Store({
           ctx.commit('fetchMOUs', content);
         })
     },
-    async createMOU(ctx, req){
+    async createMOU(ctx, req) {
       const body = req;
       const api = await $http
         .post(`${API_URI}/MOU`, body)
@@ -793,13 +795,13 @@ const store = new Vuex.Store({
           ctx.commit('fetchArchivedProjects', content);
         });
     },
-    archiveProject(ctx, {id, is_archived}){
-      if ( !(is_archived === true || is_archived === false)){
+    archiveProject(ctx, { id, is_archived }) {
+      if (!(is_archived === true || is_archived === false)) {
         throw new Error(`is_archived must be boolean, instead you provided: ${typeof is_archived}`)
       }
 
       return $http
-        .patch(`${API_URI}/project/${id}/archive`, {is_archived})
+        .patch(`${API_URI}/project/${id}/archive`, { is_archived })
         .then((res) => {
           const content = res.data;
           ctx.commit('archiveProject', content);
@@ -914,6 +916,18 @@ const store = new Vuex.Store({
           ctx.commit('updateProjectFinanceCodes', content);
         });
     },
+   async updateProcurementLog(ctx, req) {
+      const body = req.procurementlog;
+      const api = await $http
+        .post(`${API_URI}/procurement`, body)
+        .then((res) => {
+          const content = res.data;
+          ctx.commit('updateProcurementLog', content);
+          return Promise.resolve(content);
+        })
+        .catch(err => Promise.reject(err));
+      return Promise.resolve(api);
+    },
     // Project RFx Requests
     fetchProjectRFxData(ctx, req) {
       // TODO: Make sure it's the right kind of ID - eg. numeric or GUID/UUID
@@ -955,7 +969,7 @@ const store = new Vuex.Store({
 
       return Promise.resolve();
     },
-    async fetchAllTimesheets(ctx){
+    async fetchAllTimesheets(ctx) {
       const res = await $http.get(`${API_URI}/timesheet/all`)
       ctx.commit('fetchAllTimesheets', res.data);
       return Promise.resolve(res.data);
