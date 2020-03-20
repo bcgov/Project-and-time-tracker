@@ -395,8 +395,8 @@ export default {
       this.form.userId = obj.user.id;
       this.form.mou = obj.mou.id;
       this.form.project = obj.project.id;
-      this.onChangeProject(obj.project.id)
-      this.form.Rfx= obj.projectRfx.id;
+      this.onChangeProject(obj.project.id);
+      this.form.Rfx = obj.projectRfx.id;
       this.activeTab = 'weekly';
       if (timesheetEntryData && timesheetEntryData.timesheetEntries) {
         for (let index = 0; index < timesheetEntryData.timesheetEntries.length; index++) {
@@ -506,12 +506,17 @@ export default {
       const timeSheetEntries = [];
 
       for (let itemIndex = 0; itemIndex < billableBatchEntry.length; itemIndex++) {
+        const startDate = new Date(billableBatchEntry[itemIndex].startDate);
+        const endDate = new Date(billableBatchEntry[itemIndex].endDate);
         const entries = billableBatchEntry[itemIndex].timesheetEntry;
         const timeEntries = [];
         const timeSheetEntry = {};
+
+
         for (let index = 0; index < entries.length; index++) {
+          const entryDate = new Date(entries[index].entryDate);
           const entry = {
-            entryDate: this.getDatePart(entries[index].entryDate),
+            entryDate: this.getDateInYYYYMMDD(entryDate),
             hoursBillable: entries[index].hours ? entries[index].hours : 0,
             hoursUnBillable: 0,
             commentsBillable: '',
@@ -522,8 +527,8 @@ export default {
           timeEntries.push(entry);
         }
         timeSheetEntry.entries = timeEntries;
-        timeSheetEntry.startDate = this.getDatePart(billableBatchEntry[itemIndex].startDate);
-        timeSheetEntry.endDate = this.getDatePart(billableBatchEntry[itemIndex].endDate);
+        timeSheetEntry.startDate = this.getDateInYYYYMMDD(startDate);
+        timeSheetEntry.endDate = this.getDateInYYYYMMDD(endDate);
         timeSheetEntry.project = billableBatchEntry[itemIndex].projectId;
         // timeSheetEntry.comment = billableBatchEntry[itemIndex].comment;
         timeSheetEntries.push(timeSheetEntry);
@@ -533,8 +538,11 @@ export default {
       // for (let itemIndex = 0; itemIndex < nonBillableBatchEntry.length; itemIndex++) {
       //   debugger;
       //   const timeSheetEntry = {};
-      //   timeSheetEntry.startDate = this.getDatePart(nonBillableBatchEntry[itemIndex].startDate);
-      //   timeSheetEntry.endDate = this.getDatePart(nonBillableBatchEntry[itemIndex].endDate);
+      //   const startDate = new Date(nonBillableBatchEntry[itemIndex].startDate);
+      //   const endDate = new Date(nonBillableBatchEntry[itemIndex].endDate);
+      //   timeSheetEntry.startDate = this.getDateInYYYYMMDD(startDate);
+      //   timeSheetEntry.endDate = this.getDateInYYYYMMDD(endDate);
+
       //   timeSheetEntry.project = nonBillableBatchEntry[itemIndex].projectId;
       //   // timeSheetEntry.comment = nonBillableBatchEntry[itemIndex].comment;
       //   const entries = nonBillableBatchEntry[itemIndex].timesheetEntry;
@@ -549,8 +557,9 @@ export default {
       //     debugger;
       //     for (let index = 0; index < entries.length; index++) {
       //       // select existing entries
+      //       const entryDate = new Date(entries[index].entryDate);
       //       const existingEntry = existingProjectEntry[0].entries.filter(
-      //         item => item.entryDate === this.getDatePart(entries[index].entryDate),
+      //         item => item.entryDate === this.getDateInYYYYMMDD(entryDate),
       //       );
       //       debugger;
       //       if (existingEntry[0]) { // update the item
@@ -558,7 +567,7 @@ export default {
       //       } else {
       //       // add new item
       //         const entry = {
-      //           entryDate: this.getDatePart(entries[index].entryDate),
+      //           entryDate: this.getDateInYYYYMMDD(entryDate),
       //           hoursBillable: 0,
       //           hoursUnBillable: entries[index].hours ? entries[index].hours : 0,
       //           commentsBillable: '',
@@ -574,8 +583,9 @@ export default {
       //     // add new project
       //     const timeEntries = [];
       //     for (let index = 0; index < entries.length; index++) {
+      //       const entryDate = new Date(entries[index].entryDate);
       //       const entry = {
-      //         entryDate: this.getDatePart(entries[index].entryDate),
+      //         entryDate: this.getDateInYYYYMMDD(entryDate),
       //         hoursBillable: 0,
       //         hoursUnBillable: entries[index].hours ? entries[index].hours : 0,
       //         commentsBillable: '',
