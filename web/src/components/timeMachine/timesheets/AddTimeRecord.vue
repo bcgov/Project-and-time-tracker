@@ -349,12 +349,78 @@ export default {
         vm.initTimeEntries(vm.$store.state.timesheetEntryData);
       });
     },
+    async getTimeEntriesById(obj) {
+      const date = obj.startDate;
+      
+      const weekDataBillable = [
+        { day: 'Mon', description: '', hours: 0, date: '' },
+        { day: 'Tue', description: '', hours: 0, date: '' },
+        { day: 'Wed', description: '', hours: 0, date: '' },
+        { day: 'Thu', description: '', hours: 0, date: '' },
+        { day: 'Fri', description: '', hours: 0, date: '' },
+        { day: 'Sat', description: '', hours: 0, date: '' },
+        { day: 'Sun', description: '', hours: 0, date: '' },
+      ];
+      const weekDataUnBillable = [
+        { day: 'Mon', description: '', hours: 0, date: '' },
+        { day: 'Tue', description: '', hours: 0, date: '' },
+        { day: 'Wed', description: '', hours: 0, date: '' },
+        { day: 'Thu', description: '', hours: 0, date: '' },
+        { day: 'Fri', description: '', hours: 0, date: '' },
+        { day: 'Sat', description: '', hours: 0, date: '' },
+        { day: 'Sun', description: '', hours: 0, date: '' },
+      ];
+      this.$refs.Billable.weekData = weekDataBillable;
+      this.$refs.NonBillable.weekData = weekDataUnBillable;
+      const formData = {
+        mou: obj.mou.id,
+        project: obj.project.id,
+        projectRfx: obj.projectRfx.id,
+        startDate: date,
+        userId: this.fetchUser(),
+      };
+      const vm = this;
+      vm.$store.dispatch('fetchTimesheetEntries', formData).then(() => {
+        vm.initTimeEntriesFromList(vm.$store.state.timesheetEntryData, obj);
+      });
+    },
     formatWeekData(weekData) {
       const weeks = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
       for (let i = 0; i < 7; i++) {
         weekData[i].day = weeks[i];
       }
       return weekData;
+    },
+    initTimeEntriesFromList(timesheetEntryData, obj) {
+      const billableDetails = [];
+      const nonBillableDetails = [];
+      this.form.userId = obj.user.id;
+      this.form.mou = obj.mou.id;
+      this.form.project = obj.project.id;
+      this.onChangeProject(obj.project.id)
+      this.form.Rfx= obj.projectRfx.id;
+      this.activeTab = 'weekly';
+      if (timesheetEntryData && timesheetEntryData.timesheetEntries) {
+        for (let index = 0; index < timesheetEntryData.timesheetEntries.length; index++) {
+          const entry = timesheetEntryData.timesheetEntries[index];
+          const billable = {
+            entryDate: entry.entryDate,
+            hours: entry.hoursBillable,
+            description: entry.commentsBillable,
+          };
+          billableDetails.push(billable);
+
+          const nonBillable = {
+            entryDate: entry.entryDate,
+            hours: entry.hoursUnBillable,
+            description: entry.commentsUnBillable,
+          };
+          nonBillableDetails.push(nonBillable);
+        }
+
+        this.$refs.Billable.weekData = this.formatWeekData(billableDetails);
+        this.$refs.NonBillable.weekData = this.formatWeekData(nonBillableDetails);
+      }
     },
     initTimeEntries(timesheetEntryData) {
       const billableDetails = [];
