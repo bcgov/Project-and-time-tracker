@@ -1,44 +1,50 @@
-.v-dialog.add-procurement-log
-    max-width:850px;
-    margin-top: 151px !important;
-    max-height: 600px; 
-.v-dialog
-    background-color: white !important;
-.v-sheet
-     width:100%;
-     height:600px;
-.intake-base-info
-    .v-input--radio-group--row .v-radio
-        display: flex !important;
-        min-width: auto !important;
 
-.required label::after 
-    content: " *"
-    color: red
-  .body-1
-   font-size:13px !important;
-          
-.body-2 
-    text-align: none
-    font-weight:bold
-.intake-base-info-header  
-    font-size: 20px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    padding-bottom: 15px;
-    font-weight: 700;
-    -webkit-box-shadow: -2px 6px 0px -4px rgba(230,230,230,1);
-    -moz-box-shadow: -2px 6px 0px -4px rgba(230,230,230,1);
-    box-shadow: -2px 6px 0px -4px rgba(230,230,230,1);
-.intake-base-info-header-content
-    margin-left:42% !important;
-.custom-project-base-layout
-    border: solid 1px #eae8e8;
-    border-radius: 6px;
-    box-shadow: none !important;
-@media screen and (max-width: 960px)
+// Had to add a class to encapsulate styles
+// Otherwise, this .styl file was breaking 
+// the IntakeForm view cutting off buttons 
+// at bottom
+.procurement-log 
+    .v-dialog.add-procurement-log
+        max-width:850px;
+        margin-top: 151px !important;
+        max-height: 600px; 
+    .v-dialog
+        background-color: white !important;
+    .v-sheet
+        width:100%;
+        height:600px;
+    .intake-base-info
+        .v-input--radio-group--row .v-radio
+            display: flex !important;
+            min-width: auto !important;
+
+    .required label::after 
+        content: " *"
+        color: red
+    .body-1
+    font-size:13px !important;
+            
     .body-2 
-        text-align: end
+        text-align: none
+        font-weight:bold
+    .intake-base-info-header  
+        font-size: 20px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        padding-bottom: 15px;
+        font-weight: 700;
+        -webkit-box-shadow: -2px 6px 0px -4px rgba(230,230,230,1);
+        -moz-box-shadow: -2px 6px 0px -4px rgba(230,230,230,1);
+        box-shadow: -2px 6px 0px -4px rgba(230,230,230,1);
+    .intake-base-info-header-content
+        margin-left:42% !important;
+    .custom-project-base-layout
+        border: solid 1px #eae8e8;
+        border-radius: 6px;
+        box-shadow: none !important;
+    @media screen and (max-width: 960px)
+        .body-2 
+            text-align: end
 
 
-        
+            
