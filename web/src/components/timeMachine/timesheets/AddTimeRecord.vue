@@ -32,18 +32,16 @@
                     <b>MOU amount:</b>
                     ${{ mouAmount }}
                   </v-flex>
-                  <v-flex>
-                    <b>Currently Billed:</b> $0
-                  </v-flex>
+                  <v-flex> <b>Currently Billed:</b> $0 </v-flex>
                 </v-flex>
               </v-flex>
             </v-layout>
             <v-divider class="header-divider"></v-divider>
             <v-tabs v-model="activeTab">
               <v-tab href="#batch">Batch Entry</v-tab>
-               <v-tab href="#weekly">Weekly Entry</v-tab>
+              <v-tab href="#weekly">Weekly Entry</v-tab>
               <v-tab-item value="batch">
-                  <!-- <v-flex class="d-flex" cols="12" sm="4">
+                <!-- <v-flex class="d-flex" cols="12" sm="4">
                   <v-flex xs12>
                     <v-select
                       v-model="form.mou"
@@ -80,9 +78,9 @@
                 <!-- </v-flex> -->
                 <v-flex>
                   <v-flex class="d-flex" cols="12" sm="6">
-                      <v-flex md6>
-                        <timesheets-calendar @next="checkWeekChange"></timesheets-calendar>
-                      </v-flex>
+                    <v-flex md6>
+                      <timesheets-calendar @next="checkWeekChange"></timesheets-calendar>
+                    </v-flex>
                     <v-flex md6>
                       <v-radio-group row v-model="recordType">
                         <v-radio label="Hours" :value="1"></v-radio>
@@ -103,9 +101,8 @@
                   <v-flex v-show="recordType === 3">
                     <timesheet-entry ref="NonBillable" single-row></timesheet-entry>
                   </v-flex> -->
-
                 </v-flex>
-<!--
+                <!--
                       <v-layout row>
                         <v-flex xs6 sm9>
                           <vc-date-picker
@@ -127,11 +124,9 @@
                           </v-card>
                         </v-flex>
                       </v-layout> -->
-
-
               </v-tab-item>
               <v-tab-item value="weekly">
-                <v-flex class="d-flex" cols="12" sm="4" v-if="activeTab==='weekly'">
+                <v-flex class="d-flex" cols="12" sm="4" v-if="activeTab === 'weekly'">
                   <v-flex xs12>
                     <v-select
                       v-model="form.mou"
@@ -220,7 +215,9 @@
             <v-flex class="add-btns">
               <v-btn class="btn-normal">EXPORT TIMESHEET</v-btn>
               <v-btn class="btn-normal" @click="saveAndCopy()">SAVE AND COPY</v-btn>
-              <v-btn class="add-new-row" color="primary" @click="saveAndClose()">SAVE AND CLOSE</v-btn>
+              <v-btn class="add-new-row" color="primary" @click="saveAndClose()"
+                >SAVE AND CLOSE</v-btn
+              >
             </v-flex>
           </v-card-actions>
         </v-card>
@@ -239,7 +236,6 @@ import TimesheetsCalendar from './TimesheetsCalendar.vue';
 import AddExpense from './AddExpense.vue';
 import TimesheetEntry from './TimesheetEntry.vue';
 import BatchTimeEntry from './BatchTimeEntry';
-
 
 export default {
   computed: {
@@ -532,9 +528,7 @@ export default {
     },
     fetchUser() {
       const referenceId = this.$store.state.activeUser.refId;
-      const user = this.$store.state.users.find(
-        value => value.referenceId === referenceId,
-      );
+      const user = this.$store.state.users.find(value => value.referenceId === referenceId);
       if (user && user.id) {
         return user.id;
       }
