@@ -36,11 +36,99 @@
               </v-flex>
             </v-layout>
             <v-divider class="header-divider"></v-divider>
-            <v-tabs>
-              <v-tab href="# weekly">Weekly Entry</v-tab>
+            <v-tabs v-model="activeTab">
               <v-tab href="#batch">Batch Entry</v-tab>
-              <v-tab-item value=" weekly">
-                <v-flex class="d-flex" cols="12" sm="4">
+               <v-tab href="#weekly">Weekly Entry</v-tab>
+              <v-tab-item value="batch">
+                  <!-- <v-flex class="d-flex" cols="12" sm="4">
+                  <v-flex xs12>
+                    <v-select
+                      v-model="form.mou"
+                      :rules="requiredRule"
+                      :items="mouList"
+                      item-text="name"
+                      item-value="id"
+                      label="MOU"
+                    ></v-select>
+                  </v-flex>
+                  <v-flex xs12>
+                    <v-select
+                      v-model="form.project"
+                      :rules="requiredRule"
+                      :items="projectList"
+                      item-text="projectName"
+                      item-value="id"
+                      label="Project Name"
+                      @change="onChangeProject(form.project)"
+                    ></v-select>
+                  </v-flex>
+
+                  <v-flex xs12>
+                    <v-select
+                      v-model="form.Rfx"
+                      :rules="requiredRule"
+                      :items="projectRfx"
+                      item-text="rfxName"
+                      item-value="id"
+                      label="Project Rfx"
+                      @change="onChangeProjectRfx()"
+                    ></v-select>
+                  </v-flex> -->
+                <!-- </v-flex> -->
+                <v-flex>
+                  <v-flex class="d-flex" cols="12" sm="6">
+                      <v-flex md6>
+                        <timesheets-calendar @next="checkWeekChange"></timesheets-calendar>
+                      </v-flex>
+                    <v-flex md6>
+                      <v-radio-group row v-model="recordType">
+                        <v-radio label="Hours" :value="1"></v-radio>
+                        <v-radio label="Expenses" :value="2"></v-radio>
+                        <v-radio label="Unbillable Hours" :value="3"></v-radio>
+                      </v-radio-group>
+                    </v-flex>
+                  </v-flex>
+
+                  <batch-time-entry ref="BatchTimeEntry"></batch-time-entry>
+
+                  <!-- <v-flex v-show="recordType === 1">
+                    <timesheet-entry ref="Billable" single-row></timesheet-entry>
+                  </v-flex>
+                  <v-flex v-if="recordType === 2">
+                    <add-expense ref="AddExpense" single-row></add-expense>
+                  </v-flex>
+                  <v-flex v-show="recordType === 3">
+                    <timesheet-entry ref="NonBillable" single-row></timesheet-entry>
+                  </v-flex> -->
+
+                </v-flex>
+<!--
+                      <v-layout row>
+                        <v-flex xs6 sm9>
+                          <vc-date-picker
+                            mode="range"
+                            v-model="dateRange"
+                            is-inline
+                            is-expanded
+                            :excludeDates='{ weekdays: [1, 7] }'
+                          />
+                        </v-flex>
+                        <v-flex xs6 sm3>
+                          <v-card>
+                            <v-card-text>
+                              <p>Start date: {{ dateRange.start | formatDate }}</p>
+                              <p>End date: {{ dateRange.end | formatDate }}</p>
+                              <p>Total days: {{ dateRangeDiffInDays }} </p>
+                              <p>Total hours: {{ hoursForRange }}</p>
+                            </v-card-text>
+                          </v-card>
+                        </v-flex>
+                      </v-layout> -->
+
+
+              </v-tab-item>
+              <v-tab-item value="weekly">
+                <v-flex class="d-flex" cols="12" sm="4" v-if="activeTab==='weekly'">
                   <v-flex xs12>
                     <v-select
                       v-model="form.mou"
@@ -99,94 +187,6 @@
                   </v-flex>
                 </v-flex>
               </v-tab-item>
-              <v-tab-item value="batch">
-                  <!-- <v-flex class="d-flex" cols="12" sm="4">
-                  <v-flex xs12>
-                    <v-select
-                      v-model="form.mou"
-                      :rules="requiredRule"
-                      :items="mouList"
-                      item-text="name"
-                      item-value="id"
-                      label="MOU"
-                    ></v-select>
-                  </v-flex>
-                  <v-flex xs12>
-                    <v-select
-                      v-model="form.project"
-                      :rules="requiredRule"
-                      :items="projectList"
-                      item-text="projectName"
-                      item-value="id"
-                      label="Project Name"
-                      @change="onChangeProject(form.project)"
-                    ></v-select>
-                  </v-flex>
-
-                  <v-flex xs12>
-                    <v-select
-                      v-model="form.Rfx"
-                      :rules="requiredRule"
-                      :items="projectRfx"
-                      item-text="rfxName"
-                      item-value="id"
-                      label="Project Rfx"
-                      @change="onChangeProjectRfx()"
-                    ></v-select>
-                  </v-flex> -->
-                <!-- </v-flex> -->
-                <v-flex>
-                  <v-flex class="d-flex" cols="12" sm="6">
-                      <v-flex md6>
-                        <timesheets-calendar @next="checkWeekChange"></timesheets-calendar>
-                      </v-flex>
-                    <v-flex md6>
-                      <v-radio-group row v-model="recordType">
-                        <v-radio label="Hours" :value="1"></v-radio>
-                        <v-radio label="Expenses" :value="2"></v-radio>
-                        <v-radio label="Unbillable Hours" :value="3"></v-radio>
-                      </v-radio-group>
-                    </v-flex>
-                  </v-flex>
-
-                  <batch-time-entry></batch-time-entry>
-
-                  <!-- <v-flex v-show="recordType === 1">
-                    <timesheet-entry ref="Billable" single-row></timesheet-entry>
-                  </v-flex>
-                  <v-flex v-if="recordType === 2">
-                    <add-expense ref="AddExpense" single-row></add-expense>
-                  </v-flex>
-                  <v-flex v-show="recordType === 3">
-                    <timesheet-entry ref="NonBillable" single-row></timesheet-entry>
-                  </v-flex> -->
-
-                </v-flex>
-<!--
-                      <v-layout row>
-                        <v-flex xs6 sm9>
-                          <vc-date-picker
-                            mode="range"
-                            v-model="dateRange"
-                            is-inline
-                            is-expanded
-                            :excludeDates='{ weekdays: [1, 7] }'
-                          />
-                        </v-flex>
-                        <v-flex xs6 sm3>
-                          <v-card>
-                            <v-card-text>
-                              <p>Start date: {{ dateRange.start | formatDate }}</p>
-                              <p>End date: {{ dateRange.end | formatDate }}</p>
-                              <p>Total days: {{ dateRangeDiffInDays }} </p>
-                              <p>Total hours: {{ hoursForRange }}</p>
-                            </v-card-text>
-                          </v-card>
-                        </v-flex>
-                      </v-layout> -->
-
-
-              </v-tab-item>
             </v-tabs>
           </v-card-text>
           <v-divider class="header-divider"></v-divider>
@@ -208,15 +208,14 @@
 <script>
 import './addtimerecord.styl';
 import moment from 'moment';
+import Calendar from 'v-calendar/lib/components/calendar.umd';
+import DatePicker from 'v-calendar/lib/components/date-picker.umd';
 import Snackbar from '../common/Snackbar.vue';
 import Spinner from '../common/Spinner.vue';
 import TimesheetsCalendar from './TimesheetsCalendar.vue';
 import AddExpense from './AddExpense.vue';
 import TimesheetEntry from './TimesheetEntry.vue';
 import BatchTimeEntry from './BatchTimeEntry';
-
-import Calendar from 'v-calendar/lib/components/calendar.umd'
-import DatePicker from 'v-calendar/lib/components/date-picker.umd'
 
 
 export default {
@@ -230,8 +229,8 @@ export default {
     timesheetEntryData() {
       return this.$store.state.timesheetEntryData;
     },
-    dateRangeDiffInDays(){
-      if (this.dateRange.start && this.dateRange.end){
+    dateRangeDiffInDays() {
+      if (this.dateRange.start && this.dateRange.end) {
         return Math.abs(moment(this.dateRange.start).diff(moment(this.dateRange.end), 'days'));
       }
     },
@@ -255,15 +254,15 @@ export default {
       return [];
     },
     mouAmount() {
-      if (!this.form || !this.form.mou || !this.mouList[this.form.mou - 1]){
+      if (!this.form || !this.form.mou || !this.mouList[this.form.mou - 1]) {
         return '';
       }
-      return this.mouList[this.form.mou - 1].name.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+      return this.mouList[this.form.mou - 1].name.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     },
-    hoursForRange(){
+    hoursForRange() {
       // const hours = this.dateRangeDiffInDays * days... how to get days from <timesheet-entry> or similar?
       return 'todo';
-    }
+    },
   },
   components: {
     Snackbar,
@@ -271,7 +270,7 @@ export default {
     TimesheetsCalendar,
     AddExpense,
     TimesheetEntry,
-    BatchTimeEntry
+    BatchTimeEntry,
   },
   data() {
     return this.initData();
@@ -388,28 +387,32 @@ export default {
     },
     saveAndClose() {
       if (this.$refs.AddimeRecords.validate()) {
-        this.submitForm();
-        this.closeDialog();
-        const weekDataBillable = [
-          { day: 'Mon', description: '', hours: 0, date: '' },
-          { day: 'Tue', description: '', hours: 0, date: '' },
-          { day: 'Wed', description: '', hours: 0, date: '' },
-          { day: 'Thu', description: '', hours: 0, date: '' },
-          { day: 'Fri', description: '', hours: 0, date: '' },
-          { day: 'Sat', description: '', hours: 0, date: '' },
-          { day: 'Sun', description: '', hours: 0, date: '' },
-        ];
-        const weekDataUnBillable = [
-          { day: 'Mon', description: '', hours: 0, date: '' },
-          { day: 'Tue', description: '', hours: 0, date: '' },
-          { day: 'Wed', description: '', hours: 0, date: '' },
-          { day: 'Thu', description: '', hours: 0, date: '' },
-          { day: 'Fri', description: '', hours: 0, date: '' },
-          { day: 'Sat', description: '', hours: 0, date: '' },
-          { day: 'Sun', description: '', hours: 0, date: '' },
-        ];
-        this.$refs.Billable.weekData = weekDataBillable;
-        this.$refs.NonBillable.weekData = weekDataUnBillable;
+        if (this.activeTab === 'weekly') {
+          this.submitForm();
+          this.closeDialog();
+          const weekDataBillable = [
+            { day: 'Mon', description: '', hours: 0, date: '' },
+            { day: 'Tue', description: '', hours: 0, date: '' },
+            { day: 'Wed', description: '', hours: 0, date: '' },
+            { day: 'Thu', description: '', hours: 0, date: '' },
+            { day: 'Fri', description: '', hours: 0, date: '' },
+            { day: 'Sat', description: '', hours: 0, date: '' },
+            { day: 'Sun', description: '', hours: 0, date: '' },
+          ];
+          const weekDataUnBillable = [
+            { day: 'Mon', description: '', hours: 0, date: '' },
+            { day: 'Tue', description: '', hours: 0, date: '' },
+            { day: 'Wed', description: '', hours: 0, date: '' },
+            { day: 'Thu', description: '', hours: 0, date: '' },
+            { day: 'Fri', description: '', hours: 0, date: '' },
+            { day: 'Sat', description: '', hours: 0, date: '' },
+            { day: 'Sun', description: '', hours: 0, date: '' },
+          ];
+          this.$refs.Billable.weekData = weekDataBillable;
+          this.$refs.NonBillable.weekData = weekDataUnBillable;
+        } else {
+          const batchdata = this.$refs.BatchTimeEntry.prepareDataForSubmission();
+        }
       }
     },
     submitForm() {
@@ -511,7 +514,7 @@ export default {
       form.userId = this.$store.state.activeUser.id;
       const existingTimeEntries = [];
       return {
-        activeTab: 'weekly',
+        activeTab: 'batch',
         recordType: 1,
         valid: true,
         requiredRule: [v => !!v || 'This field required'],
@@ -522,9 +525,9 @@ export default {
         dateFormatted: undefined,
         existingTimeEntries,
         addRecordLoading: false,
-        dateRange: {start: null, end: null}
+        dateRange: { start: null, end: null },
       };
-    }
+    },
   },
 };
 </script>
