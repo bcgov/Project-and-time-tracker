@@ -26,12 +26,15 @@
                     ></v-select>
                   </v-flex>
                 </v-flex>
+
                 <v-flex v-if="form.mou" class="d-flex cardheadlabel2">
                   <v-flex>
                     <b>MOU amount:</b>
                     ${{ mouAmount }}
                   </v-flex>
-                  <v-flex> <b>Currently Billed:</b> $0 </v-flex>
+                  <v-flex>
+                    <b>Currently Billed:</b> $0
+                  </v-flex>
                 </v-flex>
               </v-flex>
             </v-layout>
@@ -100,7 +103,7 @@
                 </v-flex>
               </v-tab-item>
               <v-tab-item value="batch">
-                  <!-- <v-flex class="d-flex" cols="12" sm="4">
+                <!-- <v-flex class="d-flex" cols="12" sm="4">
                   <v-flex xs12>
                     <v-select
                       v-model="form.mou"
@@ -133,13 +136,13 @@
                       label="Project Rfx"
                       @change="onChangeProjectRfx()"
                     ></v-select>
-                  </v-flex> -->
+                </v-flex>-->
                 <!-- </v-flex> -->
                 <v-flex>
                   <v-flex class="d-flex" cols="12" sm="6">
-                      <v-flex md6>
-                        <timesheets-calendar @next="checkWeekChange"></timesheets-calendar>
-                      </v-flex>
+                    <v-flex md6>
+                      <timesheets-calendar @next="checkWeekChange"></timesheets-calendar>
+                    </v-flex>
                     <v-flex md6>
                       <v-radio-group row v-model="recordType">
                         <v-radio label="Hours" :value="1"></v-radio>
@@ -159,10 +162,9 @@
                   </v-flex>
                   <v-flex v-show="recordType === 3">
                     <timesheet-entry ref="NonBillable" single-row></timesheet-entry>
-                  </v-flex> -->
-
+                  </v-flex>-->
                 </v-flex>
-<!--
+                <!--
                       <v-layout row>
                         <v-flex xs6 sm9>
                           <vc-date-picker
@@ -183,9 +185,7 @@
                             </v-card-text>
                           </v-card>
                         </v-flex>
-                      </v-layout> -->
-
-
+                </v-layout>-->
               </v-tab-item>
             </v-tabs>
           </v-card-text>
@@ -194,10 +194,8 @@
             <label class="btn-discard">DISCARD TIMESHEET</label>
             <v-flex class="add-btns">
               <v-btn class="btn-normal">EXPORT TIMESHEET</v-btn>
-              <v-btn class="btn-normal"  @click="saveAndCopy()">SAVE AND COPY</v-btn>
-              <v-btn class="add-new-row" color="primary" @click="saveAndClose()"
-                >SAVE AND CLOSE</v-btn
-              >
+              <v-btn class="btn-normal" @click="saveAndCopy()">SAVE AND COPY</v-btn>
+              <v-btn class="add-new-row" color="primary" @click="saveAndClose()">SAVE AND CLOSE</v-btn>
             </v-flex>
           </v-card-actions>
         </v-card>
@@ -227,6 +225,7 @@ export default {
     userList() {
       return this.$store.state.users;
     },
+   
     timesheetEntryData() {
       return this.$store.state.timesheetEntryData;
     },
@@ -503,12 +502,21 @@ export default {
       this.$data.dateFormatted = data.dateFormatted;
       this.$data.existingTimeEntries = data.existingTimeEntries;
     },
+     fetchUser() {
+const referenceId = this.$store.state.activeUser.refId;
+    const user = this.$store.state.users.find(
+      value => value.referenceId === referenceId
+    );
+    if (user && user.id) {
+  return user.id;
+    }
+    },
     initData() {
       const form = Object.assign({}, this.$props.timeEntry);
       if (!form.date) {
         form.date = moment().format('YYYY-MM-DD');
       }
-      form.userId = this.$store.state.activeUser.id;
+      form.userId = this.fetchUser();
       const existingTimeEntries = [];
       return {
         activeTab: 'weekly',

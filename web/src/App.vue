@@ -125,6 +125,7 @@ export default {
       this.$store.dispatch('fetchMOUs');
       this.initialLoadDone = true;
       this.userName = JSON.parse(localStorage.getItem('keycloak_user')).name;
+      this.$store.state.activeUser.refId = JSON.parse(localStorage.getItem('keycloak_user')).sub;
     },
   },
   created() {
