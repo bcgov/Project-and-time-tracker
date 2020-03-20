@@ -26,12 +26,15 @@
                     ></v-select>
                   </v-flex>
                 </v-flex>
+
                 <v-flex v-if="form.mou" class="d-flex cardheadlabel2">
                   <v-flex>
                     <b>MOU amount:</b>
                     ${{ mouAmount }}
                   </v-flex>
-                  <v-flex> <b>Currently Billed:</b> $0 </v-flex>
+                  <v-flex>
+                    <b>Currently Billed:</b> $0
+                  </v-flex>
                 </v-flex>
               </v-flex>
             </v-layout>
@@ -183,9 +186,31 @@
                     <add-expense ref="AddExpense"></add-expense>
                   </v-flex>
                   <v-flex v-show="recordType === 3">
-                    <timesheet-entry ref="NonBillable"></timesheet-entry>
+                    <timesheet-entry ref="NonBillable" single-row></timesheet-entry>
                   </v-flex>
                 </v-flex>
+                <!--
+                      <v-layout row>
+                        <v-flex xs6 sm9>
+                          <vc-date-picker
+                            mode="range"
+                            v-model="dateRange"
+                            is-inline
+                            is-expanded
+                            :excludeDates='{ weekdays: [1, 7] }'
+                          />
+                        </v-flex>
+                        <v-flex xs6 sm3>
+                          <v-card>
+                            <v-card-text>
+                              <p>Start date: {{ dateRange.start | formatDate }}</p>
+                              <p>End date: {{ dateRange.end | formatDate }}</p>
+                              <p>Total days: {{ dateRangeDiffInDays }} </p>
+                              <p>Total hours: {{ hoursForRange }}</p>
+                            </v-card-text>
+                          </v-card>
+                        </v-flex>
+                </v-layout>-->
               </v-tab-item>
             </v-tabs>
           </v-card-text>
@@ -194,10 +219,8 @@
             <label class="btn-discard">DISCARD TIMESHEET</label>
             <v-flex class="add-btns">
               <v-btn class="btn-normal">EXPORT TIMESHEET</v-btn>
-              <v-btn class="btn-normal"  @click="saveAndCopy()">SAVE AND COPY</v-btn>
-              <v-btn class="add-new-row" color="primary" @click="saveAndClose()"
-                >SAVE AND CLOSE</v-btn
-              >
+              <v-btn class="btn-normal" @click="saveAndCopy()">SAVE AND COPY</v-btn>
+              <v-btn class="add-new-row" color="primary" @click="saveAndClose()">SAVE AND CLOSE</v-btn>
             </v-flex>
           </v-card-actions>
         </v-card>
@@ -226,6 +249,7 @@ export default {
     userList() {
       return this.$store.state.users;
     },
+
     timesheetEntryData() {
       return this.$store.state.timesheetEntryData;
     },
@@ -506,12 +530,21 @@ export default {
       this.$data.dateFormatted = data.dateFormatted;
       this.$data.existingTimeEntries = data.existingTimeEntries;
     },
+    fetchUser() {
+      const referenceId = this.$store.state.activeUser.refId;
+      const user = this.$store.state.users.find(
+        value => value.referenceId === referenceId,
+      );
+      if (user && user.id) {
+        return user.id;
+      }
+    },
     initData() {
       const form = Object.assign({}, this.$props.timeEntry);
       if (!form.date) {
         form.date = moment().format('YYYY-MM-DD');
       }
-      form.userId = this.$store.state.activeUser.id;
+      form.userId = this.fetchUser();
       const existingTimeEntries = [];
       return {
         activeTab: 'batch',
