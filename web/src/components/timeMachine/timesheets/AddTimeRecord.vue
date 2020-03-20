@@ -535,70 +535,69 @@ export default {
       }
 
 
-      // for (let itemIndex = 0; itemIndex < nonBillableBatchEntry.length; itemIndex++) {
-      //   debugger;
-      //   const timeSheetEntry = {};
-      //   const startDate = new Date(nonBillableBatchEntry[itemIndex].startDate);
-      //   const endDate = new Date(nonBillableBatchEntry[itemIndex].endDate);
-      //   timeSheetEntry.startDate = this.getDateInYYYYMMDD(startDate);
-      //   timeSheetEntry.endDate = this.getDateInYYYYMMDD(endDate);
+      for (let itemIndex = 0; itemIndex < nonBillableBatchEntry.length; itemIndex++) {
+        const timeSheetEntry = {};
+        const startDate = new Date(nonBillableBatchEntry[itemIndex].startDate);
+        const endDate = new Date(nonBillableBatchEntry[itemIndex].endDate);
+        timeSheetEntry.startDate = this.getDateInYYYYMMDD(startDate);
+        timeSheetEntry.endDate = this.getDateInYYYYMMDD(endDate);
 
-      //   timeSheetEntry.project = nonBillableBatchEntry[itemIndex].projectId;
-      //   // timeSheetEntry.comment = nonBillableBatchEntry[itemIndex].comment;
-      //   const entries = nonBillableBatchEntry[itemIndex].timesheetEntry;
+        timeSheetEntry.project = nonBillableBatchEntry[itemIndex].projectId;
+        // timeSheetEntry.comment = nonBillableBatchEntry[itemIndex].comment;
+        const entries = nonBillableBatchEntry[itemIndex].timesheetEntry;
 
-      //   // check for billable entry for the project, then update fields only
-      //   // this.getDatePart(item.startDate) === this.getDatePart(timeSheetEntry.startDate) &&
-      //   const existingProjectEntry = timeSheetEntries.filter(
-      //     item => item.projectId === timeSheetEntry.project,
-      //   );
-      //   if (existingProjectEntry[0]) // assuming one record for a project
-      //   {
-      //     debugger;
-      //     for (let index = 0; index < entries.length; index++) {
-      //       // select existing entries
-      //       const entryDate = new Date(entries[index].entryDate);
-      //       const existingEntry = existingProjectEntry[0].entries.filter(
-      //         item => item.entryDate === this.getDateInYYYYMMDD(entryDate),
-      //       );
-      //       debugger;
-      //       if (existingEntry[0]) { // update the item
-      //         existingEntry[0].hoursUnBillable = entries[index].hours;
-      //       } else {
-      //       // add new item
-      //         const entry = {
-      //           entryDate: this.getDateInYYYYMMDD(entryDate),
-      //           hoursBillable: 0,
-      //           hoursUnBillable: entries[index].hours ? entries[index].hours : 0,
-      //           commentsBillable: '',
-      //           commentsUnBillable: '',
-      //           expenseAmount: 0,
-      //           expenseComment: '',
-      //         };
-      //         existingProjectEntry.push(entry);
-      //       }
-      //     }
-      //   } else {
-      //     debugger;
-      //     // add new project
-      //     const timeEntries = [];
-      //     for (let index = 0; index < entries.length; index++) {
-      //       const entryDate = new Date(entries[index].entryDate);
-      //       const entry = {
-      //         entryDate: this.getDateInYYYYMMDD(entryDate),
-      //         hoursBillable: 0,
-      //         hoursUnBillable: entries[index].hours ? entries[index].hours : 0,
-      //         commentsBillable: '',
-      //         commentsUnBillable: '',
-      //         expenseAmount: 0,
-      //         expenseComment: '',
-      //       };
-      //       timeEntries.push(entry);
-      //     }
-      //     timeSheetEntry.entries = timeEntries;
-      //     timeSheetEntries.push(timeSheetEntry);
-      //   }
-      // }
+        // check for billable entry for the project, then update fields only
+        debugger;
+        const existingProjectEntry = timeSheetEntries.filter(
+          item => item.startDate === timeSheetEntry.startDate && item.project === timeSheetEntry.project,
+        );
+        if (existingProjectEntry[0]) // assuming one record for a project
+        {
+          debugger;
+          for (let index = 0; index < entries.length; index++) {
+            // select existing entries
+            const entryDate = new Date(entries[index].entryDate);
+            const existingEntry = existingProjectEntry[0].entries.filter(
+              item => item.entryDate === this.getDateInYYYYMMDD(entryDate),
+            );
+            debugger;
+            if (existingEntry[0]) { // update the item
+              existingEntry[0].hoursUnBillable = entries[index].hours;
+            } else {
+            // add new item
+              const entry = {
+                entryDate: this.getDateInYYYYMMDD(entryDate),
+                hoursBillable: 0,
+                hoursUnBillable: entries[index].hours ? entries[index].hours : 0,
+                commentsBillable: '',
+                commentsUnBillable: '',
+                expenseAmount: 0,
+                expenseComment: '',
+              };
+              existingProjectEntry.push(entry);
+            }
+          }
+        } else {
+          debugger;
+          // add new project
+          const timeEntries = [];
+          for (let index = 0; index < entries.length; index++) {
+            const entryDate = new Date(entries[index].entryDate);
+            const entry = {
+              entryDate: this.getDateInYYYYMMDD(entryDate),
+              hoursBillable: 0,
+              hoursUnBillable: entries[index].hours ? entries[index].hours : 0,
+              commentsBillable: '',
+              commentsUnBillable: '',
+              expenseAmount: 0,
+              expenseComment: '',
+            };
+            timeEntries.push(entry);
+          }
+          timeSheetEntry.entries = timeEntries;
+          timeSheetEntries.push(timeSheetEntry);
+        }
+      }
       debugger;
       this.$refs.spinner.open();
       this.$store.dispatch('addBatchTimesheet', timeSheetEntries).then(
