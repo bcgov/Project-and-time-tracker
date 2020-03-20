@@ -463,68 +463,69 @@ export default {
         timeSheetEntries.push(timeSheetEntry);
       }
 
-      for (let itemIndex = 0; itemIndex < nonBillableBatchEntry.length; itemIndex++) {
-        debugger;
-        const timeSheetEntry = {};
-        timeSheetEntry.startDate = this.getDatePart(nonBillableBatchEntry[itemIndex].startDate);
-        timeSheetEntry.endDate = this.getDatePart(nonBillableBatchEntry[itemIndex].endDate);
-        timeSheetEntry.project = nonBillableBatchEntry[itemIndex].projectId;
-        // timeSheetEntry.comment = nonBillableBatchEntry[itemIndex].comment;
-        const entries = nonBillableBatchEntry[itemIndex].timesheetEntry;
 
-        // check for billable entry for the project, then update fields only
-        // this.getDatePart(item.startDate) === this.getDatePart(timeSheetEntry.startDate) &&
-        const existingProjectEntry = timeSheetEntries.filter(
-          item => item.projectId === timeSheetEntry.project,
-        );
-        if (existingProjectEntry[0]) // assuming one record for a project
-        {
-          debugger;
-          for (let index = 0; index < entries.length; index++) {
-            // select existing entries
-            const existingEntry = existingProjectEntry[0].entries.filter(
-              item => item.entryDate === this.getDatePart(entries[index].entryDate),
-            );
-            debugger;
-            if (existingEntry[0]) { // update the item
-              existingEntry[0].hoursUnBillable = entries[index].hours;
-            } else {
-            // add new item
-              const entry = {
-                entryDate: this.getDatePart(entries[index].entryDate),
-                hoursBillable: 0,
-                hoursUnBillable: entries[index].hours ? entries[index].hours : 0,
-                commentsBillable: '',
-                commentsUnBillable: '',
-                expenseAmount: 0,
-                expenseComment: '',
-              };
-              existingProjectEntry.push(entry);
-            }
-          }
-        } else {
-          debugger;
-          // add new project
-          const timeEntries = [];
-          for (let index = 0; index < entries.length; index++) {
-            const entry = {
-              entryDate: this.getDatePart(entries[index].entryDate),
-              hoursBillable: 0,
-              hoursUnBillable: entries[index].hours ? entries[index].hours : 0,
-              commentsBillable: '',
-              commentsUnBillable: '',
-              expenseAmount: 0,
-              expenseComment: '',
-            };
-            timeEntries.push(entry);
-          }
-          timeSheetEntry.entries = timeEntries;
-          timeSheetEntries.push(timeSheetEntry);
-        }
-      }
+      // for (let itemIndex = 0; itemIndex < nonBillableBatchEntry.length; itemIndex++) {
+      //   debugger;
+      //   const timeSheetEntry = {};
+      //   timeSheetEntry.startDate = this.getDatePart(nonBillableBatchEntry[itemIndex].startDate);
+      //   timeSheetEntry.endDate = this.getDatePart(nonBillableBatchEntry[itemIndex].endDate);
+      //   timeSheetEntry.project = nonBillableBatchEntry[itemIndex].projectId;
+      //   // timeSheetEntry.comment = nonBillableBatchEntry[itemIndex].comment;
+      //   const entries = nonBillableBatchEntry[itemIndex].timesheetEntry;
+
+      //   // check for billable entry for the project, then update fields only
+      //   // this.getDatePart(item.startDate) === this.getDatePart(timeSheetEntry.startDate) &&
+      //   const existingProjectEntry = timeSheetEntries.filter(
+      //     item => item.projectId === timeSheetEntry.project,
+      //   );
+      //   if (existingProjectEntry[0]) // assuming one record for a project
+      //   {
+      //     debugger;
+      //     for (let index = 0; index < entries.length; index++) {
+      //       // select existing entries
+      //       const existingEntry = existingProjectEntry[0].entries.filter(
+      //         item => item.entryDate === this.getDatePart(entries[index].entryDate),
+      //       );
+      //       debugger;
+      //       if (existingEntry[0]) { // update the item
+      //         existingEntry[0].hoursUnBillable = entries[index].hours;
+      //       } else {
+      //       // add new item
+      //         const entry = {
+      //           entryDate: this.getDatePart(entries[index].entryDate),
+      //           hoursBillable: 0,
+      //           hoursUnBillable: entries[index].hours ? entries[index].hours : 0,
+      //           commentsBillable: '',
+      //           commentsUnBillable: '',
+      //           expenseAmount: 0,
+      //           expenseComment: '',
+      //         };
+      //         existingProjectEntry.push(entry);
+      //       }
+      //     }
+      //   } else {
+      //     debugger;
+      //     // add new project
+      //     const timeEntries = [];
+      //     for (let index = 0; index < entries.length; index++) {
+      //       const entry = {
+      //         entryDate: this.getDatePart(entries[index].entryDate),
+      //         hoursBillable: 0,
+      //         hoursUnBillable: entries[index].hours ? entries[index].hours : 0,
+      //         commentsBillable: '',
+      //         commentsUnBillable: '',
+      //         expenseAmount: 0,
+      //         expenseComment: '',
+      //       };
+      //       timeEntries.push(entry);
+      //     }
+      //     timeSheetEntry.entries = timeEntries;
+      //     timeSheetEntries.push(timeSheetEntry);
+      //   }
+      // }
       debugger;
       this.$refs.spinner.open();
-      this.$store.dispatch('addLightTimesheet', timeSheetEntries).then(
+      this.$store.dispatch('addBatchTimesheet', timeSheetEntries).then(
         () => {
           this.$refs.snackbar.displaySnackbar('success', 'Successfully added time entries.');
           this.$refs.spinner.close();
@@ -535,7 +536,7 @@ export default {
             const { message } = err.response.data.error;
             this.$refs.snackbar.displaySnackbar('error', message);
           } else {
-            this.$refs.snackbar.displaySnackbar('error', 'Timesheet entery Error');
+            this.$refs.snackbar.displaySnackbar('error', 'Timesheet entry Error');
           }
         },
       );
@@ -602,7 +603,7 @@ export default {
             const { message } = err.response.data.error;
             this.$refs.snackbar.displaySnackbar('error', message);
           } else {
-            this.$refs.snackbar.displaySnackbar('error', 'Timesheet entery Error');
+            this.$refs.snackbar.displaySnackbar('error', 'Timesheet entry Error');
           }
         },
       );
