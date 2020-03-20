@@ -23,8 +23,8 @@
                 class="white--text intake-table-approve-btn ma-0"
                 @click.native='showMOUModal(props.item)'>
                   ASSIGN MOU
-               </v-btn>
-               <span v-else @click='showMOUModal(props.item)'>{{ props.item.mouName }}</span>
+              </v-btn>
+            <span v-else @click='showMOUModal(props.item)'>{{ props.item.mouName }}</span>
             </td> -->
             <td>
               <!-- {{ props.item.projectName }} -->
@@ -81,12 +81,19 @@
               >APPROVE</v-btn>
             </td>
             <td class="text-xs-center">
+              <v-tooltip left>
+              <template v-slot:activator="{ on }">
               <v-btn flat icon color="grey" @click="viewRequest(props.item.id)">
                 <v-icon>visibility</v-icon>
-              </v-btn>
+              </v-btn></template>
+                <span>Visibility</span>
+              </v-tooltip>
+              <v-tooltip left>
+              <template v-slot:activator="{ on }">
               <v-btn flat icon color="grey" @click="deleteRequest(props.item.id)">
                 <v-icon>delete</v-icon>
-              </v-btn>
+              </v-btn></template>
+                <span>Delete</span></v-tooltip>
             </td>
           </template>
         </v-data-table>
