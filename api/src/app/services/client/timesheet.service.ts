@@ -1,6 +1,7 @@
 import { getRepository, Repository } from 'typeorm';
 import { Timesheet } from './../../models/entities/timesheet.entity';
 import { ITimesheet } from '../../models/interfaces/i-timesheet';
+import { User, Contact } from '../../models/entities';
 
 const timesheetRepo = (): Repository<Timesheet> => {
   return getRepository(Timesheet);
@@ -63,7 +64,9 @@ export const retrieveAllTimesheets = async () => {
     .innerJoinAndSelect('t.project', 'p')
     .innerJoinAndSelect('t.mou', 'm')
     .leftJoinAndSelect('t.timesheetEntries', 'te')
-    .getMany()
+    .leftJoinAndSelect('t.user', 'u')
+    .leftJoinAndSelect('u.contact', 'c')
+    .getMany();
 };
 
 export const retrieveForLightTimesheet = async model => {

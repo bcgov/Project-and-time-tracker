@@ -10,6 +10,7 @@ import { Project } from './project.entity';
 import { RfxPhase } from './rfxPhase.entity';
 import { TimesheetEntry } from './timesheetEntry.entity';
 import { MOU } from './mou.entity';
+import { User } from './user.entity';
 
 @Entity()
 export class Timesheet {
@@ -21,6 +22,9 @@ export class Timesheet {
 
   @ManyToOne(type => Project)
   project: Project;
+
+  @ManyToOne(type => User)
+  user: User;
 
   @ManyToOne(type => MOU, { nullable: true })
   mou: MOU;
