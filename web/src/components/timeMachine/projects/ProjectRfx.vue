@@ -66,7 +66,7 @@
         </div>
       </v-flex>
 
-      <v-flex md12>
+      <!-- <v-flex md12>
         <div class="v-form-container">
           <v-textarea
             name="client-responsibilities"
@@ -78,8 +78,8 @@
             v-model="rfxForm.clientResponsibilities"
           ></v-textarea>
         </div>
-      </v-flex>
-      <v-flex md12>
+      </v-flex> -->
+      <!-- <v-flex md12>
         <div class="v-form-container">
           <v-textarea
             name="psd-responsibilities"
@@ -91,7 +91,7 @@
             v-model="rfxForm.psdResponsibilities"
           ></v-textarea>
         </div>
-      </v-flex>
+      </v-flex> -->
 
     </v-form>
   </v-layout>
