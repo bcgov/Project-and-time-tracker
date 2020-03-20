@@ -28,7 +28,7 @@
               type="number"
               single-line
               label="Hours"
-              v-model="props.item.monday.hoursBillable"
+              v-model="props.item.monday.hours"
             ></v-text-field>
           </td>
           <td>
@@ -36,7 +36,7 @@
               type="number"
               single-line
               label="Hours"
-              v-model="props.item.tuesday.hoursBillable"
+              v-model="props.item.tuesday.hours"
             ></v-text-field>
           </td>
           <td>
@@ -44,7 +44,7 @@
               type="number"
               single-line
               label="Hours"
-              v-model="props.item.wednesday.hoursBillable"
+              v-model="props.item.wednesday.hours"
             ></v-text-field>
           </td>
           <td>
@@ -52,7 +52,7 @@
               type="number"
               single-line
               label="Hours"
-              v-model="props.item.thursday.hoursBillable"
+              v-model="props.item.thursday.hours"
             ></v-text-field>
           </td>
           <td>
@@ -60,15 +60,15 @@
               type="number"
               single-line
               label="Hours"
-              v-model="props.item.friday.hoursBillable"
+              v-model="props.item.friday.hours"
             ></v-text-field>
           </td>
           <td>
-            <v-edit-dialog :return-value.sync="props.item.commentsBillable" lazy>
-              {{ props.item.commentsBillable ? props.item.commentsBillable : "..." }}
+            <v-edit-dialog :return-value.sync="props.item.comments" lazy>
+              {{ props.item.comments ? props.item.comments : "..." }}
               <template v-slot:input>
                 <v-text-field
-                  v-model="props.item.commentsBillable"
+                  v-model="props.item.comments"
                   label="Comments"
                   single-line
                 ></v-text-field>
@@ -83,7 +83,7 @@
       <v-btn @click="addRow">Add another entry</v-btn>
       <pre>
           <!-- {{ weekEntries }} -->
-          {{ prepareDataForSubmission() }}
+          <!-- {{ prepareDataForSubmission() }} -->
         </pre>
     </v-flex>
   </v-layout>
@@ -143,7 +143,7 @@ export default {
       const obj = {};
       timesheetEntryDays.map(
         dayString => (obj[dayString] = {
-          hoursBillable: undefined,
+          hours: undefined,
           hoursUnBillable: undefined,
         }),
       );
@@ -182,9 +182,9 @@ export default {
           const day = weekEntry[dayString];
           return {
             // TODO - A lso need non-billable + revenue
-            hoursBillable: day.hoursBillable,
+            hours: day.hours,
             entryDate: calendarDates[dayString],
-            commentsBillable: weekEntry.commentsBillable,
+            comments: weekEntry.comments,
           };
         });
 

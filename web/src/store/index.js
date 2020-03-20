@@ -991,6 +991,20 @@ const store = new Vuex.Store({
         .catch(err => Promise.reject(err.response));
       return Promise.resolve(api);
     },
+  async addBatchTimesheet(ctx, req) {
+      const body = req;
+
+      const api = await $http
+        .post(`${API_URI}/timesheet/batch`, body)
+        .then((res) => {
+          const content = res.data;
+          ctx.commit('addTimesheet', content);
+          ctx.commit('setTimesheetsWeek', { startDate: content.startDate, endDate: content.endDate });
+          return Promise.resolve(content);
+        })
+        .catch(err => Promise.reject(err.response));
+      return Promise.resolve(api);
+    },
     async addLightTimesheet(ctx, req) {
       const body = req;
 

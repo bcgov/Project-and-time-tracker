@@ -84,23 +84,21 @@
                     <v-flex md6>
                       <v-radio-group row v-model="recordType">
                         <v-radio label="Hours" :value="1"></v-radio>
-                        <v-radio label="Expenses" :value="2"></v-radio>
+                        <!-- <v-radio label="Expenses" :value="2"></v-radio> -->
                         <v-radio label="Unbillable Hours" :value="3"></v-radio>
                       </v-radio-group>
                     </v-flex>
                   </v-flex>
 
-                  <batch-time-entry ref="BatchTimeEntry"></batch-time-entry>
-
-                  <!-- <v-flex v-show="recordType === 1">
-                    <timesheet-entry ref="Billable" single-row></timesheet-entry>
+                  <v-flex v-show="recordType === 1">
+                  <batch-time-entry ref="billableBatchEntry"></batch-time-entry>
                   </v-flex>
-                  <v-flex v-if="recordType === 2">
+                  <!-- <v-flex v-if="recordType === 2">
                     <add-expense ref="AddExpense" single-row></add-expense>
-                  </v-flex>
-                  <v-flex v-show="recordType === 3">
-                    <timesheet-entry ref="NonBillable" single-row></timesheet-entry>
                   </v-flex> -->
+                  <v-flex v-show="recordType === 3">
+                   <batch-time-entry ref="nonBillableBatchEntry"></batch-time-entry>
+                  </v-flex>
                 </v-flex>
                 <!--
                       <v-layout row>
@@ -403,12 +401,12 @@ export default {
       return `${yyyy}-${mm}-${dd}`;
     },
     saveAndCopy() {
-      this.submitForm();
+      this.submitWeekData();
     },
     saveAndClose() {
       if (this.$refs.AddimeRecords.validate()) {
         if (this.activeTab === 'weekly') {
-          this.submitForm();
+          this.submitWeekData();
           this.closeDialog();
           const weekDataBillable = [
             { day: 'Mon', description: '', hours: 0, date: '' },
@@ -431,24 +429,24 @@ export default {
           this.$refs.Billable.weekData = weekDataBillable;
           this.$refs.NonBillable.weekData = weekDataUnBillable;
         } else {
-          const batchdata = this.$refs.BatchTimeEntry.prepareDataForSubmission();
+          const nonBillableBatchEntry = this.$refs.nonBillableBatchEntry.prepareDataForSubmission();
+          const billableBatchEntry = this.$refs.billableBatchEntry.prepareDataForSubmission();
+          this.submitBatchData(nonBillableBatchEntry, billableBatchEntry);
         }
       }
     },
-    submitForm() {
-      if (this.$refs.AddimeRecords.validate()) {
-        console.log('submitForm called, valid');
-        const billableDetails = this.$refs.Billable.onBillableclick();
-        const nonBillableDetails = this.$refs.NonBillable.nonBillableclick();
 
+    submitBatchData(nonBillableBatchEntry, billableBatchEntry) {
+      const timeSheetEntries = [];
+
+      for (let itemIndex = 0; itemIndex < billableBatchEntry.length; itemIndex++) {
+        const entries = billableBatchEntry[itemIndex].timesheetEntry;
         const timeEntries = [];
-        const startDate = new Date(this.$store.state.timesheetsWeek.startDate);
-        for (let index = 0; index < 7; index++) {
-          const entryDate = new Date();
-          entryDate.setDate(startDate.getDate() + index);
+        const timeSheetEntry = {};
+        for (let index = 0; index < entries.length; index++) {
           const entry = {
-            entryDate: this.getDateInYYYYMMDD(entryDate),
-            hoursBillable: 0,
+            entryDate: this.getDatePart(entries[index].entryDate),
+            hoursBillable: entries[index].hours ? entries[index].hours : 0,
             hoursUnBillable: 0,
             commentsBillable: '',
             commentsUnBillable: '',
@@ -456,54 +454,158 @@ export default {
             expenseComment: '',
           };
           timeEntries.push(entry);
-          if (billableDetails.length > 0) {
-            const billable = billableDetails.filter(
-              item => item.date === timeEntries[index].entryDate,
+        }
+        timeSheetEntry.entries = timeEntries;
+        timeSheetEntry.startDate = this.getDatePart(billableBatchEntry[itemIndex].startDate);
+        timeSheetEntry.endDate = this.getDatePart(billableBatchEntry[itemIndex].endDate);
+        timeSheetEntry.project = billableBatchEntry[itemIndex].projectId;
+        // timeSheetEntry.comment = billableBatchEntry[itemIndex].comment;
+        timeSheetEntries.push(timeSheetEntry);
+      }
+
+      for (let itemIndex = 0; itemIndex < nonBillableBatchEntry.length; itemIndex++) {
+        debugger;
+        const timeSheetEntry = {};
+        timeSheetEntry.startDate = this.getDatePart(nonBillableBatchEntry[itemIndex].startDate);
+        timeSheetEntry.endDate = this.getDatePart(nonBillableBatchEntry[itemIndex].endDate);
+        timeSheetEntry.project = nonBillableBatchEntry[itemIndex].projectId;
+        // timeSheetEntry.comment = nonBillableBatchEntry[itemIndex].comment;
+        const entries = nonBillableBatchEntry[itemIndex].timesheetEntry;
+
+        // check for billable entry for the project, then update fields only
+        // this.getDatePart(item.startDate) === this.getDatePart(timeSheetEntry.startDate) &&
+        const existingProjectEntry = timeSheetEntries.filter(
+          item => item.projectId === timeSheetEntry.project,
+        );
+        if (existingProjectEntry[0]) // assuming one record for a project
+        {
+          debugger;
+          for (let index = 0; index < entries.length; index++) {
+            // select existing entries
+            const existingEntry = existingProjectEntry[0].entries.filter(
+              item => item.entryDate === this.getDatePart(entries[index].entryDate),
             );
-            if (billable[0]) {
-              timeEntries[index].hoursBillable = billable[0].hours === '' ? 0 : billable[0].hours;
-              timeEntries[index].commentsBillable = billable[0].description;
+            debugger;
+            if (existingEntry[0]) { // update the item
+              existingEntry[0].hoursUnBillable = entries[index].hours;
+            } else {
+            // add new item
+              const entry = {
+                entryDate: this.getDatePart(entries[index].entryDate),
+                hoursBillable: 0,
+                hoursUnBillable: entries[index].hours ? entries[index].hours : 0,
+                commentsBillable: '',
+                commentsUnBillable: '',
+                expenseAmount: 0,
+                expenseComment: '',
+              };
+              existingProjectEntry.push(entry);
             }
           }
+        } else {
+          debugger;
+          // add new project
+          const timeEntries = [];
+          for (let index = 0; index < entries.length; index++) {
+            const entry = {
+              entryDate: this.getDatePart(entries[index].entryDate),
+              hoursBillable: 0,
+              hoursUnBillable: entries[index].hours ? entries[index].hours : 0,
+              commentsBillable: '',
+              commentsUnBillable: '',
+              expenseAmount: 0,
+              expenseComment: '',
+            };
+            timeEntries.push(entry);
+          }
+          timeSheetEntry.entries = timeEntries;
+          timeSheetEntries.push(timeSheetEntry);
+        }
+      }
+      debugger;
+      this.$refs.spinner.open();
+      this.$store.dispatch('addLightTimesheet', timeSheetEntries).then(
+        () => {
+          this.$refs.snackbar.displaySnackbar('success', 'Successfully added time entries.');
+          this.$refs.spinner.close();
+        },
+        (err) => {
+          this.$refs.spinner.close();
+          if (err && err.response && err.response.data) {
+            const { message } = err.response.data.error;
+            this.$refs.snackbar.displaySnackbar('error', message);
+          } else {
+            this.$refs.snackbar.displaySnackbar('error', 'Timesheet entery Error');
+          }
+        },
+      );
+    },
+    submitWeekData() {
+      const billableDetails = this.$refs.Billable.onBillableclick();
+      const nonBillableDetails = this.$refs.NonBillable.nonBillableclick();
 
-          if (nonBillableDetails.length > 0) {
-            const unBillable = nonBillableDetails.filter(
-              item => item.date === timeEntries[index].entryDate,
-            );
-            if (unBillable[0]) {
-              timeEntries[index].hoursUnBillable = unBillable[0].hours === '' ? 0 : unBillable[0].hours;
-              timeEntries[index].commentsUnBillable = unBillable[0].description;
-            }
+      const timeEntries = [];
+      const startDate = new Date(this.$store.state.timesheetsWeek.startDate);
+      for (let index = 0; index < 7; index++) {
+        const entryDate = new Date();
+        entryDate.setDate(startDate.getDate() + index);
+        const entry = {
+          entryDate: this.getDateInYYYYMMDD(entryDate),
+          hoursBillable: 0,
+          hoursUnBillable: 0,
+          commentsBillable: '',
+          commentsUnBillable: '',
+          expenseAmount: 0,
+          expenseComment: '',
+        };
+        timeEntries.push(entry);
+        if (billableDetails.length > 0) {
+          const billable = billableDetails.filter(
+            item => item.date === timeEntries[index].entryDate,
+          );
+          if (billable[0]) {
+            timeEntries[index].hoursBillable = billable[0].hours === '' ? 0 : billable[0].hours;
+            timeEntries[index].commentsBillable = billable[0].description;
           }
         }
 
-        const dateValue = this.getDatePart(this.$store.state.timesheetsWeek.startDate);
-        const formData = {
-          entries: timeEntries,
-          mou: this.form.mou,
-          project: this.form.project,
-          projectRfx: this.form.Rfx,
-          startDate: dateValue,
-          endDate: this.$store.state.timesheetsWeek.endDate,
-          userId: this.form.userId,
-        };
-        this.$refs.spinner.open();
-        this.$store.dispatch('addLightTimesheet', formData).then(
-          () => {
-            this.$refs.snackbar.displaySnackbar('success', 'Successfully added time entries.');
-            this.$refs.spinner.close();
-          },
-          (err) => {
-            this.$refs.spinner.close();
-            if (err && err.response && err.response.data) {
-              const { message } = err.response.data.error;
-              this.$refs.snackbar.displaySnackbar('error', message);
-            } else {
-              this.$refs.snackbar.displaySnackbar('error', 'Timesheet entery Error');
-            }
-          },
-        );
+        if (nonBillableDetails.length > 0) {
+          const unBillable = nonBillableDetails.filter(
+            item => item.date === timeEntries[index].entryDate,
+          );
+          if (unBillable[0]) {
+            timeEntries[index].hoursUnBillable = unBillable[0].hours === '' ? 0 : unBillable[0].hours;
+            timeEntries[index].commentsUnBillable = unBillable[0].description;
+          }
+        }
       }
+
+      const dateValue = this.getDatePart(this.$store.state.timesheetsWeek.startDate);
+      const formData = {
+        entries: timeEntries,
+        mou: this.form.mou,
+        project: this.form.project,
+        projectRfx: this.form.Rfx,
+        startDate: dateValue,
+        endDate: this.getDatePart(this.$store.state.timesheetsWeek.endDate),
+        userId: this.form.userId,
+      };
+      this.$refs.spinner.open();
+      this.$store.dispatch('addLightTimesheet', formData).then(
+        () => {
+          this.$refs.snackbar.displaySnackbar('success', 'Successfully added time entries.');
+          this.$refs.spinner.close();
+        },
+        (err) => {
+          this.$refs.spinner.close();
+          if (err && err.response && err.response.data) {
+            const { message } = err.response.data.error;
+            this.$refs.snackbar.displaySnackbar('error', message);
+          } else {
+            this.$refs.snackbar.displaySnackbar('error', 'Timesheet entery Error');
+          }
+        },
+      );
     },
     open() {
       this.dialog = true;
