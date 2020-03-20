@@ -100,7 +100,7 @@
                 </v-flex>
               </v-tab-item>
               <v-tab-item value="batch">
-                  <v-flex class="d-flex" cols="12" sm="4">
+                  <!-- <v-flex class="d-flex" cols="12" sm="4">
                   <v-flex xs12>
                     <v-select
                       v-model="form.mou"
@@ -133,13 +133,13 @@
                       label="Project Rfx"
                       @change="onChangeProjectRfx()"
                     ></v-select>
-                  </v-flex>
-                </v-flex>
+                  </v-flex> -->
+                <!-- </v-flex> -->
                 <v-flex>
                   <v-flex class="d-flex" cols="12" sm="6">
-                      <!-- <v-flex md6>
+                      <v-flex md6>
                         <timesheets-calendar @next="checkWeekChange"></timesheets-calendar>
-                      </v-flex> -->
+                      </v-flex>
                     <v-flex md6>
                       <v-radio-group row v-model="recordType">
                         <v-radio label="Hours" :value="1"></v-radio>
@@ -149,7 +149,9 @@
                     </v-flex>
                   </v-flex>
 
-                  <v-flex v-show="recordType === 1">
+                  <batch-time-entry></batch-time-entry>
+
+                  <!-- <v-flex v-show="recordType === 1">
                     <timesheet-entry ref="Billable" single-row></timesheet-entry>
                   </v-flex>
                   <v-flex v-if="recordType === 2">
@@ -157,10 +159,10 @@
                   </v-flex>
                   <v-flex v-show="recordType === 3">
                     <timesheet-entry ref="NonBillable" single-row></timesheet-entry>
-                  </v-flex>
+                  </v-flex> -->
 
                 </v-flex>
-
+<!--
                       <v-layout row>
                         <v-flex xs6 sm9>
                           <vc-date-picker
@@ -170,7 +172,6 @@
                             is-expanded
                             :excludeDates='{ weekdays: [1, 7] }'
                           />
-                            <!-- :available-dates='{ weekdays: [2,3,4,5,6] }' -->
                         </v-flex>
                         <v-flex xs6 sm3>
                           <v-card>
@@ -182,7 +183,7 @@
                             </v-card-text>
                           </v-card>
                         </v-flex>
-                      </v-layout>
+                      </v-layout> -->
 
 
               </v-tab-item>
@@ -212,6 +213,7 @@ import Spinner from '../common/Spinner.vue';
 import TimesheetsCalendar from './TimesheetsCalendar.vue';
 import AddExpense from './AddExpense.vue';
 import TimesheetEntry from './TimesheetEntry.vue';
+import BatchTimeEntry from './BatchTimeEntry';
 
 import Calendar from 'v-calendar/lib/components/calendar.umd'
 import DatePicker from 'v-calendar/lib/components/date-picker.umd'
@@ -269,6 +271,7 @@ export default {
     TimesheetsCalendar,
     AddExpense,
     TimesheetEntry,
+    BatchTimeEntry
   },
   data() {
     return this.initData();
@@ -279,7 +282,7 @@ export default {
   },
   methods: {
     getDatePart(date) {
-      debugger;
+      // debugger;
       const dateTime = moment(date);
 
       const dateValue = moment({

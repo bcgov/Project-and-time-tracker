@@ -10,6 +10,7 @@ import TimeMachineProjects from './components/timeMachine/projects/Projects.vue'
 import TimeMachineTimesheets from './components/timeMachine/timesheets/Timesheets.vue';
 import AdminMain from './components/timeMachine/admin/AdminMain.vue'
 import AdminMinistries from './components/timeMachine/admin/AdminMinistries.vue'
+import AdminHourlyRates from './components/timeMachine/admin/HourlyRates.vue'
 import Unauthorized from './components/error/Unauthorized.vue';
 import security from '@/modules/security';
 import store from '@/store';
@@ -35,13 +36,13 @@ const routes = [
     component: Authorize,
     meta: { requiresAuth: true, roles: ['PSB_User', 'PSB_Admin', 'User'] },
   },
-  {
-    exact: true,
-    path: '/dashboard',
-    name: 'dashboard',
-    component: Dashboard,
-    meta: { requiresAuth: true, roles: ['PSB_User', 'PSB_Admin'] },
-  },
+  // {
+  //   exact: true,
+  //   path: '/dashboard',
+  //   name: 'dashboard',
+  //   component: Dashboard,
+  //   meta: { requiresAuth: true, roles: ['PSB_User', 'PSB_Admin'] },
+  // },
   {
     exact: true,
     path: '/intake',
@@ -129,6 +130,14 @@ const routes = [
     component: AdminMinistries,
     meta: { requiresAuth: true, roles: ['PSB_Admin'] },
   },
+   {
+    exact: true,
+    path: '/admin/hourly-rates',
+    name: 'admin-hourly-rates',
+    component: AdminHourlyRates,
+    meta: { requiresAuth: true, roles: ['PSB_Admin'] },
+  },
+
   // Error routes
   {
     path: '/unauthorized',

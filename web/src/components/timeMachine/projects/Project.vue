@@ -374,7 +374,7 @@ export default {
       if (this.$refs.rfxForm) {
         return (
           this.$refs.rfxForm
-            .map((x) => x.$refs.form.validate())
+            .map(x => x.$refs.form.validate())
             .filter(x => !x).length === 0 // Remove truthy values
         ); // See if any falsy values remain
       }
@@ -386,7 +386,7 @@ export default {
       this.$refs.projectFinancier.Validate();
       const projectLeadForm = this.$refs.projectLead.form || undefined;
       const projectSponsorForm = this.$refs.projectSponsor.form || undefined;
-      const projectFinancierForm =        this.$refs.projectFinancier.form || undefined;
+      const projectFinancierForm = this.$refs.projectFinancier.form || undefined;
       const projectContactForm = this.$refs.projectClient
         ? this.$refs.projectClient.form
         : undefined;
@@ -408,7 +408,7 @@ export default {
       }
     },
     async saveFinanceCodes() {
-      const projectFinanceForm =        this.$refs.projectFinanceInfo.financeInfo || undefined;
+      const projectFinanceForm = this.$refs.projectFinanceInfo.financeInfo || undefined;
       if (this.$refs.projectFinanceInfo.validate()) {
         if (this.project && this.project.client && this.project.client.id) {
           await this.$store

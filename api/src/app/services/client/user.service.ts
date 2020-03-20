@@ -45,7 +45,9 @@ export const retrieveUsersNameAndIdByRole = async (roles: string[]) => {
       'u.id',
       'u.referenceId',
       'u.role',
-      'c.fullName'
+      'c.fullName',
+      'c.hourlyRate',
+      'c.id'
     ])
     .getMany();
   

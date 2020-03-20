@@ -81,7 +81,7 @@ export default {
         { id: 3, text: 'CAPACITY', showStatus: false },
         { id: 4, text: 'UNIQUE ATTRIBUTES', showStatus: false },
       ],
-      requireRadioButtondRule: [v => ((v || !v) && v != null) || 'This field required'],
+      // requireRadioButtondRule: [v => ((v || !v) && v != null) || 'This field required'],
       // Initialize using props
       form: { ...form },
       intakeRiskAssessment: this.$store.state.intakeRiskAssessment,

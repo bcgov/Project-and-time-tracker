@@ -43,11 +43,11 @@ const menuItems = [
   {
     header: '',
   },
-  {
-    href: '/dashboard',
-    title: 'Dashboard',
-    icon: 'dashboard',
-  },
+  // {
+  //   href: '/dashboard',
+  //   title: 'Dashboard',
+  //   icon: 'dashboard',
+  // },
   {
     href: '/intake',
     title: 'New Intake Request',

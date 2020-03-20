@@ -49,6 +49,11 @@ export class Contact {
 
   @Column({ type: 'timestamp', nullable: true })
   dateModified: Date;
+
+  // Used only for "user" types (psb specialist, legal, etc)
+  // Client contacts will not have a rate.
+  @Column({ type: 'int', nullable: true })
+  hourlyRate: number;
 }
 
 export type ContactType = 'clientlead' | 'clientsponsor' | 'clientcontact' | 'user';
