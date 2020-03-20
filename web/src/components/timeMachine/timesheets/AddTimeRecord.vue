@@ -162,7 +162,7 @@
                 <v-flex>
                   <v-flex class="d-flex" cols="12" sm="6">
                     <v-flex md6>
-                      <timesheets-calendar @next="checkWeekChange"></timesheets-calendar>
+                      <timesheets-calendar ref="timecalender" @next="checkWeekChange"></timesheets-calendar>
                     </v-flex>
                     <v-flex md6>
                       <v-radio-group row v-model="recordType">
@@ -349,7 +349,7 @@ export default {
     },
     async getTimeEntriesById(obj) {
       const date = obj.startDate;
-      
+      this.$refs.timecalender.setCalendarText();
       const weekDataBillable = [
         { day: 'Mon', description: '', hours: 0, date: '' },
         { day: 'Tue', description: '', hours: 0, date: '' },
@@ -614,7 +614,7 @@ export default {
       const timeEntries = [];
       const startDate = new Date(this.$store.state.timesheetsWeek.startDate);
       for (let index = 0; index < 7; index++) {
-        const entryDate = new Date();
+        const entryDate = new Date(startDate);
         entryDate.setDate(startDate.getDate() + index);
         const entry = {
           entryDate: this.getDateInYYYYMMDD(entryDate),
@@ -653,8 +653,8 @@ export default {
         mou: this.form.mou,
         project: this.form.project,
         projectRfx: this.form.Rfx,
-        startDate: dateValue,
-        endDate: this.getDatePart(this.$store.state.timesheetsWeek.endDate),
+        startDate: timeEntries[0].entryDate,
+        endDate: timeEntries[6].entryDate,
         userId: this.form.userId,
       };
       this.$refs.spinner.open();

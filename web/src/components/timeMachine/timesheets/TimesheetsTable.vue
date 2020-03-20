@@ -159,8 +159,8 @@ export default {
         element => element.id == value
       );
       console.log("result:", found);
-      // sessionStorage.setItem("selectedStartDate", found.startDate);
-      // sessionStorage.setItem("selectedEndDate", found.endDate);
+      sessionStorage.setItem("selectedStartDate", found.startDate);
+      sessionStorage.setItem("selectedEndDate", found.endDate);
       this.$refs.AddTimeRecord.getTimeEntriesById(found);
       this.$refs.AddTimeRecord.open();
     },
