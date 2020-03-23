@@ -90,10 +90,10 @@
                 <v-flex md6>
                   <div class="v-form-container">
                     <v-select
-                      :items="phaseImpactList"
                       v-model="phaseImpactName"
-                      item-value="id"
-                      item-text="phaseImpactName"
+                      :items="projectRfx"
+                      item-text="rfxName"
+                      item-value="rfxName"
                       label="Phase Impact"
                     ></v-select>
                   </div>
@@ -168,7 +168,11 @@ import Spinner from "../common/Spinner.vue";
 // import DatePicker from 'v-calendar/lib/components/date-picker.umd'
 
 export default {
-  computed: {},
+  computed: {
+      projectRfx() {
+        return this.$store.state.activeProjectRfxData;
+    }
+  },
   components: {
     Snackbar,
     Spinner
