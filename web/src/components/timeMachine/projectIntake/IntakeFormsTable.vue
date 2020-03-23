@@ -81,13 +81,23 @@
               >APPROVE</v-btn>
             </td>
             <td class="text-xs-center">
-              <v-btn flat icon color="grey" @click="viewRequest(props.item.id)">
-                <v-icon>visibility</v-icon>
-              </v-btn>
-              <v-btn flat icon color="grey" @click="deleteRequest(props.item.id)">
-                <v-icon>delete</v-icon>
-              </v-btn>
-            </td>
+              <v-tooltip top>
+                <template v-slot:activator="{ on }">
+                  <v-btn flat icon color="grey" v-on="on" @click="viewRequest(props.item.id)">
+                    <v-icon >visibility</v-icon>
+                  </v-btn>
+                </template>
+                <span>View Project</span>
+              </v-tooltip>
+              <v-tooltip top>
+                <template v-slot:activator="{ on }">
+                  <v-btn flat icon color="grey" v-on="on" @click="deleteRequest(props.item.id)">
+                    <v-icon >delete</v-icon>
+                  </v-btn>
+                </template>
+                <span>Delete</span>
+              </v-tooltip>
+              </td>
           </template>
         </v-data-table>
         <v-dialog v-if="dialog" v-model="dialog" width="800" margin-top="91px">
