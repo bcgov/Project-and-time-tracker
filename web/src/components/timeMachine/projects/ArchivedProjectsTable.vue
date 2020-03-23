@@ -21,7 +21,7 @@
             <td class="text-xs-left">{{ props.item.mou ? props.item.mou.name : 'n/a' }} </td>
             <!-- <td class="text-xs-left">{{ props.item.mouAmount }} </td> -->
             <td v-bind:class="{ 'archived': props.item.is_archived}">{{ props.item.projectName }}</td>
-            <td class="text-xs-left">{{ props.item.projectName }}</td>
+            <!-- <td class="text-xs-left">{{ props.item.projectName }}</td> -->
             <td class="text-xs-left">{{ [props.item.client.ministry.ministryName, props.item.orgDivision].join(" ") }}</td>
             <td class="text-xs-left">{{ props.item.leadUserId }}</td>
             <td class="text-xs-left">{{ props.item.backupUserId }}</td>
@@ -74,7 +74,7 @@ export default {
       headers: [
         { text: 'MOU', value: 'mouAmount', align: 'left', sortable: true },
         { text: 'Project Name', value: 'projectName', align: 'left', sortable: true },
-        { text: 'Phase', value: 'rfxPhaseName', align: 'left', sortable: true },
+        // { text: 'Phase', value: 'rfxPhaseName', align: 'left', sortable: true },
         { text: 'Client', value: 'client.ministry.ministryName', sortable: true },
         { text: 'Project Lead', value: 'projectLeadId', sortable: false },
         { text: 'Project Backup', value: 'projectBackup', sortable: false },
