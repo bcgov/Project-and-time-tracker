@@ -1,5 +1,5 @@
 <template>
-  <v-layout row justify-center>
+  <v-layout row justify-center class='procurement-log'>
     <snackbar ref="snackbar"></snackbar>
     <v-dialog id="ProcurementLog" content-class="add-procurement-log" v-model="dialog">
       <v-form ref="ProcurementLogs" v-model="valid" class="v-form intake-base-info" lazy-validation>
@@ -144,7 +144,7 @@
                     </v-menu>
                   </div>
                 </v-flex>
-             
+
                  <v-flex md12>
                  <v-flex d-flex justify-end>
                               <v-btn
@@ -154,7 +154,7 @@
                                 @click="saveProcurementLog"
                               >ADD LOG</v-btn>
                             </v-flex></v-flex>
-              
+
             </v-layout>
           </v-card-text>
         </v-card>
@@ -223,8 +223,8 @@ export default {
                 }
               }
             );
-        
-      
+
+
     },
     parseDate(date) {
       if (!date) return null;
