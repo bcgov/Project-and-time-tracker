@@ -23,17 +23,15 @@ import { authorize } from '../../../services/common/authorize.service';
 
 export const getTimesheets = async (ctx: Koa.Context) => {
   try {
-
     // If user passes up query params, all are required and filter
     let timesheets;
-    if (ctx.query.projectId && ctx.query.startDate && ctx.query.endDate) {      
-          timesheets = await retrieveTimesheets(
-            ctx.query.projectId,
-            ctx.query.startDate,
-            ctx.query.endDate
-          );
-    }
-    else {
+    if (ctx.query.projectId && ctx.query.startDate && ctx.query.endDate) {
+      timesheets = await retrieveTimesheets(
+        ctx.query.projectId,
+        ctx.query.startDate,
+        ctx.query.endDate
+      );
+    } else {
       timesheets = await retrieveTimesheets();
     }
     ctx.body = timesheets;
@@ -108,6 +106,89 @@ export const getTimeSheetLight = async (ctx: Koa.Context) => {
   }
 };
 
+export const createBatchTimesheet = async (ctx: Koa.Context) => {
+  try {
+    const auth = ctx.state.auth as IAuth;
+
+    const timeSheetEnties = ctx.request.body as ITimesheet[];
+
+    for (let index = 0; index < timeSheetEnties.length; index++) {
+      const model = timeSheetEnties[index];
+      if (!model) {
+        ctx.throw('no data Found');
+        return;
+      }
+
+      // const validationErrors = await validateCreateTimesheet(model);
+      // if (validationErrors.length > 0) {
+      //   ctx.throw(validationErrors.join(','));
+      //   return;
+      // }
+
+      let timesheet = await retrieveForLightTimesheet(model);
+
+      console.log('createLightTimesheet, does timesheet exist?', { timesheet });
+
+      let timesheetId: string;
+      if (timesheet) {
+        timesheetId = timesheet.id;
+        model.id = timesheetId;
+      } else {
+        model.id = undefined;
+        model.createdUserId = auth.userId;
+
+        timesheet = await createTimesheet(model);
+        console.log('createLightTimesheet, CREATED new timesheet', {
+          timesheet
+        });
+        timesheetId = timesheet.id;
+        model.id = timesheetId;
+      }
+      for (
+        let entryIndex = 0;
+        entryIndex < model.entries.length;
+        entryIndex++
+      ) {
+        const entry = model.entries[entryIndex];
+        if (timesheet.timesheetEntries) {
+          const existingEntry = timesheet.timesheetEntries.find(
+            (value, i, arr) => {
+              return (
+                Date.parse(value.entryDate.toString()) ===
+                Date.parse(entry.entryDate.toString())
+              );
+            }
+          );
+          if (existingEntry) {
+            entry.id = existingEntry.id;
+          }
+        }
+
+        if (entry.id) {
+          await updateTimesheetEntry(entry.id, {
+            userId: model.userId,
+            hoursBillable: entry.hoursBillable,
+            hoursUnBillable: entry.hoursUnBillable,
+            expenseAmount: entry.expenseAmount,
+            entryDate: entry.entryDate,
+            commentsBillable: entry.commentsBillable,
+            commentsUnBillable: entry.commentsUnBillable,
+            expenseComment: entry.expenseComment
+          });
+        } else {
+          entry.id = undefined;
+          entry.timesheet = model;
+          await createTimesheetEntry(entry);
+        }
+      }
+
+      // ctx.body = await retrieveTimesheetById(timesheetId);
+    }
+    ctx.body = 'success';
+  } catch (err) {
+    ctx.throw(err.message);
+  }
+};
 export const createLightTimesheet = async (ctx: Koa.Context) => {
   try {
     const auth = ctx.state.auth as IAuth;
@@ -125,8 +206,7 @@ export const createLightTimesheet = async (ctx: Koa.Context) => {
 
     let timesheet = await retrieveForLightTimesheet(model);
 
-
-    console.log('createLightTimesheet, does timesheet exist?', {timesheet})
+    console.log('createLightTimesheet, does timesheet exist?', { timesheet });
 
     let timesheetId: string;
     if (timesheet) {
@@ -137,7 +217,7 @@ export const createLightTimesheet = async (ctx: Koa.Context) => {
       model.createdUserId = auth.userId;
 
       timesheet = await createTimesheet(model);
-      console.log('createLightTimesheet, CREATED new timesheet', {timesheet})
+      console.log('createLightTimesheet, CREATED new timesheet', { timesheet });
       timesheetId = timesheet.id;
       model.id = timesheetId;
     }
@@ -396,6 +476,7 @@ router.get('/:id', authorize, getTimesheetById);
 router.post('/timesheetentries', authorize, getTimesheetEntries);
 router.post('/', authorize, createTimesheetAction);
 router.post('/light', authorize, createLightTimesheet);
+router.post('/batch', authorize, createBatchTimesheet);
 router.post('/getLight', authorize, getTimeSheetLight);
 router.patch('/:id', authorize, updateTimesheetAction);
 router.delete('/:id', authorize, deleteTimesheetAction);
