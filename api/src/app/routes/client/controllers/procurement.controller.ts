@@ -4,7 +4,7 @@ import * as Router from 'koa-router';
 import {
  // updateContact,
  createProcurementLog,
- retrieveProcurementLogsByProjectId
+ retrieveAllProcurementLog
 //   retrieveContactByProjectId,
 //   deleteContact
 } from '../../../services/client/procurementlog.service';
@@ -26,6 +26,14 @@ export const saveProcurementLog = async (ctx: Koa.Context) => {
     }
         ctx.body = await createProcurementLog(procurementlogs);
 
+  } catch (err) {
+    ctx.throw(err.message);
+  }
+};
+export const getAllProcurementLog = async (ctx: Koa.Context) => {
+  try {
+    // TODO - If user is NOT admin, return only the sheets by user id?
+    ctx.body = await retrieveAllProcurementLog();
   } catch (err) {
     ctx.throw(err.message);
   }
@@ -77,5 +85,6 @@ const router: Router = new Router(routerOpts);
 
 // router.get('/:id/by-project-id', authorize, getContactByProjectId);
 router.post('/', authorize, saveProcurementLog);
+router.get('/all', authorize, getAllProcurementLog);
 
 export default router;

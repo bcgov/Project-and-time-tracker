@@ -1,8 +1,8 @@
 <template>
-  <v-layout row justify-center class='procurement-log'>
+  <v-layout row justify-center class="proc-layout" >
     <snackbar ref="snackbar"></snackbar>
-    <v-dialog id="ProcurementLog" content-class="add-procurement-log" v-model="dialog">
-      <v-form ref="ProcurementLogs" v-model="valid" class="v-form intake-base-info" lazy-validation>
+    <v-dialog id="ProcurementLog" class="proc-dialgue" max-width="70%"  v-model="dialog">
+      <v-form ref="ProcurementLogs"  v-model="valid"  lazy-validation>
         <spinner ref="spinner"></spinner>
         <v-card>
           <v-card-text class="card-contents">
@@ -17,7 +17,7 @@
                 <div class="v-form-container">
                   <v-select
                     :items="itemList"
-                    v-model="logTypeId"
+                    v-model="logType"
                     item-value="id"
                     item-text="logType"
                     label="Select a Log Type"
@@ -78,9 +78,9 @@
                   <div class="v-form-container">
                     <v-select
                       :items="notificationMethodList"
-                      v-model="notificationId"
+                      v-model="notificationMethod"
                       item-value="id"
-                      item-text="methodName"
+                      item-text="notificationMethod"
                       label="Method of Notification"
                     ></v-select>
                   </div>
@@ -91,7 +91,7 @@
                   <div class="v-form-container">
                     <v-select
                       :items="phaseImpactList"
-                      v-model="phaseImpactId"
+                      v-model="phaseImpactName"
                       item-value="id"
                       item-text="phaseImpactName"
                       label="Phase Impact"
@@ -99,15 +99,9 @@
                   </div>
                 </v-flex>
                  <v-flex md6>
-                  <div class="v-form-container">
-                    <v-select
-                      :items="clientDecisionList"
-                      v-model="clientDecisionId"
-                      item-value="id"
-                      item-text="clientDecisionName"
-                      label="Client Decision"
-                    ></v-select>
-                  </div>
+                   <div class="v-form-container">
+                  <v-text-field v-model="clientDecision" label="Client Decision"></v-text-field>
+                </div>
                 </v-flex>
               </v-layout>
                 <v-flex md6>
@@ -188,17 +182,18 @@ export default {
   },
   methods: {
     async saveProcurementLog() {
-      console.log('reached here');
+      console.log(this.logType, this.notificationMethod, this.phaseImpactName);
      // const projectFinanceForm = this.$refs.ProcurementLogs || undefined;
        const formData = {
-          logTypeId: this.logTypeId,
+          logType: this.logType,
           riskOwner: this.riskOwnerName,
           descriptionOfIssue:this.issueDescription,
           dateToClient:this.dateToClient,
-          notificationId: this.notificationId,
-          phaseImpactId: this.phaseImpactId,
-          clientDecisionId:this.clientDecisionId,
-          followUpDate: this.followUpDate
+          notificationMethod: this.notificationMethod,
+          phaseImpactName: this.phaseImpactName,
+          clientDecision:this.clientDecision,
+          followUpDate: this.followUpDate,
+          projectId: this.$store.state.activeProject.id
           // userId: this.form.userId,
         };
         console.log('form data:', formData);
@@ -271,30 +266,26 @@ export default {
         existingTimeEntries,
         addRecordLoading: false,
         dateRange: { start: null, end: null },
-        logTypeId: "",
+        logType: "",
         itemList: [
-          { id: "6d030127", logType: "Rfx Change" },
-          { id: "6d530127", logType: "contact change" },
-          { id: "56456453", logType: "Finance change" }
+          { id: "Contact Update", logType: "Contact Update" },
+          { id: "RFX Update", logType: "RFX Update" },
+          { id: "Project Lead", logType: "Project Lead" },
+           { id: "Risk Assessment", logType: "Risk Assessment" }
         ],
-        notificationId: "",
+        notificationMethod: "",
         notificationMethodList: [
-          { id: "6d030127", methodName: "Method 1" },
-          { id: "6d530127", methodName: "Method 2" },
-          { id: "56456453", methodName: "Method 3" }
+          { id: "Phone", notificationMethod: "Phone" },
+          { id: "Email", notificationMethod: "Email" },
+          { id: "In person", notificationMethod: "In person" }
         ],
-        phaseImpactId: "",
+        phaseImpactName: "",
         phaseImpactList: [
-          { id: "6d030127", phaseImpactName: "impact 1" },
-          { id: "6d530127", phaseImpactName: "impact 2" },
-          { id: "56456453", phaseImpactName: "impact 3" }
+          { id: "impact 1", phaseImpactName: "impact 1" },
+          { id: "impact 2", phaseImpactName: "impact 2" },
+          { id: "impact 3", phaseImpactName: "impact 3" }
         ],
-        clientDecisionId: "",
-        clientDecisionList: [
-          { id: "6d030127", clientDecisionName: "decision 1" },
-          { id: "6d530127", clientDecisionName: "decision 2" },
-          { id: "56456453", clientDecisionName: "decision 3" }
-        ]
+        clientDecision: "",
       };
     }
   }
@@ -305,5 +296,9 @@ export default {
   width: 150px;
   flex: 0 0 200px !important;
   margin-right: 3%;
+}
+.v-dialog:not(.v-dialog--fullscreen) {
+  max-width:70%;
+  max-height: 90%; 
 }
 </style>

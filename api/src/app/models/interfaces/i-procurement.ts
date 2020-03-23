@@ -5,11 +5,11 @@ export interface IProcurement {
   id: string;
   riskOwner: string;
   descriptionOfIssue: string;
-  logTypeId: string;
-  notificationId: string;
-  phaseImpactId: string;
-  clientDecisionId: string;
+  logType: string;
+  notificationMethod: string;
+  phaseImpactName: string;
+  clientDecision: string;
   dateToClient: Date;
   followUpDate: Date;
-  project: IProject;
+  projectId: string;
 }

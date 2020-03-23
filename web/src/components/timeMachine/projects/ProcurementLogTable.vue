@@ -1,5 +1,6 @@
 <template>
   <v-card>
+    <spinner ref="spinner"></spinner>
     <v-toolbar v-if="title" card dense color="transparent">
       <v-toolbar-title>
         <h4>{{ title }}</h4>
@@ -10,20 +11,21 @@
       <template>
         <v-data-table
           :headers="headers"
-          :items="logList"
+          :items="allProcLogs"
           hide-actions
           class="elevation-0 tm-v-datatable"
           disable-initial-sort
         >
+       
           <template slot="items" slot-scope="props">
             <td class="text-xs-left">{{ props.item.logType }}</td>
             <td class="text-xs-left">{{ props.item.riskOwner }}</td>
-            <td class="text-xs-left">{{ props.item.issueDescription }}</td>
-            <td class="text-xs-left">{{ props.item.clientDate | formatDate }}</td>
+            <td class="text-xs-left">{{ props.item.descriptionOfIssue }}</td>
+            <td class="text-xs-left">{{ props.item.dateToClient | formatDate }}</td>
             <td class="text-xs-center">
               <a href>Download</a>
             </td>
-            <td class="text-xs-left">{{ props.item.phaseImpact }}</td>
+            <td class="text-xs-left">{{ props.item.phaseImpactName }}</td>
             <td class="text-xs-left">{{ props.item.clientDecision }}</td>
             <td class="text-xs-center">
               <a href>Download</a>
@@ -37,11 +39,14 @@
 </template>
 
 <script>
+import Spinner from "../common/Spinner.vue";
 export default {
   props: {
     title: String,
   },
-  components: {},
+  components: {
+     Spinner
+  },
   data() {
     return {
       headers: [
@@ -52,67 +57,46 @@ export default {
           value: 'issueDescription',
           sortable: false,
         },
-        { text: 'Date to Client', value: 'clientDate', sortable: false },
+        { text: 'Date to Client', value: 'dateToClient', sortable: false },
         {
           text: 'Method of Notification',
           value: 'notificationMethod',
           sortable: false,
         },
-        { text: 'Phase Impact', value: 'phaseImpact', sortable: false },
+        { text: 'Phase Impact', value: 'phaseImpactName', sortable: false },
         { text: 'Client Decision', value: 'clientDecision', sortable: false },
         { text: 'Resolution', value: 'resolution', sortable: false },
       ],
-      logList: [
-        {
-          id: 1,
-          logType: 'Contact Update',
-          riskOwner: 'Manager',
-          issueDescription: '',
-          clientDate: '',
-          notificationMethod: '',
-          phaseImpact: '',
-          clientDecision: '',
-          resolution: '',
-        },
-        {
-          id: 2,
-          logType: 'RFx update',
-          riskOwner: 'Manager',
-          issueDescription: '',
-          clientDate: '',
-          notificationMethod: '',
-          phaseImpact: '',
-          clientDecision: '',
-          resolution: '',
-        },
-        {
-          id: 3,
-          logType: 'Project lead',
-          riskOwner: 'Manager',
-          issueDescription: '',
-          clientDate: '',
-          notificationMethod: '',
-          phaseImpact: '',
-          clientDecision: '',
-          resolution: '',
-        },
-        {
-          id: 4,
-          logType: 'Risk Assessment',
-          riskOwner: 'Manager',
-          issueDescription: '',
-          clientDate: '',
-          notificationMethod: '',
-          phaseImpact: '',
-          clientDecision: '',
-          resolution: '',
-        },
-      ],
+      logList: this.fetchData(),
       selectedLeadUser: '',
       selectedProjectBackup: '',
     };
   },
-  computed: {},
-  methods: {},
+  computed: {
+      allProcLogs() {
+      if (this.search) {
+        return this.$store.state.allProcurementLog.filter(item => {
+          return item.project.projectName
+            .toLowerCase()
+            .includes(this.search.toLowerCase());
+        });
+      }
+      return this.$store.state.allProcurementLog;
+    }
+  },
+  created() {
+    this.fetchData();
+  },
+  methods: {
+    async fetchData() {
+      if (this.$refs.spinner) {
+        this.$refs.spinner.open();
+      }
+      let procLogs = await this.$store.dispatch("fetchAllProcurementLog");
+     console.log('proclogs', procLogs);
+     this.$refs.spinner.close();
+     return procLogs[0];
+    },
+  },
 };
 </script>

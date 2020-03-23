@@ -74,6 +74,7 @@ const store = new Vuex.Store({
     unbilledTimesheets: [],
     timesheetEntries: [],
     allTimesheets: [], // used in table view of all timesheets
+    allProcurementLog: [],
     collapseNavigationBar: false,
     projectInformation: false,
     ministryInformation: false,
@@ -344,6 +345,10 @@ const store = new Vuex.Store({
     fetchAllTimesheets(state, data) {
       console.log('fetchAllTimesheets', data);
       state.allTimesheets = data;
+    },
+    fetchAllProcurementLog(state, data) {
+      console.log('fetchAllProcurementLog', data);
+      state.allProcurementLog = data;
     },
     getTimeLogOfSelectedDate(state, data) {
       state.timeLogOfSelectedDate = data;
@@ -978,6 +983,11 @@ const store = new Vuex.Store({
     async fetchAllTimesheets(ctx) {
       const res = await $http.get(`${API_URI}/timesheet/all`)
       ctx.commit('fetchAllTimesheets', res.data);
+      return Promise.resolve(res.data);
+    },
+    async fetchAllProcurementLog(ctx) {
+      const res = await $http.get(`${API_URI}/procurement/all`)
+      ctx.commit('fetchAllProcurementLog', res.data);
       return Promise.resolve(res.data);
     },
     async updateRiskAnalysis(ctx, req) {

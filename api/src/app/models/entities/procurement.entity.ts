@@ -13,16 +13,19 @@ export class ProcurementLog {
   descriptionOfIssue: string;
 
   @Column({ type: 'text', nullable: true })
-  logTypeId: string;
+  logType: string;
 
   @Column({ type: 'text', nullable: true })
-  notificationId: string;
+  notificationMethod: string;
 
   @Column({ type: 'text', nullable: true })
-  phaseImpactId: string;
+  phaseImpactName: string;
+
+  @Column({ type: 'text', nullable: true })
+  projectId: string;
 
   @Column({ type: 'text', nullable: false })
-  clientDecisionId: string;
+  clientDecision: string;
 
   @Column({ type: 'timestamp', nullable: true })
   dateToClient: Date;
@@ -30,6 +33,4 @@ export class ProcurementLog {
   @Column({ type: 'timestamp', nullable: true })
   followUpDate: Date;
 
-  @ManyToOne(type => Project)
-  project: Project;
 }
