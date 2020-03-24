@@ -748,7 +748,7 @@ export default {
       const existingTimeEntries = [];
       return {
         editMode: false,
-        activeTab: 'batch',
+        activeTab: 'weekly',
         recordType: 1,
         valid: true,
         requiredRule: [v => !!v || 'This field required'],
