@@ -132,6 +132,8 @@ export const createBatchTimesheet = async (ctx: Koa.Context) => {
       let timesheetId: string;
       if (timesheet) {
         timesheetId = timesheet.id;
+        // if(model.projectRfx)
+        //   timesheet.projectRfx = model.projectRfx;
         model.id = timesheetId;
       } else {
         model.id = undefined;

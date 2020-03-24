@@ -80,8 +80,8 @@
                 <!-- </v-flex> -->
                 <v-flex>
                   <v-flex class="d-flex" cols="12" sm="6">
-                    <v-flex md6 v-show="!editMode">
-                      <timesheets-calendar @next="checkWeekChange"></timesheets-calendar>
+                    <v-flex md6 >
+                      <timesheets-calendar ref="timeCalenderBatch" @next="checkWeekChange"></timesheets-calendar>
                     </v-flex>
                     <v-flex md6>
                       <v-radio-group row v-model="recordType">
@@ -145,7 +145,7 @@
                       item-text="projectName"
                       item-value="id"
                       label="Project Name"
-                      @change="onChangeProject(form.project)"
+                      @change="onChangeProjectWeeklyEntry(form.project)"
                     ></v-select>
                   </v-flex>
 
@@ -161,8 +161,8 @@
                 </v-flex>
                 <v-flex>
                   <v-flex class="d-flex" cols="12" sm="6">
-                    <v-flex md6 v-show="!editMode">
-                      <timesheets-calendar ref="timecalender" @next="checkWeekChange"></timesheets-calendar>
+                    <v-flex md6 >
+                      <timesheets-calendar ref="timeCalenderWeekly" @next="checkWeekChange"></timesheets-calendar>
                     </v-flex>
                     <v-flex md6>
                       <v-radio-group row v-model="recordType">
@@ -316,26 +316,7 @@ export default {
       this.$refs.nonBillableBatchEntry.editMode = false;
       this.editMode = false;
       const date = this.getDatePart(this.$store.state.timesheetsWeek.startDate);
-      const weekDataBillable = [
-        { day: 'Mon', description: '', hours: 0, date: '' },
-        { day: 'Tue', description: '', hours: 0, date: '' },
-        { day: 'Wed', description: '', hours: 0, date: '' },
-        { day: 'Thu', description: '', hours: 0, date: '' },
-        { day: 'Fri', description: '', hours: 0, date: '' },
-        { day: 'Sat', description: '', hours: 0, date: '' },
-        { day: 'Sun', description: '', hours: 0, date: '' },
-      ];
-      const weekDataUnBillable = [
-        { day: 'Mon', description: '', hours: 0, date: '' },
-        { day: 'Tue', description: '', hours: 0, date: '' },
-        { day: 'Wed', description: '', hours: 0, date: '' },
-        { day: 'Thu', description: '', hours: 0, date: '' },
-        { day: 'Fri', description: '', hours: 0, date: '' },
-        { day: 'Sat', description: '', hours: 0, date: '' },
-        { day: 'Sun', description: '', hours: 0, date: '' },
-      ];
-      this.$refs.Billable.weekData = weekDataBillable;
-      this.$refs.NonBillable.weekData = weekDataUnBillable;
+      this.clearTimeEntries();
       const rfxId = this.form.Rfx;
       const formData = {
         mou: this.form.mou,
@@ -350,7 +331,8 @@ export default {
       });
     },
     async editTimeEntries(obj) {
-      this.$refs.timecalender.setCalendarText();
+      this.$refs.timeCalenderWeekly.setCalendarText();
+      this.$refs.timeCalenderBatch.setCalendarText();
       const weekDataBillable = [
         { day: 'Mon', description: '', hours: 0, date: '' },
         { day: 'Tue', description: '', hours: 0, date: '' },
@@ -374,7 +356,7 @@ export default {
       this.form.userId = obj.user.id;
       this.form.mou = obj.mou.id;
       this.form.project = obj.project.id;
-      this.onChangeProject(obj.project.id);
+      this.onChangeProjectWeeklyEntry(obj.project.id);
       this.form.Rfx = obj.projectRfx ? obj.projectRfx.id : '';
       this.activeTab = 'weekly';
       this.initTimeEntries(obj);
@@ -382,7 +364,7 @@ export default {
       this.editMode = true;
       this.$refs.billableBatchEntry.editMode = true;
       this.$refs.nonBillableBatchEntry.editMode = true;
-      debugger;
+
       this.$refs.billableBatchEntry.weekEntries[0].projectId = obj.project.id;
       this.$refs.billableBatchEntry.weekEntries[0].monday.hours = this.$refs.Billable.weekData[0].hours;
       this.$refs.billableBatchEntry.weekEntries[0].tuesday.hours = this.$refs.Billable.weekData[1].hours;
@@ -427,7 +409,7 @@ export default {
       }
     },
 
-    onChangeProject(projectId) {
+    onChangeProjectWeeklyEntry(projectId) {
       this.$store.dispatch('fetchProjectRFxData', { id: projectId });
       this.getTimeEntries();
     },
@@ -459,41 +441,58 @@ export default {
         }
       }
     },
-    saveAndClose() {
+    clearTimeEntries() {
+      this.clearWeekEntry();
+      this.clearBatchEntry();
+    },
+    clearWeekEntry() {
+      const weekDataBillable = [
+        { day: 'Mon', description: '', hours: 0, date: '' },
+        { day: 'Tue', description: '', hours: 0, date: '' },
+        { day: 'Wed', description: '', hours: 0, date: '' },
+        { day: 'Thu', description: '', hours: 0, date: '' },
+        { day: 'Fri', description: '', hours: 0, date: '' },
+        { day: 'Sat', description: '', hours: 0, date: '' },
+        { day: 'Sun', description: '', hours: 0, date: '' },
+      ];
+      const weekDataUnBillable = [
+        { day: 'Mon', description: '', hours: 0, date: '' },
+        { day: 'Tue', description: '', hours: 0, date: '' },
+        { day: 'Wed', description: '', hours: 0, date: '' },
+        { day: 'Thu', description: '', hours: 0, date: '' },
+        { day: 'Fri', description: '', hours: 0, date: '' },
+        { day: 'Sat', description: '', hours: 0, date: '' },
+        { day: 'Sun', description: '', hours: 0, date: '' },
+      ];
+      this.$refs.Billable.weekData = weekDataBillable;
+      this.$refs.NonBillable.weekData = weekDataUnBillable;
+    },
+    clearBatchEntry() {
+      this.$refs.nonBillableBatchEntry.weekEntries = [];
+      this.$refs.billableBatchEntry.weekEntries = [];
+      this.$refs.nonBillableBatchEntry.weekEntries.push(this.$refs.nonBillableBatchEntry.createEmptyWeekEntry());
+      this.$refs.billableBatchEntry.weekEntries.push(this.$refs.billableBatchEntry.createEmptyWeekEntry());
+    },
+    async saveAndClose() {
       if (this.$refs.AddimeRecords.validate()) {
         if (this.activeTab === 'weekly') {
-          this.submitWeekData();
-          this.closeDialog();
-          const weekDataBillable = [
-            { day: 'Mon', description: '', hours: 0, date: '' },
-            { day: 'Tue', description: '', hours: 0, date: '' },
-            { day: 'Wed', description: '', hours: 0, date: '' },
-            { day: 'Thu', description: '', hours: 0, date: '' },
-            { day: 'Fri', description: '', hours: 0, date: '' },
-            { day: 'Sat', description: '', hours: 0, date: '' },
-            { day: 'Sun', description: '', hours: 0, date: '' },
-          ];
-          const weekDataUnBillable = [
-            { day: 'Mon', description: '', hours: 0, date: '' },
-            { day: 'Tue', description: '', hours: 0, date: '' },
-            { day: 'Wed', description: '', hours: 0, date: '' },
-            { day: 'Thu', description: '', hours: 0, date: '' },
-            { day: 'Fri', description: '', hours: 0, date: '' },
-            { day: 'Sat', description: '', hours: 0, date: '' },
-            { day: 'Sun', description: '', hours: 0, date: '' },
-          ];
-          this.$refs.Billable.weekData = weekDataBillable;
-          this.$refs.NonBillable.weekData = weekDataUnBillable;
+          this.submitWeekData(true);
         } else {
           const nonBillableBatchEntry = this.$refs.nonBillableBatchEntry.prepareDataForSubmission();
           const billableBatchEntry = this.$refs.billableBatchEntry.prepareDataForSubmission();
-          this.submitBatchData(nonBillableBatchEntry, billableBatchEntry);
-          this.closeDialog();
+          this.submitBatchData(nonBillableBatchEntry, billableBatchEntry, true);
         }
+
+
+        this.$refs.spinner.open();
+        debugger;
+        const timesheets = await this.$store.dispatch('fetchAllTimesheets');
+
+        this.$refs.spinner.close();
       }
     },
 
-    submitBatchData(nonBillableBatchEntry, billableBatchEntry) {
+    submitBatchData(nonBillableBatchEntry, billableBatchEntry, needToClose = false) {
       const timeSheetEntries = [];
 
       for (
@@ -502,7 +501,7 @@ export default {
         itemIndex++
       ) {
         const startDate = this.getDatePart(billableBatchEntry[itemIndex].startDate);
-        const endDate = this.getDatePart(billableBatchEntry[itemIndex].endDate);
+        const endDate = this.getDatePart(this.$store.state.timesheetsWeek.endDate);
         const entries = billableBatchEntry[itemIndex].timesheetEntry;
         const timeEntries = [];
         const timeSheetEntry = {};
@@ -612,6 +611,10 @@ export default {
             'Successfully added time entries.',
           );
           this.$refs.spinner.close();
+          if (needToClose) {
+            this.clearTimeEntries();
+            this.closeDialog();
+          }
         },
         (err) => {
           this.$refs.spinner.close();
@@ -627,7 +630,7 @@ export default {
         },
       );
     },
-    submitWeekData() {
+    submitWeekData(needToClose = false) {
       const billableDetails = this.$refs.Billable.onBillableclick();
       const nonBillableDetails = this.$refs.NonBillable.nonBillableclick();
 
@@ -684,6 +687,10 @@ export default {
             'Successfully added time entries.',
           );
           this.$refs.spinner.close();
+          if (needToClose) {
+            this.clearTimeEntries();
+            this.closeDialog();
+          }
         },
         (err) => {
           this.$refs.spinner.close();
@@ -696,6 +703,7 @@ export default {
               'Timesheet entry Error',
             );
           }
+          return false;
         },
       );
     },
