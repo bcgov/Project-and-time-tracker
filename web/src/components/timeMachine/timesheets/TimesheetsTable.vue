@@ -65,7 +65,7 @@
                     <v-icon>delete</v-icon>
                   </v-btn>
                 </template>
-                <span>delete</span>
+                <span>Delete</span>
               </v-tooltip>
             </td>
           </template>
