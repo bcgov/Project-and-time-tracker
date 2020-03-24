@@ -28,9 +28,11 @@ export const retrieveQuestions = async () => {
       'q.id AS "id"',
       'q.question AS "question"',
       'q.category AS "category"',
+      'q.is_PSB AS "is_PSB"',
       'q.riskLevel AS "riskLevel"',
       'q.questionNo AS "questionNo"'
     ])
+    .where ('q."is_PSB" = :is_PSB', {is_PSB : false})
     .getRawMany();
   for (let index = 0; index < res.length; index++) {
     res[index].answer = await retrieveAnswersByQuestionId(res[index].id);
@@ -44,7 +46,7 @@ export const retrieveAnswersByQuestionId = async (id: string) => {
   const res = await repo
     .createQueryBuilder('ans')
 
-    .orderBy('ans.score', 'ASC')
+    .orderBy('ans.order_id', 'ASC')
     .innerJoinAndSelect(RiskQuestions, 'q', 'ans."questionId" = q.id')
     .where('ans."questionId" = :id', { id: id })
     .getMany();
@@ -70,6 +72,7 @@ export const retrieveProjectQuestions = async (id: string) => {
       'q.id AS "questionId"',
       'a.id AS "answerid"',
       'a.score AS "score"',
+      'a.order_id AS "order_id"',
       'q.riskLevel AS "riskLevel"',
       'q.questionNo AS "questionNo"',
       'i.id AS "intakeId"'
