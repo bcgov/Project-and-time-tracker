@@ -15,6 +15,7 @@
               item-value="id"
               v-model="props.item.projectId"
               label="Project Name"
+              :disabled="editMode"
             >
               <!-- TODO - Truncate name if Proj name too long -->
               <!-- <template v-slot:selection='{item}'>
@@ -79,11 +80,12 @@
       </v-data-table>
     </v-flex>
 
-    <v-flex>
+    <v-flex v-if="!editMode">
       <v-btn @click="addRow">Add another entry</v-btn>
       <pre>
-          <!-- {{ weekEntries }} -->
-          <!-- {{ prepareDataForSubmission() }} -->
+          <!-- {{ weekEntries }}
+
+          {{ prepareDataForSubmission() }} -->
         </pre>
     </v-flex>
   </v-layout>
@@ -100,7 +102,8 @@ export default {
   },
   computed: {
     allProjects() {
-      return this.$store.state.projects;
+      const mouProjects = this.$store.state.projects.filter(item => item.mou != null && item.mou !== '');
+      return mouProjects;
     },
     selectedStartDate() {
       return this.$store.state.timesheetsWeek.startDate;
@@ -114,6 +117,7 @@ export default {
         { day: 'Wed', description: '', hours: 0, date: '' },
       ],
       valid: true,
+      editMode: false,
 
       headers: [
         { text: 'Project', value: 'contact.fullName' },
@@ -144,14 +148,14 @@ export default {
       timesheetEntryDays.map(
         dayString => (obj[dayString] = {
           hours: undefined,
-          hoursUnBillable: undefined,
         }),
       );
       return obj;
     },
     calculateDate() {
       const startDate = this.selectedStartDate;
-      const monday = moment(startDate).startOf('week');
+      const sunday = moment(startDate).startOf('week');
+      const monday = sunday.clone().add('1', 'day');
       const tuesday = monday.clone().add('1', 'day');
       const wednesday = tuesday.clone().add('1', 'day');
       const thursday = wednesday.clone().add('1', 'day');
