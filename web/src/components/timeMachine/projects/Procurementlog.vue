@@ -200,8 +200,32 @@ export default {
           projectId: this.$store.state.activeProject.id
           // userId: this.form.userId,
         };
-        console.log('form data:', formData);
-          await this.$store
+        if(this.id) {
+          console.log('suppose to update');
+        formData.id = this.id
+         await this.$store
+            .dispatch("updateProctLog", {
+              procurementlog: formData
+            })
+            .then(
+              () => {
+                this.$refs.snackbar.displaySnackbar("success", "Updated");
+              },
+              err => {
+                try {
+                  const { message } = err.response.data.error;
+                  this.$refs.snackbar.displaySnackbar("error", message);
+                } catch (ex) {
+                  this.$refs.snackbar.displaySnackbar(
+                    "error",
+                    "Failed to update"
+                  );
+                }
+              }
+            );
+        } else {
+          console.log('suppose to add new');
+           await this.$store
             .dispatch("updateProcurementLog", {
               id: '34534-345345-45353',
               procurementlog: formData
@@ -222,6 +246,8 @@ export default {
                 }
               }
             );
+        }
+         
 
 
     },
@@ -238,6 +264,26 @@ export default {
         )[0].scrollTop = 0;
       }, 400);
     },
+    openWithValues(obj) {
+         this.id = obj.id;
+     // this.form.userId = obj.user.id;
+          this.logType = obj.logType;
+          this.riskOwnerName = obj.riskOwner;
+          this.issueDescription = obj.descriptionOfIssue;
+          this.dateToClient = obj.dateToClient.substring(0,10);
+          this.notificationMethod = obj.notificationMethod;
+          this.phaseImpactName = obj.phaseImpactName;
+          this.clientDecision = obj.clientDecision;
+         this.followUpDate = obj.followUpDate.substring(0,10);
+    
+      this.dialog = true;
+      setTimeout(() => {
+        document.getElementsByClassName(
+          "v-dialog v-dialog--active"
+        )[0].scrollTop = 0;
+      }, 400);
+    }
+    ,
     closeDialog() {
       this.dialog = false;
     },
@@ -251,6 +297,7 @@ export default {
       form.userId = this.$store.state.activeUser.id;
       const existingTimeEntries = [];
       return {
+        id: undefined,
         activeTab: "weekly",
         recordType: 1,
         valid: true,

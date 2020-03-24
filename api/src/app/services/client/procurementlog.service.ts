@@ -58,6 +58,19 @@ export const retrieveAllProcurementLog = async () => {
 //   }
 //   return res;
 // };
+export const updateProcLog = async (id: string, fields: any) => {
+  const repo = procurementLogRepo();
+  const proclog: ProcurementLog = await repo.findOne(id);
+
+  if (!proclog) {
+    throw Error('procurement log not found');
+  }
+  const updatedIntake = await repo.merge(proclog, fields);
+  // updatedIntake.dateModified = new Date();
+
+  await repo.save(updatedIntake);
+  return updatedIntake;
+};
 
 export const retrieveProcurementLogsByProjectId = async (id: string) => {
   const repo = procurementLogRepo();

@@ -2,11 +2,9 @@ import { IProcurement } from './../../../models/interfaces/i-procurement';
 import * as Koa from 'koa';
 import * as Router from 'koa-router';
 import {
- // updateContact,
  createProcurementLog,
- retrieveAllProcurementLog
-//   retrieveContactByProjectId,
-//   deleteContact
+ retrieveAllProcurementLog,
+ updateProcLog
 } from '../../../services/client/procurementlog.service';
 import { authorize } from '../../../services/common/authorize.service';
 
@@ -30,6 +28,17 @@ export const saveProcurementLog = async (ctx: Koa.Context) => {
     ctx.throw(err.message);
   }
 };
+
+export const updateProcurementLog = async (ctx: Koa.Context) => {
+  try {
+    const body = ctx.request.body;
+    console.log(body);
+    ctx.body = await updateProcLog(body.formData.id, body.formData);
+  } catch (err) {
+    ctx.throw(err.message);
+  }
+};
+
 export const getAllProcurementLog = async (ctx: Koa.Context) => {
   try {
     // TODO - If user is NOT admin, return only the sheets by user id?
@@ -86,5 +95,6 @@ const router: Router = new Router(routerOpts);
 // router.get('/:id/by-project-id', authorize, getContactByProjectId);
 router.post('/', authorize, saveProcurementLog);
 router.get('/all', authorize, getAllProcurementLog);
+router.patch('/:id', authorize, updateProcurementLog);
 
 export default router;

@@ -760,6 +760,18 @@ const store = new Vuex.Store({
         .catch(err => Promise.reject(err));
       return Promise.resolve(api);
     },
+    async updateProctLog(ctx, req) {
+      console.log(req);
+      const api = $http
+        .patch(`${API_URI}/procurement/${req.id}`, req)
+        .then((res) => {
+          const content = res.data;
+          ctx.commit('updateProctLog', content);
+          return Promise.resolve(content);
+        })
+        .catch(err => Promise.reject(err));
+      return Promise.resolve(api);
+    },
     async deleteIntakeRequest(ctx, req) {
       try {
         const res = await $http.delete(`${API_URI}/intake/${req.id}`);
