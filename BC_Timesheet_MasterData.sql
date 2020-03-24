@@ -27,6 +27,7 @@ INSERT INTO project_sector("projectSectorName") VALUES ('Personal, Domestic & Co
 INSERT INTO project_sector("projectSectorName") VALUES ('Services');
 INSERT INTO project_sector("projectSectorName") VALUES ('Other');
 
+-- New RFX_Types
 -- INSERT INTO rfx_type("rfxTypeName") VALUES ('ITQ (Invitation to Quote)');
 -- INSERT INTO rfx_type("rfxTypeName") VALUES ('ITT (Invitation to Tender');
 -- INSERT INTO rfx_type("rfxTypeName") VALUES ('JSRFP (Joint Solution Request for Proposals)');
