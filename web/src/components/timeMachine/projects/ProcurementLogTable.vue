@@ -79,11 +79,11 @@ export default {
           value: "issueDescription",
           sortable: false, width:"15  %"
         },
-        { text: "Date To Client", value: "dateToClient", sortable: false, width:"4%"},
+        { text: "Date To Client", value: "dateToClient", sortable: false, width:"10%"},
         {
           text: "Method of Notification",
           value: "notificationMethod",
-           sortable: false, width:"10%"
+          sortable: false, width:"10%"
         },
         { text: "Phase Impact", value: "phaseImpactName", sortable: false, width:"10%" },
         { text: "Client Decision", value: "clientDecision", sortable: false, width:"10%"},
