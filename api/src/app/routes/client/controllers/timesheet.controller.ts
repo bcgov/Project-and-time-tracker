@@ -47,7 +47,7 @@ export const getTimesheetById = async (ctx: Koa.Context) => {
     ctx.throw(err.message);
   }
 };
-export const getTimesheetEntries = async (ctx: Koa.Context) => {
+export const timesheetEntries = async (ctx: Koa.Context) => {
   try {
     const model = ctx.request.body as ITimesheet;
     if (!model) {
@@ -68,7 +68,7 @@ export const getAllTimesheets = async (ctx: Koa.Context) => {
     ctx.throw(err.message);
   }
 };
-export const getTimeSheetLight = async (ctx: Koa.Context) => {
+export const timeSheetLight = async (ctx: Koa.Context) => {
   try {
     const model = ctx.request.body;
     if (!model) {
@@ -132,6 +132,8 @@ export const createBatchTimesheet = async (ctx: Koa.Context) => {
       let timesheetId: string;
       if (timesheet) {
         timesheetId = timesheet.id;
+        // if(model.projectRfx)
+        //   timesheet.projectRfx = model.projectRfx;
         model.id = timesheetId;
       } else {
         model.id = undefined;
@@ -391,9 +393,9 @@ const validateCreateTimesheet = async (timesheet: ITimesheet) => {
   if (!timesheet.project) {
     validationErrors.push('Project is required.');
   }
-  if (!timesheet.projectRfx) {
-    validationErrors.push('ProjectRfx is required.');
-  }
+  // if (!timesheet.projectRfx) {
+  //   validationErrors.push('ProjectRfx is required.');
+  // }
   if (!timesheet.startDate) {
     validationErrors.push('Start Date is required.');
   }
@@ -470,14 +472,14 @@ const routerOpts: Router.IRouterOptions = {
 
 const router: Router = new Router(routerOpts);
 
-router.get('/', authorize, getTimesheets);
+// router.get('/', authorize, getTimesheets);
 router.get('/all', authorize, getAllTimesheets);
 router.get('/:id', authorize, getTimesheetById);
-router.post('/timesheetentries', authorize, getTimesheetEntries);
+router.post('/timesheetentries', authorize, timesheetEntries);
 router.post('/', authorize, createTimesheetAction);
 router.post('/light', authorize, createLightTimesheet);
 router.post('/batch', authorize, createBatchTimesheet);
-router.post('/getLight', authorize, getTimeSheetLight);
+router.post('/getLight', authorize, timeSheetLight);
 router.patch('/:id', authorize, updateTimesheetAction);
 router.delete('/:id', authorize, deleteTimesheetAction);
 

@@ -52,7 +52,7 @@
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
                   <add-time-record ref="AddTimeRecord"></add-time-record>
-                  <v-btn flat icon color="grey" @click="editProject(props.item.id)" v-on="on">
+                  <v-btn flat icon color="grey" @click="editTimesheet(props.item.id)" v-on="on">
                     <v-icon>edit</v-icon>
                   </v-btn>
                 </template>
@@ -77,63 +77,63 @@
 </template>
 
 <script>
-import ProjectExpansionRow from "./ProjectExpansionRow.vue";
-import TimesheetsToolbar from "./TimesheetsToolbar.vue";
-import Spinner from "../common/Spinner.vue";
-import AddTimeRecord from "./AddTimeRecord.vue";
+import ProjectExpansionRow from './ProjectExpansionRow.vue';
+import TimesheetsToolbar from './TimesheetsToolbar.vue';
+import Spinner from '../common/Spinner.vue';
+import AddTimeRecord from './AddTimeRecord.vue';
 
 export default {
   components: {
     ProjectExpansionRow,
     TimesheetsToolbar,
     Spinner,
-    AddTimeRecord
+    AddTimeRecord,
   },
   props: {
     title: String,
     addTimeRecord: {
       type: Function,
-      default: () => {}
-    }
+      default: () => {},
+    },
   },
   data() {
     return {
       pagination: {
-        sortBy: "name",
-        rowsPerPage: 25
+        sortBy: 'name',
+        rowsPerPage: 25,
       },
       selected: [],
       dialog: false,
-      search: "",
+      search: '',
       headers: [
         {
-          text: "Date of Entry",
-          value: "startDate",
-          align: "left",
-          sortable: true
+          text: 'Date of Entry',
+          value: 'startDate',
+          align: 'left',
+          sortable: true,
         },
         {
-          text: "Person",
-          value: "user.contact.fullName",
-          align: "left",
-          sortable: true
+          text: 'Person',
+          value: 'user.contact.fullName',
+          align: 'left',
+          sortable: true,
         },
-        { text: "Proj. Name", value: "project.projectName", sortable: true },
+        { text: 'Proj. Name', value: 'project.projectName', sortable: true },
         // { text: 'Budget Remaining', value: 'projectBackup', sortable: false },
         // { text: 'Legal Billing', value: 'completionDate', sortable: true },
-        { text: "Hours Accrued", value: "dateModified", sortable: true },
+        { text: 'Hours Accrued', value: 'dateModified', sortable: true },
         {
-          text: "Actions",
-          value: "is_archived",
-          align: "center",
-          width: "145px",
-          sortable: false
-        }
+          text: 'Actions',
+          value: 'is_archived',
+          align: 'center',
+          width: '145px',
+          sortable: false,
+        },
       ],
       timesheets: [],
       projects: [],
       expand: false,
-      rfxExpand: false
+      rfxExpand: false,
     };
   },
   computed: {
@@ -142,33 +142,28 @@ export default {
     },
     allTimesheets() {
       if (this.search) {
-        return this.$store.state.allTimesheets.filter(item => {
-          return item.project.projectName
-            .toLowerCase()
-            .includes(this.search.toLowerCase());
-        });
+        return this.$store.state.allTimesheets.filter(item => item.project.projectName
+          .toLowerCase()
+          .includes(this.search.toLowerCase()));
       }
       return this.$store.state.allTimesheets;
-    }
+    },
   },
   methods: {
-    editProject(value) {
-      console.log(value);
-      console.log("complete list:", this.$store.state.allTimesheets);
+    editTimesheet(value) {
       const found = this.$store.state.allTimesheets.find(
-        element => element.id == value
+        element => element.id === value,
       );
-      console.log("result:", found);
-      sessionStorage.setItem("selectedStartDate", found.startDate);
-      sessionStorage.setItem("selectedEndDate", found.endDate);
-      this.$refs.AddTimeRecord.getTimeEntriesById(found);
+      sessionStorage.setItem('selectedStartDate', found.startDate);
+      sessionStorage.setItem('selectedEndDate', found.endDate);
+      this.$refs.AddTimeRecord.editTimeEntries(found);
       this.$refs.AddTimeRecord.open();
     },
     getFullname(projectLeadId) {
       let projectLeadName = null;
       if (projectLeadId != null) {
         const ProjectLeadMatches = this.$store.state.users.filter(
-          Type => Type.id === projectLeadId
+          Type => Type.id === projectLeadId,
         );
 
         if (ProjectLeadMatches.length > 0) {
@@ -181,9 +176,9 @@ export default {
       if (this.$refs.spinner) {
         this.$refs.spinner.open();
       }
-      let timesheets = await this.$store.dispatch("fetchAllTimesheets");
-      await this.$store.dispatch("fetchProjects"); // Needed in AddTimeRecord
-      console.log("gottimesheets", { timesheets });
+      const timesheets = await this.$store.dispatch('fetchAllTimesheets');
+      await this.$store.dispatch('fetchProjects'); // Needed in AddTimeRecord
+      console.log('gottimesheets', { timesheets });
       this.$refs.spinner.close();
 
       // this.$store
@@ -206,14 +201,14 @@ export default {
     // },
     async deleteTimesheet(id) {
       // TODO - Confirm popup
-      await this.$store.dispatch("deleteTimesheet", { id });
+      await this.$store.dispatch('deleteTimesheet', { id });
       await this.fetchData();
       // TODO - Show notification (snackbar?) to user.
-    }
+    },
   },
   created() {
     this.fetchData();
-  }
+  },
 };
 </script>
 
