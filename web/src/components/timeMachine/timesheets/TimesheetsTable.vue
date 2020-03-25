@@ -19,7 +19,7 @@
             hide-details
           ></v-text-field>
         </v-flex>
-        <timesheets-toolbar></timesheets-toolbar>
+        <timesheets-toolbar @refresh="fetchData"></timesheets-toolbar>
       </v-layout>
     </v-card-title>
     <v-divider></v-divider>

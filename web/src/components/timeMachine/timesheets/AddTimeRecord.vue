@@ -1,7 +1,7 @@
 <template>
   <v-layout row justify-center>
     <snackbar ref="snackbar"></snackbar>
-    <v-dialog id="AddTimeRecord" content-class="add-time-record" v-model="dialog">
+    <v-dialog id="AddTimeRecord" content-class="add-time-record" v-model="dialog" @input="closeDialog()" >
       <v-form ref="AddimeRecords" v-model="valid" lazy-validation>
         <spinner ref="spinner"></spinner>
         <v-card>
@@ -81,7 +81,7 @@
                 <v-flex>
                   <v-flex class="d-flex" cols="12" sm="6">
                     <v-flex md6 >
-                      <timesheets-calendar ref="timeCalenderBatch" @next="checkWeekChange"></timesheets-calendar>
+                      <timesheets-calendar ref="TimeCalenderBatch" @next="checkWeekChange"></timesheets-calendar>
                     </v-flex>
                     <v-flex md6>
                       <v-radio-group row v-model="recordType">
@@ -135,6 +135,8 @@
                       item-text="name"
                       item-value="id"
                       label="MOU"
+                      :disabled="editMode"
+                      @change="onChangeMouWeeklyEntry(form.mou)"
                     ></v-select>
                   </v-flex>
                   <v-flex xs12>
@@ -146,6 +148,7 @@
                       item-value="id"
                       label="Project Name"
                       @change="onChangeProjectWeeklyEntry(form.project)"
+
                     ></v-select>
                   </v-flex>
 
@@ -161,8 +164,8 @@
                 </v-flex>
                 <v-flex>
                   <v-flex class="d-flex" cols="12" sm="6">
-                    <v-flex md6 >
-                      <timesheets-calendar ref="timeCalenderWeekly" @next="checkWeekChange"></timesheets-calendar>
+                    <v-flex md6>
+                      <timesheets-calendar ref="TimeCalenderWeekly" @next="checkWeekChange"></timesheets-calendar>
                     </v-flex>
                     <v-flex md6>
                       <v-radio-group row v-model="recordType">
@@ -303,6 +306,21 @@ export default {
     timeEntry: Object,
   },
   methods: {
+    onChangeMouWeeklyEntry(mou) {
+      if (typeof this.form.mou !== 'undefined') {
+        const mouProjects = this.$store.state.projects.filter(item => item.mou);
+        if (mouProjects.length === 0) {
+          return [];
+        }
+        const Projects = mouProjects.filter(
+          item => item.mou.id === mou,
+        );
+        if (Projects.length > 0) {
+          this.projectList = Projects;
+        }
+      }
+      this.projectList = [];
+    },
     getDatePart(date) {
       const dateValue = new Date(date);
       return this.getDateInYYYYMMDD(dateValue);
@@ -312,11 +330,11 @@ export default {
       this.getTimeEntries();
     },
     async getTimeEntries() {
+      this.clearTimeEntries();
       this.$refs.billableBatchEntry.editMode = false;
       this.$refs.nonBillableBatchEntry.editMode = false;
       this.editMode = false;
       const date = this.getDatePart(this.$store.state.timesheetsWeek.startDate);
-      this.clearTimeEntries();
       const rfxId = this.form.Rfx;
       const formData = {
         mou: this.form.mou,
@@ -331,8 +349,8 @@ export default {
       });
     },
     async editTimeEntries(obj) {
-      this.$refs.timeCalenderWeekly.setCalendarText();
-      this.$refs.timeCalenderBatch.setCalendarText();
+      this.$refs.TimeCalenderWeekly.setCalendarText();
+      this.$refs.TimeCalenderBatch.setCalendarText();
       const weekDataBillable = [
         { day: 'Mon', description: '', hours: 0, date: '' },
         { day: 'Tue', description: '', hours: 0, date: '' },
@@ -355,12 +373,12 @@ export default {
       this.$refs.NonBillable.weekData = weekDataUnBillable;
       this.form.userId = obj.user.id;
       this.form.mou = obj.mou.id;
+      this.onChangeMouWeeklyEntry(this.form.mou);
       this.form.project = obj.project.id;
       this.onChangeProjectWeeklyEntry(obj.project.id);
       this.form.Rfx = obj.projectRfx ? obj.projectRfx.id : '';
       this.activeTab = 'weekly';
       this.initTimeEntries(obj);
-
       this.editMode = true;
       this.$refs.billableBatchEntry.editMode = true;
       this.$refs.nonBillableBatchEntry.editMode = true;
@@ -482,13 +500,6 @@ export default {
           const billableBatchEntry = this.$refs.billableBatchEntry.prepareDataForSubmission();
           this.submitBatchData(nonBillableBatchEntry, billableBatchEntry, true);
         }
-
-
-        this.$refs.spinner.open();
-        debugger;
-        const timesheets = await this.$store.dispatch('fetchAllTimesheets');
-
-        this.$refs.spinner.close();
       }
     },
 
@@ -608,7 +619,7 @@ export default {
         () => {
           this.$refs.snackbar.displaySnackbar(
             'success',
-            'Successfully added time entries.',
+            'Successfully saved time entries.',
           );
           this.$refs.spinner.close();
           if (needToClose) {
@@ -684,7 +695,7 @@ export default {
         () => {
           this.$refs.snackbar.displaySnackbar(
             'success',
-            'Successfully added time entries.',
+            'Successfully saved time entries.',
           );
           this.$refs.spinner.close();
           if (needToClose) {
@@ -716,6 +727,7 @@ export default {
       }, 400);
     },
     closeDialog() {
+      this.$emit('close');
       this.dialog = false;
     },
     reset() {
@@ -729,6 +741,7 @@ export default {
       this.$data.form = data.form;
       this.$data.dateFormatted = data.dateFormatted;
       this.$data.existingTimeEntries = data.existingTimeEntries;
+      this.clearTimeEntries();
     },
     fetchUser() {
       const referenceId = this.$store.state.activeUser.refId;

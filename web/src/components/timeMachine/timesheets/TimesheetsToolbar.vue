@@ -1,10 +1,10 @@
 <template>
   <v-layout class="timesheets-toolbar" d-flex style="width: 100%;">
     <v-flex d-flex justify-center align-start>
-      <timesheets-calendar></timesheets-calendar>
+      <timesheets-calendar ref="WeekSelection"></timesheets-calendar>
     </v-flex>
     <v-flex d-flex justify-end>
-      <add-time-record ref="AddTimeRecord"></add-time-record>
+      <add-time-record ref="AddTimeRecord"  @close="close"></add-time-record>
       <v-btn
         class="add-timesheet-button"
         color="btnPrimary"
@@ -22,7 +22,10 @@ import AddTimeRecord from './AddTimeRecord.vue';
 
 export default {
   data() {
-    return {};
+    return {
+      startDateMain: this.$store.state.timesheetsWeek.startDate,
+      endDateMain: this.$store.state.timesheetsWeek.endDate,
+    };
   },
   components: {
     TimesheetsCalendar,
@@ -38,6 +41,12 @@ export default {
 
   },
   methods: {
+    close() {
+      sessionStorage.setItem('selectedStartDate', this.startDateMain);
+      sessionStorage.setItem('selectedEndDate', this.endDateMain);
+      this.$refs.WeekSelection.setCalendarText();
+      this.$emit('refresh');
+    },
     newTimeRecord() {
       this.$refs.AddTimeRecord.reset();
       this.$refs.AddTimeRecord.open();
