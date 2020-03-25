@@ -14,6 +14,7 @@
               item-text="projectName"
               item-value="id"
               v-model="props.item.projectId"
+              @change="onChangeProjectWeeklyEntry(props.item.projectId)"
               label="Project Name"
               :disabled="editMode"
             >
@@ -112,7 +113,11 @@ export default {
     },
   },
   data() {
+    //  const form = Object.assign({}, this.$props.timeEntry);
     return {
+     // form: { ...form },
+     flag:0,
+     projectRfx:'',
       weekData: [
         { day: 'Mon', description: '', hours: 0, date: '' },
         { day: 'Tue', description: '', hours: 0, date: '' },
@@ -123,12 +128,12 @@ export default {
 
       headers: [
         { text: 'Project', value: 'contact.fullName' },
-        { text: 'Monday', value: 'contact.fullName', sortable: false },
+        { text: 'Monday', value: 'contact.hourlyRate', sortable: false },
         { text: 'Tuesday', value: 'contact.hourlyRate', sortable: false },
         { text: 'Wednesday', value: 'contact.hourlyRate', sortable: false },
         { text: 'Thursday', value: 'contact.hourlyRate', sortable: false },
         { text: 'Friday', value: 'contact.hourlyRate', sortable: false },
-        { text: 'Comments', value: 'contact.hourlyRate', sortable: false },
+        { text: 'Comments', value: 'contact.fullName', sortable: false },
       ],
 
       weekEntries: [this.createEmptyWeekEntry()],
@@ -145,6 +150,63 @@ export default {
     },
   },
   methods: {
+    fetchUser() {
+      const referenceId = this.$store.state.activeUser.refId;
+      const user = this.$store.state.users.find(
+        value => value.referenceId === referenceId,
+      );
+      if (user && user.id) {
+        return user.id;
+      }
+    },
+     onChangeProjectWeeklyEntry(projectId) {
+      this.getTimeEntries(projectId);
+    },
+      getDatePart(date) {
+      const dateValue = new Date(date);
+      return this.getDateInYYYYMMDD(dateValue);
+    },
+    getDateInYYYYMMDD(date) {
+      // year
+      const yyyy = `${date.getFullYear()}`;
+
+      // month
+      let mm = `0${date.getMonth() + 1}`; // prepend 0 // +1 is because Jan is 0
+      mm = mm.substr(mm.length - 2); // take last 2 chars
+
+      // day
+      let dd = `0${date.getDate()}`; // prepend 0
+      dd = dd.substr(dd.length - 2); // take last 2 chars
+
+      return `${yyyy}-${mm}-${dd}`;
+    },
+    async getTimeEntries(projectId) {
+      // this.$refs.billableBatchEntry.editMode = false;
+      // this.$refs.nonBillableBatchEntry.editMode = false;
+      // this.editMode = false;
+      const date = this.getDatePart(this.$store.state.timesheetsWeek.startDate);
+      const mouProjects = this.$store.state.projects.filter(item => item.mou != null && item.mou !== '' && item.id == projectId);
+      console.log('selected mou', mouProjects[0].mou.id);
+      // this.clearTimeEntries();
+      const formData = {
+        mou: mouProjects[0].mou.id,
+        project: projectId,
+        projectRfx:'',
+        startDate: date,
+        userId: this.fetchUser(),
+      };
+      const vm = this;
+      console.log(formData);
+      vm.$store.dispatch('fetchTimesheetEntries', formData).then((res) => {
+       // vm.initTimeEntries(vm.$store.state.timesheetEntryData);
+      this.weekEntries[this.flag].monday.hours = res.timesheetEntries[0].hoursBillable;
+      this.weekEntries[this.flag].tuesday.hours = res.timesheetEntries[1].hoursBillable;
+      this.weekEntries[this.flag].wednesday.hours = res.timesheetEntries[2].hoursBillable;
+      this.weekEntries[this.flag].thursday.hours = res.timesheetEntries[3].hoursBillable;
+      this.weekEntries[this.flag].friday.hours = res.timesheetEntries[4].hoursBillable;
+      this.flag = this.flag + 1;
+      });
+    },
     createEmptyWeekEntry() {
       const obj = {};
       timesheetEntryDays.map(
