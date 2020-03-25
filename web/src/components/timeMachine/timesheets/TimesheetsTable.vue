@@ -206,7 +206,6 @@ export default {
     //     });
     // },
     async deleteTimesheet(id) {
-      debugger;
       if (
         await this.$refs.confirm.open(
           'danger',

@@ -1,5 +1,6 @@
 <template>
   <v-layout column justify-center>
+         <snackbar ref="snackbar"></snackbar>
     <v-flex>
       <v-data-table
         :headers="headers"
@@ -14,7 +15,7 @@
               item-text="projectName"
               item-value="id"
               v-model="props.item.projectId"
-              @change="onChangeProjectWeeklyEntry(props.item.projectId)"
+              @change="onChangeProjectBatchEntry(props.item)"
               label="Project Name"
               :disabled="editMode"
             >
@@ -26,7 +27,12 @@
           </td>
           <td>
             <!-- TODO - Swap the below out with "hoursUnbillable" if above is selected. Maybe with a prop, "isUnbillable"?-->
-            <v-text-field type="number" single-line label="Hours" v-model="props.item.monday.hours"></v-text-field>
+            <v-text-field
+              type="number"
+              single-line
+              label="Hours"
+              v-model="props.item.monday.hours"
+            ></v-text-field>
           </td>
           <td>
             <v-text-field
@@ -53,13 +59,22 @@
             ></v-text-field>
           </td>
           <td>
-            <v-text-field type="number" single-line label="Hours" v-model="props.item.friday.hours"></v-text-field>
+            <v-text-field
+              type="number"
+              single-line
+              label="Hours"
+              v-model="props.item.friday.hours"
+            ></v-text-field>
           </td>
           <td>
             <v-edit-dialog :return-value.sync="props.item.comments" lazy>
               {{ props.item.comments ? props.item.comments : "..." }}
               <template v-slot:input>
-                <v-text-field v-model="props.item.comments" label="Comments" single-line></v-text-field>
+                <v-text-field
+                  v-model="props.item.comments"
+                  label="Comments"
+                  single-line
+                ></v-text-field>
               </template>
             </v-edit-dialog>
           </td>
@@ -70,98 +85,99 @@
     <v-flex v-if="!editMode">
       <v-btn @click="addRow">Add another entry</v-btn>
       <pre>
-          <!-- {{ weekEntries }}
+          <!-- {{ weekEntries }} -->
 
-          {{ prepareDataForSubmission() }} -->
+          <!-- {{ prepareDataForSubmission() }} -->
         </pre>
     </v-flex>
   </v-layout>
 </template>
 <script>
-import moment from "moment";
-import Spinner from "../common/Spinner";
+import moment from 'moment';
+import Spinner from '../common/Spinner';
+import Snackbar from '../common/Snackbar';
 
-const timesheetEntryDays = [
-  "monday",
-  "tuesday",
-  "wednesday",
-  "thursday",
-  "friday"
-];
+const timesheetEntryDays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
 
 export default {
   components: {
-    Spinner
+    Spinner,
+    Snackbar,
   },
   computed: {
     allProjects() {
       const mouProjects = this.$store.state.projects.filter(
-        item => item.mou != null && item.mou !== ""
-      );
-      var filteredProjects = mouProjects.filter(
-        item => !this.exludeProjects.includes(item.id)
+        item => item.mou != null && item.mou !== '',
       );
       return mouProjects;
     },
     selectedStartDate() {
       return this.$store.state.timesheetsWeek.startDate;
-    }
+    },
   },
   data() {
     //  const form = Object.assign({}, this.$props.timeEntry);
     return {
       // form: { ...form },
+      props: { ...this.selectedItem },
       exludeProjects: [],
-      flagBillUnBill: 1,
-      flagBill: 0,
-      flagUnBill: 0,
-      projectRfx: "",
+      projectRfx: '',
       weekData: [
-        { day: "Mon", description: "", hours: 0, date: "" },
-        { day: "Tue", description: "", hours: 0, date: "" },
-        { day: "Wed", description: "", hours: 0, date: "" }
+        { day: 'Mon', description: '', hours: 0, date: '' },
+        { day: 'Tue', description: '', hours: 0, date: '' },
+        { day: 'Wed', description: '', hours: 0, date: '' },
       ],
       valid: true,
       editMode: false,
 
       headers: [
-        { text: "Project", value: "contact.fullName" },
-        { text: "Monday", value: "contact.hourlyRate", sortable: false },
-        { text: "Tuesday", value: "contact.hourlyRate", sortable: false },
-        { text: "Wednesday", value: "contact.hourlyRate", sortable: false },
-        { text: "Thursday", value: "contact.hourlyRate", sortable: false },
-        { text: "Friday", value: "contact.hourlyRate", sortable: false },
-        { text: "Comments", value: "contact.fullName", sortable: false }
+        { text: 'Project', value: 'contact.fullName' },
+        { text: 'Monday', value: 'contact.hourlyRate', sortable: false },
+        { text: 'Tuesday', value: 'contact.hourlyRate', sortable: false },
+        { text: 'Wednesday', value: 'contact.hourlyRate', sortable: false },
+        { text: 'Thursday', value: 'contact.hourlyRate', sortable: false },
+        { text: 'Friday', value: 'contact.hourlyRate', sortable: false },
+        { text: 'Comments', value: 'contact.fullName', sortable: false },
       ],
 
-      weekEntries: [this.createEmptyWeekEntry()]
+      weekEntries: [this.createEmptyWeekEntry()],
       // weekEntries: this.cre
     };
   },
+  props: {
+    selectedItem: Number,
+  },
+
   watch: {
     selectedStartDate(newDate, oldDate) {
-      console.log("WATCH, selected start date", {
+      console.log('WATCH, selected start date', {
         newDate,
         oldDate,
-        calculated: this.calculateDate()
+        calculated: this.calculateDate(),
       });
-    }
+    },
   },
   methods: {
-    openbatchentry(value) {
-      this.flagBillUnBill = value;
-    },
+
     fetchUser() {
       const referenceId = this.$store.state.activeUser.refId;
-      const user = this.$store.state.users.find(
-        value => value.referenceId === referenceId
-      );
+      const user = this.$store.state.users.find(value => value.referenceId === referenceId);
       if (user && user.id) {
         return user.id;
       }
     },
-    onChangeProjectWeeklyEntry(projectId) {
-      this.getTimeEntries(projectId);
+    onChangeProjectBatchEntry(selectedItem) {
+      debugger;
+      const selectedProjects = this.weekEntries.filter(
+        item => item.projectId === selectedItem.projectId,
+      );
+      if (selectedProjects.length === 1) { this.getTimeEntries(selectedItem); } else {
+        this.$refs.snackbar.displaySnackbar(
+          'info',
+          'This project is already added',
+        );
+        selectedItem.projectId = '';
+      }
     },
     getDatePart(date) {
       const dateValue = new Date(date);
@@ -181,52 +197,40 @@ export default {
 
       return `${yyyy}-${mm}-${dd}`;
     },
-    async getTimeEntries(projectId) {
-      // this.$refs.billableBatchEntry.editMode = false;
-      // this.$refs.nonBillableBatchEntry.editMode = false;
-      // this.editMode = false;
+    async getTimeEntries(seletedRow) {
       const date = this.getDatePart(this.$store.state.timesheetsWeek.startDate);
       const mouProjects = this.$store.state.projects.filter(
-        item => item.mou != null && item.mou !== "" && item.id == projectId
+        item => item.mou != null && item.mou !== '' && item.id == seletedRow.projectId,
       );
-      console.log("selected mou", mouProjects[0].mou.id);
-      // this.clearTimeEntries();
       const formData = {
         mou: mouProjects[0].mou.id,
-        project: projectId,
-        projectRfx: "",
+        project: seletedRow.projectId,
+        projectRfx: '',
         startDate: date,
-        userId: this.fetchUser()
+        userId: this.fetchUser(),
       };
       const vm = this;
       console.log(formData);
-      vm.$store.dispatch("fetchTimesheetEntries", formData).then(res => {
-        // vm.initTimeEntries(vm.$store.state.timesheetEntryData);
+      vm.$store.dispatch('fetchTimesheetEntries', formData).then((res) => {
+        debugger;
+        seletedRow.monday.hours = 0;
+        seletedRow.tuesday.hours = 0;
+        seletedRow.wednesday.hours = 0;
+        seletedRow.thursday.hours = 0;
+        seletedRow.friday.hours = 0;
         if (res) {
-          if (this.flagBillUnBill == 1) {
-            this.weekEntries[this.flagBill].monday.hours =
-              res.timesheetEntries[0].hoursBillable;
-            this.weekEntries[this.flagBill].tuesday.hours =
-              res.timesheetEntries[1].hoursBillable;
-            this.weekEntries[this.flagBill].wednesday.hours =
-              res.timesheetEntries[2].hoursBillable;
-            this.weekEntries[this.flagBill].thursday.hours =
-              res.timesheetEntries[3].hoursBillable;
-            this.weekEntries[this.flagBill].friday.hours =
-              res.timesheetEntries[4].hoursBillable;
-            this.flagBill = this.flagBill + 1;
+          if (vm.selectedItem === 1) {
+            seletedRow.monday.hours = res.timesheetEntries[0].hoursBillable;
+            seletedRow.tuesday.hours = res.timesheetEntries[1].hoursBillable;
+            seletedRow.wednesday.hours = res.timesheetEntries[2].hoursBillable;
+            seletedRow.thursday.hours = res.timesheetEntries[3].hoursBillable;
+            seletedRow.friday.hours = res.timesheetEntries[4].hoursBillable;
           } else {
-            this.weekEntries[this.flagUnBill].monday.hours =
-              res.timesheetEntries[0].hoursUnBillable;
-            this.weekEntries[this.flagUnBill].tuesday.hours =
-              res.timesheetEntries[1].hoursUnBillable;
-            this.weekEntries[this.flagUnBill].wednesday.hours =
-              res.timesheetEntries[2].hoursUnBillable;
-            this.weekEntries[this.flagUnBill].thursday.hours =
-              res.timesheetEntries[3].hoursUnBillable;
-            this.weekEntries[this.flagUnBill].friday.hours =
-              res.timesheetEntries[4].hoursUnBillable;
-            this.flagUnBill = this.flagUnBill + 1;
+            seletedRow.monday.hours = res.timesheetEntries[0].hoursUnBillable;
+            seletedRow.tuesday.hours = res.timesheetEntries[1].hoursUnBillable;
+            seletedRow.wednesday.hours = res.timesheetEntries[2].hoursUnBillable;
+            seletedRow.thursday.hours = res.timesheetEntries[3].hoursUnBillable;
+            seletedRow.friday.hours = res.timesheetEntries[4].hoursUnBillable;
           }
         }
       });
@@ -234,27 +238,26 @@ export default {
     createEmptyWeekEntry() {
       const obj = {};
       timesheetEntryDays.map(
-        dayString =>
-          (obj[dayString] = {
-            hours: undefined
-          })
+        dayString => (obj[dayString] = {
+          hours: undefined,
+        }),
       );
       return obj;
     },
     calculateDate() {
       const startDate = this.selectedStartDate;
-      const sunday = moment(startDate).startOf("week");
-      const monday = sunday.clone().add("1", "day");
-      const tuesday = monday.clone().add("1", "day");
-      const wednesday = tuesday.clone().add("1", "day");
-      const thursday = wednesday.clone().add("1", "day");
-      const friday = thursday.clone().add("1", "day");
+      const sunday = moment(startDate).startOf('week');
+      const monday = sunday.clone().add('1', 'day');
+      const tuesday = monday.clone().add('1', 'day');
+      const wednesday = tuesday.clone().add('1', 'day');
+      const thursday = wednesday.clone().add('1', 'day');
+      const friday = thursday.clone().add('1', 'day');
       return {
         monday,
         tuesday,
         wednesday,
         thursday,
-        friday
+        friday,
       };
     },
     addRow() {
@@ -270,14 +273,14 @@ export default {
 
       const calendarDates = this.calculateDate();
 
-      const timesheets = this.weekEntries.map(weekEntry => {
-        const timesheetEntry = timesheetEntryDays.map(dayString => {
+      const timesheets = this.weekEntries.map((weekEntry) => {
+        const timesheetEntry = timesheetEntryDays.map((dayString) => {
           const day = weekEntry[dayString];
           return {
             // TODO - A lso need non-billable + revenue
             hours: day.hours,
             entryDate: calendarDates[dayString],
-            comments: weekEntry.comments
+            comments: weekEntry.comments,
           };
         });
 
@@ -285,13 +288,13 @@ export default {
           startDate: calendarDates.monday,
           endDate: calendarDates.friday,
           projectId: weekEntry.projectId,
-          timesheetEntry
+          timesheetEntry,
           // userId: TODO, is "form.userId" in AddTimeRecord.vue (this comps parent)
         };
       });
 
       return timesheets;
-    }
-  }
+    },
+  },
 };
 </script>

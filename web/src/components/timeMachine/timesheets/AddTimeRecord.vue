@@ -43,7 +43,7 @@
             </v-layout>
             <v-divider class="header-divider"></v-divider>
             <v-tabs v-model="activeTab">
-              <v-tab href="#batch">Batch Entry</v-tab>
+              <v-tab href="#batch" @click="initializeBatchEntry()">Batch Entry</v-tab>
               <v-tab href="#weekly">Weekly Entry</v-tab>
               <v-tab-item value="batch">
                 <v-flex>
@@ -55,7 +55,7 @@
                       ></timesheets-calendar>
                     </v-flex>
                     <v-flex md6>
-                      <v-radio-group row v-on:change="chanegBillUnBillvalues(recordType)" v-model="recordType">
+                      <v-radio-group row  v-model="recordType">
                         <v-radio label="Hours" :value="1"></v-radio>
                         <v-radio label="Unbillable Hours" :value="3"></v-radio>
                       </v-radio-group>
@@ -63,10 +63,10 @@
                   </v-flex>
 
                   <v-flex v-show="recordType === 1">
-                    <batch-time-entry ref="billableBatchEntry"></batch-time-entry>
+                    <batch-time-entry ref="billableBatchEntry" :selectedItem="1"></batch-time-entry>
                   </v-flex>
                   <v-flex v-show="recordType === 3">
-                    <batch-time-entry ref="nonBillableBatchEntry"></batch-time-entry>
+                    <batch-time-entry ref="nonBillableBatchEntry"  :selectedItem="3"></batch-time-entry>
                   </v-flex>
                 </v-flex>
               </v-tab-item>
@@ -226,10 +226,6 @@ export default {
     timeEntry: Object,
   },
   methods: {
-    chanegBillUnBillvalues(value) {
-     // this.$refs.billableBatchEntry.openbatchentry(value)
-      this.$refs.nonBillableBatchEntry.openbatchentry(value);
-    },
     onChangeMouWeeklyEntry() {
       return this.projectList;
     },
@@ -289,7 +285,9 @@ export default {
       }
       return weekData;
     },
+    initializeBatchEntry()     {
 
+    },
     initTimeEntries(timesheetEntryData) {
       if (timesheetEntryData && timesheetEntryData.timesheetEntries) {
         for (let index = 0; index < timesheetEntryData.timesheetEntries.length; index++) {
