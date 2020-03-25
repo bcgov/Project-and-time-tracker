@@ -102,7 +102,9 @@ export default {
   },
   computed: {
     allProjects() {
-      const mouProjects = this.$store.state.projects.filter(item => item.mou != null && item.mou !== '');
+      const mouProjects = this.$store.state.projects.filter(
+        item => item.mou != null && item.mou !== '',
+      );
       return mouProjects;
     },
     selectedStartDate() {

@@ -15,7 +15,9 @@
         <tr class="row-background-lightgrey">
           <th
             v-for="header in props.headers"
-            :style="`text-align: ${header.align || 'left'}; width: ${header.width}; font-weight: 900`"
+            :style="
+              `text-align: ${header.align || 'left'}; width: ${header.width}; font-weight: 900`
+            "
             :key="header.text"
             :class="[
               'column sortable',
@@ -26,9 +28,20 @@
           >
             &nbsp;{{ header.text }}
             <small
-              v-if="['hoursMonday', 'hoursTuesday', 'hoursWednesday', 'hoursThursday', 'hoursFriday', 'hoursSaturday', 'hoursSunday'].indexOf(header.value) > -1"
+              v-if="
+                [
+                  'hoursMonday',
+                  'hoursTuesday',
+                  'hoursWednesday',
+                  'hoursThursday',
+                  'hoursFriday',
+                  'hoursSaturday',
+                  'hoursSunday'
+                ].indexOf(header.value) > -1
+              "
               class="month-day"
-            >{{ header.date }}</small>
+              >{{ header.date }}</small
+            >
             <v-icon v-if="header.sortable" small>arrow_upward</v-icon>
           </th>
         </tr>
@@ -40,7 +53,7 @@
             <v-select
               hide-details
               :items="rfxPhases"
-              :readOnly="(props.item.id === selectedRowId)"
+              :readOnly="props.item.id === selectedRowId"
               :outline="props.item.id === selectedRowId"
               item-value="id"
               item-text="rfxPhaseName"
@@ -52,7 +65,7 @@
               hide-details
               :items="users"
               height="34"
-              :readOnly="(props.item.id === selectedRowId)"
+              :readOnly="props.item.id === selectedRowId"
               :outline="props.item.id === selectedRowId"
               item-value="id"
               item-text="fullName"
@@ -85,8 +98,20 @@
               :readOnly="!(props.item.id === selectedRowId)"
               :outline="props.item.id === selectedRowId"
               class="grid-input input-hours"
-              @keyup="onTimeKeyup(getTimesheetRowHours(props.item.id).hoursMonday,'hoursMonday',props.item.id)"
-              @change="onTimeChange(getTimesheetRowHours(props.item.id).hoursMonday,'hoursMonday',props.item.id)"
+              @keyup="
+                onTimeKeyup(
+                  getTimesheetRowHours(props.item.id).hoursMonday,
+                  'hoursMonday',
+                  props.item.id
+                )
+              "
+              @change="
+                onTimeChange(
+                  getTimesheetRowHours(props.item.id).hoursMonday,
+                  'hoursMonday',
+                  props.item.id
+                )
+              "
               v-model="getTimesheetRowHours(props.item.id).hoursMonday"
             />
           </td>
@@ -103,8 +128,20 @@
               :readOnly="!(props.item.id === selectedRowId)"
               :outline="props.item.id === selectedRowId"
               class="grid-input input-hours"
-              @keyup="onTimeKeyup(getTimesheetRowHours(props.item.id).hoursTuesday,'hoursTuesday',props.item.id)"
-              @change="onTimeChange(getTimesheetRowHours(props.item.id).hoursTuesday,'hoursTuesday',props.item.id)"
+              @keyup="
+                onTimeKeyup(
+                  getTimesheetRowHours(props.item.id).hoursTuesday,
+                  'hoursTuesday',
+                  props.item.id
+                )
+              "
+              @change="
+                onTimeChange(
+                  getTimesheetRowHours(props.item.id).hoursTuesday,
+                  'hoursTuesday',
+                  props.item.id
+                )
+              "
               v-model="getTimesheetRowHours(props.item.id).hoursTuesday"
             />
           </td>
@@ -120,8 +157,20 @@
               pa-0
               :outline="props.item.id === selectedRowId"
               class="grid-input input-hours"
-              @keyup="onTimeKeyup(getTimesheetRowHours(props.item.id).hoursWednesday,'hoursWednesday',props.item.id)"
-              @change="onTimeChange(getTimesheetRowHours(props.item.id).hoursWednesday,'hoursWednesday',props.item.id)"
+              @keyup="
+                onTimeKeyup(
+                  getTimesheetRowHours(props.item.id).hoursWednesday,
+                  'hoursWednesday',
+                  props.item.id
+                )
+              "
+              @change="
+                onTimeChange(
+                  getTimesheetRowHours(props.item.id).hoursWednesday,
+                  'hoursWednesday',
+                  props.item.id
+                )
+              "
               v-model="getTimesheetRowHours(props.item.id).hoursWednesday"
             />
           </td>
@@ -138,8 +187,20 @@
               :readOnly="!(props.item.id === selectedRowId)"
               :outline="props.item.id === selectedRowId"
               class="grid-input input-hours"
-              @keyup="onTimeKeyup(getTimesheetRowHours(props.item.id).hoursThursday,'hoursThursday',props.item.id)"
-              @change="onTimeChange(getTimesheetRowHours(props.item.id).hoursThursday,'hoursThursday',props.item.id)"
+              @keyup="
+                onTimeKeyup(
+                  getTimesheetRowHours(props.item.id).hoursThursday,
+                  'hoursThursday',
+                  props.item.id
+                )
+              "
+              @change="
+                onTimeChange(
+                  getTimesheetRowHours(props.item.id).hoursThursday,
+                  'hoursThursday',
+                  props.item.id
+                )
+              "
               v-model="getTimesheetRowHours(props.item.id).hoursThursday"
             />
           </td>
@@ -156,8 +217,20 @@
               :readOnly="!(props.item.id === selectedRowId)"
               :outline="props.item.id === selectedRowId"
               class="grid-input input-hours"
-              @keyup="onTimeKeyup(getTimesheetRowHours(props.item.id).hoursFriday,'hoursFriday',props.item.id)"
-              @change="onTimeChange(getTimesheetRowHours(props.item.id).hoursFriday,'hoursFriday',props.item.id)"
+              @keyup="
+                onTimeKeyup(
+                  getTimesheetRowHours(props.item.id).hoursFriday,
+                  'hoursFriday',
+                  props.item.id
+                )
+              "
+              @change="
+                onTimeChange(
+                  getTimesheetRowHours(props.item.id).hoursFriday,
+                  'hoursFriday',
+                  props.item.id
+                )
+              "
               v-model="getTimesheetRowHours(props.item.id).hoursFriday"
             />
           </td>
@@ -174,8 +247,20 @@
               :readOnly="!(props.item.id === selectedRowId)"
               :outline="props.item.id === selectedRowId"
               class="grid-input input-hours"
-              @keyup="onTimeKeyup(getTimesheetRowHours(props.item.id).hoursSaturday,'hoursSaturday',props.item.id)"
-              @change="onTimeChange(getTimesheetRowHours(props.item.id).hoursSaturday,'hoursSaturday',props.item.id)"
+              @keyup="
+                onTimeKeyup(
+                  getTimesheetRowHours(props.item.id).hoursSaturday,
+                  'hoursSaturday',
+                  props.item.id
+                )
+              "
+              @change="
+                onTimeChange(
+                  getTimesheetRowHours(props.item.id).hoursSaturday,
+                  'hoursSaturday',
+                  props.item.id
+                )
+              "
               v-model="getTimesheetRowHours(props.item.id).hoursSaturday"
             />
           </td>
@@ -192,8 +277,20 @@
               :readOnly="!(props.item.id === selectedRowId)"
               :outline="props.item.id === selectedRowId"
               class="grid-input input-hours"
-              @keyup="onTimeKeyup(getTimesheetRowHours(props.item.id).hoursSunday,'hoursSunday',props.item.id)"
-              @change="onTimeChange(getTimesheetRowHours(props.item.id).hoursSunday,'hoursSunday',props.item.id)"
+              @keyup="
+                onTimeKeyup(
+                  getTimesheetRowHours(props.item.id).hoursSunday,
+                  'hoursSunday',
+                  props.item.id
+                )
+              "
+              @change="
+                onTimeChange(
+                  getTimesheetRowHours(props.item.id).hoursSunday,
+                  'hoursSunday',
+                  props.item.id
+                )
+              "
               v-model="getTimesheetRowHours(props.item.id).hoursSunday"
             />
           </td>
@@ -229,8 +326,12 @@
           :displayAddBillableRecordButton="displayAddBillableRecordButton"
           :displayAddNonBillableRecordButton="displayAddNonBillableRecordButton"
           :onAddNonBillableRecord="onAddNonBillableRecord"
-          :onAddNonBillableRecordClicked="() => addNonBillableTimesheetClicked(project, projectRfx, timesheet)"
-          :onAddBillableRecordClicked="() => addBillableTimesheetClicked(project, projectRfx, timesheet)"
+          :onAddNonBillableRecordClicked="
+            () => addNonBillableTimesheetClicked(project, projectRfx, timesheet)
+          "
+          :onAddBillableRecordClicked="
+            () => addBillableTimesheetClicked(project, projectRfx, timesheet)
+          "
           :totals="calcTimesheetTotals()"
         />
       </template>
@@ -247,9 +348,9 @@ import ObjectHelper from '@/helpers/Object';
 import Snackbar from '@/components/timeMachine/common/Snackbar.vue';
 import Confirm from '@/components/timeMachine/common/Confirm.vue';
 import moment from 'moment';
+import TimesheetEntryDto from '@/domain/models/TimesheetEntry.dto';
 import TimesheetEntriesTotalRow from './TimesheetEntriesTotalRow.vue';
 import CommentsDrawer from './CommentsDrawer.vue';
-import TimesheetEntryDto from '@/domain/models/TimesheetEntry.dto';
 
 export default {
   components: {
@@ -299,8 +400,7 @@ export default {
   watch: {
     // Watch for deep changes
     $data: {
-      handler() {
-      },
+      handler() {},
       deep: true,
     },
     timesheetsWeek: {
@@ -411,9 +511,7 @@ export default {
       this.selectedRowId = props.item.id;
     },
     getSelectedRowClass(props) {
-      return props.item.id === this.selectedRowId
-        ? 'table-row selected-row'
-        : 'table-row';
+      return props.item.id === this.selectedRowId ? 'table-row selected-row' : 'table-row';
     },
     addBillableTimesheetClicked(project, projectRfx, timesheet) {
       this.createTimesheet(project, projectRfx, timesheet, true);
@@ -467,8 +565,7 @@ export default {
           this.getTimesheetRowHours(id).hoursSunday = defValue;
           return;
         }
-        default:
-        {
+        default: {
           this.getTimesheetRowHours(id).hoursSunday = defValue;
         }
       }
@@ -499,13 +596,11 @@ export default {
         ? this.$props.selectedRfxData.id
         : undefined;
       if (timesheets instanceof Array) {
-        timesheets = timesheets.filter(timesheet => (
-          (timesheet.project && timesheet.project.id) === this.project.id
-            && (timesheet.projectRfx && timesheet.projectRfx.id) === selectedRfxId
-        ));
-        timesheets = typeof this.filter === 'function'
-          ? timesheets.filter(this.filter)
-          : timesheets;
+        timesheets = timesheets.filter(
+          timesheet => (timesheet.project && timesheet.project.id) === this.project.id
+            && (timesheet.projectRfx && timesheet.projectRfx.id) === selectedRfxId,
+        );
+        timesheets = typeof this.filter === 'function' ? timesheets.filter(this.filter) : timesheets;
       }
       return timesheets;
     },
@@ -517,9 +612,7 @@ export default {
       const timesheetRows = new HashTable();
 
       timesheets.forEach((timesheet) => {
-        const timesheetRowValues = this.initTimesheetRowHours(
-          timesheet.timesheetEntries,
-        );
+        const timesheetRowValues = this.initTimesheetRowHours(timesheet.timesheetEntries);
         const timesheetRow = {
           hours: timesheetRowValues.rowHours,
           rowData: timesheetRowValues.rowData,
@@ -650,9 +743,7 @@ export default {
       timesheetRows.each((timesheetKey) => {
         dailyKeys.forEach((key) => {
           const timesheetRowHours = timesheetRows.get(timesheetKey).hours;
-          dailyHours[key] += parseFloat(
-            parseFloat(timesheetRowHours[key] || 0).toFixed(2),
-          );
+          dailyHours[key] += parseFloat(parseFloat(timesheetRowHours[key] || 0).toFixed(2));
           totalHours += parseFloat(timesheetRowHours[key] || 0);
         });
       });
@@ -701,10 +792,7 @@ export default {
               );
             }
           } else {
-            this.$refs.snackbar.displaySnackbar(
-              'error',
-              'Timesheet adding failed',
-            );
+            this.$refs.snackbar.displaySnackbar('error', 'Timesheet adding failed');
           }
         },
       );
@@ -726,33 +814,19 @@ export default {
      * @param timesheet
      */
     async deleteTimesheet(timesheet) {
-      if (
-        await this.$refs.confirm.open(
-          'danger',
-          'Are you sure you want to delete this entry?',
-        )
-      ) {
+      if (await this.$refs.confirm.open('danger', 'Are you sure you want to delete this entry?')) {
         this.$store.dispatch('deleteTimesheet', { id: timesheet.id }).then(
           () => {
             this.selectedRowId = null;
             const timesheetRowsHash = this.initTimesheetRows();
             this.timesheetRows = timesheetRowsHash;
-            this.$refs.snackbar.displaySnackbar(
-              'success',
-              'Time log entry deleted',
-            );
+            this.$refs.snackbar.displaySnackbar('success', 'Time log entry deleted');
           },
           (err) => {
             if (err && err.data && err.data.error && err.data.error.message) {
-              this.$refs.snackbar.displaySnackbar(
-                'error',
-                err.data.error.message,
-              );
+              this.$refs.snackbar.displaySnackbar('error', err.data.error.message);
             } else {
-              this.$refs.snackbar.displaySnackbar(
-                'error',
-                'Timesheet deletion failed',
-              );
+              this.$refs.snackbar.displaySnackbar('error', 'Timesheet deletion failed');
             }
           },
         );
@@ -812,10 +886,7 @@ export default {
             () => {
               const timesheetRowsHash = this.initTimesheetRows();
               this.timesheetRows = timesheetRowsHash;
-              this.$refs.snackbar.displaySnackbar(
-                'success',
-                'Time log entry saved successfully',
-              );
+              this.$refs.snackbar.displaySnackbar('success', 'Time log entry saved successfully');
               this.selectedRowId = null;
             },
             (err) => {
@@ -829,18 +900,12 @@ export default {
                   );
                 }
               } else {
-                this.$refs.snackbar.displaySnackbar(
-                  'error',
-                  'Timesheet update failed',
-                );
+                this.$refs.snackbar.displaySnackbar('error', 'Timesheet update failed');
               }
             },
           );
       } else {
-        this.$refs.snackbar.displaySnackbar(
-          'warning',
-          'Please select the user!',
-        );
+        this.$refs.snackbar.displaySnackbar('warning', 'Please select the user!');
       }
     },
 
@@ -850,10 +915,7 @@ export default {
     showComments(timesheet) {
       const selectedRowPayload = this.timesheetUpdatePayload(timesheet);
 
-      this.$refs.commentsDrawer.openComments(
-        selectedRowPayload,
-        this.updateTimesheet,
-      );
+      this.$refs.commentsDrawer.openComments(selectedRowPayload, this.updateTimesheet);
     },
     /**
      * Close timesheet or entry details (TBD) sidebar.
@@ -870,7 +932,7 @@ export default {
       }
     },
     date2Digit(day) {
-      return (`0${day.get('date')}`).slice(-2);
+      return `0${day.get('date')}`.slice(-2);
     },
   },
   created() {

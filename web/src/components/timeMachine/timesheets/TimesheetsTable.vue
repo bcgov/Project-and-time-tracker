@@ -25,12 +25,6 @@
     <v-divider></v-divider>
     <v-card-text class="pa-0">
       <template>
-        <!-- <v-flex xs3 md1>
-              <span>Sort by</span>
-            <v-select :items='["Day", "Week"]'>
-            </v-select>
-        </v-flex>-->
-
         <v-data-table
           :headers="headers"
           :items="allTimesheets"
@@ -40,7 +34,7 @@
         >
           <template slot="items" slot-scope="props">
             <td class="text-xs-left">{{ props.item.startDate }}</td>
-            <td class="text-xs-left">{{props.item.user.contact.fullName}}</td>
+            <td class="text-xs-left">{{ props.item.user.contact.fullName }}</td>
             <!-- <td class="text-xs-left">{{ props.item.projectName}} </td> -->
             <td class="text-xs-left">{{ props.item.project.projectName }}</td>
             <!-- <td class="text-xs-left">
@@ -51,7 +45,7 @@
             <td class="text-xs-center">
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
-                  <add-time-record ref="AddTimeRecord"></add-time-record>
+                  <add-time-record ref="AddTimeRecord" @close="close"></add-time-record>
                   <v-btn flat icon color="grey" @click="editTimesheet(props.item.id)" v-on="on">
                     <v-icon>edit</v-icon>
                   </v-btn>
@@ -98,6 +92,8 @@ export default {
   },
   data() {
     return {
+      startDateMain: this.$store.state.timesheetsWeek.startDate,
+      endDateMain: this.$store.state.timesheetsWeek.endDate,
       pagination: {
         sortBy: 'name',
         rowsPerPage: 25,
@@ -142,22 +138,26 @@ export default {
     },
     allTimesheets() {
       if (this.search) {
-        return this.$store.state.allTimesheets.filter(item => item.project.projectName
-          .toLowerCase()
-          .includes(this.search.toLowerCase()));
+        return this.$store.state.allTimesheets.filter(item => item.project.projectName.toLowerCase().includes(this.search.toLowerCase()));
       }
       return this.$store.state.allTimesheets;
     },
   },
   methods: {
+    close() {
+      sessionStorage.setItem('selectedStartDate', this.startDateMain);
+      sessionStorage.setItem('selectedEndDate', this.endDateMain);
+      this.fetchData();
+    },
     editTimesheet(value) {
-      const found = this.$store.state.allTimesheets.find(
-        element => element.id === value,
-      );
+      this.startDateMain = this.$store.state.timesheetsWeek.startDate;
+      this.endDateMain = this.$store.state.timesheetsWeek.endDate;
+      const found = this.$store.state.allTimesheets.find(element => element.id === value);
       sessionStorage.setItem('selectedStartDate', found.startDate);
       sessionStorage.setItem('selectedEndDate', found.endDate);
-      this.$refs.AddTimeRecord.editTimeEntries(found);
+      this.$refs.AddTimeRecord.reset();
       this.$refs.AddTimeRecord.open();
+      this.$refs.AddTimeRecord.editTimeEntries(found);
     },
     getFullname(projectLeadId) {
       let projectLeadName = null;
