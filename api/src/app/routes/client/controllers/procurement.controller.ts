@@ -33,7 +33,7 @@ export const updateProcurementLog = async (ctx: Koa.Context) => {
   try {
     const body = ctx.request.body;
     console.log(body);
-    ctx.body = await updateProcLog(body.formData.id, body.formData);
+    ctx.body = await updateProcLog(body.procurementlog.id, body.procurementlog);
   } catch (err) {
     ctx.throw(err.message);
   }

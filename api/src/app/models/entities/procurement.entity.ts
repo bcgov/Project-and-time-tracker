@@ -33,4 +33,8 @@ export class ProcurementLog {
   @Column({ type: 'timestamp', nullable: true })
   followUpDate: Date;
 
+  @Column({ type: 'boolean', nullable: true })
+  isResolved: boolean;
+
+
 }
