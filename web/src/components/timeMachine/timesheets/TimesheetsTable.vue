@@ -1,6 +1,8 @@
 <template>
   <v-card>
     <spinner ref="spinner"></spinner>
+     <confirm ref="confirm"></confirm>
+     <snackbar ref="snackbar"></snackbar>
     <v-toolbar v-if="title" card dense color="transparent">
       <v-toolbar-title>
         <h4>{{ title }}</h4>
@@ -74,6 +76,8 @@
 import ProjectExpansionRow from './ProjectExpansionRow.vue';
 import TimesheetsToolbar from './TimesheetsToolbar.vue';
 import Spinner from '../common/Spinner.vue';
+import Snackbar from '../common/Snackbar.vue';
+import Confirm from '../common/Confirm.vue';
 import AddTimeRecord from './AddTimeRecord.vue';
 
 export default {
@@ -82,6 +86,8 @@ export default {
     TimesheetsToolbar,
     Spinner,
     AddTimeRecord,
+    Snackbar,
+    Confirm,
   },
   props: {
     title: String,
@@ -200,10 +206,17 @@ export default {
     //     });
     // },
     async deleteTimesheet(id) {
-      // TODO - Confirm popup
-      await this.$store.dispatch('deleteTimesheet', { id });
-      await this.fetchData();
-      // TODO - Show notification (snackbar?) to user.
+      debugger;
+      if (
+        await this.$refs.confirm.open(
+          'danger',
+          'Are you sure to delete this record?',
+        )
+      ) {
+        await this.$store.dispatch('deleteTimesheet', { id });
+        this.$refs.snackbar.displaySnackbar('success', 'Successfully deleted the record.');
+        await this.fetchData();
+      }
     },
   },
   created() {
