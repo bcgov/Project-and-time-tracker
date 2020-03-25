@@ -6,10 +6,10 @@ export class ProcurementLog {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'text', nullable: false })
+  @Column({ type: 'text', nullable: true })
   riskOwner: string;
 
-  @Column({ type: 'text', nullable: false })
+  @Column({ type: 'text', nullable: true })
   descriptionOfIssue: string;
 
   @Column({ type: 'text', nullable: true })
@@ -24,7 +24,7 @@ export class ProcurementLog {
   @Column({ type: 'text', nullable: true })
   projectId: string;
 
-  @Column({ type: 'text', nullable: false })
+  @Column({ type: 'text', nullable: true })
   clientDecision: string;
 
   @Column({ type: 'timestamp', nullable: true })

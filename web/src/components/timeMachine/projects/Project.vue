@@ -412,7 +412,7 @@ export default {
       if (this.$refs.projectFinanceInfo.validate()) {
         if (this.project && this.project.client && this.project.client.id) {
           await this.$store
-            .dispatch('updateProcurementLog', {
+            .dispatch('updateProjectFinanceCodes', {
               id: this.project.client.id,
               financeCodes: projectFinanceForm,
             })

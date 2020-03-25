@@ -136,7 +136,7 @@ export default {
         id: this.$store.state.activeProject.id
       });
       console.log("proclogs", procLogs);
-      this.$refs.spinner.close();
+     // this.$refs.spinner.close();
       return procLogs[0];
     }
   }

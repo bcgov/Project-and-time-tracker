@@ -96,7 +96,8 @@ export const updateProjectAction = async (ctx: Koa.Context) => {
     const updateingClient = {
       id: project.client.id,
       isNonMinistry: project.client.isNonMinistry,
-      nonMinistryName: project.client.nonMinistryName
+      nonMinistryName: project.client.nonMinistryName,
+      ministry: project.client.ministry
     };
 
     const client = await retrieveClientByProjectId(ctx.params.id);
