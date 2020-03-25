@@ -9,7 +9,7 @@
       </v-toolbar-title>
     </v-toolbar>
     <v-container fluid>
-      <v-radio-group v-model="isResolved" row>
+      <v-radio-group v-model="isResolved"  row>
         <v-radio label="Logs In Progress" :value="false" isResolved></v-radio>
         <v-radio label="Resolved Logs" :value="true" isResolved></v-radio>
       </v-radio-group>
@@ -105,7 +105,8 @@ export default {
       ],
       logList: this.fetchData(),
       selectedLeadUser: "",
-      selectedProjectBackup: ""
+      selectedProjectBackup: "",
+      unResolved:[]
     };
   },
   computed: {
@@ -117,7 +118,13 @@ export default {
             .includes(this.search.toLowerCase());
         });
       }
-      return this.$store.state.allProcurementLog;
+      if (this.isResolved) {
+        const value = this.$store.state.allProcurementLog.filter(function (el) { return el.isResolved == true});
+        return value;
+      } else {
+       const value =  this.$store.state.allProcurementLog.filter(function (el) { return el.isResolved == false});
+        return value;
+      }
     }
   },
   created() {
@@ -160,6 +167,7 @@ export default {
             
       }
     },
+   
     viewRequest(procId) {
       console.log(procId);
       console.log("complete list:", this.$store.state.allProcurementLog);
