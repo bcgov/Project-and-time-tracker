@@ -55,7 +55,7 @@
                       ></timesheets-calendar>
                     </v-flex>
                     <v-flex md6>
-                      <v-radio-group row v-model="recordType">
+                      <v-radio-group row v-on:change="chanegBillUnBillvalues(recordType)" v-model="recordType">
                         <v-radio label="Hours" :value="1"></v-radio>
                         <v-radio label="Unbillable Hours" :value="3"></v-radio>
                       </v-radio-group>
@@ -226,6 +226,10 @@ export default {
     timeEntry: Object,
   },
   methods: {
+    chanegBillUnBillvalues(value) {
+     // this.$refs.billableBatchEntry.openbatchentry(value)
+      this.$refs.nonBillableBatchEntry.openbatchentry(value);
+    },
     onChangeMouWeeklyEntry() {
       return this.projectList;
     },
