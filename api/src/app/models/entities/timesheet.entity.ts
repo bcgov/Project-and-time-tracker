@@ -50,6 +50,12 @@ export class Timesheet {
   @Column({ type: 'uuid', nullable: true })
   modifiedUserId: string;
 
+  @Column({ type: 'double precision', nullable: true })
+  hoursAccured: number;
+
+  @Column({ type: 'text', nullable: true })
+  batchEntryComments: string;
+
   @OneToMany(
     type => TimesheetEntry,
     type => type.timesheet

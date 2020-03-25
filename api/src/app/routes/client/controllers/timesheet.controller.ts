@@ -20,6 +20,7 @@ import {
 } from '../../../services/client/timesheetEntry.service';
 import { IAuth } from '../../../models/interfaces/i-auth';
 import { authorize } from '../../../services/common/authorize.service';
+import e = require('express');
 
 export const getTimesheets = async (ctx: Koa.Context) => {
   try {
@@ -132,8 +133,6 @@ export const createBatchTimesheet = async (ctx: Koa.Context) => {
       let timesheetId: string;
       if (timesheet) {
         timesheetId = timesheet.id;
-        // if(model.projectRfx)
-        //   timesheet.projectRfx = model.projectRfx;
         model.id = timesheetId;
       } else {
         model.id = undefined;
@@ -184,8 +183,20 @@ export const createBatchTimesheet = async (ctx: Koa.Context) => {
         }
       }
 
-      // ctx.body = await retrieveTimesheetById(timesheetId);
+      let billableSum = model.entries.reduce(function(prev, cur) {
+        return prev + Number(cur.hoursBillable);
+      }, 0);
+
+      let nonBillableSum = model.entries.reduce(function(prev, cur) {
+        return prev + Number(cur.hoursUnBillable);
+      }, 0);
+
+      await updateTimesheet(timesheetId, {
+        hoursAccured: billableSum + nonBillableSum,
+        batchEntryComments: model.batchEntryComments
+      });
     }
+
     ctx.body = 'success';
   } catch (err) {
     ctx.throw(err.message);
@@ -255,6 +266,25 @@ export const createLightTimesheet = async (ctx: Koa.Context) => {
         entry.timesheet = model;
         await createTimesheetEntry(entry);
       }
+    }
+
+    let billableSum = model.entries.reduce(function(prev, cur) {
+      return prev + Number(cur.hoursBillable);
+    }, 0);
+
+    let nonBillableSum = model.entries.reduce(function(prev, cur) {
+      return prev + Number(cur.hoursUnBillable);
+    }, 0);
+
+    if (model.projectRfx) {
+      await updateTimesheet(timesheetId, {
+        projectRfx: model.projectRfx,
+        hoursAccured: billableSum + nonBillableSum
+      });
+    } else {
+      await updateTimesheet(timesheetId, {
+        hoursAccured: billableSum + nonBillableSum
+      });
     }
 
     ctx.body = await retrieveTimesheetById(timesheetId);

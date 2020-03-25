@@ -6,7 +6,9 @@ const timesheetEntryRepo = (): Repository<TimesheetEntry> => {
   return getRepository(TimesheetEntry);
 };
 
-export const createTimesheetEntry = async (obj: ITimesheetEntry | ITimesheetEntry[]) => {
+export const createTimesheetEntry = async (
+  obj: ITimesheetEntry | ITimesheetEntry[]
+) => {
   if (Array.isArray(obj)) {
     const arr: any = [];
     for (let index = 0; index < obj.length; index++) {
@@ -14,7 +16,6 @@ export const createTimesheetEntry = async (obj: ITimesheetEntry | ITimesheetEntr
     }
     return arr;
   }
-  
   const timesheetEntry: TimesheetEntry = timesheetEntryRepo().create(obj);
   timesheetEntry.dateCreated = new Date();
   timesheetEntry.dateModified = new Date();
@@ -62,9 +63,17 @@ export const retrieveTimesheetEntries = async () => {
   return await repo.find();
 };
 
-export const retrieveTimesheetEntriesForUser = async (userId: string, startDate: Date, endDate: Date) => {
+export const retrieveTimesheetEntriesForUser = async (
+  userId: string,
+  startDate: Date,
+  endDate: Date
+) => {
   const repo = timesheetEntryRepo();
-  return await repo.createQueryBuilder('t')
-    .where('t."userId" = :userId AND :startDate <= t."entryDate" AND :endDate >= t."entryDate"', { userId: userId, startDate: startDate, endDate: endDate })
+  return await repo
+    .createQueryBuilder('t')
+    .where(
+      't."userId" = :userId AND :startDate <= t."entryDate" AND :endDate >= t."entryDate"',
+      { userId: userId, startDate: startDate, endDate: endDate }
+    )
     .getMany();
 };

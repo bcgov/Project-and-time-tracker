@@ -13,4 +13,6 @@ export interface ITimesheet {
   userId: string;
   createdUserId: string;
   entries: ITimesheetEntry[];
+  hoursAccured: number;
+  batchEntryComments: string;
 }

@@ -41,7 +41,7 @@
               $$$
             </td>-->
             <!-- <td class="text-xs-left"> legal $$$ </td> -->
-            <td class="text-xs-left">TODO hours for</td>
+            <td class="text-xs-left">{{ props.item.hoursAccured }}</td>
             <td class="text-xs-center">
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
