@@ -1,10 +1,8 @@
 <template>
   <v-layout row justify-center>
     <snackbar ref="snackbar"></snackbar>
-
     <v-form ref="form" v-model="valid" lazy-validation class="timesheet-entry">
       <spinner ref="spinner"></spinner>
-      <!-- {{formatDate($store.state.timesheetsWeek.startDate)}} -->
       <v-container grid-list-xl>
         <v-layout row wrap>
           <v-flex md1>Day</v-flex>

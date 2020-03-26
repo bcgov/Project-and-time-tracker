@@ -174,7 +174,8 @@ export const createBatchTimesheet = async (ctx: Koa.Context) => {
             entryDate: entry.entryDate,
             commentsBillable: entry.commentsBillable,
             commentsUnBillable: entry.commentsUnBillable,
-            expenseComment: entry.expenseComment
+            expenseComment: entry.expenseComment,
+            expenseCategory: entry.expenseCategory
           });
         } else {
           entry.id = undefined;
@@ -259,7 +260,8 @@ export const createLightTimesheet = async (ctx: Koa.Context) => {
           entryDate: entry.entryDate,
           commentsBillable: entry.commentsBillable,
           commentsUnBillable: entry.commentsUnBillable,
-          expenseComment: entry.expenseComment
+          expenseComment: entry.expenseComment,
+          expenseCategory: entry.expenseCategory
         });
       } else {
         entry.id = undefined;

@@ -36,7 +36,6 @@ export default {
   },
   methods: {
     close() {
-      debugger;
       sessionStorage.setItem('selectedStartDate', this.startDateMain);
       sessionStorage.setItem('selectedEndDate', this.endDateMain);
       this.$store.state.timesheetsWeek.startDate = this.startDateMain;
@@ -45,7 +44,6 @@ export default {
       this.$emit('refresh');
     },
     newTimeRecord() {
-      debugger;
       this.startDateMain = this.$store.state.timesheetsWeek.startDate;
       this.endDateMain = this.$store.state.timesheetsWeek.endDate;
       sessionStorage.setItem('selectedStartDate', this.startDateMain);

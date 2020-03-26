@@ -55,7 +55,7 @@
                       ></timesheets-calendar>
                     </v-flex>
                     <v-flex md6>
-                      <v-radio-group row  v-model="recordType">
+                      <v-radio-group row v-model="recordType">
                         <v-radio label="Hours" :value="1"></v-radio>
                         <v-radio label="Unbillable Hours" :value="3"></v-radio>
                       </v-radio-group>
@@ -66,7 +66,10 @@
                     <batch-time-entry ref="billableBatchEntry" :selectedItem="1"></batch-time-entry>
                   </v-flex>
                   <v-flex v-show="recordType === 3">
-                    <batch-time-entry ref="nonBillableBatchEntry"  :selectedItem="3"></batch-time-entry>
+                    <batch-time-entry
+                      ref="nonBillableBatchEntry"
+                      :selectedItem="3"
+                    ></batch-time-entry>
                   </v-flex>
                 </v-flex>
               </v-tab-item>
@@ -125,8 +128,8 @@
                   <v-flex v-show="recordType === 1">
                     <timesheet-entry ref="Billable"></timesheet-entry>
                   </v-flex>
-                  <v-flex v-if="recordType === 2">
-                    <add-expense ref="AddExpense"></add-expense>
+                  <v-flex v-show="recordType === 2">
+                    <expense-entry ref="AddExpense"></expense-entry>
                   </v-flex>
                   <v-flex v-show="recordType === 3">
                     <timesheet-entry ref="NonBillable" single-row></timesheet-entry>
@@ -159,7 +162,7 @@ import DatePicker from 'v-calendar/lib/components/date-picker.umd';
 import Snackbar from '../common/Snackbar.vue';
 import Spinner from '../common/Spinner.vue';
 import TimesheetsCalendar from './TimesheetsCalendar.vue';
-import AddExpense from './AddExpense.vue';
+import ExpenseEntry from './AddExpense.vue';
 import TimesheetEntry from './TimesheetEntry.vue';
 import BatchTimeEntry from './BatchTimeEntry';
 
@@ -200,10 +203,14 @@ export default {
       return [];
     },
     mouAmount() {
-      if (!this.form || !this.form.mou || !this.mouList[this.form.mou - 1]) {
+      if (!this.form || !this.form.mou) {
         return '';
       }
-      return this.mouList[this.form.mou - 1].name.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      const mou = this.$store.state.mouList.filter(item => item.id === this.form.mou);
+      if (mou[0]) {
+        return mou[0].name.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      }
+      return '';
     },
     hoursForRange() {
       // const hours = this.dateRangeDiffInDays * days... how to get days from <timesheet-entry> or similar?
@@ -214,9 +221,9 @@ export default {
     Snackbar,
     Spinner,
     TimesheetsCalendar,
-    AddExpense,
     TimesheetEntry,
     BatchTimeEntry,
+    ExpenseEntry,
   },
   data() {
     return this.initData();
@@ -288,7 +295,9 @@ export default {
     initializeBatchEntry() {
       if (!this.editMode) {
         const date = this.getDatePart(this.$store.state.timesheetsWeek.startDate);
-        const selectedProjects = this.$store.state.allTimesheets.filter(item => this.getDatePart(item.startDate) === date);
+        const selectedProjects = this.$store.state.allTimesheets.filter(
+          item => this.getDatePart(item.startDate) === date,
+        );
         this.clearBatchEntry();
         for (let i = 0; i < selectedProjects.length; i++) {
           if (i > 0) {
@@ -319,23 +328,35 @@ export default {
       if (timesheetEntryData && timesheetEntryData.timesheetEntries) {
         for (let index = 0; index < timesheetEntryData.timesheetEntries.length; index++) {
           const entry = timesheetEntryData.timesheetEntries[index];
+
+          // Weekly entry expenses
+          this.$refs.AddExpense.weekData[index].entryDate = entry.entryDate;
+          this.$refs.AddExpense.weekData[index].category = entry.expenseCategory;
+          this.$refs.AddExpense.weekData[index].amound = entry.expenseAmount;
+          this.$refs.AddExpense.weekData[index].description = entry.expenseComment;
+
+          // Weekly entry billable
           this.$refs.Billable.weekData[index].entryDate = entry.entryDate;
           this.$refs.Billable.weekData[index].hours = entry.hoursBillable;
           this.$refs.Billable.weekData[index].description = entry.commentsBillable;
 
+          // Weekly entry non billable
           this.$refs.NonBillable.weekData[index].entryDate = entry.entryDate;
           this.$refs.NonBillable.weekData[index].hours = entry.hoursUnBillable;
           this.$refs.NonBillable.weekData[index].description = entry.commentsUnBillable;
         }
+        this.$refs.AddExpense.weekData = this.formatWeekData(this.$refs.AddExpense.weekData);
         this.$refs.Billable.weekData = this.formatWeekData(this.$refs.Billable.weekData);
         this.$refs.NonBillable.weekData = this.formatWeekData(this.$refs.NonBillable.weekData);
 
+        // Batch entry  billable
         this.$refs.billableBatchEntry.weekEntries[0].monday.hours = this.$refs.Billable.weekData[0].hours;
         this.$refs.billableBatchEntry.weekEntries[0].tuesday.hours = this.$refs.Billable.weekData[1].hours;
         this.$refs.billableBatchEntry.weekEntries[0].wednesday.hours = this.$refs.Billable.weekData[2].hours;
         this.$refs.billableBatchEntry.weekEntries[0].thursday.hours = this.$refs.Billable.weekData[3].hours;
         this.$refs.billableBatchEntry.weekEntries[0].friday.hours = this.$refs.Billable.weekData[4].hours;
 
+        // Batch entry non billable
         this.$refs.nonBillableBatchEntry.weekEntries[0].monday.hours = this.$refs.NonBillable.weekData[0].hours;
         this.$refs.nonBillableBatchEntry.weekEntries[0].tuesday.hours = this.$refs.NonBillable.weekData[1].hours;
         this.$refs.nonBillableBatchEntry.weekEntries[0].wednesday.hours = this.$refs.NonBillable.weekData[2].hours;
@@ -399,6 +420,16 @@ export default {
         { day: 'Sat', description: '', hours: 0, date: '' },
         { day: 'Sun', description: '', hours: 0, date: '' },
       ];
+      const weekDataExpenses = [
+        { day: 'Mon', description: '', amound: 0, category: '', date: '' },
+        { day: 'Tue', description: '', amound: 0, category: '', date: '' },
+        { day: 'Wed', description: '', amound: 0, category: '', date: '' },
+        { day: 'Thu', description: '', amound: 0, category: '', date: '' },
+        { day: 'Fri', description: '', amound: 0, category: '', date: '' },
+        { day: 'Sat', description: '', amound: 0, category: '', date: '' },
+        { day: 'Sun', description: '', amound: 0, category: '', date: '' },
+      ];
+      this.$refs.AddExpense.weekData = weekDataExpenses;
       this.$refs.Billable.weekData = weekDataBillable;
       this.$refs.NonBillable.weekData = weekDataUnBillable;
     },
@@ -550,6 +581,7 @@ export default {
     submitWeekData(needToClose = false) {
       const billableDetails = this.$refs.Billable.onBillableclick();
       const nonBillableDetails = this.$refs.NonBillable.nonBillableclick();
+      const expensesDetails = this.$refs.AddExpense.updateDate();
 
       const timeEntries = [];
       const startDate = new Date(this.$store.state.timesheetsWeek.startDate);
@@ -583,6 +615,16 @@ export default {
           if (unBillable[0]) {
             timeEntries[index].hoursUnBillable = unBillable[0].hours === '' ? 0 : unBillable[0].hours;
             timeEntries[index].commentsUnBillable = unBillable[0].description;
+          }
+        }
+        if (expensesDetails.length > 0) {
+          const expense = expensesDetails.filter(
+            item => item.date === timeEntries[index].entryDate,
+          );
+          if (expense[0]) {
+            timeEntries[index].expenseCategory = expense[0].category;
+            timeEntries[index].expenseAmount = expense[0].amound === '' ? 0 : expense[0].amound;
+            timeEntries[index].expenseComment = expense[0].description;
           }
         }
       }
