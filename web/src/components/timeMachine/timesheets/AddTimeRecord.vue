@@ -51,7 +51,7 @@
                     <v-flex md6 v-show="!editMode">
                       <timesheets-calendar
                         ref="TimeCalenderBatch"
-                        @next="checkWeekChange"
+                        @next="initializeBatchEntry"
                       ></timesheets-calendar>
                     </v-flex>
                     <v-flex md6>
@@ -111,7 +111,7 @@
                     <v-flex md6 v-show="!editMode">
                       <timesheets-calendar
                         ref="TimeCalenderWeekly"
-                        @next="checkWeekChange"
+                        @next="checkWeekChangeWeekly"
                       ></timesheets-calendar>
                     </v-flex>
                     <v-flex md6>
@@ -233,7 +233,7 @@ export default {
       const dateValue = new Date(date);
       return this.getDateInYYYYMMDD(dateValue);
     },
-    async checkWeekChange() {
+    async checkWeekChangeWeekly() {
       this.getTimeEntries();
     },
     async getTimeEntries() {
@@ -285,8 +285,35 @@ export default {
       }
       return weekData;
     },
-    initializeBatchEntry()     {
+    initializeBatchEntry() {
+      if (!this.editMode) {
+        const date = this.getDatePart(this.$store.state.timesheetsWeek.startDate);
+        const selectedProjects = this.$store.state.allTimesheets.filter(item => this.getDatePart(item.startDate) === date);
+        this.clearBatchEntry();
+        for (let i = 0; i < selectedProjects.length; i++) {
+          if (i > 0) {
+            this.$refs.billableBatchEntry.addRow();
+            this.$refs.nonBillableBatchEntry.addRow();
+          }
 
+          this.$refs.billableBatchEntry.weekEntries[i].projectId = selectedProjects[i].project.id;
+          this.$refs.nonBillableBatchEntry.weekEntries[i].projectId = selectedProjects[i].project.id;
+          if (selectedProjects[i].timesheetEntries.length > 4) {
+            const selectedEntries = selectedProjects[i].timesheetEntries;
+            this.$refs.billableBatchEntry.weekEntries[i].monday.hours = selectedEntries[0].hoursBillable;
+            this.$refs.billableBatchEntry.weekEntries[i].tuesday.hours = selectedEntries[1].hoursBillable;
+            this.$refs.billableBatchEntry.weekEntries[i].wednesday.hours = selectedEntries[2].hoursBillable;
+            this.$refs.billableBatchEntry.weekEntries[i].thursday.hours = selectedEntries[3].hoursBillable;
+            this.$refs.billableBatchEntry.weekEntries[i].friday.hours = selectedEntries[4].hoursBillable;
+
+            this.$refs.nonBillableBatchEntry.weekEntries[i].monday.hours = selectedEntries[0].hoursUnBillable;
+            this.$refs.nonBillableBatchEntry.weekEntries[i].tuesday.hours = selectedEntries[1].hoursUnBillable;
+            this.$refs.nonBillableBatchEntry.weekEntries[i].wednesday.hours = selectedEntries[2].hoursUnBillable;
+            this.$refs.nonBillableBatchEntry.weekEntries[i].thursday.hours = selectedEntries[3].hoursUnBillable;
+            this.$refs.nonBillableBatchEntry.weekEntries[i].friday.hours = selectedEntries[4].hoursUnBillable;
+          }
+        }
+      }
     },
     initTimeEntries(timesheetEntryData) {
       if (timesheetEntryData && timesheetEntryData.timesheetEntries) {
@@ -613,6 +640,7 @@ export default {
       this.$data.form = data.form;
       this.$data.dateFormatted = data.dateFormatted;
       this.$data.existingTimeEntries = data.existingTimeEntries;
+      this.activeTab = 'weekly';
       this.$refs.TimeCalenderWeekly.setCalendarText();
       this.$refs.TimeCalenderBatch.setCalendarText();
     },
