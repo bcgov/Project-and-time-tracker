@@ -19,6 +19,47 @@
                       <project-base-info ref="projectBaseInfo" :project="project"></project-base-info>
                     </v-card-text>
                   </v-card>
+                  <v-card>
+                    <div style="padding:5px;border-top-style: ridge;">
+                      <div class="primary-heading">
+                        <!-- <img src="@/assets/bulb.svg"> -->
+                        <label class="sub-header-large" style="margin-left:45px">Notes</label>
+                      </div>
+
+                      <v-card-text>
+                        <v-flex d-flex justify-end>
+                         <v-flex md12>
+                          <v-card max-width="95%"  style="border: solid 1px #eae8e8;">
+                            <v-list-item style="background-color: #003366;padding: 11px;">
+                              <v-list-item-avatar color="grey"></v-list-item-avatar>
+                              <v-list-item-content>
+                                <v-list-item-title style="font-size:larger;margin-left: 15px;color: white;">Bob Smith</v-list-item-title>
+                                <v-list-item-subtitle style="margin-left:80%;color: white;">28 March 2020</v-list-item-subtitle>
+                              </v-list-item-content>
+                            </v-list-item>
+
+                            <v-card-text>Visit ten places on our planet that are undergoing the biggest changes today. Visit ten places on our planet that are undergoing the biggest changes today.Visit ten places on our planet that are undergoing the biggest changes today.</v-card-text>
+
+                            <v-card-actions>
+                          
+                            <v-btn  flat large color="primary" @click="newnotes" class="back-link"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z"/></svg> Reply</v-btn>
+                              <project-notes ref="projectNote"></project-notes>
+                            </v-card-actions>
+                          </v-card></v-flex>
+                         
+                        </v-flex>
+                         <v-flex md12>
+                          <project-notes ref="projectNote"></project-notes>
+                          <v-btn
+                          style="margin-left: 77%;"
+                            class="add-timesheet-button"
+                            color="btnPrimary"
+                            dark
+                            @click="newnotes"
+                          >Add Note</v-btn></v-flex>
+                      </v-card-text>
+                    </div>
+                  </v-card>
                 </v-expansion-panel-content>
               </v-expansion-panel>
 
@@ -241,32 +282,34 @@
 </template>
 
 <script>
-import Vue from 'vue';
-import VeeValidate from 'vee-validate';
-import RFxDto from '@/domain/models/RFx.dto';
-import ContactDto from '@/domain/models/Contact.dto';
-import Material from 'vuetify/es5/util/colors';
-import ProcurementLog from './Procurementlog.vue';
-import ProjectBaseInfo from './ProjectBaseInfo.vue';
-import ProjectContactInfo from './ProjectContactInfo.vue';
-import ProjectRfx from './ProjectRfx.vue';
-import ProjectFinanceInfo from './ProjectFinanceInfo.vue';
-import projectRiskAssessment from './ProjectRisk.vue';
-import Snackbar from '../common/Snackbar.vue';
-import ProjectAdditionalContactInfo from './ProjectAddintionalContactInfo.vue';
-import ProcurementLogTable from './ProcurementLogTable.vue';
+import Vue from "vue";
+import VeeValidate from "vee-validate";
+import RFxDto from "@/domain/models/RFx.dto";
+import ContactDto from "@/domain/models/Contact.dto";
+import Material from "vuetify/es5/util/colors";
+import ProcurementLog from "./Procurementlog.vue";
+import ProjectBaseInfo from "./ProjectBaseInfo.vue";
+import projectNotes from "./projectNotes.vue";
+import ProjectContactInfo from "./ProjectContactInfo.vue";
+import ProjectRfx from "./ProjectRfx.vue";
+import ProjectFinanceInfo from "./ProjectFinanceInfo.vue";
+import projectRiskAssessment from "./ProjectRisk.vue";
+import Snackbar from "../common/Snackbar.vue";
+import ProjectAdditionalContactInfo from "./ProjectAddintionalContactInfo.vue";
+import ProcurementLogTable from "./ProcurementLogTable.vue";
 
-import './project.styl';
+import "./project.styl";
 
 Vue.use(VeeValidate);
 
 const CLIENT_INFO_TYPES = {
-  CLIENT_CONTACT: 'clientcontact',
+  CLIENT_CONTACT: "clientcontact"
 };
 
 export default {
   components: {
     ProjectBaseInfo,
+    projectNotes,
     ProjectContactInfo,
     ProjectRfx,
     ProjectFinanceInfo,
@@ -274,44 +317,47 @@ export default {
     ProjectAdditionalContactInfo,
     projectRiskAssessment,
     ProcurementLogTable,
-    ProcurementLog,
+    ProcurementLog
   },
   props: {
     title: String,
     ProcurementLog: {
       type: Function,
-      default: () => {},
-    },
-
+      default: () => {}
+    }
   },
-  $_veeValidate: { validator: 'new' },
+  $_veeValidate: { validator: "new" },
   computed: {
     project() {
       return this.$store.state.activeProject;
     },
     projectRfxData() {
       return this.$store.state.activeProjectRfxData;
-    },
+    }
   },
   data() {
     return {
       rfxData: [new RFxDto()],
-      projectId: '',
+      projectId: "",
       enabled: true,
       initialLoad: true,
       color: Material,
-      selectedTab: 'tab-1',
+      selectedTab: "tab-1"
     };
   },
   watch: {
     enabled() {
       if (!this.enabled) this.$refs.projectClient.reset();
-    },
+    }
   },
   methods: {
     newProcurementLog() {
       this.$refs.ProcurementLog.reset();
       this.$refs.ProcurementLog.open();
+    },
+    newnotes() {
+      this.$refs.projectNote.reset();
+      this.$refs.projectNote.open();
     },
     // saveProjectRfxData(index) {
     //
@@ -319,12 +365,12 @@ export default {
     // },
     projectContactData(contactType) {
       const contactData = this.$store.getters.getProjectContactByType(
-        contactType,
+        contactType
       );
       if (
-        this.initialLoad
-        && contactType === 'clientcontact'
-        && this.$store.state.activeProjectContacts.length > 0
+        this.initialLoad &&
+        contactType === "clientcontact" &&
+        this.$store.state.activeProjectContacts.length > 0
       ) {
         if (this.$store.state.activeProjectContacts.length > 2) {
           this.enabled = true;
@@ -341,25 +387,25 @@ export default {
 
       if (!(id === undefined)) {
         this.projectId = id;
-        this.$store.dispatch('fetchProject', { id: this.projectId });
-        this.$store.dispatch('fetchProjectRFxData', { id: this.projectId });
-        this.$store.dispatch('fetchProjectContacts', { id: this.projectId });
-        this.$store.dispatch('fetchprojectRiskAnswers', { id: this.projectId });
-         this.$store.dispatch("fetchAllProcurementLog", {id: this.projectId});
+        this.$store.dispatch("fetchProject", { id: this.projectId });
+        this.$store.dispatch("fetchProjectRFxData", { id: this.projectId });
+        this.$store.dispatch("fetchProjectContacts", { id: this.projectId });
+        this.$store.dispatch("fetchprojectRiskAnswers", { id: this.projectId });
+        this.$store.dispatch("fetchAllProcurementLog", { id: this.projectId });
       }
-      this.$store.dispatch('fetchintakeRiskQuestions');
+      this.$store.dispatch("fetchintakeRiskQuestions");
     },
     formatDate(date) {
       if (!date) return null;
 
-      const [year, month, day] = date.split('-');
+      const [year, month, day] = date.split("-");
       return `${month}/${day}/${year}`;
     },
     parseDate(date) {
       if (!date) return null;
 
-      const [month, day, year] = date.split('/');
-      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+      const [month, day, year] = date.split("/");
+      return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
     },
     addNewRFx() {
       const allRFXValid = this.validateRFXForm();
@@ -374,9 +420,8 @@ export default {
 
       if (this.$refs.rfxForm) {
         return (
-          this.$refs.rfxForm
-            .map(x => x.$refs.form.validate())
-            .filter(x => !x).length === 0 // Remove truthy values
+          this.$refs.rfxForm.map(x => x.$refs.form.validate()).filter(x => !x)
+            .length === 0 // Remove truthy values
         ); // See if any falsy values remain
       }
       return true;
@@ -387,7 +432,8 @@ export default {
       this.$refs.projectFinancier.Validate();
       const projectLeadForm = this.$refs.projectLead.form || undefined;
       const projectSponsorForm = this.$refs.projectSponsor.form || undefined;
-      const projectFinancierForm = this.$refs.projectFinancier.form || undefined;
+      const projectFinancierForm =
+        this.$refs.projectFinancier.form || undefined;
       const projectContactForm = this.$refs.projectClient
         ? this.$refs.projectClient.form
         : undefined;
@@ -398,40 +444,41 @@ export default {
         projectLeadForm,
         projectSponsorForm,
         projectContactForm,
-        projectFinancierForm,
+        projectFinancierForm
       ].filter(contact => contact !== undefined);
       if (contacts instanceof Array && contacts.length > 0) {
-        await this.$store.dispatch('updateProjectContacts', {
+        await this.$store.dispatch("updateProjectContacts", {
           id: this.projectId,
-          contacts,
+          contacts
         });
-        this.$refs.snackbar.displaySnackbar('success', 'Saved');
+        this.$refs.snackbar.displaySnackbar("success", "Saved");
       }
     },
     async saveFinanceCodes() {
-      const projectFinanceForm = this.$refs.projectFinanceInfo.financeInfo || undefined;
+      const projectFinanceForm =
+        this.$refs.projectFinanceInfo.financeInfo || undefined;
       if (this.$refs.projectFinanceInfo.validate()) {
         if (this.project && this.project.client && this.project.client.id) {
           await this.$store
-            .dispatch('updateProjectFinanceCodes', {
+            .dispatch("updateProjectFinanceCodes", {
               id: this.project.client.id,
-              financeCodes: projectFinanceForm,
+              financeCodes: projectFinanceForm
             })
             .then(
               () => {
-                this.$refs.snackbar.displaySnackbar('success', 'Updated');
+                this.$refs.snackbar.displaySnackbar("success", "Updated");
               },
-              (err) => {
+              err => {
                 try {
                   const { message } = err.response.data.error;
-                  this.$refs.snackbar.displaySnackbar('error', message);
+                  this.$refs.snackbar.displaySnackbar("error", message);
                 } catch (ex) {
                   this.$refs.snackbar.displaySnackbar(
-                    'error',
-                    'Failed to update',
+                    "error",
+                    "Failed to update"
                   );
                 }
-              },
+              }
             );
         }
       }
@@ -439,7 +486,7 @@ export default {
     initializeRisk() {
       this.$refs.projectRiskAssessment.updateInitalData();
       this.$refs.projectRiskAssessment.editScreen = false;
-    },
+    }
   },
   created() {
     while (this.$store.state.activeProjectContacts.length > 0) {
@@ -448,11 +495,11 @@ export default {
 
     // if no rfx, add one
     if (this.projectRfxData.length === 0) {
-      console.log('addinging initial rfx');
+      console.log("addinging initial rfx");
       this.addNewRFx();
     }
 
     this.fetchData();
-  },
+  }
 };
 </script>
