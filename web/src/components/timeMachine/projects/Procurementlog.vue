@@ -188,6 +188,11 @@ export default {
     async saveProcurementLog() {
       console.log(this.logType, this.notificationMethod, this.phaseImpactName);
      // const projectFinanceForm = this.$refs.ProcurementLogs || undefined;
+      const referenceId = this.$store.state.activeUser.refId;
+      const user = this.$store.state.users.find(
+        value => value.referenceId === referenceId,
+      );
+      
        const formData = {
           logType: this.logType,
           riskOwner: this.riskOwnerName,
@@ -198,8 +203,8 @@ export default {
           clientDecision:this.clientDecision,
           followUpDate: this.followUpDate,
           projectId: this.$store.state.activeProject.id,
-          isResolved: this.isResolved
-          // userId: this.form.userId,
+          isResolved: this.isResolved,
+          userId: user.id,
         };
         if(this.id) {
           console.log('suppose to update' ,this.id);

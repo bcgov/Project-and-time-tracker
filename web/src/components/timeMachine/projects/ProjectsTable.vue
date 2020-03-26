@@ -139,6 +139,7 @@ export default {
 
 
     editProject(id) {
+      this.$store.state.activeProject.id = id;
       this.$router.push({ path: `project/${id}` });
     },
     async archivePrompt(item, archiveVal){

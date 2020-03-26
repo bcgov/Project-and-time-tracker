@@ -36,5 +36,7 @@ export class ProcurementLog {
   @Column({ type: 'boolean', nullable: true })
   isResolved: boolean;
 
+  @Column({ type: 'text', nullable: true })
+  userId: string;
 
 }

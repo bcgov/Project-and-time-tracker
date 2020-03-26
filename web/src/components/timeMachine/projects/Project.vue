@@ -345,6 +345,7 @@ export default {
         this.$store.dispatch('fetchProjectRFxData', { id: this.projectId });
         this.$store.dispatch('fetchProjectContacts', { id: this.projectId });
         this.$store.dispatch('fetchprojectRiskAnswers', { id: this.projectId });
+         this.$store.dispatch("fetchAllProcurementLog", {id: this.projectId});
       }
       this.$store.dispatch('fetchintakeRiskQuestions');
     },

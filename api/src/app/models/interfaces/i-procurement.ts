@@ -13,4 +13,5 @@ export interface IProcurement {
   followUpDate: Date;
   projectId: string;
   isResolved: boolean;
+  userId: string;
 }

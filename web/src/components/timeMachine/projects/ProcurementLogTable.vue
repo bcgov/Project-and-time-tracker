@@ -32,6 +32,7 @@
             <td class="text-xs-left">{{ props.item.descriptionOfIssue }}</td>
             <td class="text-xs-left">{{ props.item.dateToClient | formatDate }}</td>
             <td class="text-xs-left">{{ props.item.notificationMethod }}</td>
+            <!-- <td class="text-xs-left">{{ props.item.userId }}</td> -->
             <td class="text-xs-left">{{ props.item.phaseImpactName }}</td>
             <td class="text-xs-left">{{ props.item.clientDecision }}</td>
             <td class="text-xs-left">{{ props.item.followUpDate | formatDate }}</td>
@@ -92,6 +93,11 @@ export default {
           value: "notificationMethod",
            sortable: false, width:"10%"
         },
+        //  {
+        //   text: "Decision Maker",
+        //   value: "userId",
+        //    sortable: false, width:"10%"
+        // },
         { text: "Phase Impact", value: "phaseImpactName", sortable: false, width:"10%" },
         { text: "Client Decision", value: "clientDecision", sortable: false, width:"10%"},
         {
