@@ -23,7 +23,7 @@
                     <div style="padding:5px;border-top-style: ridge;">
                       <div class="primary-heading">
                         <!-- <img src="@/assets/bulb.svg"> -->
-                        <label class="sub-header-large" style="margin-left:45px">Notes</label>
+                        <label class="sub-header-large" style="margin-left:25px">Notes</label>
                       </div>
 
                       <v-card-text>
