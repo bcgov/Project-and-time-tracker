@@ -997,8 +997,8 @@ const store = new Vuex.Store({
       ctx.commit('fetchAllTimesheets', res.data);
       return Promise.resolve(res.data);
     },
-    async fetchAllProcurementLog(ctx) {
-      const res = await $http.get(`${API_URI}/procurement/all`)
+    async fetchAllProcurementLog(ctx, req) {
+      const res = await $http.get(`${API_URI}/procurement/${req.id}`)
       ctx.commit('fetchAllProcurementLog', res.data);
       return Promise.resolve(res.data);
     },

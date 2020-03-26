@@ -182,11 +182,11 @@ export default {
       if (this.$refs.spinner) {
         this.$refs.spinner.open();
       }
-      let procLogs = await this.$store.dispatch("fetchAllProcurementLog");
+      console.log('projId', this.$store.state.activeProject.id)
+      let procLogs = await this.$store.dispatch("fetchAllProcurementLog", {id: this.$store.state.activeProject.id});
       let projRfxData = await this.$store.dispatch("fetchProjectRFxData", {
         id: this.$store.state.activeProject.id
       });
-      console.log("proclogs", procLogs);
      // this.$refs.spinner.close();
       return procLogs[0];
     }

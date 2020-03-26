@@ -13,10 +13,11 @@ export const createProcurementLog = async (obj: IProcurement) => {
   return procurement;
 };
 
-export const retrieveAllProcurementLog = async () => {
+export const retrieveAllProcurementLog = async (projId: string) => {
   const repo = procurementLogRepo();
   return await repo
     .createQueryBuilder('p')
+    .where(`p.projectId = '` + projId + `'`)
     .getMany();
 };
 // export const updateContact = async (id: string, fields: any) => {
