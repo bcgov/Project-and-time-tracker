@@ -18,6 +18,7 @@ export const retrieveAllProjectNotes = async (projId: string) => {
     .leftJoinAndSelect('p.user', 'u')
     .leftJoinAndSelect('u.contact', 'c')
     .where(`p.projectId = '` + projId + `'`)
+    .orderBy('p.noteTime', 'DESC')
     .getMany();
 };
 
