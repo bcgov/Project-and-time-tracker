@@ -38,6 +38,9 @@
                                     <br/>
                                     <span style="float:left;margin-left:3%;text-align: justify;padding-right: 30px;"  v-html="item.note" />
                                       <br/>
+                                        <v-layout v-for="(inneritem) in $store.state.allProjectNotes" :key="inneritem.id"> 
+                                          <span v-if="(inneritem.parentId)&&(inneritem.parentId == item.id)" style="float:left;margin-left:3%;text-align: justify;padding-right: 30px;"  v-html="inneritem.note" />
+                                          <br></v-layout>
                                     <v-btn
                                       flat
                                       large
