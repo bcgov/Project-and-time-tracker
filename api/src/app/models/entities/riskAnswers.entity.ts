@@ -14,4 +14,6 @@ export class RiskAnswers {
 
   @Column({ type: 'int', nullable: false })
   score: number;
+  @Column({ type: 'int', nullable: false })
+  order_id: number;
 }

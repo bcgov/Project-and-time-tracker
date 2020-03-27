@@ -27,29 +27,50 @@ INSERT INTO project_sector("projectSectorName") VALUES ('Personal, Domestic & Co
 INSERT INTO project_sector("projectSectorName") VALUES ('Services');
 INSERT INTO project_sector("projectSectorName") VALUES ('Other');
 
-INSERT INTO rfx_type("rfxTypeName") VALUES ('ITQ (Invitation to Quote)');
-INSERT INTO rfx_type("rfxTypeName") VALUES ('ITT (Invitation to Tender');
-INSERT INTO rfx_type("rfxTypeName") VALUES ('JSRFP (Joint Solution Request for Proposals)');
-INSERT INTO rfx_type("rfxTypeName") VALUES ('NRFP (Negotiated Request for Proposals)');
+-- New RFX_Types
+-- INSERT INTO rfx_type("rfxTypeName") VALUES ('ITQ (Invitation to Quote)');
+-- INSERT INTO rfx_type("rfxTypeName") VALUES ('ITT (Invitation to Tender');
+-- INSERT INTO rfx_type("rfxTypeName") VALUES ('JSRFP (Joint Solution Request for Proposals)');
+-- INSERT INTO rfx_type("rfxTypeName") VALUES ('NRFP (Negotiated Request for Proposals)');
+-- INSERT INTO rfx_type("rfxTypeName") VALUES ('NOI (Notice of Intent)');
+-- INSERT INTO rfx_type("rfxTypeName") VALUES ('RFQ (Request for Qualifications)');
+-- INSERT INTO rfx_type("rfxTypeName") VALUES ('RFEI (Request for Expression of Interest)');
+-- INSERT INTO rfx_type("rfxTypeName") VALUES ('RFI (Request for Information)');
+-- INSERT INTO rfx_type("rfxTypeName") VALUES ('RFP (Request for Proposals)');
+-- INSERT INTO rfx_type("rfxTypeName") VALUES ('RSO (Request for Standing Offer)');
+-- INSERT INTO rfx_type("rfxTypeName") VALUES ('SRFP (Short-form Request for Proposal)');
+-- INSERT INTO rfx_type("rfxTypeName") VALUES ('SA (Standing Agreement)');
+-- INSERT INTO rfx_type("rfxTypeName") VALUES ('SOW (Statement of Work)');
+-- INSERT INTO rfx_type("rfxTypeName") VALUES ('Pre-Qualification List');
+-- INSERT INTO rfx_type("rfxTypeName") VALUES ('Direct Award');
+-- INSERT INTO rfx_type("rfxTypeName") VALUES ('RCSA (Request for Corporate Supply Arrangement)');
+
+INSERT INTO rfx_type("rfxTypeName") VALUES ('BVNP (Best Value Negotiated Process)');
+INSERT INTO rfx_type("rfxTypeName") VALUES ('Call to Market Against Pre-Qualification Lists - Services');
+INSERT INTO rfx_type("rfxTypeName") VALUES ('CFP (Call for Proposals)');
+INSERT INTO rfx_type("rfxTypeName") VALUES ('F NRFP (Feedback NRFP)');
+INSERT INTO rfx_type("rfxTypeName") VALUES ('ITQ (Invitation to quote)');
+INSERT INTO rfx_type("rfxTypeName") VALUES ('ITQS (Invitation to quote for Services)');
+INSERT INTO rfx_type("rfxTypeName") VALUES ('ITT (Invitation to Tender)');
+INSERT INTO rfx_type("rfxTypeName") VALUES ('JSNRFP (Joint Solution NRFP)');
 INSERT INTO rfx_type("rfxTypeName") VALUES ('NOI (Notice of Intent)');
-INSERT INTO rfx_type("rfxTypeName") VALUES ('RFQ (Request for Qualifications)');
+INSERT INTO rfx_type("rfxTypeName") VALUES ('RCSA (Request for Corporate Supply Arrangement)');
 INSERT INTO rfx_type("rfxTypeName") VALUES ('RFEI (Request for Expression of Interest)');
 INSERT INTO rfx_type("rfxTypeName") VALUES ('RFI (Request for Information)');
 INSERT INTO rfx_type("rfxTypeName") VALUES ('RFP (Request for Proposals)');
+INSERT INTO rfx_type("rfxTypeName") VALUES ('RFQ (Request for Qualifications)');
+INSERT INTO rfx_type("rfxTypeName") VALUES ('RMSA (Request for Master Services Agreement)');
+INSERT INTO rfx_type("rfxTypeName") VALUES ('RNRFP (Refinement NRFP)');
+INSERT INTO rfx_type("rfxTypeName") VALUES ('RRNRFP (Rank and Run NRFP)');
 INSERT INTO rfx_type("rfxTypeName") VALUES ('RSO (Request for Standing Offer)');
-INSERT INTO rfx_type("rfxTypeName") VALUES ('SRFP (Short-form Request for Proposal)');
-INSERT INTO rfx_type("rfxTypeName") VALUES ('SA (Standing Agreement)');
-INSERT INTO rfx_type("rfxTypeName") VALUES ('SOW (Statement of Work)');
-INSERT INTO rfx_type("rfxTypeName") VALUES ('Pre-Qualification List');
-INSERT INTO rfx_type("rfxTypeName") VALUES ('Direct Award');
-INSERT INTO rfx_type("rfxTypeName") VALUES ('RCSA (Request for Corporate Supply Arrangement)');
+INSERT INTO rfx_type("rfxTypeName") VALUES ('SRFP (Short Form Request for Proposals)');
+
 --Making edits to the existing project phases
 ---INSERT INTO rfx_phase("rfxPhaseName") VALUES ('On-boarding');
 INSERT INTO rfx_phase("rfxPhaseName") VALUES ('Planning');
 INSERT INTO rfx_phase("rfxPhaseName") VALUES ('Drafting');
 INSERT INTO rfx_phase("rfxPhaseName") VALUES ('Posted');
 INSERT INTO rfx_phase("rfxPhaseName") VALUES ('Evaluation');
--- INSERT INTO rfx_phase("rfxPhaseName") VALUES ('Evaluation');
 INSERT INTO rfx_phase("rfxPhaseName") VALUES ('Award');
 -- INSERT INTO rfx_phase("rfxPhaseName") VALUES ('Contract Management');
 INSERT INTO rfx_phase("rfxPhaseName") VALUES ('Closed Out');

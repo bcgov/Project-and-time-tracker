@@ -91,7 +91,7 @@ export default {
         {
           text: "Method of Notification",
           value: "notificationMethod",
-           sortable: false, width:"10%"
+          sortable: false, width:"10%"
         },
         //  {
         //   text: "Decision Maker",
