@@ -158,7 +158,6 @@ export default {
     },
   },
   methods: {
-
     fetchUser() {
       const referenceId = this.$store.state.activeUser.refId;
       const user = this.$store.state.users.find(value => value.referenceId === referenceId);
@@ -167,7 +166,6 @@ export default {
       }
     },
     onChangeProjectBatchEntry(selectedItem) {
-      debugger;
       const selectedProjects = this.weekEntries.filter(
         item => item.projectId === selectedItem.projectId,
       );
@@ -212,7 +210,6 @@ export default {
       const vm = this;
       console.log(formData);
       vm.$store.dispatch('fetchTimesheetEntries', formData).then((res) => {
-        debugger;
         seletedRow.monday.hours = 0;
         seletedRow.tuesday.hours = 0;
         seletedRow.wednesday.hours = 0;

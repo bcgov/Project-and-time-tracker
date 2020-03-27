@@ -21,6 +21,9 @@ export class TimesheetEntry {
   @Column({ type: 'text', nullable: true })
   commentsUnBillable: string;
 
+  @Column({ type: 'text', nullable: true })
+  expenseCategory: string;
+
   @Column({ type: 'double precision', nullable: true })
   expenseAmount: number;
 

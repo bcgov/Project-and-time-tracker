@@ -93,7 +93,37 @@ export const retrieveForLightTimesheet = async model => {
     .getOne();
   return res;
 };
-
+export const retrieveForLightTimesheetByUser = async model => {
+  const repo = timesheetRepo();
+  const res = await repo
+    .createQueryBuilder('t')
+    .leftJoinAndSelect('t.timesheetEntries', 'te')
+    .innerJoinAndSelect('t.project', 'p')
+    .orderBy('te.entryDate', 'ASC')
+    .where(' t."userId" = :userId ', {
+      userId: model.userId
+    })
+    .getMany();
+  return res;
+};
+export const retrieveForLightTimesheetByDate = async model => {
+  const repo = timesheetRepo();
+  const res = await repo
+    .createQueryBuilder('t')
+    .leftJoinAndSelect('t.timesheetEntries', 'te')
+    .innerJoinAndSelect('t.project', 'p')
+    .orderBy('te.entryDate', 'ASC')
+    .where(
+      ' t."userId" = :userId AND' +
+        ' t."startDate" = :entryDate AND t."endDate" >= :entryDate',
+      {
+        userId: model.userId,
+        entryDate: model.startDate
+      }
+    )
+    .getMany();
+  return res;
+};
 export const retrieveForLightTimesheetPreview = async (
   projectId: string,
   projectRfxId: string,

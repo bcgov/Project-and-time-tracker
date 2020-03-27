@@ -52,6 +52,8 @@ const store = new Vuex.Store({
     rfxPhases: [],
     rfxTypes: [],
     timesheetEntryData: [],
+    timesheetEntryDatabyUser: [],
+    timesheetEntryDatabyDate: [],
     projectRiskAnswers: [],
     intakeRiskQuestions: [],
     mouList: [],
@@ -143,6 +145,12 @@ const store = new Vuex.Store({
     },
     fetchTimesheetEntries(state, data) {
       state.timesheetEntryData = data;
+    },
+    fetchTimesheetEntriesByDate(state, data) {
+      state.timesheetEntryDatabyDate = data;
+    },
+    fetchTimesheetEntriesByUser(state, data) {
+      state.timesheetEntryDatabyUser = data;
     },
     fetchRFxPhases(state, data) {
       state.rfxPhases = data;
@@ -511,6 +519,30 @@ const store = new Vuex.Store({
         const content = res.data;
         ctx.commit("fetchprojectRiskAnswers", content);
       });
+    },
+    async fetchTimesheetEntriesByDate(ctx, req) {
+      const body = req;
+      const api = await $http
+        .post(`${API_URI}/timesheet/timesheetentriesByDate`, body)
+        .then((res) => {
+          const content = res.data;
+          ctx.commit('fetchTimesheetEntriesByDate', content);
+          return Promise.resolve(content);
+        })
+        .catch(err => Promise.reject(err.response));
+      return Promise.resolve(api);
+    },
+    async fetchTimesheetEntriesByUser(ctx, req) {
+      const body = req;
+      const api = await $http
+        .post(`${API_URI}/timesheet/timesheetentriesByUser`, body)
+        .then((res) => {
+          const content = res.data;
+          ctx.commit('fetchTimesheetEntriesByUser', content);
+          return Promise.resolve(content);
+        })
+        .catch(err => Promise.reject(err.response));
+      return Promise.resolve(api);
     },
     async fetchTimesheetEntries(ctx, req) {
       const body = req;

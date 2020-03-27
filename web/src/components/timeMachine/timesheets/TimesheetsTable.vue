@@ -153,6 +153,8 @@ export default {
     close() {
       sessionStorage.setItem('selectedStartDate', this.startDateMain);
       sessionStorage.setItem('selectedEndDate', this.endDateMain);
+      this.$store.state.timesheetsWeek.startDate = this.startDateMain;
+      this.$store.state.timesheetsWeek.endDate = this.endDateMain;
       this.fetchData();
     },
     editTimesheet(value) {

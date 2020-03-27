@@ -1,10 +1,8 @@
 <template>
   <v-layout row justify-center>
     <snackbar ref="snackbar"></snackbar>
-
     <v-form ref="form" v-model="valid" lazy-validation class="timesheet-entry">
       <spinner ref="spinner"></spinner>
-      <!-- {{formatDate($store.state.timesheetsWeek.startDate)}} -->
       <v-container grid-list-xl>
         <v-layout row wrap>
           <v-flex md1>Day</v-flex>
@@ -48,9 +46,6 @@
               </template>
               <span>Paste</span>
             </v-tooltip>
-
-            <!-- <i class="material-icons mouseover" @click="yoursFunc()">file_copy</i> -->
-            <!-- <i class="material-icons mouseover" @click="yoursFunc()">post_add</i> -->
           </v-flex>
         </v-layout>
       </v-container>
@@ -58,12 +53,6 @@
   </v-layout>
 </template>
 <script>
-import TimesheetEntryDto from '@/domain/models/TimesheetEntry.dto';
-import RFxDto from '@/domain/models/RFx.dto';
-import RFxPhaseDto from '@/domain/models/RFxPhase.dto';
-import ProjectDto from '@/domain/models/Project.dto';
-
-import merge from 'object-merge';
 import './TimesheetEntry.styl';
 import moment from 'moment';
 import Snackbar from '../common/Snackbar.vue';
@@ -71,21 +60,6 @@ import Spinner from '../common/Spinner.vue';
 
 export default {
   computed: {
-    computedDateFormatted() {
-      return this.formatDate(this.date);
-    },
-    userList() {
-      return this.$store.state.users;
-    },
-    rfxPhases() {
-      return this.$store.state.rfxPhases;
-    },
-    rfxTypes() {
-      return this.$store.state.activeProjectRfxData;
-    },
-    projects() {
-      return this.$store.state.projects;
-    },
   },
   components: {
     Snackbar,
@@ -93,12 +67,9 @@ export default {
   },
   data() {
     const form = Object.assign({}, this.$props.timeEntry);
-    // let itemHours ='';
-    // let itemDescription = '';
     if (!form.date) {
       form.date = moment().format('YYYY-MM-DD');
     }
-    console.log('Timesheet entry data, singlerow?', this.singleRow);
     return {
       valid: true,
       requiredRule: [v => !!v || 'This field required'],
@@ -156,11 +127,6 @@ export default {
     if (user && user.id) {
       this.form.userId = user.id;
     }
-    // setTimeout(() => {
-    //   document.getElementsByClassName(
-    //     'v-dialog v-dialog--active',
-    //   )[0].scrollTop = 0;
-    // }, 400);
   },
   methods: {
     formatDate(date) {
@@ -190,8 +156,6 @@ export default {
       this.weekData[4].date = this.weekDates[4];
       this.weekData[5].date = this.weekDates[5];
       this.weekData[6].date = this.weekDates[6];
-      console.log(this.weekData);
-      // this.$store.state.billableDetails = this.weekData;
       return this.weekData;
     },
     nonBillableclick() {
@@ -212,12 +176,10 @@ export default {
       this.itemDescription = description;
     },
     pastefunc(index) {
-      console.log('index:', index);
       this.weekData[index].hours = this.itemHours;
       this.weekData[index].description = this.itemDescription;
     },
     reset() {
-      // this.$refs.form.resetValidation();
       const data = this.initData();
       this.$data.valid = data.valid;
       this.$data.requiredRule = data.requiredRule;
@@ -227,20 +189,6 @@ export default {
       this.$data.form = data.form;
       this.$data.dateFormatted = data.dateFormatted;
       this.$data.existingTimeEntries = data.existingTimeEntries;
-    },
-
-    saveNewRow() {
-      if (this.$refs.form.validate()) {
-        const formData = this.form;
-        formData.hour = parseFloat(formData.hour.toFixed(2));
-        const payload = this.timesheetUpdatePayload(formData);
-        // this.updateTimesheet(payload);
-      } else {
-        this.dialog = true;
-      }
-    },
-    handleMultipleErrors(errorList) {
-      this.$refs.snackbar.displayMultipleErrorSnackbar('error', errorList);
     },
   },
 };

@@ -9,7 +9,9 @@ import {
   updateTimesheet,
   retrieveForLightTimesheet,
   retrieveForLightTimesheetPreview,
-  retrieveAllTimesheets
+  retrieveAllTimesheets,
+  retrieveForLightTimesheetByUser,
+  retrieveForLightTimesheetByDate
 } from '../../../services/client/timesheet.service';
 import { ITimesheet } from '../../../models/interfaces/i-timesheet';
 import {
@@ -61,6 +63,34 @@ export const timesheetEntries = async (ctx: Koa.Context) => {
     ctx.throw(err.message);
   }
 };
+
+export const timeEntryByUser = async (ctx: Koa.Context) => {
+  try {
+    const model = ctx.request.body as ITimesheet;
+    if (!model) {
+      ctx.throw('no data Found');
+      return;
+    }
+    console.log(model);
+    ctx.body = await retrieveForLightTimesheetByUser(model);
+  } catch (err) {
+    ctx.throw(err.message);
+  }
+};
+
+export const timeEntryByDate = async (ctx: Koa.Context) => {
+  try {
+    const model = ctx.request.body as ITimesheet;
+    if (!model) {
+      ctx.throw('no data Found');
+      return;
+    }
+    console.log(model);
+    ctx.body = await retrieveForLightTimesheetByDate(model);
+  } catch (err) {
+    ctx.throw(err.message);
+  }
+};
 export const getAllTimesheets = async (ctx: Koa.Context) => {
   try {
     // TODO - If user is NOT admin, return only the sheets by user id?
@@ -69,6 +99,7 @@ export const getAllTimesheets = async (ctx: Koa.Context) => {
     ctx.throw(err.message);
   }
 };
+
 export const timeSheetLight = async (ctx: Koa.Context) => {
   try {
     const model = ctx.request.body;
@@ -174,7 +205,8 @@ export const createBatchTimesheet = async (ctx: Koa.Context) => {
             entryDate: entry.entryDate,
             commentsBillable: entry.commentsBillable,
             commentsUnBillable: entry.commentsUnBillable,
-            expenseComment: entry.expenseComment
+            expenseComment: entry.expenseComment,
+            expenseCategory: entry.expenseCategory
           });
         } else {
           entry.id = undefined;
@@ -259,7 +291,8 @@ export const createLightTimesheet = async (ctx: Koa.Context) => {
           entryDate: entry.entryDate,
           commentsBillable: entry.commentsBillable,
           commentsUnBillable: entry.commentsUnBillable,
-          expenseComment: entry.expenseComment
+          expenseComment: entry.expenseComment,
+          expenseCategory: entry.expenseCategory
         });
       } else {
         entry.id = undefined;
@@ -510,6 +543,8 @@ router.post('/', authorize, createTimesheetAction);
 router.post('/light', authorize, createLightTimesheet);
 router.post('/batch', authorize, createBatchTimesheet);
 router.post('/getLight', authorize, timeSheetLight);
+router.post('/timesheetentriesByDate', authorize, timeEntryByDate);
+router.post('/timesheetentriesByUser', authorize, timeEntryByUser);
 router.patch('/:id', authorize, updateTimesheetAction);
 router.delete('/:id', authorize, deleteTimesheetAction);
 
