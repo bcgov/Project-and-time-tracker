@@ -1,5 +1,5 @@
 import { getRepository, Repository } from 'typeorm';
-import { ProjectNote } from '../../models/entities/project_note.entity';
+import { ProjectNote } from '../../models/entities/project_Note.entity';
 
 const projectNoteRepo = (): Repository<ProjectNote> => {
   return getRepository(ProjectNote);

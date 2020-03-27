@@ -6,7 +6,7 @@ import {
     retrieveAllProjectNotes,
 } from '../../../services/client/projectnote.service';
 import { authorize } from '../../../services/common/authorize.service';
-import { ProjectNote } from '../../../models/entities/project_note.entity';
+import { ProjectNote } from '../../../models/entities/project_Note.entity';
 
 // export const getContactByProjectId = async (ctx: Koa.Context) => {
 //   try {
