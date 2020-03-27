@@ -142,7 +142,7 @@
           <v-card-actions>
             <label class="btn-discard">DISCARD TIMESHEET</label>
             <v-flex class="add-btns">
-              <v-btn class="btn-normal">EXPORT TIMESHEET</v-btn>
+              <v-btn class="btn-normal" @click="expotTimesheet()">EXPORT TIMESHEET</v-btn>
               <v-btn class="btn-normal" @click="saveAndCopy()">SAVE AND COPY</v-btn>
               <v-btn class="add-new-row" color="primary" @click="saveAndClose()"
                 >SAVE AND CLOSE</v-btn
@@ -233,6 +233,75 @@ export default {
     timeEntry: Object,
   },
   methods: {
+    ConvertToCSV(objArray) {
+      const array = typeof objArray !== 'object' ? JSON.parse(objArray) : objArray;
+      let str = '';
+
+      for (let i = 0; i < array.length; i++) {
+        let line = '';
+        for (const index in array[i]) {
+          if (line != '') line += ',';
+
+          line += array[i][index];
+        }
+
+        str += `${line}\r\n`;
+      }
+
+      return str;
+    },
+
+
+    csvExport(arrData) {
+      let csvContent = 'data:text/csv;charset=utf-8,';
+      csvContent += [
+        Object.keys(arrData[0]).join(';'),
+        ...arrData.map(item => Object.values(item).join(';')),
+      ]
+        .join('\n')
+        .replace(/(^\[)|(\]$)/gm, '');
+
+      const data = encodeURI(csvContent);
+      const link = document.createElement('a');
+      link.setAttribute('href', data);
+      link.setAttribute('download', 'export.csv');
+      link.click();
+    },
+
+    expotTimesheet() {
+      if (!(this.form.userId)) {
+        this.$refs.snackbar.displaySnackbar('error', 'Please select user.');
+        return;
+      }
+      const formData = {
+
+        userId: this.form.userId,
+      };
+      const vm = this;
+
+      vm.$store.dispatch('fetchTimesheetEntriesByUser', formData).then(() => {
+        const timeEntries = [];
+        for (let i = 0; i < vm.$store.state.timesheetEntryDatabyUser.length; i++) {
+          const entries = vm.$store.state.timesheetEntryDatabyUser[i].timesheetEntries;
+          const currentProject = vm.$store.state.timesheetEntryDatabyUser[i].project.projectName;
+
+          for (let j = 0; j < entries.length; j++) {
+            const entry = entries[j];
+
+            timeEntries.push({ Project: currentProject,
+              'Entry Date': entry.entryDate,
+              'Billable Hours': entry.hoursBillable,
+              'Billable Comments': entry.commentsBillable,
+              'Unbillable Hours': entry.hoursUnBillable,
+              'Unbillable Comments': entry.commentsUnBillable,
+              'Expense Amount': entry.expenseAmount,
+              'Expense Category': entry.expenseCategory,
+              'Expense Description': entry.expenseComment });
+          }
+        }
+        this.csvExport(timeEntries);
+      });
+    },
     onChangeMouWeeklyEntry() {
       return this.projectList;
     },
