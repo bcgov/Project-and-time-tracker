@@ -19,6 +19,64 @@
                       <project-base-info ref="projectBaseInfo" :project="project"></project-base-info>
                     </v-card-text>
                   </v-card>
+                  <v-card>
+                    <div style="padding:5px;border-top-style: ridge;">
+                      <div class="primary-heading">
+                        <!-- <img src="@/assets/bulb.svg"> -->
+                        <label class="sub-header-large" style="margin-left:25px">Notes</label>
+                      </div>
+                      <v-card-text>
+                        <v-layout v-for="(item) in $store.state.allProjectNotes" :key="item.id">
+                          <v-flex v-if="!item.parentId" d-flex justify-end>
+                            <v-flex md12>
+                              <div class="row">
+                                <div class="column">
+                                  <div class="card">
+                                    <div class="headerdivstyle">
+                                    <span class="headerspan" v-html="item.user.contact.fullName" />
+                                    <span v-html="new Date(item.noteTime).toString().slice(0,25)" /></div>
+                                    <br/>
+                                    <span style="float:left;margin-left:3%;text-align: justify;padding-right: 30px;"  v-html="item.note" />
+                                      <br/>
+                                    <v-btn
+                                      flat
+                                      large
+                                      color="primary"
+                                      @click="replynotes(item.id)"
+                                      style="margin-right: 80%;"
+                                    >
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="24"
+                                        height="24"
+                                        viewBox="0 0 24 24"
+                                      >
+                                        <path
+                                          d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z"
+                                        />
+                                      </svg> Reply
+                                    </v-btn>
+                                  </div>
+                                </div>
+                              </div>
+                              <br />
+                              <project-notes :ref=item.id></project-notes>
+                            </v-flex>
+                          </v-flex>
+                        </v-layout>
+                        <v-flex md12>
+                          <project-notes ref="projectNoteNew"></project-notes>
+                          <v-btn
+                            style="margin-left: 77%;"
+                            class="add-timesheet-button"
+                            color="btnPrimary"
+                            dark
+                            @click="newnotes(1)"
+                          >Add Note</v-btn>
+                        </v-flex>
+                      </v-card-text>
+                    </div>
+                  </v-card>
                 </v-expansion-panel-content>
               </v-expansion-panel>
 
@@ -241,32 +299,34 @@
 </template>
 
 <script>
-import Vue from 'vue';
-import VeeValidate from 'vee-validate';
-import RFxDto from '@/domain/models/RFx.dto';
-import ContactDto from '@/domain/models/Contact.dto';
-import Material from 'vuetify/es5/util/colors';
-import ProcurementLog from './Procurementlog.vue';
-import ProjectBaseInfo from './ProjectBaseInfo.vue';
-import ProjectContactInfo from './ProjectContactInfo.vue';
-import ProjectRfx from './ProjectRfx.vue';
-import ProjectFinanceInfo from './ProjectFinanceInfo.vue';
-import projectRiskAssessment from './ProjectRisk.vue';
-import Snackbar from '../common/Snackbar.vue';
-import ProjectAdditionalContactInfo from './ProjectAddintionalContactInfo.vue';
-import ProcurementLogTable from './ProcurementLogTable.vue';
+import Vue from "vue";
+import VeeValidate from "vee-validate";
+import RFxDto from "@/domain/models/RFx.dto";
+import ContactDto from "@/domain/models/Contact.dto";
+import Material from "vuetify/es5/util/colors";
+import ProcurementLog from "./Procurementlog.vue";
+import ProjectBaseInfo from "./ProjectBaseInfo.vue";
+import projectNotes from "./projectNotes.vue";
+import ProjectContactInfo from "./ProjectContactInfo.vue";
+import ProjectRfx from "./ProjectRfx.vue";
+import ProjectFinanceInfo from "./ProjectFinanceInfo.vue";
+import projectRiskAssessment from "./ProjectRisk.vue";
+import Snackbar from "../common/Snackbar.vue";
+import ProjectAdditionalContactInfo from "./ProjectAddintionalContactInfo.vue";
+import ProcurementLogTable from "./ProcurementLogTable.vue";
 
-import './project.styl';
+import "./project.styl";
 
 Vue.use(VeeValidate);
 
 const CLIENT_INFO_TYPES = {
-  CLIENT_CONTACT: 'clientcontact',
+  CLIENT_CONTACT: "clientcontact"
 };
 
 export default {
   components: {
     ProjectBaseInfo,
+    projectNotes,
     ProjectContactInfo,
     ProjectRfx,
     ProjectFinanceInfo,
@@ -274,17 +334,16 @@ export default {
     ProjectAdditionalContactInfo,
     projectRiskAssessment,
     ProcurementLogTable,
-    ProcurementLog,
+    ProcurementLog
   },
   props: {
     title: String,
     ProcurementLog: {
       type: Function,
-      default: () => {},
-    },
-
+      default: () => {}
+    }
   },
-  $_veeValidate: { validator: 'new' },
+  $_veeValidate: { validator: "new" },
   computed: {
     project() {
       return this.$store.state.activeProject;
@@ -292,26 +351,46 @@ export default {
     projectRfxData() {
       return this.$store.state.activeProjectRfxData;
     },
+    // projectcomments() {
+    //   return this.$store.state.allProjectNotes;
+    // }
   },
   data() {
+    
     return {
       rfxData: [new RFxDto()],
-      projectId: '',
+      projectId: "",
       enabled: true,
       initialLoad: true,
       color: Material,
-      selectedTab: 'tab-1',
+      selectedTab: "tab-1",
+      projectcomments : this.$store.state.allProjectNotes
+     
     };
   },
   watch: {
     enabled() {
       if (!this.enabled) this.$refs.projectClient.reset();
-    },
+    }
   },
   methods: {
+    projectnotes() {
+      return this.$store.state.allProjectNotes;
+    },
     newProcurementLog() {
       this.$refs.ProcurementLog.reset();
       this.$refs.ProcurementLog.open();
+    },
+     replynotes(value) {
+      let refvalue = value;
+      console.log('refvalue', refvalue);
+
+      this.$refs[refvalue][0].reset();
+      this.$refs[refvalue][0].open(value);
+    },
+    newnotes(value) {
+      this.$refs.projectNoteNew.reset();
+      this.$refs.projectNoteNew.open(value);
     },
     // saveProjectRfxData(index) {
     //
@@ -319,12 +398,12 @@ export default {
     // },
     projectContactData(contactType) {
       const contactData = this.$store.getters.getProjectContactByType(
-        contactType,
+        contactType
       );
       if (
-        this.initialLoad
-        && contactType === 'clientcontact'
-        && this.$store.state.activeProjectContacts.length > 0
+        this.initialLoad &&
+        contactType === "clientcontact" &&
+        this.$store.state.activeProjectContacts.length > 0
       ) {
         if (this.$store.state.activeProjectContacts.length > 2) {
           this.enabled = true;
@@ -341,24 +420,26 @@ export default {
 
       if (!(id === undefined)) {
         this.projectId = id;
-        this.$store.dispatch('fetchProject', { id: this.projectId });
-        this.$store.dispatch('fetchProjectRFxData', { id: this.projectId });
-        this.$store.dispatch('fetchProjectContacts', { id: this.projectId });
-        this.$store.dispatch('fetchprojectRiskAnswers', { id: this.projectId });
+        this.$store.dispatch("fetchProject", { id: this.projectId });
+        this.$store.dispatch("fetchProjectRFxData", { id: this.projectId });
+        this.$store.dispatch("fetchProjectContacts", { id: this.projectId });
+        this.$store.dispatch("fetchprojectRiskAnswers", { id: this.projectId });
+        this.$store.dispatch("fetchAllProcurementLog", { id: this.projectId });
       }
-      this.$store.dispatch('fetchintakeRiskQuestions');
+       this.$store.dispatch("fetchAllProjectNotes", { id: this.projectId });
+      this.$store.dispatch("fetchintakeRiskQuestions");
     },
     formatDate(date) {
       if (!date) return null;
 
-      const [year, month, day] = date.split('-');
+      const [year, month, day] = date.split("-");
       return `${month}/${day}/${year}`;
     },
     parseDate(date) {
       if (!date) return null;
 
-      const [month, day, year] = date.split('/');
-      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+      const [month, day, year] = date.split("/");
+      return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
     },
     addNewRFx() {
       const allRFXValid = this.validateRFXForm();
@@ -373,9 +454,8 @@ export default {
 
       if (this.$refs.rfxForm) {
         return (
-          this.$refs.rfxForm
-            .map(x => x.$refs.form.validate())
-            .filter(x => !x).length === 0 // Remove truthy values
+          this.$refs.rfxForm.map(x => x.$refs.form.validate()).filter(x => !x)
+            .length === 0 // Remove truthy values
         ); // See if any falsy values remain
       }
       return true;
@@ -386,7 +466,8 @@ export default {
       this.$refs.projectFinancier.Validate();
       const projectLeadForm = this.$refs.projectLead.form || undefined;
       const projectSponsorForm = this.$refs.projectSponsor.form || undefined;
-      const projectFinancierForm = this.$refs.projectFinancier.form || undefined;
+      const projectFinancierForm =
+        this.$refs.projectFinancier.form || undefined;
       const projectContactForm = this.$refs.projectClient
         ? this.$refs.projectClient.form
         : undefined;
@@ -397,40 +478,41 @@ export default {
         projectLeadForm,
         projectSponsorForm,
         projectContactForm,
-        projectFinancierForm,
+        projectFinancierForm
       ].filter(contact => contact !== undefined);
       if (contacts instanceof Array && contacts.length > 0) {
-        await this.$store.dispatch('updateProjectContacts', {
+        await this.$store.dispatch("updateProjectContacts", {
           id: this.projectId,
-          contacts,
+          contacts
         });
-        this.$refs.snackbar.displaySnackbar('success', 'Saved');
+        this.$refs.snackbar.displaySnackbar("success", "Saved");
       }
     },
     async saveFinanceCodes() {
-      const projectFinanceForm = this.$refs.projectFinanceInfo.financeInfo || undefined;
+      const projectFinanceForm =
+        this.$refs.projectFinanceInfo.financeInfo || undefined;
       if (this.$refs.projectFinanceInfo.validate()) {
         if (this.project && this.project.client && this.project.client.id) {
           await this.$store
-            .dispatch('updateProcurementLog', {
+            .dispatch("updateProjectFinanceCodes", {
               id: this.project.client.id,
-              financeCodes: projectFinanceForm,
+              financeCodes: projectFinanceForm
             })
             .then(
               () => {
-                this.$refs.snackbar.displaySnackbar('success', 'Updated');
+                this.$refs.snackbar.displaySnackbar("success", "Updated");
               },
-              (err) => {
+              err => {
                 try {
                   const { message } = err.response.data.error;
-                  this.$refs.snackbar.displaySnackbar('error', message);
+                  this.$refs.snackbar.displaySnackbar("error", message);
                 } catch (ex) {
                   this.$refs.snackbar.displaySnackbar(
-                    'error',
-                    'Failed to update',
+                    "error",
+                    "Failed to update"
                   );
                 }
-              },
+              }
             );
         }
       }
@@ -438,7 +520,7 @@ export default {
     initializeRisk() {
       this.$refs.projectRiskAssessment.updateInitalData();
       this.$refs.projectRiskAssessment.editScreen = false;
-    },
+    }
   },
   created() {
     while (this.$store.state.activeProjectContacts.length > 0) {
@@ -447,11 +529,61 @@ export default {
 
     // if no rfx, add one
     if (this.projectRfxData.length === 0) {
-      console.log('addinging initial rfx');
+      console.log("addinging initial rfx");
       this.addNewRFx();
     }
 
     this.fetchData();
-  },
+  }
 };
 </script>
+<style scoped>
+.column {
+  float: left;
+  width: 100%;
+  padding: 0 10px;
+}
+
+/* Remove extra left and right margins, due to padding */
+.row {
+  margin: 0 -5px;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Responsive columns */
+@media screen and (max-width: 600px) {
+  .column {
+    width: 100%;
+    display: block;
+    margin-bottom: 20px;
+  }
+}
+
+/* Style the counter cards */
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  padding: 0px;
+  text-align: center;
+}
+.headerspan {
+  margin-right: 80%;
+}
+.headerdivstyle {
+background-color: #57789a;
+    padding: 15px;
+    color: white;
+}
+.notecontent {
+  float: left;
+  margin-left: 3%;
+}
+.replybutton {
+  float: left;
+}
+</style>

@@ -1,15 +1,17 @@
 <template>
   <v-card>
     <spinner ref="spinner"></spinner>
+    <snackbar ref="snackbar"></snackbar>
+       <confirm ref="confirm"></confirm>
     <v-toolbar v-if="title" card dense color="transparent">
       <v-toolbar-title>
         <h4>{{ title }}</h4>
       </v-toolbar-title>
     </v-toolbar>
     <v-container fluid>
-      <v-radio-group row>
-        <v-radio label="Logs In Progress" value="radio-1"></v-radio>
-        <v-radio label="Resolved Logs" value="radio-2"></v-radio>
+      <v-radio-group v-model="isResolved"  row>
+        <v-radio label="Logs In Progress" :value="false" isResolved></v-radio>
+        <v-radio label="Resolved Logs" :value="true" isResolved></v-radio>
       </v-radio-group>
     </v-container>
     <v-divider></v-divider>
@@ -30,6 +32,7 @@
             <td class="text-xs-left">{{ props.item.descriptionOfIssue }}</td>
             <td class="text-xs-left">{{ props.item.dateToClient | formatDate }}</td>
             <td class="text-xs-left">{{ props.item.notificationMethod }}</td>
+            <!-- <td class="text-xs-left">{{ props.item.userId }}</td> -->
             <td class="text-xs-left">{{ props.item.phaseImpactName }}</td>
             <td class="text-xs-left">{{ props.item.clientDecision }}</td>
             <td class="text-xs-left">{{ props.item.followUpDate | formatDate }}</td>
@@ -47,7 +50,7 @@
                 small
                 color="btnPrimary"
                 class="white--text intake-table-approve-btn ma-0"
-                @click="approveRequest(props.item.id)"
+                @click="resolveLog(props.item.id)"
               >RESOLVE</v-btn>
             </td>
           </template>
@@ -61,30 +64,40 @@
 <script>
 import Spinner from "../common/Spinner.vue";
 import ProcurementLog from "./Procurementlog.vue";
+import Confirm from '../common/Confirm.vue';
+import Snackbar from "../common/Snackbar.vue";
 export default {
   props: {
     title: String
   },
   components: {
+     Snackbar,
     Spinner,
+     Confirm,
     ProcurementLog
   },
   data() {
     return {
+      isResolved: true,
       headers: [
         { text: "Log Type", value: "logType", align: "left", sortable: true,  width:"5%"},
         // { text: 'Risk Owner', value: 'riskOwner', sortable: false },
         {
           text: "Description of Issue",
           value: "issueDescription",
-          sortable: false, width:"15  %"
+          sortable: false, width:"15%"
         },
-        { text: "Date To Client", value: "dateToClient", sortable: false, width:"4%"},
+        { text: "Date To Client", value: "dateToClient", sortable: false, width:"10%"},
         {
           text: "Method of Notification",
           value: "notificationMethod",
            sortable: false, width:"10%"
         },
+        //  {
+        //   text: "Decision Maker",
+        //   value: "userId",
+        //    sortable: false, width:"10%"
+        // },
         { text: "Phase Impact", value: "phaseImpactName", sortable: false, width:"10%" },
         { text: "Client Decision", value: "clientDecision", sortable: false, width:"10%"},
         {
@@ -98,7 +111,8 @@ export default {
       ],
       logList: this.fetchData(),
       selectedLeadUser: "",
-      selectedProjectBackup: ""
+      selectedProjectBackup: "",
+      unResolved:[]
     };
   },
   computed: {
@@ -110,13 +124,56 @@ export default {
             .includes(this.search.toLowerCase());
         });
       }
-      return this.$store.state.allProcurementLog;
+      if (this.isResolved) {
+        const value = this.$store.state.allProcurementLog.filter(function (el) { return el.isResolved == true});
+        return value;
+      } else {
+       const value =  this.$store.state.allProcurementLog.filter(function (el) { return el.isResolved == false});
+        return value;
+      }
     }
   },
   created() {
     this.fetchData();
   },
   methods: {
+    async resolveLog(id) {
+      if (
+        await this.$refs.confirm.open(
+          'info',
+          'Are you sure you want to resolve this log?',
+        )
+      ) {
+       const found = this.$store.state.allProcurementLog.find(
+        element => element.id == id
+      );
+      console.log("result:", found);
+      found.isResolved = true;
+      console.log("new result",found);
+       await this.$store
+            .dispatch("updateProctLog", {
+              procurementlog: found
+            })
+            .then(
+              () => {
+                this.$refs.snackbar.displaySnackbar("success", "Resolved");
+              },
+              err => {
+                try {
+                  const { message } = err.response.data.error;
+                  this.$refs.snackbar.displaySnackbar("error", message);
+                } catch (ex) {
+                  this.$refs.snackbar.displaySnackbar(
+                    "error",
+                    "Failed to Resolve"
+                  );
+                }
+              }
+            );
+            
+      }
+    },
+   
     viewRequest(procId) {
       console.log(procId);
       console.log("complete list:", this.$store.state.allProcurementLog);
@@ -131,12 +188,12 @@ export default {
       if (this.$refs.spinner) {
         this.$refs.spinner.open();
       }
-      let procLogs = await this.$store.dispatch("fetchAllProcurementLog");
+      console.log('projId', this.$store.state.activeProject.id)
+      let procLogs = await this.$store.dispatch("fetchAllProcurementLog", {id: this.$store.state.activeProject.id});
       let projRfxData = await this.$store.dispatch("fetchProjectRFxData", {
         id: this.$store.state.activeProject.id
       });
-      console.log("proclogs", procLogs);
-      this.$refs.spinner.close();
+     // this.$refs.spinner.close();
       return procLogs[0];
     }
   }

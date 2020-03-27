@@ -12,4 +12,6 @@ export interface IProcurement {
   dateToClient: Date;
   followUpDate: Date;
   projectId: string;
+  isResolved: boolean;
+  userId: string;
 }

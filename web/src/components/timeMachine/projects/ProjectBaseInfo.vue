@@ -91,7 +91,6 @@
             readonly
             v-model="form.client.ministry.ministryName"
           ></v-text-field>-->
-
           <v-container
             fluid
             row
@@ -115,7 +114,7 @@
               label="Ministry"
               class="required"
               :rules="requiredRule"
-              v-model="ministryname"
+              v-model="form.client.ministry.id"
               v-if="!form.client.isNonMinistry"
               item-value="id"
               item-text="ministryName"
@@ -341,7 +340,7 @@ export default {
     },
     project(value) {
       this.form = value;
-
+      
       const inputProjectSector = this.form.projectSector || null;
       if (!inputProjectSector) {
         this.form.projectSector = new ProjectSectorDto();
@@ -394,14 +393,18 @@ export default {
       const scope = this;
       if (this.$refs.projectBaseInfo.validate()) {
         // ministry part starts
-
+        for(var i=0;i<this.$store.state.ministries.length; i++) {
+          if(this.$store.state.ministries[i].id == this.form.client.ministry.id) {
+           this.form.client.ministry.ministryName = this.$store.state.ministries[i].ministryName;
+          }
+        }
         if (this.form.client.isNonMinistry) {
           this.form.client.ministry = undefined;
         } else {
-          this.form.NonMinistryName = undefined;
+          this.form.client.NonMinistryName = undefined;
         }
         this.$store.state.ministryInformation = true;
-
+        
         // ministry part ends
 
         const projectData = Object.assign({}, this.form);

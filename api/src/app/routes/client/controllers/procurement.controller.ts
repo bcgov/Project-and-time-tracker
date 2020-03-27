@@ -33,7 +33,7 @@ export const updateProcurementLog = async (ctx: Koa.Context) => {
   try {
     const body = ctx.request.body;
     console.log(body);
-    ctx.body = await updateProcLog(body.formData.id, body.formData);
+    ctx.body = await updateProcLog(body.procurementlog.id, body.procurementlog);
   } catch (err) {
     ctx.throw(err.message);
   }
@@ -42,7 +42,7 @@ export const updateProcurementLog = async (ctx: Koa.Context) => {
 export const getAllProcurementLog = async (ctx: Koa.Context) => {
   try {
     // TODO - If user is NOT admin, return only the sheets by user id?
-    ctx.body = await retrieveAllProcurementLog();
+    ctx.body = await retrieveAllProcurementLog(ctx.params.id);
   } catch (err) {
     ctx.throw(err.message);
   }
@@ -94,7 +94,7 @@ const router: Router = new Router(routerOpts);
 
 // router.get('/:id/by-project-id', authorize, getContactByProjectId);
 router.post('/', authorize, saveProcurementLog);
-router.get('/all', authorize, getAllProcurementLog);
+router.get('/:id', authorize, getAllProcurementLog);
 router.patch('/:id', authorize, updateProcurementLog);
 
 export default router;

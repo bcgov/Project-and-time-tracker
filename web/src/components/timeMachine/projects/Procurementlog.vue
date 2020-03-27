@@ -188,6 +188,11 @@ export default {
     async saveProcurementLog() {
       console.log(this.logType, this.notificationMethod, this.phaseImpactName);
      // const projectFinanceForm = this.$refs.ProcurementLogs || undefined;
+      const referenceId = this.$store.state.activeUser.refId;
+      const user = this.$store.state.users.find(
+        value => value.referenceId === referenceId,
+      );
+      
        const formData = {
           logType: this.logType,
           riskOwner: this.riskOwnerName,
@@ -197,11 +202,12 @@ export default {
           phaseImpactName: this.phaseImpactName,
           clientDecision:this.clientDecision,
           followUpDate: this.followUpDate,
-          projectId: this.$store.state.activeProject.id
-          // userId: this.form.userId,
+          projectId: this.$store.state.activeProject.id,
+          isResolved: this.isResolved,
+          userId: user.id,
         };
         if(this.id) {
-          console.log('suppose to update');
+          console.log('suppose to update' ,this.id);
         formData.id = this.id
          await this.$store
             .dispatch("updateProctLog", {
@@ -314,6 +320,7 @@ export default {
         followUpDate:'',
         riskOwnerName:'',
         issueDescription:'',
+        isResolved: false,
         existingTimeEntries,
         addRecordLoading: false,
         dateRange: { start: null, end: null },
