@@ -31,6 +31,11 @@
               type="number"
               single-line
               label="Hours"
+              max="24"
+              step="0.25"
+              :rules="requiredRule"
+              :min="0"
+              oninput="validity.valid||(value=0);"
               v-model="props.item.monday.hours"
             ></v-text-field>
           </td>
@@ -39,6 +44,10 @@
               type="number"
               single-line
               label="Hours"
+              max="24"
+              step="0.25"
+              min="0"
+              oninput="validity.valid||(value=0);"
               v-model="props.item.tuesday.hours"
             ></v-text-field>
           </td>
@@ -47,6 +56,10 @@
               type="number"
               single-line
               label="Hours"
+              max="24"
+              step="0.25"
+              min="0"
+              oninput="validity.valid||(value=0);"
               v-model="props.item.wednesday.hours"
             ></v-text-field>
           </td>
@@ -55,6 +68,10 @@
               type="number"
               single-line
               label="Hours"
+              max="24"
+              step="0.25"
+              min="0"
+              oninput="validity.valid||(value=0);"
               v-model="props.item.thursday.hours"
             ></v-text-field>
           </td>
@@ -63,6 +80,10 @@
               type="number"
               single-line
               label="Hours"
+              max="24"
+              step="0.25"
+              min="0"
+              oninput="validity.valid||(value=0);"
               v-model="props.item.friday.hours"
             ></v-text-field>
           </td>

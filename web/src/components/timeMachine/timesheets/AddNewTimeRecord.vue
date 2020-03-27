@@ -143,10 +143,11 @@
                 <v-flex xs12 sm5>
                   <v-text-field
                     label="Hours"
+                    
                     type="number"
                     :rules="requiredRule"
                     :min="0"
-                    step="any"
+                    step="0.25"
                     max="24"
                     oninput="validity.valid||(value=0);"
                     @keyup="timeSheetEntry(form.hour)"

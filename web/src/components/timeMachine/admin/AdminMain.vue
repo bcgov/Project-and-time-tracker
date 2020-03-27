@@ -8,7 +8,7 @@
     <v-layout row wrap>
       <v-flex xs12>
         <v-list two-line subheader>
-          <v-subheader>Admininistrator Controls</v-subheader>
+          <v-subheader>Administrator Controls</v-subheader>
 
           <v-list-tile avatar>
             <v-list-tile-content>
