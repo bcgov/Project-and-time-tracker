@@ -25,38 +25,55 @@
                         <!-- <img src="@/assets/bulb.svg"> -->
                         <label class="sub-header-large" style="margin-left:25px">Notes</label>
                       </div>
-
                       <v-card-text>
-                        <v-flex d-flex justify-end>
-                         <v-flex md12>
-                          <v-card max-width="95%"  style="border: solid 1px #eae8e8;">
-                            <v-list-item style="background-color: #003366;padding: 11px;">
-                              <v-list-item-avatar color="grey"></v-list-item-avatar>
-                              <v-list-item-content>
-                                <v-list-item-title style="font-size:larger;margin-left: 15px;color: white;">Bob Smith</v-list-item-title>
-                                <v-list-item-subtitle style="margin-left:80%;color: white;">28 March 2020</v-list-item-subtitle>
-                              </v-list-item-content>
-                            </v-list-item>
-
-                            <v-card-text>Visit ten places on our planet that are undergoing the biggest changes today. Visit ten places on our planet that are undergoing the biggest changes today.Visit ten places on our planet that are undergoing the biggest changes today.</v-card-text>
-
-                            <v-card-actions>
-                          
-                            <v-btn  flat large color="primary" @click="newnotes" class="back-link"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z"/></svg> Reply</v-btn>
-                              <project-notes ref="projectNote"></project-notes>
-                            </v-card-actions>
-                          </v-card></v-flex>
-                         
-                        </v-flex>
-                         <v-flex md12>
-                          <project-notes ref="projectNote"></project-notes>
+                        <v-layout v-for="(item) in $store.state.allProjectNotes" :key="item.id">
+                          <v-flex v-if="!item.parentId" d-flex justify-end>
+                            <v-flex md12>
+                              <div class="row">
+                                <div class="column">
+                                  <div class="card">
+                                    <div class="headerdivstyle">
+                                    <span class="headerspan" v-html="item.user.contact.fullName" />
+                                    <span v-html="new Date(item.noteTime).toString().slice(0,25)" /></div>
+                                    <br/>
+                                    <span style="float:left;margin-left:3%;text-align: justify;padding-right: 30px;"  v-html="item.note" />
+                                      <br/>
+                                    <v-btn
+                                      flat
+                                      large
+                                      color="primary"
+                                      @click="replynotes(item.id)"
+                                      style="margin-right: 80%;"
+                                    >
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="24"
+                                        height="24"
+                                        viewBox="0 0 24 24"
+                                      >
+                                        <path
+                                          d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z"
+                                        />
+                                      </svg> Reply
+                                    </v-btn>
+                                  </div>
+                                </div>
+                              </div>
+                              <br />
+                              <project-notes :ref=item.id></project-notes>
+                            </v-flex>
+                          </v-flex>
+                        </v-layout>
+                        <v-flex md12>
+                          <project-notes ref="projectNoteNew"></project-notes>
                           <v-btn
-                          style="margin-left: 77%;"
+                            style="margin-left: 77%;"
                             class="add-timesheet-button"
                             color="btnPrimary"
                             dark
-                            @click="newnotes"
-                          >Add Note</v-btn></v-flex>
+                            @click="newnotes(1)"
+                          >Add Note</v-btn>
+                        </v-flex>
                       </v-card-text>
                     </div>
                   </v-card>
@@ -333,16 +350,22 @@ export default {
     },
     projectRfxData() {
       return this.$store.state.activeProjectRfxData;
-    }
+    },
+    // projectcomments() {
+    //   return this.$store.state.allProjectNotes;
+    // }
   },
   data() {
+    
     return {
       rfxData: [new RFxDto()],
       projectId: "",
       enabled: true,
       initialLoad: true,
       color: Material,
-      selectedTab: "tab-1"
+      selectedTab: "tab-1",
+      projectcomments : this.$store.state.allProjectNotes
+     
     };
   },
   watch: {
@@ -351,13 +374,23 @@ export default {
     }
   },
   methods: {
+    projectnotes() {
+      return this.$store.state.allProjectNotes;
+    },
     newProcurementLog() {
       this.$refs.ProcurementLog.reset();
       this.$refs.ProcurementLog.open();
     },
-    newnotes() {
-      this.$refs.projectNote.reset();
-      this.$refs.projectNote.open();
+     replynotes(value) {
+      let refvalue = value;
+      console.log('refvalue', refvalue);
+
+      this.$refs[refvalue][0].reset();
+      this.$refs[refvalue][0].open(value);
+    },
+    newnotes(value) {
+      this.$refs.projectNoteNew.reset();
+      this.$refs.projectNoteNew.open(value);
     },
     // saveProjectRfxData(index) {
     //
@@ -393,6 +426,7 @@ export default {
         this.$store.dispatch("fetchprojectRiskAnswers", { id: this.projectId });
         this.$store.dispatch("fetchAllProcurementLog", { id: this.projectId });
       }
+       this.$store.dispatch("fetchAllProjectNotes", { id: this.projectId });
       this.$store.dispatch("fetchintakeRiskQuestions");
     },
     formatDate(date) {
@@ -503,3 +537,53 @@ export default {
   }
 };
 </script>
+<style scoped>
+.column {
+  float: left;
+  width: 100%;
+  padding: 0 10px;
+}
+
+/* Remove extra left and right margins, due to padding */
+.row {
+  margin: 0 -5px;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Responsive columns */
+@media screen and (max-width: 600px) {
+  .column {
+    width: 100%;
+    display: block;
+    margin-bottom: 20px;
+  }
+}
+
+/* Style the counter cards */
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  padding: 0px;
+  text-align: center;
+}
+.headerspan {
+  margin-right: 80%;
+}
+.headerdivstyle {
+background-color: #57789a;
+    padding: 15px;
+    color: white;
+}
+.notecontent {
+  float: left;
+  margin-left: 3%;
+}
+.replybutton {
+  float: left;
+}
+</style>

@@ -75,6 +75,7 @@ const store = new Vuex.Store({
     timesheetEntries: [],
     allTimesheets: [], // used in table view of all timesheets
     allProcurementLog: [],
+    allProjectNotes: [],
     collapseNavigationBar: false,
     projectInformation: false,
     ministryInformation: false,
@@ -309,6 +310,8 @@ const store = new Vuex.Store({
     },
     updateProcurementLog() {
     },
+    addProjectNotes() {
+    },
     // Project RFx
     fetchProjectRFxData(state, data) {
       // if it's an empty array, need to add blank rfX type
@@ -349,6 +352,11 @@ const store = new Vuex.Store({
     fetchAllProcurementLog(state, data) {
       console.log('fetchAllProcurementLog', data);
       state.allProcurementLog = data;
+    },
+    fetchAllProjectNotes(state, data) {
+      console.log('fetchAllProjectNotes', data);
+      console.log('projectnotes:', data);
+      state.allProjectNotes = data;
     },
     getTimeLogOfSelectedDate(state, data) {
       state.timeLogOfSelectedDate = data;
@@ -951,6 +959,18 @@ const store = new Vuex.Store({
         .catch(err => Promise.reject(err));
       return Promise.resolve(api);
     },
+    async addProjectNotes(ctx, req) {
+      const body = req.projectNotes;
+      const api = await $http
+        .post(`${API_URI}/projectnotes`, body)
+        .then((res) => {
+          const content = res.data;
+          ctx.commit('addProjectNotes', content);
+          return Promise.resolve(content);
+        })
+        .catch(err => Promise.reject(err));
+      return Promise.resolve(api);
+    },
     // Project RFx Requests
     fetchProjectRFxData(ctx, req) {
       // TODO: Make sure it's the right kind of ID - eg. numeric or GUID/UUID
@@ -1000,6 +1020,11 @@ const store = new Vuex.Store({
     async fetchAllProcurementLog(ctx, req) {
       const res = await $http.get(`${API_URI}/procurement/${req.id}`)
       ctx.commit('fetchAllProcurementLog', res.data);
+      return Promise.resolve(res.data);
+    },
+    async fetchAllProjectNotes(ctx, req) {
+      const res = await $http.get(`${API_URI}/projectnotes/${req.id}`)
+      ctx.commit('fetchAllProjectNotes', res.data);
       return Promise.resolve(res.data);
     },
     async updateRiskAnalysis(ctx, req) {
