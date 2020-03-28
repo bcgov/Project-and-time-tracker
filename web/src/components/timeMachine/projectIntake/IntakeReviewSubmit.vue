@@ -44,7 +44,7 @@
             </v-flex>
             <v-flex>
               <v-btn color="primary" @click="editItem(1)" class="edit-link">edit</v-btn>
-              <v-flex sm12><h4>What is the potential if this project fails?</h4></v-flex>
+              <v-flex sm12><h4>What is the potential risk of this procurement failing?</h4></v-flex>
               <v-flex sm12>{{ $props.intakeValues.projectFailImpact }}</v-flex>
             </v-flex>
             <v-flex>
