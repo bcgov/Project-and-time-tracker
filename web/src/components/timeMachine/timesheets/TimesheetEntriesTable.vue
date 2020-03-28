@@ -89,9 +89,10 @@
             <v-text-field
               hide-details
               type="number"
-              step="any"
+              
               max="24"
-              min="0"
+              step="0.25"
+              :min="0"
               oninput="validity.valid||(value=0);"
               ma-0
               pa-0
@@ -119,7 +120,7 @@
             <v-text-field
               hide-details
               type="number"
-              step="any"
+              step="0.25"
               max="24"
               min="0"
               oninput="validity.valid||(value=0);"
@@ -149,7 +150,7 @@
             <v-text-field
               hide-details
               type="number"
-              step="any"
+              step="0.25"
               max="24"
               min="0"
               oninput="validity.valid||(value=0);"
@@ -178,7 +179,7 @@
             <v-text-field
               hide-details
               type="number"
-              step="any"
+              step="0.25"
               max="24"
               min="0"
               oninput="validity.valid||(value=0);"
@@ -208,7 +209,7 @@
             <v-text-field
               hide-details
               type="number"
-              step="any"
+              step="0.25"
               max="24"
               min="0"
               oninput="validity.valid||(value=0);"
@@ -238,7 +239,7 @@
             <v-text-field
               hide-details
               type="number"
-              step="any"
+              step="0.25"
               max="24"
               min="0"
               oninput="validity.valid||(value=0);"
@@ -268,7 +269,7 @@
             <v-text-field
               hide-details
               type="number"
-              step="any"
+              step="0.25"
               max="24"
               min="0"
               oninput="validity.valid||(value=0);"

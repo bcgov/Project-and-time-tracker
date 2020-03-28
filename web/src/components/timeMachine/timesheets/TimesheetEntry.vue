@@ -18,7 +18,7 @@
             <v-text-field
               type="number"
               max="24"
-              step="0.1"
+              step="0.25"
               min="0"
               oninput="validity.valid||(value=0);"
               v-model="item.hours"

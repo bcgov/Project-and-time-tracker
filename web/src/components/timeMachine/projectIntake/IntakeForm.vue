@@ -227,7 +227,7 @@
           <div class="v-form-container">
             <div class="v-form-actions">
               <v-flex md12 mt-4 v-if="e1 == 5">
-                <v-btn color="default" @click="discard">Discard</v-btn>
+                <!-- <v-btn color="default" @click="discard">Discard</v-btn> -->
                 <v-btn
                   :disabled="
                     !(
