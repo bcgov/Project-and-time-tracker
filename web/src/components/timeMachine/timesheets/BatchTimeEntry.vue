@@ -6,10 +6,10 @@
         :headers="headers"
         :items="weekEntries"
         hide-actions
-        class="elevation-0 tm-v-datatable"
+        class="elevation-0 tm-v-datatable batch-entry"
       >
-        <template v-slot:items="props">
-          <td>
+        <template v-slot:items="props" >
+          <td >
             <v-select
               :items="allProjects"
               item-text="projectName"

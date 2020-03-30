@@ -10,5 +10,7 @@ export interface ITimesheetEntry {
   entryDate: Date;
   expenseAmount: number;
   expenseComment: string;
+  revenueAmount: number;
+  revenueComment: string;
   expenseCategory: string;
 }

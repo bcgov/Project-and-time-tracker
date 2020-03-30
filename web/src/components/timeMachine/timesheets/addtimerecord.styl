@@ -1,15 +1,28 @@
+.v-toolbar--fixed
+    z-index:200;
 .v-dialog.add-time-record
     max-width: 1024px;
+    border-radius: 9px;
+    border: 1px solid gray;
+    margin-top: 56px !important;  
+    .batch-entry
+        tbody tr:first-child
+            height: 82px;
+        tbody tr:not(:first-child)
+            border-top:none;
     .v-sheet
         width:100%;
         height: initial;
     // margin-top: 151px !important;    
   
     background-color: white !important;
+    .v-window__container
+        padding-left: 47px;
+        padding-right: 20px;  
     .v-card
         .card-contents
-            height: 785px;
-            padding: 0px 24px !important;
+            height: 676px;
+            padding: 0px 0px !important;
             .v-window
                 background-color:white;
                 width: 100% !important;
@@ -51,12 +64,19 @@
                 font-weight: 500
                 margin-top: 19px;
         .cardheadlabel1
+            .currentuser
+                padding-top: 25px;
             padding-left: 20%
             .haederinfo
                 padding-top: 8%;
                 color: grey;
+                text-align: right;
+                padding-right: 10px;
         .cardheadlabel2
             padding-left: 25%
+            color: gray;
+            margin-top: -9px;
+            font-size: 12px;
         .header-divider
             margin-top: 14px;
         .v-card__text           
@@ -68,7 +88,8 @@
             padding: 8px 38px;
             margin-bottom: 15px;
             .add-btns
-                padding-left: 107px;
+                text-align: right;
+                padding-top: 26px;
             .add-new-row
                 margin-right: .5vw
                 margin-left: .5vw
@@ -79,11 +100,17 @@
                 color: var(--v-primary-base) !important;
                 margin-left: .5vw
                 margin-right: .5vw
-            .btn-discard
+            .btn-discard,.btn-discard:focus:before,.btn-discard:before              
+                background: none!important;
+                border: none;
+                padding: 0!important;
+                font-family: arial, sans-serif;
                 color: grey;
-                .v-progress-circular
-                    top:0
-                    color:rgba(0,0,0,.26)
+                cursor: pointer;
+                box-shadow: none !important;
+                float: right;
+                margin-top: 26px;
+            
             .hours-err-msg
                 color: #d20e00;
                 font-size: 13px;
