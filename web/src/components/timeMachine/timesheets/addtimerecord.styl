@@ -4,7 +4,12 @@
     max-width: 1024px;
     border-radius: 9px;
     border: 1px solid gray;
-    margin-top: 56px !important;    
+    margin-top: 56px !important;  
+    .batch-entry
+        tbody tr:first-child
+            height: 82px;
+        tbody tr:not(:first-child)
+            border-top:none;
     .v-sheet
         width:100%;
         height: initial;
