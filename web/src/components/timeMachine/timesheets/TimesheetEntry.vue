@@ -4,7 +4,7 @@
     <v-form ref="form" v-model="valid" lazy-validation class="timesheet-entry">
       <spinner ref="spinner"></spinner>
       <v-container grid-list-xl>
-        <v-layout row wrap>
+        <v-layout row wrap class="list-header">
           <v-flex md1>Day</v-flex>
           <v-flex md2>Hours</v-flex>
 

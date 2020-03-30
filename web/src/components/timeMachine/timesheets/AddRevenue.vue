@@ -4,10 +4,10 @@
     <v-form ref="form" v-model="valid" lazy-validation class="add-revenue">
       <spinner ref="spinner"></spinner>
       <v-container grid-list-xl>
-        <v-layout row wrap>
+        <v-layout row wrap class="list-header">
           <v-flex md1>Day</v-flex>
           <v-flex md2>Amount</v-flex>
-          <v-flex md4>Description</v-flex>
+          <v-flex md7>Description</v-flex>
           <v-flex md2></v-flex>
         </v-layout>
 
