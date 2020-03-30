@@ -401,7 +401,7 @@ export default {
           // Weekly entry expenses
           this.$refs.AddExpense.weekData[index].entryDate = entry.entryDate;
           this.$refs.AddExpense.weekData[index].category = entry.expenseCategory;
-          this.$refs.AddExpense.weekData[index].amound = entry.expenseAmount;
+          this.$refs.AddExpense.weekData[index].amount = entry.expenseAmount;
           this.$refs.AddExpense.weekData[index].description = entry.expenseComment;
 
           // Weekly entry billable
@@ -490,13 +490,13 @@ export default {
         { day: 'Sun', description: '', hours: 0, date: '' },
       ];
       const weekDataExpenses = [
-        { day: 'Mon', description: '', amound: 0, category: '', date: '' },
-        { day: 'Tue', description: '', amound: 0, category: '', date: '' },
-        { day: 'Wed', description: '', amound: 0, category: '', date: '' },
-        { day: 'Thu', description: '', amound: 0, category: '', date: '' },
-        { day: 'Fri', description: '', amound: 0, category: '', date: '' },
-        { day: 'Sat', description: '', amound: 0, category: '', date: '' },
-        { day: 'Sun', description: '', amound: 0, category: '', date: '' },
+        { day: 'Mon', description: '', amount: 0, category: '', date: '' },
+        { day: 'Tue', description: '', amount: 0, category: '', date: '' },
+        { day: 'Wed', description: '', amount: 0, category: '', date: '' },
+        { day: 'Thu', description: '', amount: 0, category: '', date: '' },
+        { day: 'Fri', description: '', amount: 0, category: '', date: '' },
+        { day: 'Sat', description: '', amount: 0, category: '', date: '' },
+        { day: 'Sun', description: '', amount: 0, category: '', date: '' },
       ];
       this.$refs.AddExpense.weekData = weekDataExpenses;
       this.$refs.Billable.weekData = weekDataBillable;
@@ -692,7 +692,7 @@ export default {
           );
           if (expense[0]) {
             timeEntries[index].expenseCategory = expense[0].category;
-            timeEntries[index].expenseAmount = expense[0].amound === '' ? 0 : expense[0].amound;
+            timeEntries[index].expenseAmount = expense[0].amount === '' ? 0 : expense[0].amount;
             timeEntries[index].expenseComment = expense[0].description;
           }
         }

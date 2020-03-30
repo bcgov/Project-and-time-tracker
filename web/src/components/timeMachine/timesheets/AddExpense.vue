@@ -6,7 +6,7 @@
       <v-container grid-list-xl>
         <v-layout row wrap>
           <v-flex md1>Day</v-flex>
-          <v-flex md2>Amound</v-flex>
+          <v-flex md2>Amount</v-flex>
           <v-flex md3>Category</v-flex>
 
           <v-flex md4>Description</v-flex>
@@ -22,7 +22,7 @@
               step="0.1"
               min="0"
               oninput="validity.valid||(value=0);"
-              v-model="item.amound"
+              v-model="item.amount"
             ></v-text-field>
           </v-flex>
           <v-flex md3>
@@ -93,15 +93,15 @@ export default {
       weekDates: [],
       startDate: sessionStorage.getItem('selectedStartDate'),
       weekData: this.singleRow
-        ? [{ day: 'Day', description: '', amound: 0, category: '', date: '' }]
+        ? [{ day: 'Day', description: '', amount: 0, category: '', date: '' }]
         : [
-          { day: 'Mon', description: '', amound: 0, category: '', date: '' },
-          { day: 'Tue', description: '', amound: 0, category: '', date: '' },
-          { day: 'Wed', description: '', amound: 0, category: '', date: '' },
-          { day: 'Thu', description: '', amound: 0, category: '', date: '' },
-          { day: 'Fri', description: '', amound: 0, category: '', date: '' },
-          { day: 'Sat', description: '', amound: 0, category: '', date: '' },
-          { day: 'Sun', description: '', amound: 0, category: '', date: '' },
+          { day: 'Mon', description: '', amount: 0, category: '', date: '' },
+          { day: 'Tue', description: '', amount: 0, category: '', date: '' },
+          { day: 'Wed', description: '', amount: 0, category: '', date: '' },
+          { day: 'Thu', description: '', amount: 0, category: '', date: '' },
+          { day: 'Fri', description: '', amount: 0, category: '', date: '' },
+          { day: 'Sat', description: '', amount: 0, category: '', date: '' },
+          { day: 'Sun', description: '', amount: 0, category: '', date: '' },
         ],
     };
   },

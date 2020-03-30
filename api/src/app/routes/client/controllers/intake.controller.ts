@@ -246,11 +246,11 @@ const validateIntakeForm = (intake: IProjectIntake) => {
   }
   if (!intake.projectFailImpact) {
     validationErrors.push(
-      ' Potential risk of this procurement failing is required.'
+      ' Potential impact of this procurement project failing is required.'
     );
   }
   if (!intake.projectSuccess) {
-    validationErrors.push('Success look like for this project is required.');
+    validationErrors.push('Success look like for this procurement project is required.');
   }
 
   if (!intake.dateOfReprocurement && intake.isReprocurement) {
