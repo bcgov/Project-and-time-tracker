@@ -49,7 +49,7 @@ const menuItems = [
   //   icon: 'dashboard',
   // },
   {
-    href: '/intake',
+    href: '/intake-intro',
     title: 'New Intake Request',
     icon: 'post_add ',
   },

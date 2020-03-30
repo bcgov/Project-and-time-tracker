@@ -4,6 +4,7 @@ import Dashboard from './components/dashboard/Dashboard.vue';
 import Authorize from './components/login/Authorize.vue';
 import Project from './components/timeMachine/projects/Project.vue';
 import TimeMachineIntakeForm from './components/timeMachine/projectIntake/IntakeForm.vue';
+import TimeMachineIntakeIntro from './components/timeMachine/projectIntake/IntakeIntroduction.vue';
 import TimeMachineIntakeRequests from './components/timeMachine/projectIntake/IntakeRequests.vue';
 import TimeMachineIntakeSuccess from './components/timeMachine/projectIntake/IntakeSuccess.vue';
 import TimeMachineProjects from './components/timeMachine/projects/Projects.vue';
@@ -38,11 +39,18 @@ const routes = [
   },
   // {
   //   exact: true,
-  //   path: '/dashboard',
+  //   path: '/intake-intro',
   //   name: 'dashboard',
-  //   component: Dashboard,
+  //   component: TimeMachineIntakeIntro,
   //   meta: { requiresAuth: true, roles: ['PSB_User', 'PSB_Admin'] },
   // },
+  {
+    exact: true,
+    path: '/intake-intro',
+    name: 'timemachineIntakeIntroduction',
+    component: TimeMachineIntakeIntro,
+    meta: { requiresAuth: true, roles: ['User', 'PSB_Admin'] },
+  },
   {
     exact: true,
     path: '/intake',

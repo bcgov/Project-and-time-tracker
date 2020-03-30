@@ -9,7 +9,7 @@ const keycloakAuth = new Keycloak(`/${keycloakFileName}.json`);
 const pageBasedOnRole = (role) => {
   let page = 'Unauthorized';
   switch (role) {
-    case 'User': page = 'timeMachineIntakeForm'; break;
+    case 'User': page = 'timemachineIntakeIntroduction'; break;
     case 'PSB_User': page = 'dashboard'; break;
     case 'PSB_Admin': page = 'dashboard'; break;
     default: break;
