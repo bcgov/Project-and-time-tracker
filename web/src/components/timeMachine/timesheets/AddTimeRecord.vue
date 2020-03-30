@@ -121,6 +121,7 @@
                       <v-radio-group row v-model="recordType">
                         <v-radio label="Hours" :value="1"></v-radio>
                         <v-radio label="Expenses" :value="2"></v-radio>
+                        <v-radio label="Revenue" :value="4"></v-radio>
                         <v-radio label="Unbillable Hours" :value="3"></v-radio>
                       </v-radio-group>
                     </v-flex>
@@ -130,6 +131,9 @@
                   </v-flex>
                   <v-flex v-show="recordType === 2">
                     <expense-entry ref="AddExpense"></expense-entry>
+                  </v-flex>
+                   <v-flex v-show="recordType === 4">
+                    <revenue-entry ref="AddRevenue"></revenue-entry>
                   </v-flex>
                   <v-flex v-show="recordType === 3">
                     <timesheet-entry ref="NonBillable" single-row></timesheet-entry>
@@ -163,6 +167,7 @@ import Snackbar from '../common/Snackbar.vue';
 import Spinner from '../common/Spinner.vue';
 import TimesheetsCalendar from './TimesheetsCalendar.vue';
 import ExpenseEntry from './AddExpense.vue';
+import RevenueEntry from './AddRevenue.vue';
 import TimesheetEntry from './TimesheetEntry.vue';
 import BatchTimeEntry from './BatchTimeEntry';
 
@@ -224,6 +229,7 @@ export default {
     TimesheetEntry,
     BatchTimeEntry,
     ExpenseEntry,
+    RevenueEntry,
   },
   data() {
     return this.initData();
@@ -296,7 +302,9 @@ export default {
               'Unbillable Comments': entry.commentsUnBillable,
               'Expense Amount': entry.expenseAmount,
               'Expense Category': entry.expenseCategory,
-              'Expense Description': entry.expenseComment });
+              'Expense Description': entry.expenseComment,
+              'Revenue Amount': entry.revenueAmount,
+              'Revenue Description': entry.revenueComment });
           }
         }
         this.csvExport(timeEntries);
@@ -401,8 +409,13 @@ export default {
           // Weekly entry expenses
           this.$refs.AddExpense.weekData[index].entryDate = entry.entryDate;
           this.$refs.AddExpense.weekData[index].category = entry.expenseCategory;
-          this.$refs.AddExpense.weekData[index].amound = entry.expenseAmount;
+          this.$refs.AddExpense.weekData[index].amount = entry.expenseAmount;
           this.$refs.AddExpense.weekData[index].description = entry.expenseComment;
+
+          // Weekly entry revenue
+          this.$refs.AddRevenue.weekData[index].entryDate = entry.entryDate;
+          this.$refs.AddRevenue.weekData[index].amount = entry.revenueAmount;
+          this.$refs.AddRevenue.weekData[index].description = entry.revenueComment;
 
           // Weekly entry billable
           this.$refs.Billable.weekData[index].entryDate = entry.entryDate;
@@ -414,6 +427,8 @@ export default {
           this.$refs.NonBillable.weekData[index].hours = entry.hoursUnBillable;
           this.$refs.NonBillable.weekData[index].description = entry.commentsUnBillable;
         }
+
+        this.$refs.AddRevenue.weekData = this.formatWeekData(this.$refs.AddRevenue.weekData);
         this.$refs.AddExpense.weekData = this.formatWeekData(this.$refs.AddExpense.weekData);
         this.$refs.Billable.weekData = this.formatWeekData(this.$refs.Billable.weekData);
         this.$refs.NonBillable.weekData = this.formatWeekData(this.$refs.NonBillable.weekData);
@@ -490,14 +505,25 @@ export default {
         { day: 'Sun', description: '', hours: 0, date: '' },
       ];
       const weekDataExpenses = [
-        { day: 'Mon', description: '', amound: 0, category: '', date: '' },
-        { day: 'Tue', description: '', amound: 0, category: '', date: '' },
-        { day: 'Wed', description: '', amound: 0, category: '', date: '' },
-        { day: 'Thu', description: '', amound: 0, category: '', date: '' },
-        { day: 'Fri', description: '', amound: 0, category: '', date: '' },
-        { day: 'Sat', description: '', amound: 0, category: '', date: '' },
-        { day: 'Sun', description: '', amound: 0, category: '', date: '' },
+        { day: 'Mon', description: '', amount: 0, category: '', date: '' },
+        { day: 'Tue', description: '', amount: 0, category: '', date: '' },
+        { day: 'Wed', description: '', amount: 0, category: '', date: '' },
+        { day: 'Thu', description: '', amount: 0, category: '', date: '' },
+        { day: 'Fri', description: '', amount: 0, category: '', date: '' },
+        { day: 'Sat', description: '', amount: 0, category: '', date: '' },
+        { day: 'Sun', description: '', amount: 0, category: '', date: '' },
       ];
+      const weekDataRevenue = [
+        { day: 'Mon', description: '', amount: 0, date: '' },
+        { day: 'Tue', description: '', amount: 0, date: '' },
+        { day: 'Wed', description: '', amount: 0, date: '' },
+        { day: 'Thu', description: '', amount: 0, date: '' },
+        { day: 'Fri', description: '', amount: 0, date: '' },
+        { day: 'Sat', description: '', amount: 0, date: '' },
+        { day: 'Sun', description: '', amount: 0, date: '' },
+      ];
+
+      this.$refs.AddRevenue.weekData = weekDataRevenue;
       this.$refs.AddExpense.weekData = weekDataExpenses;
       this.$refs.Billable.weekData = weekDataBillable;
       this.$refs.NonBillable.weekData = weekDataUnBillable;
@@ -542,8 +568,6 @@ export default {
             hoursUnBillable: 0,
             commentsBillable: '',
             commentsUnBillable: '',
-            expenseAmount: 0,
-            expenseComment: '',
           };
           timeEntries.push(entry);
         }
@@ -600,8 +624,6 @@ export default {
                 hoursUnBillable: entries[index].hours ? entries[index].hours : 0,
                 commentsBillable: '',
                 commentsUnBillable: '',
-                expenseAmount: 0,
-                expenseComment: '',
               };
               existingProjectEntry.push(entry);
             }
@@ -617,8 +639,6 @@ export default {
               hoursUnBillable: entries[index].hours ? entries[index].hours : 0,
               commentsBillable: '',
               commentsUnBillable: '',
-              expenseAmount: 0,
-              expenseComment: '',
             };
             timeEntries.push(entry);
           }
@@ -650,6 +670,7 @@ export default {
     submitWeekData(needToClose = false) {
       const billableDetails = this.$refs.Billable.onBillableclick();
       const nonBillableDetails = this.$refs.NonBillable.nonBillableclick();
+      const revenueDetails = this.$refs.AddRevenue.updateDate();
       const expensesDetails = this.$refs.AddExpense.updateDate();
 
       const timeEntries = [];
@@ -665,6 +686,9 @@ export default {
           commentsUnBillable: '',
           expenseAmount: 0,
           expenseComment: '',
+          expenseCategory: '',
+          revenueAmount: 0,
+          revenueComment: '',
         };
         timeEntries.push(entry);
         if (billableDetails.length > 0) {
@@ -686,13 +710,22 @@ export default {
             timeEntries[index].commentsUnBillable = unBillable[0].description;
           }
         }
+        if (revenueDetails.length > 0) {
+          const revenue = revenueDetails.filter(
+            item => item.date === timeEntries[index].entryDate,
+          );
+          if (revenue[0]) {
+            timeEntries[index].revenueAmount = revenue[0].amount === '' ? 0 : revenue[0].amount;
+            timeEntries[index].revenueComment = revenue[0].description;
+          }
+        }
         if (expensesDetails.length > 0) {
           const expense = expensesDetails.filter(
             item => item.date === timeEntries[index].entryDate,
           );
           if (expense[0]) {
             timeEntries[index].expenseCategory = expense[0].category;
-            timeEntries[index].expenseAmount = expense[0].amound === '' ? 0 : expense[0].amound;
+            timeEntries[index].expenseAmount = expense[0].amount === '' ? 0 : expense[0].amount;
             timeEntries[index].expenseComment = expense[0].description;
           }
         }

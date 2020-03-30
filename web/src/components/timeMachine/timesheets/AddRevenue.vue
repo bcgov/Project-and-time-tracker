@@ -1,19 +1,17 @@
 <template>
   <v-layout row justify-center>
     <snackbar ref="snackbar"></snackbar>
-    <v-form ref="form" v-model="valid" lazy-validation class="add-expense">
+    <v-form ref="form" v-model="valid" lazy-validation class="add-revenue">
       <spinner ref="spinner"></spinner>
       <v-container grid-list-xl>
         <v-layout row wrap>
           <v-flex md1>Day</v-flex>
           <v-flex md2>Amount</v-flex>
-          <v-flex md3>Category</v-flex>
-
           <v-flex md4>Description</v-flex>
           <v-flex md2></v-flex>
         </v-layout>
 
-        <v-layout v-for="(item, index) in weekData" :key="item.day" class="expense-records">
+        <v-layout v-for="(item, index) in weekData" :key="item.day" class="revenue-records">
           <v-flex md1>{{ item.day }}</v-flex>
           <v-flex md2>
             <v-text-field
@@ -24,15 +22,7 @@
               v-model="item.amount"
             ></v-text-field>
           </v-flex>
-          <v-flex md3>
-            <v-select
-              :items="categoryOptions"
-              item-text="category"
-              item-value="category"
-              v-model="item.category"
-            ></v-select>
-          </v-flex>
-          <v-flex md4>
+          <v-flex md7>
             <v-text-field v-model="item.description"></v-text-field>
           </v-flex>
           <v-flex md2>
@@ -60,7 +50,7 @@
   </v-layout>
 </template>
 <script>
-import './AddExpense.styl';
+import './AddRevenue.styl';
 import moment from 'moment';
 import Snackbar from '../common/Snackbar.vue';
 import Spinner from '../common/Spinner.vue';
@@ -77,7 +67,6 @@ export default {
       form.date = moment().format('YYYY-MM-DD');
     }
     return {
-      categoryOptions: [{ category: 'Fees' }, { category: 'Transporation' }, { category: 'Other' }],
       valid: true,
       requiredRule: [v => !!v || 'This field required'],
       requireRadioButtondRule: [v => ((v || !v) && v != null) || 'This field required'],
@@ -92,15 +81,15 @@ export default {
       weekDates: [],
       startDate: sessionStorage.getItem('selectedStartDate'),
       weekData: this.singleRow
-        ? [{ day: 'Day', description: '', amount: 0, category: '', date: '' }]
+        ? [{ day: 'Day', description: '', amount: 0, date: '' }]
         : [
-          { day: 'Mon', description: '', amount: 0, category: '', date: '' },
-          { day: 'Tue', description: '', amount: 0, category: '', date: '' },
-          { day: 'Wed', description: '', amount: 0, category: '', date: '' },
-          { day: 'Thu', description: '', amount: 0, category: '', date: '' },
-          { day: 'Fri', description: '', amount: 0, category: '', date: '' },
-          { day: 'Sat', description: '', amount: 0, category: '', date: '' },
-          { day: 'Sun', description: '', amount: 0, category: '', date: '' },
+          { day: 'Mon', description: '', amount: 0, date: '' },
+          { day: 'Tue', description: '', amount: 0, date: '' },
+          { day: 'Wed', description: '', amount: 0, date: '' },
+          { day: 'Thu', description: '', amount: 0, date: '' },
+          { day: 'Fri', description: '', amount: 0, date: '' },
+          { day: 'Sat', description: '', amount: 0, date: '' },
+          { day: 'Sun', description: '', amount: 0, date: '' },
         ],
     };
   },
