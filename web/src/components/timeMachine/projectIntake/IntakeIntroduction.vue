@@ -1,9 +1,9 @@
 <template>
   <v-layout  row wrap py-2>
-    <v-form id="intake-client-info"  lazy-validation>
+    <v-form id="intake-client-info" style="background:#f1f1f1" lazy-validation>
       <v-flex xs12>
-        <div class="v-form-container" style="background: ##eaeaea;">
-          <div class="v-form-actions" style="background: #eaeaea !important;">
+        <div class="v-form-container">
+          <div class="v-form-actions">
             <v-card style="width:100%">
               <v-card-text class="card-contents">
                 <v-layout class="outer-layout" row wrap py-2>
@@ -67,6 +67,10 @@ export default {
 };
 </script>
 <style scoped>
+.card-contents {
+  background:#f1f1f1 !important;
+}
+
 .intake-intro-header {
   font-size: 24px !important;
   margin-left: 0px !important;
@@ -81,6 +85,7 @@ export default {
     border: solid 1px #eae8e8 !important;
     border-radius: 6px !important;
     margin-top: 15px;
+    background: #ffffff;
 }
 .content-span {
     float: left;
