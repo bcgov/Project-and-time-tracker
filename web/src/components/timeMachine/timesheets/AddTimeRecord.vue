@@ -21,7 +21,7 @@
                 <v-flex class="d-flex cardheadlabel1">
                   <v-flex md7 class="haederinfo">Information being entered by:</v-flex>
                   <v-flex md4>
-                    <v-select
+                    <v-select class = 'currentuser'
                       v-model="form.userId"
                       :rules="requiredRule"
                       :items="userList"
@@ -38,6 +38,7 @@
                     ${{ mouAmount }}
                   </v-flex>
                   <v-flex> <b>Currently Billed:</b> $0 </v-flex>
+                   <v-flex> <b>Legal Billed Amount:</b> $0 </v-flex>
                 </v-flex>
               </v-flex>
             </v-layout>
@@ -144,12 +145,12 @@
           </v-card-text>
           <v-divider class="header-divider"></v-divider>
           <v-card-actions>
-            <label class="btn-discard">DISCARD TIMESHEET</label>
+            <v-btn class="btn-discard" @click="closeDialog()" :ripple="false">DISCARD TIMESHEET</v-btn>
             <v-flex class="add-btns">
               <v-btn class="btn-normal" @click="expotTimesheet()">EXPORT TIMESHEET</v-btn>
               <v-btn class="btn-normal" @click="saveAndCopy()">SAVE AND COPY</v-btn>
               <v-btn class="add-new-row" color="primary" @click="saveAndClose()"
-                >SAVE AND CLOSE</v-btn
+                >SUBMIT</v-btn
               >
             </v-flex>
           </v-card-actions>

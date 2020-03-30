@@ -1,11 +1,18 @@
+
+.v-dialog__content.v-dialog__content--active
+    z-index:5002 !important;
 .v-dialog.add-time-record
     max-width: 1024px;
+    border-radius: 9px;
+    border: 1px solid gray;
+    margin-top: 56px !important;    
     .v-sheet
         width:100%;
         height: initial;
     // margin-top: 151px !important;    
   
     background-color: white !important;
+      
     .v-card
         .card-contents
             height: 785px;
@@ -51,12 +58,17 @@
                 font-weight: 500
                 margin-top: 19px;
         .cardheadlabel1
+            .currentuser
+                padding-top: 25px;
             padding-left: 20%
             .haederinfo
                 padding-top: 8%;
                 color: grey;
+                text-align: right;
+                padding-right: 10px;
         .cardheadlabel2
             padding-left: 25%
+            color: gray;
         .header-divider
             margin-top: 14px;
         .v-card__text           
@@ -79,11 +91,17 @@
                 color: var(--v-primary-base) !important;
                 margin-left: .5vw
                 margin-right: .5vw
-            .btn-discard
+            .btn-discard,.btn-discard:focus:before,.btn-discard:before
+                background: none!important;
+                border: none;
+                padding: 0!important;
+                font-family: arial, sans-serif;
                 color: grey;
-                .v-progress-circular
-                    top:0
-                    color:rgba(0,0,0,.26)
+                cursor: pointer;
+                box-shadow: none !important;
+                float: right;
+                margin-top: 0px;
+            
             .hours-err-msg
                 color: #d20e00;
                 font-size: 13px;
