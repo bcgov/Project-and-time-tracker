@@ -1,6 +1,5 @@
-
-.v-dialog__content.v-dialog__content--active
-    z-index:5002 !important;
+.v-toolbar--fixed
+    z-index:200;
 .v-dialog.add-time-record
     max-width: 1024px;
     border-radius: 9px;
@@ -12,11 +11,13 @@
     // margin-top: 151px !important;    
   
     background-color: white !important;
-      
+    .v-window__container
+        padding-left: 47px;
+        padding-right: 20px;  
     .v-card
         .card-contents
-            height: 785px;
-            padding: 0px 24px !important;
+            height: 676px;
+            padding: 0px 0px !important;
             .v-window
                 background-color:white;
                 width: 100% !important;
@@ -69,6 +70,8 @@
         .cardheadlabel2
             padding-left: 25%
             color: gray;
+            margin-top: -9px;
+            font-size: 12px;
         .header-divider
             margin-top: 14px;
         .v-card__text           
@@ -80,7 +83,8 @@
             padding: 8px 38px;
             margin-bottom: 15px;
             .add-btns
-                padding-left: 107px;
+                text-align: right;
+                padding-top: 26px;
             .add-new-row
                 margin-right: .5vw
                 margin-left: .5vw
@@ -92,6 +96,7 @@
                 margin-left: .5vw
                 margin-right: .5vw
             .btn-discard,.btn-discard:focus:before,.btn-discard:before
+                margin-top: 26px;
                 background: none!important;
                 border: none;
                 padding: 0!important;
