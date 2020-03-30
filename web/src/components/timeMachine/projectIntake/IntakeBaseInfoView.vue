@@ -77,7 +77,7 @@
 
     <v-layout>
       <v-flex md6>
-        <div class="body-1">What is the potential if this project fails?:</div>
+        <div class="body-1">What is the potential impact of this procurement project failing?:</div>
       </v-flex>
       <v-flex md6 justify-center>
         <div class="body-2">{{ form.projectFailImpact }}</div>
@@ -87,7 +87,7 @@
 
     <v-layout>
       <v-flex md6>
-        <div class="body-1">What does success look like for this project?:</div>
+        <div class="body-1">What does success look like for this procurement project?:</div>
       </v-flex>
       <v-flex md6 justify-center>
         <div class="body-2">{{ form.projectSuccess }}</div>

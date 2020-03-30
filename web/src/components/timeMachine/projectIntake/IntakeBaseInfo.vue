@@ -212,7 +212,7 @@
           <v-textarea
             class="required"
             name="project-description"
-            label="What is the potential risk of this procurement failing?"
+            label="What is the potential impact of this procurement project failing?"
             no-resize
             :rules="requiredRule"
             v-model="form.projectFailImpact"
@@ -224,7 +224,7 @@
           <v-textarea
             class="required"
             name="project-description"
-            label="What does success look like for this project?"
+            label="What does success look like for this procurement project?"
             no-resize
             :rules="requiredRule"
             v-model="form.projectSuccess"
