@@ -158,37 +158,37 @@
               :key="contactItem.contactType"
               class="contacts"
             >
-              <h3>{{ getContactType(contactItem.contactType) }}</h3>
-              <v-flex>
+              <h3 v-if="contactItem.fullName">{{ getContactType(contactItem.contactType) }}</h3>
+              <v-flex v-if="contactItem.fullName">
                 <v-btn color="primary" @click="editItem(4)" class="edit-link">edit</v-btn>
                 <v-flex sm12><h4>Name</h4></v-flex>
                 <v-flex sm12>{{ contactItem.fullName }}</v-flex>
               </v-flex>
 
-              <v-flex>
+              <v-flex v-if="contactItem.email">
                 <v-btn color="primary" @click="editItem(4)" class="edit-link">edit</v-btn>
                 <v-flex sm12><h4>Email Address</h4></v-flex>
                 <v-flex sm12>{{ contactItem.email }}</v-flex>
               </v-flex>
 
-              <v-flex>
+              <v-flex v-if="contactItem.orgName">
                 <v-btn color="primary" @click="editItem(4)" class="edit-link">edit</v-btn>
                 <v-flex sm12><h4>Organization</h4></v-flex>
                 <v-flex sm12>{{ contactItem.orgName }}</v-flex>
               </v-flex>
 
-              <v-flex>
+              <v-flex v-if="contactItem.orgPosition">
                 <v-btn color="primary" @click="editItem(4)" class="edit-link">edit</v-btn>
                 <v-flex sm12><h4>Position Title</h4></v-flex>
                 <v-flex sm12>{{ contactItem.orgPosition }}</v-flex>
               </v-flex>
 
-              <v-flex>
+              <v-flex v-if="contactItem.phoneNumber">
                 <v-btn color="primary" @click="editItem(4)" class="edit-link">edit</v-btn>
                 <v-flex sm12><h4>Phone Number</h4></v-flex>
                 <v-flex sm12>{{ contactItem.phoneNumber }}</v-flex>
               </v-flex>
-            </v-flex>
+          </v-flex>
           </v-card-text>
         </v-card>
       </v-expansion-panel-content>

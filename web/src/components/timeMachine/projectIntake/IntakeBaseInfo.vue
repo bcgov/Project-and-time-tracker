@@ -110,7 +110,7 @@
         <div class="v-form-container">
           <v-text-field
             class="required"
-            :rules="requiredRule"
+            :rules="amountRule"
             prepend-inner-icon="attach_money"
             label="Contract Amount"
             v-currency
@@ -296,6 +296,7 @@ export default {
     return {
       valid: true,
       requiredRule: [v => !!v || 'This field required'],
+      amountRule:[v => !!v || 'This field required', v=> v!='CA$0.00' || 'Invalid Amount'],  
       // Initialize using props
       form: { ...form },
       // isReprocurement: false,
@@ -341,7 +342,7 @@ export default {
       return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
     },
     onNextClicked() {
-      if (this.$refs.intakeBaseInfo.validate()) {
+      if (this.$refs.intakeBaseInfo.validate() && this.form.estimatedContractValue!='CA$0.00') {
         // this.nextPanel(this.panelName);
         if (!this.form.isReprocurement) {
           this.form.dateOfReprocurement = undefined;
