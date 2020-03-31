@@ -148,7 +148,6 @@
             <v-btn class="btn-discard" @click="closeDialog()" :ripple="false">DISCARD TIMESHEET</v-btn>
             <v-flex class="add-btns">
               <v-btn class="btn-normal" @click="expotTimesheet()">EXPORT TIMESHEET</v-btn>
-              <v-btn class="btn-normal" @click="saveAndCopy()">SAVE AND COPY</v-btn>
               <v-btn class="add-new-row" color="primary" @click="saveAndClose()"
                 >SUBMIT</v-btn
               >
@@ -470,17 +469,6 @@ export default {
       dd = dd.substr(dd.length - 2); // take last 2 chars
 
       return `${yyyy}-${mm}-${dd}`;
-    },
-    saveAndCopy() {
-      if (this.$refs.AddimeRecords.validate()) {
-        if (this.activeTab === 'weekly') {
-          this.submitWeekData();
-        } else {
-          const nonBillableBatchEntry = this.$refs.nonBillableBatchEntry.prepareDataForSubmission();
-          const billableBatchEntry = this.$refs.billableBatchEntry.prepareDataForSubmission();
-          this.submitBatchData(nonBillableBatchEntry, billableBatchEntry);
-        }
-      }
     },
     clearTimeEntries() {
       this.clearWeekEntry();
