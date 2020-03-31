@@ -32,7 +32,7 @@
              </td>
             <td
               class="text-xs-left"
-            >{{ [props.item.ministryName|| props.item.nonMinistryName, props.item.orgDivision].join(" ") }}</td>
+            >{{ calculatedvalue(props.item) }}</td>
             <td class="text-xs-left table-dropdown">
               <!-- TODO: is below v-if necessary on v-select?
 
@@ -211,7 +211,8 @@ export default {
   },
   computed: {
     intakeRequests() {
-      // console.log('intakeRequests', this.$store.state.intakeRequests);
+     // console.log('intakeRequests', this.$store.state.intakeRequests);
+    
       return this.$store.state.intakeRequests;
     },
     userList() {
@@ -225,6 +226,11 @@ export default {
     }
   },
   methods: {
+    calculatedvalue(item) {
+
+      const res = item.isNonMinistry==true ? item.nonMinistryName : item.ministryName;
+      return [ res, item.orgDivision].join(" ");
+    },
     fetchData() {
       this.$store.dispatch('fetchIntakeRequests');
       this.$store.dispatch('fetchMOUs');
