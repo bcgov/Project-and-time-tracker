@@ -113,9 +113,9 @@
             :rules="amountRule"
             prepend-inner-icon="attach_money"
             label="Contract Amount"
-            v-currency
             oninput="validity.valid||(value='');"
-            v-model="form.estimatedContractValue"
+            :value='form.estimatedContractValue | withCommas'
+            @blur='v => form.estimatedContractValue = parseFloat(v.target.value)'
           ></v-text-field>
         </div>
       </v-flex>
@@ -296,7 +296,14 @@ export default {
     return {
       valid: true,
       requiredRule: [v => !!v || 'This field required'],
-      amountRule:[v => !!v || 'This field required', v=> v!='CA$0.00' || 'Invalid Amount'],  
+      amountRule: [(v) => {
+        if (!v) return 'This field is required';
+        const anyNonNumbers = v.toString().match(/[^\d,]+/g, '');
+        if (anyNonNumbers){
+          return 'Field must just be a number.'
+        }
+        return true;
+      }],
       // Initialize using props
       form: { ...form },
       // isReprocurement: false,

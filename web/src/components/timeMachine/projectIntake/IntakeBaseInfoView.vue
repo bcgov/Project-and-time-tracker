@@ -32,7 +32,7 @@
         <div class="body-1">Contract Amount:</div>
       </v-flex>
       <v-flex md6 justify-center>
-        <div class="body-2">{{ form.estimatedContractValue }}</div>
+        <div class="body-2">{{ form.estimatedContractValue | withCommas }}</div>
       </v-flex>
     </v-layout>
 

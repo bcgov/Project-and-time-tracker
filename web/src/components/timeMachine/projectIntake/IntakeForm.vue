@@ -262,7 +262,6 @@ import intakeRiskAssessment from './intakeRisk.vue';
 import ProjectAdditionalContactInfo from '../projects/ProjectAddintionalContactInfo.vue';
 import intakeReview from './IntakeReviewSubmit.vue';
 import './intakeform.styl';
-import parseCurrencyFloat from '../../../utils/parseCurrencyFloat';
 
 Vue.use(VeeValidate);
 
@@ -460,7 +459,8 @@ export default {
         && this.$store.state.intakeRisk
       ) {
         this.$refs.spinner.open();
-        formData.estimatedContractValue = parseCurrencyFloat(formData.estimatedContractValue);
+        console.log('contractValue', {contractValue: formData.estimatedContractValue})
+        formData.estimatedContractValue = formData.estimatedContractValue;
         this.$store.dispatch('addIntakeRequest', formData).then(
           () => {
             this.$refs.snackbar.displaySnackbar('success', 'Project Intake Form Submited.');
@@ -581,7 +581,8 @@ export default {
           // && this.$store.state.intakeRisk
         ) {
           // this.$refs.spinner.open();
-          formData.estimatedContractValue = parseCurrencyFloat(formData.estimatedContractValue);
+          console.log('estimatedContractValue clickfn', {estimatedContractValue: formData.estimatedContractValue})
+          formData.estimatedContractValue = formData.estimatedContractValue;
           this.reviewSubmit = formData;
         }
       } else {

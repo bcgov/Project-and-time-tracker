@@ -137,16 +137,12 @@
         <div class="v-form-container">
           <v-text-field
             class="required"
-            :rules="requiredRule"
+            :rules="amountRule"
             prepend-inner-icon="attach_money"
             label="Contract Amount"
-            type="number"
-            :min="0"
-            step="any"
             oninput="validity.valid||(value='');"
-            @blur="onBlurNumber"
-            @focus="onFocusText"
-            v-model="form.contractValue"
+            :value='form.contractValue | withCommas'
+            @blur='v => form.contractValue = parseFloat(v.target.value)'
           ></v-text-field>
         </div>
       </v-flex>
@@ -329,6 +325,15 @@ export default {
       saveProjectLoading: false,
       ministryInformation: this.$store.state.ministryInformation,
       mouSearch: null,
+      amountRule: [(v) => {
+        if (!v) return 'This field is required';
+        const anyNonNumbers = v.toString().match(/[^\d,]+/g, '');
+        if (anyNonNumbers){
+          return 'Field must just be a number.'
+
+        }
+        return true;
+      }]
     };
   },
   watch: {
@@ -340,7 +345,7 @@ export default {
     },
     project(value) {
       this.form = value;
-      
+
       const inputProjectSector = this.form.projectSector || null;
       if (!inputProjectSector) {
         this.form.projectSector = new ProjectSectorDto();
@@ -404,7 +409,7 @@ export default {
           this.form.client.NonMinistryName = undefined;
         }
         this.$store.state.ministryInformation = true;
-        
+
         // ministry part ends
 
         const projectData = Object.assign({}, this.form);
