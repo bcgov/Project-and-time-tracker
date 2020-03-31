@@ -32,7 +32,7 @@
             <td class="text-xs-left">{{ props.item.descriptionOfIssue }}</td>
             <td class="text-xs-left">{{ props.item.dateToClient | formatDate }}</td>
             <td class="text-xs-left">{{ props.item.notificationMethod }}</td>
-            <!-- <td class="text-xs-left">{{ props.item.userId }}</td> -->
+            <td class="text-xs-left">{{ props.item.riskOwner }}</td>
             <td class="text-xs-left">{{ props.item.phaseImpactName }}</td>
             <td class="text-xs-left">{{ props.item.clientDecision }}</td>
             <td class="text-xs-left">{{ props.item.followUpDate | formatDate }}</td>
@@ -93,11 +93,11 @@ export default {
           value: "notificationMethod",
           sortable: false, width:"10%"
         },
-        //  {
-        //   text: "Decision Maker",
-        //   value: "userId",
-        //    sortable: false, width:"10%"
-        // },
+         {
+          text: "Decision Maker",
+          value: "riskOwner",
+           sortable: false, width:"10%"
+        },
         { text: "Phase Impact", value: "phaseImpactName", sortable: false, width:"10%" },
         { text: "Client Decision", value: "clientDecision", sortable: false, width:"10%"},
         {
@@ -208,6 +208,7 @@ export default {
 }
 
 .pa-0 >>> .tm-v-datatable thead th:nth-child(7),
+.pa-0 >>> .tm-v-datatable thead th:nth-child(8),
  .pa-0 >>> .tm-v-datatable thead th:nth-child(2),
    .pa-0 >>> .tm-v-datatable thead th:nth-child(6),
      .pa-0 >>> .tm-v-datatable thead th:nth-child(5),
