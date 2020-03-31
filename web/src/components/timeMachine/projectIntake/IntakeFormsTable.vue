@@ -229,7 +229,8 @@ export default {
     calculatedvalue(item) {
 
       const res = item.isNonMinistry==true ? item.nonMinistryName : item.ministryName;
-      return [ res, item.orgDivision].join(" ");
+      // return [ res, item.orgDivision].join(" ");
+      return res;//Since we need to return only Ministry Name and not Branch
     },
     fetchData() {
       this.$store.dispatch('fetchIntakeRequests');

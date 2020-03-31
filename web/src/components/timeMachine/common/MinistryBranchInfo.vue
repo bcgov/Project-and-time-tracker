@@ -127,7 +127,8 @@ export default {
       if (this.$refs.intakeClientInfo.validate()) {
         // this.nextPanel(this.panelName);
         if (this.form.isNonMinistry) {
-         // this.form.ministry = undefined;
+          // Uncommented this since non ministry was throwing error at Intake form
+          this.form.ministry = undefined;
         } else {
           this.form.NonMinistryName = undefined;
         }
