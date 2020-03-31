@@ -7,8 +7,8 @@
             <v-flex md12>
               <h1 class="unauthorized-title">Unauthorized</h1>
               <template>
-                <v-expansion-panel class="my-5" value="true">
-                  <v-expansion-panel-content value="true">
+                <v-expansion-panel class="my-5" :value="0">
+                  <v-expansion-panel-content >
                     <v-card class="py-5">
                       <v-card-text>
                         <p>Sorry, you do not have permission to access this part of the app. You will automatically be logout in {{ timeUntilRedirect }} seconds.</p>
@@ -49,7 +49,8 @@ export default {
 
     setTimeout(() => {
       clearInterval(timer);
-      this.$router.push('/logout');
+      // this.$router.push('/logout');
+      console.log('LOGOUT TODO');
     }, 5000);
   },
 };
