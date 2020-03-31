@@ -165,22 +165,21 @@ export const retrieveProjectsByUserId = async (userId: string) => {
     .createQueryBuilder('p')
     .innerJoin('p.client', 'c')
     .leftJoin('c.ministry', 'm')
-    .innerJoin('p.user', 'u')
-    .innerJoin('c.contact', 'uc')
+    .leftJoinAndSelect('p.mou', 'o')
     .innerJoin('p.projectSector', 'ps')
+    .orderBy('p.dateModified', 'DESC')
     .select([
       'p.id',
       'p.projectName',
       'ps',
       'p.dateModified',
-      'u.id',
-      'uc.fullName',
       'p.completionDate',
       'c.orgDivision',
       'm.ministryName',
       'p.leadUserId',
       'p.backupUserId',
-      'p.mouAmount',
+      'o.name',
+      'o.id',
       'p.isReprocurement',
       'c.isNonMinistry',
       'p.dateOfReprocurement',
@@ -190,12 +189,13 @@ export const retrieveProjectsByUserId = async (userId: string) => {
       'p.otherProjectSectorName',
       'c.nonMinistryName'
     ])
-    .where(
-      'p."is_archived" = :is_archived, {is_archived : false}) AND p."leadUserId" = :userId OR p."backupUserId" = :userId',
-      { userId: userId }
-    )
+    .where('(p.is_archived IS NULL OR p.is_archived = :is_archived) AND (p."leadUserId" = :userId OR p."backupUserId" = :userId)', {
+      is_archived: false,
+      userId
+    })
     .getMany();
 };
+
 export const retrieveArchivedProjectsByUserId = async (userId: string) => {
   const repo = projectRepo();
   return await repo
