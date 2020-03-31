@@ -17,11 +17,7 @@ import { createMOU } from '../../../services/client/mou.service';
 export const getProjects = async (ctx: Koa.Context) => {
   try {
     const auth = ctx.state.auth as IAuth;
-    if (auth.role === Role.PSB_Admin) {
-      ctx.body = await retrieveProjects();
-    } else if (auth.role === Role.PSB_User || auth.role === Role.PSB_Intake_User) {
-      ctx.body = await retrieveProjectsByUserId(auth.userId);
-    }
+    ctx.body = await retrieveProjectsByUserId(auth.userId);
   } catch (err) {
     ctx.throw(err.message);
   }
@@ -31,12 +27,7 @@ export const getProjects = async (ctx: Koa.Context) => {
 export const getArchivedProjects = async (ctx: Koa.Context) => {
   try {
     const auth = ctx.state.auth as IAuth;
-
-    if (auth.role === Role.PSB_Admin) {
-      ctx.body = await retrieveArchivedProjects();
-    } else if (auth.role === Role.PSB_User || auth.role === Role.PSB_Intake_User) {
-      ctx.body = await retrieveProjectsByUserId(auth.userId);
-    }
+    ctx.body = await retrieveArchivedProjects();
   } catch (err) {
     ctx.throw(err.message);
   }
@@ -150,24 +141,6 @@ export const assignLeadAction = async (ctx: Koa.Context) => {
     if (!obj) {
       ctx.throw('no data found');
       return;
-    } else {
-      const client = await retrieveClientByProjectId(ctx.params.id);
-      if (!client.isNonMinistry) {
-        if (
-          !(
-            client.clientNo.length > 0 &&
-            client.responsibilityCenter.length > 0 &&
-            client.serviceCenter.length > 0 &&
-            client.stob.length > 0 &&
-            client.projectCode.length > 0
-          )
-        ) {
-          ctx.throw(
-            'Project Lead cannot be assigned without providing all Finance Codes. Please fill the Finance Codes in Project page.'
-          );
-          return;
-        }
-      }
     }
 
     await updateProject(ctx.params.id, {
@@ -186,24 +159,6 @@ export const assignBackupAction = async (ctx: Koa.Context) => {
     if (!obj) {
       ctx.throw('no data found');
       return;
-    } else {
-      const client = await retrieveClientByProjectId(ctx.params.id);
-      if (!client.isNonMinistry) {
-        if (
-          !(
-            client.clientNo.length > 0 &&
-            client.responsibilityCenter.length > 0 &&
-            client.serviceCenter.length > 0 &&
-            client.stob.length > 0 &&
-            client.projectCode.length > 0
-          )
-        ) {
-          ctx.throw(
-            'Project Backup cannot be assigned without providing all Finance Codes. Please fill the Finance Codes in Project page.'
-          );
-          return;
-        }
-      }
     }
 
     await updateProject(ctx.params.id, {
