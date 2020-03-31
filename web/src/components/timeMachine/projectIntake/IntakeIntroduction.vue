@@ -13,25 +13,25 @@
                   </v-flex>
            
                   <v-flex md12 row-wrap>
-                    <span class="sub-content-span">Procurement Services, on behalf of government, provides its clients in the Province and the border public.<br>Sector assistance to obtain the best rates, terms and conditions when buying goods, services and/or construction</span>
+                    <span class="sub-content-span">Procurement Services, on behalf of Government, provides its clients in the Province and the Broader Public Sector (BPS) <br>assistance to obtain the best rates, terms and conditions when buying goods, services and/or construction.</span>
                   </v-flex>
                   <v-flex md12 >
-                    <span class="content-header-span">Before you begin, please ensure you have the following:</span>
+                    <span class="content-header-span">Before you begin, please ensure you have the following which will help you in completing the intake process:</span>
                   </v-flex>
                   <v-flex md12>
                     <span class="content-span">&bull; Finance/Accounting Codes</span>
                   </v-flex>
                   <v-flex md12>
-                    <span class="content-span">&bull; Names of the Lead and Executive sponsers</span>
+                    <span class="content-span">&bull; Names of the Lead and Executive Sponsor for this procurement</span>
                   </v-flex>
                   <v-flex md12>
-                    <span class="content-span">&bull; The required date of completion</span>
+                    <span class="content-span">&bull; The expected date of the contract execution or contract start date</span>
                   </v-flex>
                   <v-flex md12>
-                    <span class="content-span">&bull; Contract Value</span>
+                    <span class="content-span">&bull; Estimated contract value for this procurement</span>
                   </v-flex>
                   <v-flex md12>
-                    <span class="content-span">&bull; A general understanding of the project to complete a risk assessment</span>
+                    <span class="content-span">&bull; A general understanding of the procurement project in order to complete an initial risk assessment</span>
                   </v-flex>
                   <v-flex md12></v-flex>
                   <v-flex md-12 mt-4 class="start-button-div">
