@@ -19,7 +19,7 @@ export const getProjects = async (ctx: Koa.Context) => {
     const auth = ctx.state.auth as IAuth;
     if (auth.role === Role.PSB_Admin) {
       ctx.body = await retrieveProjects();
-    } else if (auth.role === Role.PSB_User) {
+    } else if (auth.role === Role.PSB_User || auth.role === Role.PSB_Intake_User) {
       ctx.body = await retrieveProjectsByUserId(auth.userId);
     }
   } catch (err) {
@@ -34,7 +34,7 @@ export const getArchivedProjects = async (ctx: Koa.Context) => {
 
     if (auth.role === Role.PSB_Admin) {
       ctx.body = await retrieveArchivedProjects();
-    } else if (auth.role === Role.PSB_User) {
+    } else if (auth.role === Role.PSB_User || auth.role === Role.PSB_Intake_User) {
       ctx.body = await retrieveProjectsByUserId(auth.userId);
     }
   } catch (err) {

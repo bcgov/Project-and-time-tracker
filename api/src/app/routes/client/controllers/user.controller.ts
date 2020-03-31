@@ -6,7 +6,7 @@ import { authorize } from '../../../services/common/authorize.service';
 
 export const getUsersByRole = async (ctx: Koa.Context) => {
   try { 
-    const users = await retrieveUsersNameAndIdByRole([Role.PSB_Admin, Role.PSB_User]);
+    const users = await retrieveUsersNameAndIdByRole([Role.PSB_Admin, Role.PSB_User, Role.PSB_Intake_User]);
     ctx.body = users;
   } catch (err) {
     ctx.throw(err.message);

@@ -29,7 +29,8 @@ const commonForAllUsers = [
   'GET/rfx-type/',
   'GET/rfx-type/:id',
   'GET/user/',
-  'GET/MOU/'
+  'GET/MOU/',
+  'POST/intake/'
 ];
 
 const commonForPSBAdminAndUser = [
@@ -65,13 +66,33 @@ const commonForPSBAdminAndUser = [
   'DELETE/intake/:id'
 ];
 
+
+const User = [
+  ...commonForAllUsers
+];
+
+const PSB_User = [
+  ...commonForAllUsers,
+  ...commonForPSBAdminAndUser,
+  'POST/project/:id/assign-backup', // should be removed on 2nd phase based on the new requirement.
+  'POST/project/:id/assign-lead', // should be removed on 2nd phase based on the new requirement.
+];
+
+const PSB_Intake_User = [
+  ...PSB_User,
+  'POST/project/:id/assign-lead',
+  'POST/project/:id/assign-backup',
+  'GET/intake/',
+  'GET/intake/:id',
+  'POST/intake/:id/approve',
+];
+
 const permissions = {
   PSB_Admin: [
     ...commonForAllUsers,
     'GET/intake/',
     'GET/intake/:id',
     // 'PATCH/intake/:id',
-    'POST/intake/',
     'POST/procurement/',
     'POST/projectnotes/',
     'POST/intake/:id/approve',
@@ -85,11 +106,7 @@ const permissions = {
     'PATCH/contact/:id/partial',
     ...commonForPSBAdminAndUser
   ],
-  PSB_User: [
-    ...commonForAllUsers,
-    'POST/project/:id/assign-lead', // should be removed on 2nd phase based on the new requirement.
-    'POST/project/:id/assign-backup', // should be removed on 2nd phase based on the new requirement.
-    ...commonForPSBAdminAndUser
-  ],
-  User: [...commonForAllUsers, 'POST/intake/']
+  PSB_User,
+  User,
+  PSB_Intake_User,
 };
