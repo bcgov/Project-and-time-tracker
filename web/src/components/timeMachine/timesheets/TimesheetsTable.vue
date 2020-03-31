@@ -21,7 +21,7 @@
             hide-details
           ></v-text-field>
         </v-flex>
-        <timesheets-toolbar @refresh="fetchData"></timesheets-toolbar>
+        <timesheets-toolbar ref="timesheetstoolbar" @refresh="fetchData" ></timesheets-toolbar>
       </v-layout>
     </v-card-title>
     <v-divider></v-divider>
@@ -143,13 +143,29 @@ export default {
       return this.$store.state.projectsRfx;
     },
     allTimesheets() {
-      if (this.search) {
-        return this.$store.state.allTimesheets.filter(item => item.project.projectName.toLowerCase().includes(this.search.toLowerCase()));
+      debugger;
+      let timeRecords = this.$store.state.allTimesheets;
+      if (this.$refs.timesheetstoolbar) {
+        const currentUserId = this.fetchUser();
+        if (this.$refs.timesheetstoolbar.selectedFilter === 'Mine') {
+          timeRecords = timeRecords.filter(item => item.userId === currentUserId);
+        }
       }
-      return this.$store.state.allTimesheets;
+
+      if (this.search) {
+        timeRecords = timeRecords.filter(item => item.project.projectName.toLowerCase().includes(this.search.toLowerCase()));
+      }
+      return timeRecords;
     },
   },
   methods: {
+    fetchUser() {
+      const referenceId = this.$store.state.activeUser.refId;
+      const user = this.$store.state.users.find(value => value.referenceId === referenceId);
+      if (user && user.id) {
+        return user.id;
+      }
+    },
     close() {
       sessionStorage.setItem('selectedStartDate', this.startDateMain);
       sessionStorage.setItem('selectedEndDate', this.endDateMain);
@@ -187,7 +203,7 @@ export default {
       const timesheets = await this.$store.dispatch('fetchAllTimesheets');
       await this.$store.dispatch('fetchProjects'); // Needed in AddTimeRecord
       console.log('gottimesheets', { timesheets });
-      this.$refs.spinner.close();
+      if (this.$refs.spinner) { this.$refs.spinner.close(); }
 
       // this.$store
       //   .dispatch('fetchProjects')

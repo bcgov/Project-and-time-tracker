@@ -1,7 +1,13 @@
 <template>
   <v-layout class="timesheets-toolbar" d-flex style="width: 100%;">
     <v-flex d-flex justify-center align-start>
-      <timesheets-calendar ref="WeekSelection"></timesheets-calendar>
+        <v-flex md12>
+        <v-radio-group v-model="selectedFilter" row>
+        <v-radio label="My Timesheets" value="Mine"></v-radio>
+        <v-radio label="Everyone's Timesheets" value="All"></v-radio>
+      </v-radio-group>
+      </v-flex>
+      <!-- <timesheets-calendar ref="WeekSelection"></timesheets-calendar> -->
     </v-flex>
     <v-flex d-flex justify-end>
       <add-time-record ref="AddTimeRecord" @close="close"></add-time-record>
@@ -19,6 +25,7 @@ import AddTimeRecord from './AddTimeRecord.vue';
 export default {
   data() {
     return {
+      selectedFilter: 'Mine',
       startDateMain: this.$store.state.timesheetsWeek.startDate,
       endDateMain: this.$store.state.timesheetsWeek.endDate,
     };
@@ -40,7 +47,7 @@ export default {
       sessionStorage.setItem('selectedEndDate', this.endDateMain);
       this.$store.state.timesheetsWeek.startDate = this.startDateMain;
       this.$store.state.timesheetsWeek.endDate = this.endDateMain;
-      this.$refs.WeekSelection.setCalendarText();
+      // this.$refs.WeekSelection.setCalendarText();
       this.$emit('refresh');
     },
     newTimeRecord() {
