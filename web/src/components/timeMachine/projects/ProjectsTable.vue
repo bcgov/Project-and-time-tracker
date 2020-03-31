@@ -23,7 +23,7 @@
               <span class="clickable" @click="editProject(props.item.id)">{{ props.item.projectName }}</span>
             </td>
             <!-- <td class="text-xs-left">{{ props.item.projectName}} </td> -->
-            <td class="text-xs-left">{{ [props.item.client.ministry?props.item.client.ministry.ministryName: props.item.client.nonMinistryName, props.item.orgDivision].join(" ") }}</td>
+            <td class="text-xs-left">{{ [props.item.client.isNonMinistry?props.item.client.nonMinistryName:props.item.client.ministry.ministryName, props.item.orgDivision].join(" ") }}</td>
             <td class="text-xs-left table-dropdown">
               <v-select
                 :items="userList"

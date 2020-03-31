@@ -399,7 +399,7 @@ export default {
           }
         }
         if (this.form.client.isNonMinistry) {
-          this.form.client.ministry = undefined;
+         // this.form.client.ministry = undefined;
         } else {
           this.form.client.NonMinistryName = undefined;
         }
