@@ -6,17 +6,17 @@
         <v-radio label="Other Projects" value="Other Projects"></v-radio>
         <v-radio label="Archived Projects" value="Archived Projects"></v-radio>
       </v-radio-group>
-      </v-flex>  
+      </v-flex>
       <h1 class="projects-header">View {{ selected }}</h1>
       <v-layout row wrap>
       <v-flex xs12>
-        <projects-table v-if="selected === 'My Projects'"></projects-table>
-        <projects-table v-if="selected === 'Other Projects'"></projects-table> 
-        <archived-projects-table v-if="selected === 'Archived Projects'"></archived-projects-table> 
+        <projects-table v-if="selected === 'My Projects'" :selectedItem="2"></projects-table>
+        <projects-table v-if="selected === 'Other Projects'" :selectedItem="1"></projects-table>
+        <archived-projects-table v-if="selected === 'Archived Projects'"></archived-projects-table>
       </v-flex>
     </v-layout>
       <v-flex md12>
-      </v-flex>  
+      </v-flex>
   </v-container>
 </template>
 
@@ -29,12 +29,12 @@ import './projects.styl';
 
 export default {
   components: {
-    ProjectsTable,ArchivedProjectsTable,
+    ProjectsTable, ArchivedProjectsTable,
   },
   data: () => ({
     color: Material,
     selected: 'My Projects',
-    
+
   }),
   computed: {},
 };

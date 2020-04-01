@@ -68,6 +68,7 @@ const store = new Vuex.Store({
     activeProjectContacts: [],
     projects: [],
     archivedProjects: [],
+    allProjects: [],
     projectsRfx: new HashTable(),
     // Timesheets component
     activeTimesheetEntryRowId: null, // Row of timesheet entries (1 week)
@@ -289,6 +290,27 @@ const store = new Vuex.Store({
     },
     fetchArchivedProjects(state, data) {
       state.archivedProjects = data;
+    },
+    fetchAllProjects(state, data) {
+      state.allProjects  = []; //reset state, helps when archiving/deleting.
+      if (data instanceof Array) {
+        data.forEach((project) => {
+          project.projectLeadUserId = project.leadUserId;
+
+          project.projectBackupUserId = project.backupUserId;
+          project.ministryInformation = project.ministryInformation
+          const exists = state.allProjects.filter(item => item.id === project.id) || [];
+
+          if (exists.length > 0) {
+            const itemIdx = state.allProjects.indexOf(exists[0]);
+            state.allProjects[itemIdx] = merge(state.allProjects[itemIdx], project);
+          } else {
+            state.allProjects.push(project);
+          }
+        });
+      }
+
+     
     },
     addProject() {
       throw new Error('Not implemented!');
@@ -856,6 +878,15 @@ const store = new Vuex.Store({
           let content = res.data;
           content = res.data.map(project => project);
           ctx.commit('fetchArchivedProjects', content);
+        });
+    },
+    fetchAllProjects(ctx) {
+      $http
+        .get(`${API_URI}/project/all`)
+        .then((res) => {
+          let content = res.data;
+          content = res.data.map(project => project);
+          ctx.commit('fetchAllProjects', content);
         });
     },
     archiveProject(ctx, { id, is_archived }) {
