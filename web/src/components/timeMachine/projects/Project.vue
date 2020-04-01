@@ -20,7 +20,7 @@
                     </v-card-text>
                   </v-card>
                   <v-card>
-                    <div style="padding:5px;border-top-style: ridge;">
+                    <div class="note-div" >
                       <div class="primary-heading">
                         <!-- <img src="@/assets/bulb.svg"> -->
                         <label class="sub-header-large" style="margin-left:25px">Notes</label>
@@ -34,10 +34,19 @@
                                   <div class="card">
                                     <div class="headerdivstyle">
                                     <span class="headerspan" v-html="item.user.contact.fullName" />
-                                    <span v-html="new Date(item.noteTime).toString().slice(0,25)" /></div>
+                                    <span v-html="new Date(item.noteTime).toString().slice(0,15)" /></div>
                                     <br/>
-                                    <span style="float:left;margin-left:3%;text-align: justify;padding-right: 30px;"  v-html="item.note" />
+                                    <span class="main-note" v-html="item.note" />
                                       <br/>
+                                        <v-layout v-for="(inneritem) in $store.state.allProjectNotes" :key="inneritem.id">
+                                          <div style="width:100%" v-if="(inneritem.parentId)&&(inneritem.parentId == item.id)">
+                                            <br>
+                                          <span class="reply-person"  v-html="inneritem.user.contact.fullName" />  
+                                          <span class="reply-note-time" v-html="new Date(inneritem.noteTime).toString().slice(0,15)" />
+                                          <br>
+                                          <span class="reply-note"  v-html="inneritem.note" />
+                                          </div>
+                                          </v-layout>
                                     <v-btn
                                       flat
                                       large
