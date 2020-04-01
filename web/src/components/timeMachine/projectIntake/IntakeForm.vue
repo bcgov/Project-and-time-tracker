@@ -196,12 +196,13 @@
                             <div class="primary-heading">
                               <!-- <img src="@/assets/bulb.svg"> -->
                               <v-flex xs11>
-                                <label class="sub-header-large">New Contact{{ index + 1 }}</label>
+                                
                               </v-flex>
                             </div>
                           </template>
                           <v-card>
                             <v-card-text>
+                              <h3 class="v-form-container">Additional Contact Information</h3>
                               <project-additional-contact-info
                                 :additionalContact="addcontact"
                                 ref="additionalcontactinfo"
@@ -226,19 +227,19 @@
                               </v-checkbox>
                         </div>-->
 
+                      
+                      </v-layout>
                         <v-card>
                           <v-flex xs12>
-                            <div>
-                              <v-flex md12 py-3 px-4>
+                            <div class="contact-button-div">
+                            
                                 <v-btn color="primary" @click="addNewContact">
                                   <v-icon left dark>add</v-icon>Add Contact
                                 </v-btn>
-                              </v-flex>
+                              
                             </div>
                           </v-flex>
                         </v-card>
-                        {{contactData}}
-                      </v-layout>
                       <v-layout>
                         <v-flex xs12>
                           <div class="v-form-container">
@@ -726,5 +727,11 @@ legend {
   border: solid 1px #eae8e8;
   border-radius: 6px;
   box-shadow: none !important;
+}
+.v-card__text {
+padding: 0px;
+}
+.contact-button-div {
+    margin-left: 2%;
 }
 </style>
