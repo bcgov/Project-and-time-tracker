@@ -129,8 +129,12 @@ export default {
     }
   },
   methods: {
+    stringToDate(dateString) {
+      const parts = dateString.split('-');
+      return new Date(parts[0], parts[1] - 1, parts[2]);
+    },
     formatDate(date) {
-      date = new Date(date);
+      date = this.stringToDate(date);
       const dates = [];
       for (let I = 0; I < Math.abs(-7); I++) {
         const d = new Date(
