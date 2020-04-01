@@ -39,6 +39,7 @@ const commonForPSBAdminAndUser = [
   'GET/client/:id/by-project-id',
   'PATCH/client/:id/finance-code',
   'GET/project/',
+  'GET/project/all',
   'GET/project/:id',
   'PATCH/project/:id',
   'PATCH/project/:id/archive',
@@ -66,16 +67,13 @@ const commonForPSBAdminAndUser = [
   'DELETE/intake/:id'
 ];
 
-
-const User = [
-  ...commonForAllUsers
-];
+const User = [...commonForAllUsers];
 
 const PSB_User = [
   ...commonForAllUsers,
   ...commonForPSBAdminAndUser,
   'POST/project/:id/assign-backup', // should be removed on 2nd phase based on the new requirement.
-  'POST/project/:id/assign-lead', // should be removed on 2nd phase based on the new requirement.
+  'POST/project/:id/assign-lead' // should be removed on 2nd phase based on the new requirement.
 ];
 
 const PSB_Intake_User = [
@@ -84,7 +82,7 @@ const PSB_Intake_User = [
   'POST/project/:id/assign-backup',
   'GET/intake/',
   'GET/intake/:id',
-  'POST/intake/:id/approve',
+  'POST/intake/:id/approve'
 ];
 
 const permissions = {
@@ -108,5 +106,5 @@ const permissions = {
   ],
   PSB_User,
   User,
-  PSB_Intake_User,
+  PSB_Intake_User
 };

@@ -313,10 +313,7 @@ export default {
     onChangeMouWeeklyEntry() {
       return this.projectList;
     },
-    getDatePart(date) {
-      const dateValue = new Date(date);
-      return this.getDateInYYYYMMDD(dateValue);
-    },
+
     async checkWeekChangeWeekly() {
       this.getTimeEntries();
     },
@@ -456,6 +453,16 @@ export default {
     onChangeProjectRfx() {
       this.getTimeEntries();
     },
+    stringToDate(dateString) {
+      const parts = dateString.split('-');
+      return new Date(parts[0], parts[1] - 1, parts[2]);
+    },
+    getDatePart(date) {
+      debugger;
+      if (typeof date !== 'string') { date = date.format('YYYY-MM-DD'); }
+      date = this.stringToDate(date);
+      return this.getDateInYYYYMMDD(date);
+    },
     getDateInYYYYMMDD(date) {
       // year
       const yyyy = `${date.getFullYear()}`;
@@ -541,7 +548,7 @@ export default {
 
     submitBatchData(nonBillableBatchEntry, billableBatchEntry, needToClose = false) {
       const timeSheetEntries = [];
-
+      debugger;
       for (let itemIndex = 0; itemIndex < billableBatchEntry.length; itemIndex++) {
         const startDate = this.getDatePart(billableBatchEntry[itemIndex].startDate);
         const endDate = this.getDatePart(this.$store.state.timesheetsWeek.endDate);
@@ -663,10 +670,9 @@ export default {
       const expensesDetails = this.$refs.AddExpense.updateDate();
 
       const timeEntries = [];
-      const startDate = new Date(this.$store.state.timesheetsWeek.startDate);
+      const startDate = this.stringToDate(this.$store.state.timesheetsWeek.startDate);
+      const entryDate = new Date(startDate);
       for (let index = 0; index < 7; index++) {
-        const entryDate = new Date(startDate);
-        entryDate.setDate(startDate.getDate() + index);
         const entry = {
           entryDate: this.getDateInYYYYMMDD(entryDate),
           hoursBillable: 0,
@@ -718,6 +724,7 @@ export default {
             timeEntries[index].expenseComment = expense[0].description;
           }
         }
+        entryDate.setDate(entryDate.getDate() + 1);
       }
 
       const formData = {

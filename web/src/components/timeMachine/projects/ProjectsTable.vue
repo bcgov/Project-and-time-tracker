@@ -100,6 +100,7 @@ import Snackbar from '../common/Snackbar.vue';
 export default {
   props: {
     title: String,
+    selectedItem: Number,
   },
   components: {
     Snackbar,
@@ -122,36 +123,38 @@ export default {
       selectedLeadUser: '',
       selectedProjectBackup: '',
     };
-
   },
   computed: {
     projects() {
+      debugger;
+      if (this.selectedItem === 1) {return this.$store.state.allProjects;}
       return this.$store.state.projects;
     },
     userList() {
       return this.$store.state.users;
     },
-    },
+  },
   methods: {
     fetchData() {
+      this.$store.dispatch('fetchAllProjects');
       this.$store.dispatch('fetchProjects');
     },
 
 
     editProject(id) {
       this.$store.state.activeProject.id = id;
-      this.$store.dispatch("fetchAllProjectNotes", { id: this.$store.state.activeProject.id });
+      this.$store.dispatch('fetchAllProjectNotes', { id: this.$store.state.activeProject.id });
       this.$router.push({ path: `project/${id}` });
     },
-    async archivePrompt(item, archiveVal){
+    async archivePrompt(item, archiveVal) {
       if (
         await this.$refs.confirm.open(
-          "info",
-          `Are you sure to archive project: ${item.projectName}?`)
-      )
-      {
+          'info',
+          `Are you sure to archive project: ${item.projectName}?`,
+        )
+      ) {
         item.is_archived = archiveVal;
-        await this.$store.dispatch("archiveProject", {id: item.id, is_archived: archiveVal});
+        await this.$store.dispatch('archiveProject', { id: item.id, is_archived: archiveVal });
         this.$store.dispatch('fetchProjects');
       }
     },
@@ -265,13 +268,13 @@ export default {
         this.$refs.snackbar.displaySnackbar('success', 'Deleted.');
       }
     },
-    formatDate(dateStr){
-      const split = dateStr.split("T")
-      if (split){
-        return split[0]
+    formatDate(dateStr) {
+      const split = dateStr.split('T');
+      if (split) {
+        return split[0];
       }
       return dateStr;
-    }
+    },
   },
   created() {
     this.fetchData();

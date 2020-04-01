@@ -5,7 +5,8 @@ import {
   retrieveProjectById,
   updateProject,
   retrieveProjectsByUserId,
-  retrieveArchivedProjects
+  retrieveArchivedProjects,
+  retrieveAllProjects
 } from '../../../services/client/project.service';
 import { IProject } from '../../../models/interfaces/i-project';
 import { retrieveClientByProjectId } from '../../../services/client/client.service';
@@ -18,6 +19,14 @@ export const getProjects = async (ctx: Koa.Context) => {
   try {
     const auth = ctx.state.auth as IAuth;
     ctx.body = await retrieveProjectsByUserId(auth.userId);
+  } catch (err) {
+    ctx.throw(err.message);
+  }
+};
+export const getAllProjects = async (ctx: Koa.Context) => {
+  try {
+    const auth = ctx.state.auth as IAuth;
+    ctx.body = await retrieveAllProjects(auth.userId);
   } catch (err) {
     ctx.throw(err.message);
   }
@@ -196,6 +205,7 @@ const routerOpts: Router.IRouterOptions = {
 const router: Router = new Router(routerOpts);
 
 router.get('/', authorize, getProjects);
+router.get('/all', authorize, getAllProjects);
 router.get('/archived', authorize, getArchivedProjects);
 router.get('/:id', authorize, getProjectById);
 router.patch('/:id', authorize, updateProjectAction);
