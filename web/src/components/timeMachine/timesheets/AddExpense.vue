@@ -16,11 +16,11 @@
           <v-flex md1>{{ item.day }}</v-flex>
           <v-flex md2>
             <v-text-field
-              type="number"
-              step="0.01"
-              min="0"
-              oninput="validity.valid||(value=0);"
-              v-model="item.amount"
+              :rules = "amountRule"
+              prepend-inner-icon="attach_money"
+              oninput="validity.valid||(value='');"
+              :value='item.amount | withCommas'
+              @blur='v => item.amount = parseFloat(v.target.value)'
             ></v-text-field>
           </v-flex>
           <v-flex md3>
@@ -101,9 +101,19 @@ export default {
           { day: 'Sat', description: '', amount: 0, category: '', date: '' },
           { day: 'Sun', description: '', amount: 0, category: '', date: '' },
         ],
+        amountRule: [(v) => {
+        if (!v) return 'This field is required';
+        const anyNonNumbers = v.toString().match(/[^\d,]+/g, '');
+        if (anyNonNumbers){
+          return 'Field must just be a number.'
+
+        }
+        return true;
+      }]
     };
   },
-  watch: {
+
+    watch: {
     date() {
       this.dateFormatted = this.formatDate(this.date);
     },

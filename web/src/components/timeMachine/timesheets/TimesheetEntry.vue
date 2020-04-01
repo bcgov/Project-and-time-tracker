@@ -18,8 +18,9 @@
             <v-text-field
               type="number"
               max="24"
-              step="0.1"
+              step="0.01"
               min="0"
+              :rules = "hoursRule"
               oninput="validity.valid||(value=0);"
               v-model="item.hours"
             ></v-text-field>
@@ -72,6 +73,7 @@ export default {
     }
     return {
       valid: true,
+      hoursRule:[v => v % 0.25 === 0 || 'Please enter in quarter hours (0.25 = 15min)'],
       requiredRule: [v => !!v || 'This field required'],
       requireRadioButtondRule: [v => ((v || !v) && v != null) || 'This field required'],
       dialog: false,
