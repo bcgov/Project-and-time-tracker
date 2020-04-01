@@ -15,7 +15,6 @@
               v-if="item.answer && item.answer[0] && item.answer[0].answer.length < 16"
               row
               v-model="item.selectedAnswerId"
-              :rules="requireRadioButtondRule"
             >
               <v-radio
                 v-on:change="upateCategoryStatus(item, index)"
@@ -29,7 +28,6 @@
             <v-radio-group
               v-if="item.answer && item.answer[0] && item.answer[0].answer.length > 15"
               v-model="item.selectedAnswerId"
-              :rules="requireRadioButtondRule"
               column
             >
               <v-radio

@@ -30,8 +30,7 @@
               edit-icon="2"
               :complete="e1 > 2"
               step="2"
-              >Ministry/Branch Information</v-stepper-step
-            >
+            >Ministry/Branch Information</v-stepper-step>
             <v-divider class="first-divider"></v-divider>
             <v-divider class="second-divider"></v-divider>
             <v-stepper-step
@@ -77,7 +76,7 @@
                   <intake-base-info
                     ref="intakeBaseInfo"
                     :project="intakeRequest"
-                    @next="clickfnctn(2)"
+                    @next="nextButtonClick(2)"
                   ></intake-base-info>
                 </v-card-text>
               </v-card>
@@ -90,14 +89,20 @@
                   <label class="sub-header-large">Ministry / Branch Information</label>
                 </div>
               </template>
-              <v-btn @click="backfn(1)" flat large color="primary" class="back-link">&lt; Project Information</v-btn>
+              <v-btn
+                @click="backfn(1)"
+                flat
+                large
+                color="primary"
+                class="back-link"
+              >&lt; Project Information</v-btn>
               <v-card>
                 <v-card-text>
                   <!-- Only one client on the form for now, but there will be multiple in the future -->
                   <ministry-branch-info
                     ref="intakeClientInfo"
                     :ministry="intakeRequest.client"
-                    @next="clickfnctn(3)"
+                    @next="nextButtonClick(3)"
                   ></ministry-branch-info>
                 </v-card-text>
               </v-card>
@@ -110,16 +115,20 @@
                   <label class="sub-header-large">Risk Assessment</label>
                 </div>
               </template>
-              <v-btn @click="backfn(2)" flat large color="primary"  class="back-link"
-                >&lt; Ministry / Branch Information</v-btn
-              >
+              <v-btn
+                @click="backfn(2)"
+                flat
+                large
+                color="primary"
+                class="back-link"
+              >&lt; Ministry / Branch Information</v-btn>
               <v-card>
                 <v-card-text>
                   <!-- Only one client on the form for now, but there will be multiple in the future -->
                   <intake-risk-assessment
                     ref="intakeRiskAssessment"
                     :intakeRisk="intakeRiskQuestions"
-                    @next="clickfnctn(4)"
+                    @next="nextButtonClick(4)"
                   ></intake-risk-assessment>
                 </v-card-text>
               </v-card>
@@ -131,88 +140,140 @@
                   <label class="sub-header-large">Contact Information</label>
                 </div>
               </template>
-              <v-btn @click="backfn(3)" flat large color="primary"  class="back-link">&lt;Risk Assessment</v-btn>
+              <v-btn
+                @click="backfn(3)"
+                flat
+                large
+                color="primary"
+                class="back-link"
+              >&lt;Risk Assessment</v-btn>
               <div class="intake-contact-layout">
-                <v-flex md12 class="intake-base-info-header"><span class="intake-base-info-header-content">Contact Information</span></v-flex>
-              <v-card>
-                <v-card-text>
-                  <div>
-                    <v-layout row wrap>
-                      <v-flex xs12 md6 my-3>
-                        <h3 class="v-form-container">Client Lead Contact Information</h3>
-                        <project-contact-info
-                          ref="projectLead"
-                          :contact="getClientInfo(CLIENT_LEAD)"
-                          :contactNameLabel="'Client Lead Name'"
-                          :isRequired="true"
-                          @next="clickfnctn(5)"
-                        />
-                      </v-flex>
-                      <v-flex xs12 md6 my-3>
-                        <h3 class="v-form-container">Executive Sponsor Contact Information</h3>
-                        <project-contact-info
-                          ref="projectSponsor"
-                          :contact="getClientInfo(CLIENT_SPONSOR)"
-                          :contactNameLabel="'Executive Sponsor Name'"
-                          :isRequired="true"
-                          @next="clickfnctn(5)"
-                        />
-                      </v-flex>
-                      <v-flex xs12 md6 my-3>
-                        <h3 class="v-form-container">Financial Contact Information</h3>
-                        <project-contact-info
-                          ref="projectFinance"
-                          :contact="getClientInfo(CLIENT_FINANCE)"
-                          :contactNameLabel="'Financial Contact Name'"
-                          @next="clickfnctn(5)"
-                        />
-                      </v-flex>
-                      <v-flex xs12 md6 my-3>
-                        <div>
-                          <v-checkbox color="primary" v-model="enabled" class="v-form-container">
-                            <template v-slot:label>
-                              <h3>Additional Contact</h3>
-                            </template>
-                          </v-checkbox>
-                        </div>
-                        <project-additional-contact-info
-                          v-if="enabled"
-                          ref="projectContact"
-                          :contact="getClientInfo(CLIENT_CONTACT)"
-                          :contactNameLabel="'Contact Name'"
-                          :isRequired="false"
-                          @next="clickfnctn(5)"
-                        />
-                      </v-flex>
-                    </v-layout>
-                    <v-layout>
-                      <v-flex xs12>
-                        <div class="v-form-container">
-                          <div class="v-form-actions">
-                            <v-flex md-12 mt-4>
-                              <v-btn
-                                :disabled="
+                <v-flex md12 class="intake-base-info-header">
+                  <span class="intake-base-info-header-content">Contact Information</span>
+                </v-flex>
+                <v-card>
+                  <v-card-text>
+                    <div>
+                      <v-layout row wrap>
+                        <v-flex xs12 md6 my-3>
+                          <h3 class="v-form-container">Client Lead Contact Information</h3>
+                          <project-contact-info
+                            ref="projectLead"
+                            :contact="getClientInfo(CLIENT_LEAD)"
+                            :contactNameLabel="'Client Lead Name'"
+                            :isRequired="true"
+                            @next="nextButtonClick(5)"
+                          />
+                        </v-flex>
+                        <v-flex xs12 md6 my-3>
+                          <h3 class="v-form-container">Executive Sponsor Contact Information</h3>
+                          <project-contact-info
+                            ref="projectSponsor"
+                            :contact="getClientInfo(CLIENT_SPONSOR)"
+                            :contactNameLabel="'Executive Sponsor Name'"
+                            :isRequired="true"
+                            @next="nextButtonClick(5)"
+                          />
+                        </v-flex>
+                        <v-flex xs12 md6 my-3>
+                          <h3 class="v-form-container">Financial Contact Information</h3>
+                          <project-contact-info
+                            ref="projectFinance"
+                            :contact="getClientInfo(CLIENT_FINANCE)"
+                            :contactNameLabel="'Financial Contact Name'"
+                            @next="nextButtonClick(5)"
+                          />
+                        </v-flex>
+                        <v-flex
+                          xs12
+                          md6
+                          my-3
+                          v-for="(addcontact, index) in contactData"
+                          :key="index"
+                          :value="0"
+                        >
+                          <template v-slot:header>
+                            <div class="primary-heading">
+                              <!-- <img src="@/assets/bulb.svg"> -->
+                              <v-flex xs11>
+
+                              </v-flex>
+                            </div>
+                          </template>
+                          <v-card>
+                            <v-card-text>
+                              <h3 class="v-form-container">Additional Contact Information</h3>
+                              <project-additional-contact-info
+                                :additionalContact="addcontact"
+                                ref="additionalcontactinfo"
+                                :contact="getClientInfo(CLIENT_CONTACT)"
+                                :contactNameLabel="'Contact Name'"
+                                :isRequired="false"
+                                @next="nextButtonClick(5)"
+                              />
+                            </v-card-text>
+                          </v-card>
+                        </v-flex>
+
+                        <!-- <div>
+                              <v-checkbox
+                                color="primary"
+                                v-model="enabled"
+                                class="v-form-container"
+                              >
+                                <template v-slot:label>
+                                  <h3>Additional Contact</h3>
+                                </template>
+                              </v-checkbox>
+                        </div>-->
+
+
+                      </v-layout>
+                        <v-card>
+                          <v-flex xs12>
+                            <div class="contact-button-div">
+
+                                <v-btn color="primary" @click="addNewContact">
+                                  <v-icon left dark>add</v-icon>Add Contact
+                                </v-btn>
+
+                            </div>
+                          </v-flex>
+                        </v-card>
+                      <v-layout>
+                        <v-flex xs12>
+                          <div class="v-form-container">
+                            <div class="v-form-actions">
+                              <v-flex md-12 mt-4>
+                                <v-btn
+                                  :disabled="
                                   !(
                                     $store.state.projectInformation &&
                                     $store.state.ministryInformation &&
                                     this.$store.state.intakeRiskQuestions
                                   )
                                 "
-                                color="primary"
-                                @click="clickfnctn(5)"
-                                >Next</v-btn
-                              >
-                            </v-flex>
+                                  color="primary"
+                                  @click="nextButtonClick(5)"
+                                >Next</v-btn>
+                              </v-flex>
+                            </div>
                           </div>
-                        </div>
-                      </v-flex>
-                    </v-layout>
-                  </div>
-                </v-card-text>
-              </v-card></div>
+                        </v-flex>
+                      </v-layout>
+                    </div>
+                  </v-card-text>
+                </v-card>
+              </div>
             </v-stepper-content>
             <v-stepper-content step="5">
-              <v-btn @click="backfn(4)" flat large color="primary"  class="back-link">&lt;Contact Information</v-btn>
+              <v-btn
+                @click="backfn(4)"
+                flat
+                large
+                color="primary"
+                class="back-link"
+              >&lt;Contact Information</v-btn>
               <v-card class="mb-12" color="grey lighten-1" height="200px">
                 <intake-review
                   ref="intakeReview"
@@ -238,8 +299,7 @@
                   "
                   color="primary"
                   @click="submitForm"
-                  >Submit</v-btn
-                >
+                >Submit</v-btn>
               </v-flex>
             </div>
           </div>
@@ -249,9 +309,10 @@
   </div>
 </template>
 <script>
-import assign from 'object-assign';
-import Vue from 'vue';
-import VeeValidate from 'vee-validate';
+import assign from "object-assign";
+import Vue from "vue";
+import VeeValidate from "vee-validate";
+import AdditionalContact from "@/domain/models/AdditionalContact.dto";
 // import { setTimeout } from 'timers';
 import IntakeBaseInfo from './IntakeBaseInfo.vue';
 import MinistryBranchInfo from '../common/MinistryBranchInfo.vue';
@@ -266,17 +327,17 @@ import './intakeform.styl';
 Vue.use(VeeValidate);
 
 const INTAKE_FORM_PANELS = {
-  PROJECT_INFO: 'projectInfo',
-  CLIENTS_INFO: 'clientInfo',
-  CONTACTS_INFO: 'contactInfo',
-  RISK_ASSESSMENT: 'intakeRisk',
+  PROJECT_INFO: "projectInfo",
+  CLIENTS_INFO: "clientInfo",
+  CONTACTS_INFO: "contactInfo",
+  RISK_ASSESSMENT: "intakeRisk"
 };
 
 const CLIENT_INFO_TYPES = {
-  CLIENT_LEAD: 'clientlead',
-  CLIENT_SPONSOR: 'clientsponsor',
-  CLIENT_CONTACT: 'clientcontact',
-  CLIENT_FINANCE: 'clientfinance',
+  CLIENT_LEAD: "clientlead",
+  CLIENT_SPONSOR: "clientsponsor",
+  CLIENT_CONTACT: "clientcontact",
+  CLIENT_FINANCE: "clientfinance"
 };
 
 export default {
@@ -288,13 +349,14 @@ export default {
     intakeRiskAssessment,
     intakeReview,
     Snackbar,
-    Spinner,
+    Spinner
   },
   $_veeValidate: {
-    validator: 'new',
+    validator: "new"
   },
   data() {
     return {
+      additionalContact: [new AdditionalContact()],
       projectInformation: this.$store.state.projectInformation,
       ministryInformation: this.$store.state.ministryInformation,
       contactInformation: this.$store.state.contactInformation,
@@ -309,16 +371,26 @@ export default {
       ...CLIENT_INFO_TYPES,
       e1: 1,
       reviewSubmit: [],
+      allContacts: [],
+      contactCount:0,
+      contactData:[]
     };
   },
   computed: {
     intakeRequest() {
       return this.$store.state.activeIntakeRequest;
     },
+    // contactData() {
+    //   return this.$store.state.activeProjectRfxData;
+    // }
   },
   methods: {
+    addNewContact() {
+      this.contactCount = this.contactCount +1;
+      this.contactData.push(new AdditionalContact());
+    },
     moveToComponent(item) {
-      this.clickfnctn(item);
+      this.nextButtonClick(item);
     },
     checkedit(msg) {
       if (msg === 1) {
@@ -355,9 +427,9 @@ export default {
       const { params } = this.$router.currentRoute;
       const id = params.id || undefined;
       if (!(id === undefined)) {
-        this.$store.dispatch('fetchIntakeRequest', { id: params.id });
+        this.$store.dispatch("fetchIntakeRequest", { id: params.id });
       } else {
-        this.$store.dispatch('clearActiveIntakeRequest');
+        this.$store.dispatch("clearActiveIntakeRequest");
       }
     },
     getRiskAnalysis() {
@@ -365,14 +437,17 @@ export default {
       let riskAnalysisIndex = 0;
       let applicableQuestion = false;
       let scoreValue = 0;
-      let selectedanswerTxt = '';
+      let selectedanswerTxt = "";
       for (let i = 0; i < this.$store.state.intakeRiskQuestions.length; i++) {
         scoreValue = 0;
-        selectedanswerTxt = '';
+        selectedanswerTxt = "";
         const question = this.$store.state.intakeRiskQuestions[i];
-        if (typeof question.selectedAnswerId !== 'undefined' || question.selectedAnswerId) {
+        if (
+          typeof question.selectedAnswerId !== "undefined" ||
+          question.selectedAnswerId
+        ) {
           const selectedAnswer = question.answer.filter(
-            answer => answer.id === question.selectedAnswerId,
+            answer => answer.id === question.selectedAnswerId
           );
           if (selectedAnswer && selectedAnswer[0]) {
             scoreValue = selectedAnswer[0].score;
@@ -385,7 +460,7 @@ export default {
               answerId: question.selectedAnswerId,
               score: scoreValue,
               question: question.question,
-              answer: selectedanswerTxt,
+              answer: selectedanswerTxt
             };
             riskAnalysisIndex++;
           } else if (applicableQuestion) {
@@ -394,7 +469,7 @@ export default {
               answerId: question.selectedAnswerId,
               score: scoreValue,
               question: question.question,
-              answer: selectedanswerTxt,
+              answer: selectedanswerTxt
             };
             riskAnalysisIndex++;
           }
@@ -408,16 +483,16 @@ export default {
       this.$refs.projectFinance.onNextClicked();
 
       const riskAnalysis = this.getRiskAnalysis();
-      const mappedScores = riskAnalysis.map(o => o.score)
+      const mappedScores = riskAnalysis.map(o => o.score);
       let scoreSum = 0;
-      if (mappedScores.length != 0 ) {
+      if (mappedScores.length != 0) {
         scoreSum = mappedScores.reduce((a, c) => a + c);
       }
       const formData = assign({}, this.$refs.intakeBaseInfo.form, {
         client: this.$refs.intakeClientInfo.form,
         contacts: [],
         risk: riskAnalysis,
-        riskScore: scoreSum,
+        riskScore: scoreSum
       });
       const projectLead = this.$refs.projectLead.form || undefined;
       const projectSponsor = this.$refs.projectSponsor.form || undefined;
@@ -442,40 +517,50 @@ export default {
         projectContact.contactType = CLIENT_INFO_TYPES.CLIENT_CONTACT;
       }
 
-      const contacts = [projectLead, projectSponsor, projectFinance, projectContact].filter(
-        contact => contact !== undefined,
-      );
-
+      let contacts = [
+        projectLead,
+        projectSponsor,
+        projectFinance,
+        projectContact
+      ].filter(contact => contact !== undefined);
+      contacts = contacts.concat(this.allContacts);
       if (contacts instanceof Array && contacts.length > 0) {
         if (formData.contacts instanceof Array) {
           formData.contacts = formData.contacts.concat(contacts);
         }
       }
-
+      this.contacts =[];
+      this.contactData =[];
       if (
-        this.$store.state.projectInformation
-        && this.$store.state.ministryInformation
-        && this.$store.state.contactInformation
-        && this.$store.state.intakeRisk
+        this.$store.state.projectInformation &&
+        this.$store.state.ministryInformation &&
+        this.$store.state.contactInformation &&
+        this.$store.state.intakeRisk
       ) {
         this.$refs.spinner.open();
         console.log('contractValue', {contractValue: formData.estimatedContractValue})
         formData.estimatedContractValue = formData.estimatedContractValue;
         this.$store.dispatch('addIntakeRequest', formData).then(
           () => {
-            this.$refs.snackbar.displaySnackbar('success', 'Project Intake Form Submited.');
+            this.$refs.snackbar.displaySnackbar(
+              "success",
+              "Project Intake Form Submited."
+            );
             this.$refs.spinner.close();
-            this.$router.push('intake-success');
+            this.$router.push("intake-success");
           },
-          (err) => {
+          err => {
             this.$refs.spinner.close();
             if (err && err.response && err.response.data) {
               const { message } = err.response.data.error;
-              this.$refs.snackbar.displaySnackbar('error', message);
+              this.$refs.snackbar.displaySnackbar("error", message);
             } else {
-              this.$refs.snackbar.displaySnackbar('error', 'Intake Request Error');
+              this.$refs.snackbar.displaySnackbar(
+                "error",
+                "Intake Request Error"
+              );
             }
-          },
+          }
         );
       }
     },
@@ -490,7 +575,9 @@ export default {
     },
     getClientInfo(infoType) {
       const contacts = this.$store.state.activeIntakeRequest.contacts || [];
-      const clientInfo = contacts.find(contact => contact.contactType === infoType);
+      const clientInfo = contacts.find(
+        contact => contact.contactType === infoType
+      );
       return clientInfo;
     },
     backfn(step) {
@@ -515,10 +602,17 @@ export default {
       this.e1 = step;
 
       // Scroll to top after navigating
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: "smooth" });
     },
-    clickfnctn(step) {
+    nextButtonClick(step) {
+      debugger;
       if (step === 5) {
+        for (var i = 0; i < this.contactCount; i++) {
+          let res = "additionalcontactinfo" + i.toString();
+          this.$refs.additionalcontactinfo[i].form.contactType =
+            "clientcontact";
+          this.allContacts.push(this.$refs.additionalcontactinfo[i].form);
+        }
         const value1 = this.$refs.projectLead.onNextClicked();
         const value2 = this.$refs.projectSponsor.onNextClicked();
         const value3 = this.$refs.projectFinance.onNextClicked();
@@ -530,7 +624,7 @@ export default {
           this.e1 = step;
         }
         const riskAnalysis = this.getRiskAnalysis();
-        const mappedScores = riskAnalysis.map(o => o.score)
+        const mappedScores = riskAnalysis.map(o => o.score);
         let scoreSum = 0;
         if (mappedScores.length != 0) {
           scoreSum = mappedScores.reduce((a, c) => a + c);
@@ -539,7 +633,7 @@ export default {
           client: this.$refs.intakeClientInfo.form,
           contacts: [],
           risk: riskAnalysis,
-          riskScore: scoreSum,
+          riskScore: scoreSum
         });
         const projectLead = this.$refs.projectLead.form || undefined;
         const projectSponsor = this.$refs.projectSponsor.form || undefined;
@@ -564,10 +658,13 @@ export default {
           projectContact.contactType = CLIENT_INFO_TYPES.CLIENT_CONTACT;
         }
 
-        const contacts = [projectLead, projectSponsor, projectFinance, projectContact].filter(
-          contact => contact !== undefined,
-        );
-
+        let contacts = [
+          projectLead,
+          projectSponsor,
+          projectFinance,
+          projectContact
+        ].filter(contact => contact !== undefined);
+        contacts = contacts.concat(this.allContacts);
         if (contacts instanceof Array && contacts.length > 0) {
           if (formData.contacts instanceof Array) {
             formData.contacts = formData.contacts.concat(contacts);
@@ -575,9 +672,9 @@ export default {
         }
 
         if (
-          this.$store.state.projectInformation
-          && this.$store.state.ministryInformation
-          && this.$store.state.contactInformation
+          this.$store.state.projectInformation &&
+          this.$store.state.ministryInformation &&
+          this.$store.state.contactInformation
           // && this.$store.state.intakeRisk
         ) {
           // this.$refs.spinner.open();
@@ -607,12 +704,12 @@ export default {
         this.e1 = step;
       }
       // Scroll to top of page after navigating
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    },
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
   },
   created() {
     this.fetchData();
-  },
+  }
 };
 </script>
 
@@ -624,8 +721,14 @@ legend {
   width: 98%;
   margin-left: 1%;
   margin-bottom: 1%;
-   border: solid 1px #eae8e8;
-    border-radius: 6px;
-    box-shadow: none !important;
+  border: solid 1px #eae8e8;
+  border-radius: 6px;
+  box-shadow: none !important;
+}
+.v-card__text {
+padding: 0px;
+}
+.contact-button-div {
+    margin-left: 2%;
 }
 </style>
