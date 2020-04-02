@@ -294,7 +294,7 @@ export default {
 
     expotTimesheet() {
       if (!this.form.userId) {
-        this.$refs.snackbar.displaySnackbar('error', 'Please select user.');
+        this.$refs.snackbar.displaySnackbarTop('error', 'Please select user.');
         return;
       }
       const formData = {
@@ -565,7 +565,7 @@ export default {
             || !this.$refs.AddRevenue.validate()
             || !this.$refs.AddExpense.validate()
           ) {
-            this.$refs.snackbar.displaySnackbar('error', 'Please correct validation errors.');
+            this.$refs.snackbar.displaySnackbarTop('error', 'Please correct validation errors.');
             return;
           }
           this.submitWeekData(true);
@@ -575,7 +575,7 @@ export default {
           this.submitBatchData(nonBillableBatchEntry, billableBatchEntry, true);
         }
       } else {
-        this.$refs.snackbar.displaySnackbar('error', 'Please correct validation errors.');
+        this.$refs.snackbar.displaySnackbarTop('error', 'Please correct validation errors.');
       }
     },
 
@@ -677,7 +677,7 @@ export default {
       this.$refs.spinner.open();
       this.$store.dispatch('addBatchTimesheet', timeSheetEntries).then(
         () => {
-          this.$refs.snackbar.displaySnackbar('success', 'Successfully saved time entries.');
+          this.$refs.snackbar.displaySnackbarTop('success', 'Successfully saved time entries.');
           this.$refs.spinner.close();
           if (needToClose) {
             this.clearTimeEntries();
@@ -688,9 +688,9 @@ export default {
           this.$refs.spinner.close();
           if (err && err.response && err.response.data) {
             const { message } = err.response.data.error;
-            this.$refs.snackbar.displaySnackbar('error', message);
+            this.$refs.snackbar.displaySnackbarTop('error', message);
           } else {
-            this.$refs.snackbar.displaySnackbar('error', 'Timesheet entry Error');
+            this.$refs.snackbar.displaySnackbarTop('error', 'Timesheet entry Error');
           }
         },
       );
@@ -769,7 +769,7 @@ export default {
       this.$refs.spinner.open();
       this.$store.dispatch('addLightTimesheet', formData).then(
         () => {
-          this.$refs.snackbar.displaySnackbar('success', 'Successfully saved time entries.');
+          this.$refs.snackbar.displaySnackbarTop('success', 'Successfully saved time entries.');
           this.$refs.spinner.close();
           if (needToClose) {
             this.clearTimeEntries();
@@ -780,9 +780,9 @@ export default {
           this.$refs.spinner.close();
           if (err && err.response && err.response.data) {
             const { message } = err.response.data.error;
-            this.$refs.snackbar.displaySnackbar('error', message);
+            this.$refs.snackbar.displaySnackbarTop('error', message);
           } else {
-            this.$refs.snackbar.displaySnackbar('error', 'Timesheet entry Error');
+            this.$refs.snackbar.displaySnackbarTop('error', 'Timesheet entry Error');
           }
           return false;
         },

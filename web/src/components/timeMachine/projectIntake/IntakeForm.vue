@@ -309,10 +309,10 @@
   </div>
 </template>
 <script>
-import assign from "object-assign";
-import Vue from "vue";
-import VeeValidate from "vee-validate";
-import AdditionalContact from "@/domain/models/AdditionalContact.dto";
+import assign from 'object-assign';
+import Vue from 'vue';
+import VeeValidate from 'vee-validate';
+import AdditionalContact from '@/domain/models/AdditionalContact.dto';
 // import { setTimeout } from 'timers';
 import IntakeBaseInfo from './IntakeBaseInfo.vue';
 import MinistryBranchInfo from '../common/MinistryBranchInfo.vue';
@@ -327,17 +327,17 @@ import './intakeform.styl';
 Vue.use(VeeValidate);
 
 const INTAKE_FORM_PANELS = {
-  PROJECT_INFO: "projectInfo",
-  CLIENTS_INFO: "clientInfo",
-  CONTACTS_INFO: "contactInfo",
-  RISK_ASSESSMENT: "intakeRisk"
+  PROJECT_INFO: 'projectInfo',
+  CLIENTS_INFO: 'clientInfo',
+  CONTACTS_INFO: 'contactInfo',
+  RISK_ASSESSMENT: 'intakeRisk',
 };
 
 const CLIENT_INFO_TYPES = {
-  CLIENT_LEAD: "clientlead",
-  CLIENT_SPONSOR: "clientsponsor",
-  CLIENT_CONTACT: "clientcontact",
-  CLIENT_FINANCE: "clientfinance"
+  CLIENT_LEAD: 'clientlead',
+  CLIENT_SPONSOR: 'clientsponsor',
+  CLIENT_CONTACT: 'clientcontact',
+  CLIENT_FINANCE: 'clientfinance',
 };
 
 export default {
@@ -349,10 +349,10 @@ export default {
     intakeRiskAssessment,
     intakeReview,
     Snackbar,
-    Spinner
+    Spinner,
   },
   $_veeValidate: {
-    validator: "new"
+    validator: 'new',
   },
   data() {
     return {
@@ -372,8 +372,8 @@ export default {
       e1: 1,
       reviewSubmit: [],
       allContacts: [],
-      contactCount:0,
-      contactData:[]
+      contactCount: 0,
+      contactData: [],
     };
   },
   computed: {
@@ -386,7 +386,7 @@ export default {
   },
   methods: {
     addNewContact() {
-      this.contactCount = this.contactCount +1;
+      this.contactCount = this.contactCount + 1;
       this.contactData.push(new AdditionalContact());
     },
     moveToComponent(item) {
@@ -427,9 +427,9 @@ export default {
       const { params } = this.$router.currentRoute;
       const id = params.id || undefined;
       if (!(id === undefined)) {
-        this.$store.dispatch("fetchIntakeRequest", { id: params.id });
+        this.$store.dispatch('fetchIntakeRequest', { id: params.id });
       } else {
-        this.$store.dispatch("clearActiveIntakeRequest");
+        this.$store.dispatch('clearActiveIntakeRequest');
       }
     },
     getRiskAnalysis() {
@@ -437,17 +437,17 @@ export default {
       let riskAnalysisIndex = 0;
       let applicableQuestion = false;
       let scoreValue = 0;
-      let selectedanswerTxt = "";
+      let selectedanswerTxt = '';
       for (let i = 0; i < this.$store.state.intakeRiskQuestions.length; i++) {
         scoreValue = 0;
-        selectedanswerTxt = "";
+        selectedanswerTxt = '';
         const question = this.$store.state.intakeRiskQuestions[i];
         if (
-          typeof question.selectedAnswerId !== "undefined" ||
-          question.selectedAnswerId
+          typeof question.selectedAnswerId !== 'undefined'
+          || question.selectedAnswerId
         ) {
           const selectedAnswer = question.answer.filter(
-            answer => answer.id === question.selectedAnswerId
+            answer => answer.id === question.selectedAnswerId,
           );
           if (selectedAnswer && selectedAnswer[0]) {
             scoreValue = selectedAnswer[0].score;
@@ -460,7 +460,7 @@ export default {
               answerId: question.selectedAnswerId,
               score: scoreValue,
               question: question.question,
-              answer: selectedanswerTxt
+              answer: selectedanswerTxt,
             };
             riskAnalysisIndex++;
           } else if (applicableQuestion) {
@@ -469,7 +469,7 @@ export default {
               answerId: question.selectedAnswerId,
               score: scoreValue,
               question: question.question,
-              answer: selectedanswerTxt
+              answer: selectedanswerTxt,
             };
             riskAnalysisIndex++;
           }
@@ -492,7 +492,7 @@ export default {
         client: this.$refs.intakeClientInfo.form,
         contacts: [],
         risk: riskAnalysis,
-        riskScore: scoreSum
+        riskScore: scoreSum,
       });
       const projectLead = this.$refs.projectLead.form || undefined;
       const projectSponsor = this.$refs.projectSponsor.form || undefined;
@@ -521,7 +521,7 @@ export default {
         projectLead,
         projectSponsor,
         projectFinance,
-        projectContact
+        projectContact,
       ].filter(contact => contact !== undefined);
       contacts = contacts.concat(this.allContacts);
       if (contacts instanceof Array && contacts.length > 0) {
@@ -529,38 +529,38 @@ export default {
           formData.contacts = formData.contacts.concat(contacts);
         }
       }
-      this.contacts =[];
-      this.contactData =[];
+      this.contacts = [];
+      this.contactData = [];
       if (
-        this.$store.state.projectInformation &&
-        this.$store.state.ministryInformation &&
-        this.$store.state.contactInformation &&
-        this.$store.state.intakeRisk
+        this.$store.state.projectInformation
+        && this.$store.state.ministryInformation
+        && this.$store.state.contactInformation
+        && this.$store.state.intakeRisk
       ) {
         this.$refs.spinner.open();
-        console.log('contractValue', {contractValue: formData.estimatedContractValue})
+        console.log('contractValue', { contractValue: formData.estimatedContractValue });
         formData.estimatedContractValue = formData.estimatedContractValue;
         this.$store.dispatch('addIntakeRequest', formData).then(
           () => {
             this.$refs.snackbar.displaySnackbar(
-              "success",
-              "Project Intake Form Submited."
+              'success',
+              'Project Intake Form Submited.',
             );
             this.$refs.spinner.close();
-            this.$router.push("intake-success");
+            this.$router.push('intake-success');
           },
-          err => {
+          (err) => {
             this.$refs.spinner.close();
             if (err && err.response && err.response.data) {
               const { message } = err.response.data.error;
-              this.$refs.snackbar.displaySnackbar("error", message);
+              this.$refs.snackbar.displaySnackbar('error', message);
             } else {
               this.$refs.snackbar.displaySnackbar(
-                "error",
-                "Intake Request Error"
+                'error',
+                'Intake Request Error',
               );
             }
-          }
+          },
         );
       }
     },
@@ -576,7 +576,7 @@ export default {
     getClientInfo(infoType) {
       const contacts = this.$store.state.activeIntakeRequest.contacts || [];
       const clientInfo = contacts.find(
-        contact => contact.contactType === infoType
+        contact => contact.contactType === infoType,
       );
       return clientInfo;
     },
@@ -602,15 +602,13 @@ export default {
       this.e1 = step;
 
       // Scroll to top after navigating
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     },
     nextButtonClick(step) {
-      debugger;
       if (step === 5) {
-        for (var i = 0; i < this.contactCount; i++) {
-          let res = "additionalcontactinfo" + i.toString();
-          this.$refs.additionalcontactinfo[i].form.contactType =
-            "clientcontact";
+        for (let i = 0; i < this.contactCount; i++) {
+          const res = 'additionalcontactinfo' + i.toString();
+          this.$refs.additionalcontactinfo[i].form.contactType =            'clientcontact';
           this.allContacts.push(this.$refs.additionalcontactinfo[i].form);
         }
         const value1 = this.$refs.projectLead.onNextClicked();
@@ -633,7 +631,7 @@ export default {
           client: this.$refs.intakeClientInfo.form,
           contacts: [],
           risk: riskAnalysis,
-          riskScore: scoreSum
+          riskScore: scoreSum,
         });
         const projectLead = this.$refs.projectLead.form || undefined;
         const projectSponsor = this.$refs.projectSponsor.form || undefined;
@@ -662,7 +660,7 @@ export default {
           projectLead,
           projectSponsor,
           projectFinance,
-          projectContact
+          projectContact,
         ].filter(contact => contact !== undefined);
         contacts = contacts.concat(this.allContacts);
         if (contacts instanceof Array && contacts.length > 0) {
@@ -672,13 +670,13 @@ export default {
         }
 
         if (
-          this.$store.state.projectInformation &&
-          this.$store.state.ministryInformation &&
-          this.$store.state.contactInformation
+          this.$store.state.projectInformation
+          && this.$store.state.ministryInformation
+          && this.$store.state.contactInformation
           // && this.$store.state.intakeRisk
         ) {
           // this.$refs.spinner.open();
-          console.log('estimatedContractValue clickfn', {estimatedContractValue: formData.estimatedContractValue})
+          console.log('estimatedContractValue clickfn', { estimatedContractValue: formData.estimatedContractValue });
           formData.estimatedContractValue = formData.estimatedContractValue;
           this.reviewSubmit = formData;
         }
@@ -704,12 +702,12 @@ export default {
         this.e1 = step;
       }
       // Scroll to top of page after navigating
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    },
   },
   created() {
     this.fetchData();
-  }
+  },
 };
 </script>
 
