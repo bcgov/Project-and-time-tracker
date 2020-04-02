@@ -254,7 +254,7 @@ export default {
       const obj = {};
       timesheetEntryDays.map(
         dayString => (obj[dayString] = {
-          hours: undefined,
+          hours: 0,
         }),
       );
       return obj;
