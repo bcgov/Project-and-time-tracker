@@ -279,7 +279,7 @@
                               </h4>
                             </v-flex>
                             <v-flex d-flex justify-end>
-                              <procurement-log ref="ProcurementLog"></procurement-log>
+                              <procurement-log ref="ProcurementLog" @close="close"></procurement-log>
                               <v-btn
                                 class="add-timesheet-button"
                                 color="btnPrimary"
@@ -290,7 +290,7 @@
                           </v-layout>
                           <v-layout row wrap>
                             <v-flex xs12>
-                              <procurement-log-table></procurement-log-table>
+                              <procurement-log-table ref="procurementtable"></procurement-log-table>
                             </v-flex>
                           </v-layout>
                         </v-container>
@@ -383,6 +383,9 @@ export default {
     }
   },
   methods: {
+    close() {
+    this.$refs.procurementtable.close();
+    },
     projectnotes() {
       return this.$store.state.allProjectNotes;
     },
