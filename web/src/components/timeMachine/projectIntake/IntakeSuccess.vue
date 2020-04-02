@@ -21,13 +21,13 @@
 </template>
 
 <script>
-import './intakesuccess.styl';
+import "./intakesuccess.styl";
 
 export default {
   methods: {
     logout() {
-      this.$router.push({ path: 'logout' });
-    },
-  },
+      this.$router.push({ path: "logout" });
+    }
+  }
 };
 </script>

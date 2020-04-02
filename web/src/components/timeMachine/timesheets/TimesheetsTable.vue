@@ -1,8 +1,8 @@
 <template>
   <v-card>
     <spinner ref="spinner"></spinner>
-     <confirm ref="confirm"></confirm>
-     <snackbar ref="snackbar"></snackbar>
+    <confirm ref="confirm"></confirm>
+    <snackbar ref="snackbar"></snackbar>
     <v-toolbar v-if="title" card dense color="transparent">
       <v-toolbar-title>
         <h4>{{ title }}</h4>
@@ -21,7 +21,7 @@
             hide-details
           ></v-text-field>
         </v-flex>
-        <timesheets-toolbar ref="timesheetstoolbar" @refresh="fetchData" ></timesheets-toolbar>
+        <timesheets-toolbar ref="timesheetstoolbar" @refresh="fetchData"></timesheets-toolbar>
       </v-layout>
     </v-card-title>
     <v-divider></v-divider>
@@ -29,7 +29,7 @@
       <template>
         <v-data-table
           :headers="headers"
-          :items="allTimesheets"
+          :items="timesheetsList"
           hide-actions
           class="elevation-0 tm-v-datatable"
           item-key="id"
@@ -142,13 +142,11 @@ export default {
     projectsRfx() {
       return this.$store.state.projectsRfx;
     },
-    allTimesheets() {
-      debugger;
-      let timeRecords = this.$store.state.allTimesheets;
+    timesheetsList() {
+      let timeRecords = this.$store.state.userTimesheets;
       if (this.$refs.timesheetstoolbar) {
-        const currentUserId = this.fetchUser();
-        if (this.$refs.timesheetstoolbar.selectedFilter === 'Mine') {
-          timeRecords = timeRecords.filter(item => item.userId === currentUserId);
+        if (this.$refs.timesheetstoolbar.selectedFilter === 'All') {
+          timeRecords = this.$store.state.allTimesheets;
         }
       }
 
@@ -176,7 +174,7 @@ export default {
     editTimesheet(value) {
       this.startDateMain = this.$store.state.timesheetsWeek.startDate;
       this.endDateMain = this.$store.state.timesheetsWeek.endDate;
-      const found = this.$store.state.allTimesheets.find(element => element.id === value);
+      const found = this.timesheetsList.find(element => element.id === value);
       sessionStorage.setItem('selectedStartDate', found.startDate);
       sessionStorage.setItem('selectedEndDate', found.endDate);
       this.$refs.AddTimeRecord.reset();
@@ -200,10 +198,12 @@ export default {
       if (this.$refs.spinner) {
         this.$refs.spinner.open();
       }
-      const timesheets = await this.$store.dispatch('fetchAllTimesheets');
-      await this.$store.dispatch('fetchProjects'); // Needed in AddTimeRecord
-      console.log('gottimesheets', { timesheets });
-      if (this.$refs.spinner) { this.$refs.spinner.close(); }
+      await this.$store.dispatch('fetchUserTimesheets');
+      await this.$store.dispatch('fetchAllTimesheets');
+
+      if (this.$refs.spinner) {
+        this.$refs.spinner.close();
+      }
 
       // this.$store
       //   .dispatch('fetchProjects')
@@ -224,19 +224,18 @@ export default {
     //     });
     // },
     async deleteTimesheet(id) {
-      if (
-        await this.$refs.confirm.open(
-          'danger',
-          'Are you sure to delete this record?',
-        )
-      ) {
+      if (await this.$refs.confirm.open('danger', 'Are you sure to delete this record?')) {
         await this.$store.dispatch('deleteTimesheet', { id });
         this.$refs.snackbar.displaySnackbar('success', 'Successfully deleted the record.');
         await this.fetchData();
       }
     },
+    async initalfetch() {
+      await this.$store.dispatch('fetchAllProjects');// Needed in AddTimeRecord
+    },
   },
   created() {
+    this.initalfetch();
     this.fetchData();
   },
 };

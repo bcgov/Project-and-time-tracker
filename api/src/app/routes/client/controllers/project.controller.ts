@@ -26,7 +26,7 @@ export const getProjects = async (ctx: Koa.Context) => {
 export const getAllProjects = async (ctx: Koa.Context) => {
   try {
     const auth = ctx.state.auth as IAuth;
-    ctx.body = await retrieveAllProjects(auth.userId);
+    ctx.body = await retrieveAllProjects();
   } catch (err) {
     ctx.throw(err.message);
   }

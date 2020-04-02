@@ -126,8 +126,7 @@ export default {
   },
   computed: {
     projects() {
-      debugger;
-      if (this.selectedItem === 1) {return this.$store.state.allProjects;}
+      if (this.selectedItem === 1) { return this.$store.state.allProjects; }
       return this.$store.state.projects;
     },
     userList() {
@@ -187,6 +186,7 @@ export default {
                 'success',
                 'Project lead succesfully assigned.',
               );
+              this.fetchData();
             })
             .catch((err) => {
               if (

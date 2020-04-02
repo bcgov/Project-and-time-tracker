@@ -16,11 +16,11 @@
           <v-flex md1>{{ item.day }}</v-flex>
           <v-flex md2>
             <v-text-field
-              :rules = "amountRule"
+              :rules="amountRule"
               prepend-inner-icon="attach_money"
               oninput="validity.valid||(value='');"
-              :value='item.amount | withCommas'
-              @blur='v => item.amount = parseFloat(v.target.value)'
+              :value="item.amount | withCommas"
+              @blur="v => (item.amount = parseFloat(v.target.value))"
             ></v-text-field>
           </v-flex>
           <v-flex md3>
@@ -101,19 +101,23 @@ export default {
           { day: 'Sat', description: '', amount: 0, category: '', date: '' },
           { day: 'Sun', description: '', amount: 0, category: '', date: '' },
         ],
-        amountRule: [(v) => {
-        if (!v) return 'This field is required';
-        const anyNonNumbers = v.toString().match(/[^\d,]+/g, '');
-        if (anyNonNumbers){
-          return 'Field must just be a number.'
-
-        }
-        return true;
-      }]
+      amountRule: [
+        (v) => {
+          // if (!v) return 'This field is required';
+          if (!v) {
+            return true;
+          }
+          const anyNonNumbers = v.toString().match(/[^\d,]+/g, '');
+          if (anyNonNumbers) {
+            return 'Field must just be a number.';
+          }
+          return true;
+        },
+      ],
     };
   },
 
-    watch: {
+  watch: {
     date() {
       this.dateFormatted = this.formatDate(this.date);
     },
@@ -135,6 +139,9 @@ export default {
     }
   },
   methods: {
+    validate() {
+      return this.$refs.form.validate();
+    },
     stringToDate(dateString) {
       const parts = dateString.split('-');
       return new Date(parts[0], parts[1] - 1, parts[2]);

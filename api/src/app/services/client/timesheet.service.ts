@@ -69,7 +69,22 @@ export const retrieveAllTimesheets = async () => {
     .orderBy('te.entryDate', 'ASC')
     .getMany();
 };
-
+export const retrieveMyTimesheets = async userId => {
+  const repo = timesheetRepo();
+  return await repo
+    .createQueryBuilder('t')
+    .leftJoinAndSelect('t.projectRfx', 'pr')
+    .innerJoinAndSelect('t.project', 'p')
+    .innerJoinAndSelect('t.mou', 'm')
+    .leftJoinAndSelect('t.timesheetEntries', 'te')
+    .leftJoinAndSelect('t.user', 'u')
+    .leftJoinAndSelect('u.contact', 'c')
+    .orderBy('te.entryDate', 'ASC')
+    .where('t.userId = :userId', {
+      userId
+    })
+    .getMany();
+};
 export const retrieveForLightTimesheet = async model => {
   const repo = timesheetRepo();
   const res = await repo

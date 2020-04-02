@@ -21,9 +21,11 @@
                 <v-flex class="d-flex cardheadlabel1">
                   <v-flex md7 class="haederinfo">Information being entered by:</v-flex>
                   <v-flex md4>
-                    <v-select class = 'currentuser'
+                    <v-select
+                      class="currentuser"
                       v-model="form.userId"
                       :rules="requiredRule"
+                      @change="onChangeUser()"
                       :items="userList"
                       item-value="id"
                       item-text="contact.fullName"
@@ -32,13 +34,15 @@
                   </v-flex>
                 </v-flex>
 
-                <v-flex v-if="form.mou" class="d-flex cardheadlabel2">
-                  <v-flex>
-                    <b>MOU amount:</b>
-                    ${{ mouAmount }}
+                <v-flex class="d-flex cardheadlabel2">
+                  <v-flex md4>
+                    <v-flex v-if="form.project && activeTab === 'weekly'">
+                      <b>MOU amount:</b>
+                      ${{ mouAmount }}
+                    </v-flex>
                   </v-flex>
-                  <v-flex> <b>Currently Billed:</b> $0 </v-flex>
-                   <v-flex> <b>Legal Billed Amount:</b> $0 </v-flex>
+                  <v-flex md4> <b>Currently Billed:</b> $0 </v-flex>
+                  <v-flex md4> <b>Legal Billed Amount:</b> $0 </v-flex>
                 </v-flex>
               </v-flex>
             </v-layout>
@@ -64,12 +68,17 @@
                   </v-flex>
 
                   <v-flex v-show="recordType === 1">
-                    <batch-time-entry ref="billableBatchEntry" :selectedItem="1"></batch-time-entry>
+                    <batch-time-entry
+                      ref="billableBatchEntry"
+                      :selectedItem="1"
+                      :userId="form.userId"
+                    ></batch-time-entry>
                   </v-flex>
                   <v-flex v-show="recordType === 3">
                     <batch-time-entry
                       ref="nonBillableBatchEntry"
                       :selectedItem="3"
+                      :userId="form.userId"
                     ></batch-time-entry>
                   </v-flex>
                 </v-flex>
@@ -90,8 +99,8 @@
                   <v-flex xs12>
                     <v-select
                       v-model="form.project"
-                      :rules="requiredRule"
                       :items="projectList"
+                      :rules="requiredRule"
                       item-text="projectName"
                       item-value="id"
                       label="Project Name"
@@ -119,7 +128,7 @@
                       ></timesheets-calendar>
                     </v-flex>
                     <v-flex md6>
-                      <v-radio-group row v-model="recordType">
+                      <v-radio-group row v-model="recordTypeWeekly">
                         <v-radio label="Hours" :value="1"></v-radio>
                         <v-radio label="Expenses" :value="2"></v-radio>
                         <v-radio label="Revenue" :value="4"></v-radio>
@@ -127,16 +136,16 @@
                       </v-radio-group>
                     </v-flex>
                   </v-flex>
-                  <v-flex v-show="recordType === 1">
+                  <v-flex v-show="recordTypeWeekly === 1">
                     <timesheet-entry ref="Billable"></timesheet-entry>
                   </v-flex>
-                  <v-flex v-show="recordType === 2">
+                  <v-flex v-show="recordTypeWeekly === 2">
                     <expense-entry ref="AddExpense"></expense-entry>
                   </v-flex>
-                   <v-flex v-show="recordType === 4">
+                  <v-flex v-show="recordTypeWeekly === 4">
                     <revenue-entry ref="AddRevenue"></revenue-entry>
                   </v-flex>
-                  <v-flex v-show="recordType === 3">
+                  <v-flex v-show="recordTypeWeekly === 3">
                     <timesheet-entry ref="NonBillable" single-row></timesheet-entry>
                   </v-flex>
                 </v-flex>
@@ -145,12 +154,12 @@
           </v-card-text>
           <v-divider class="header-divider"></v-divider>
           <v-card-actions>
-            <v-btn class="btn-discard" @click="closeDialog()" :ripple="false">DISCARD TIMESHEET</v-btn>
+            <v-btn class="btn-discard" @click="closeDialog()" :ripple="false"
+              >DISCARD TIMESHEET</v-btn
+            >
             <v-flex class="add-btns">
               <v-btn class="btn-normal" @click="expotTimesheet()">EXPORT TIMESHEET</v-btn>
-              <v-btn class="add-new-row" color="primary" @click="saveAndClose()"
-                >SUBMIT</v-btn
-              >
+              <v-btn class="add-new-row" color="primary" @click="saveAndClose()">SUBMIT</v-btn>
             </v-flex>
           </v-card-actions>
         </v-card>
@@ -189,8 +198,11 @@ export default {
       }
     },
     projectList() {
-      if (typeof this.form.mou !== 'undefined') {
-        const mouProjects = this.$store.state.projects.filter(item => item.mou);
+      if (typeof this.form.mou !== 'undefined' && typeof this.form.userId !== 'undefined') {
+        const mouProjects = this.$store.state.allProjects.filter(
+          item => item.mou
+            && (item.backupUserId === this.form.userId || item.leadUserId === this.form.userId),
+        );
         if (mouProjects.length === 0) {
           return [];
         }
@@ -203,6 +215,11 @@ export default {
     },
     projectRfx() {
       if (typeof this.form.project !== 'undefined') {
+        if (this.$store.state.activeProjectRfxData.length === 1) {
+          if (this.$store.state.activeProjectRfxData[0].id === '') {
+            return [];
+          }
+        }
         return this.$store.state.activeProjectRfxData;
       }
       return [];
@@ -239,6 +256,15 @@ export default {
     timeEntry: Object,
   },
   methods: {
+    onChangeUser() {
+      if (this.activeTab === 'weekly') {
+        if (this.form.project) {
+          this.getTimeEntries();
+        }
+      } else {
+        this.initializeBatchEntry();
+      }
+    },
     ConvertToCSV(objArray) {
       const array = typeof objArray !== 'object' ? JSON.parse(objArray) : objArray;
       let str = '';
@@ -257,7 +283,6 @@ export default {
       return str;
     },
 
-
     csvExport(arrData) {
       let csvContent = 'data:text/csv;charset=utf-8,';
       csvContent += [
@@ -275,12 +300,11 @@ export default {
     },
 
     expotTimesheet() {
-      if (!(this.form.userId)) {
-        this.$refs.snackbar.displaySnackbar('error', 'Please select user.');
+      if (!this.form.userId) {
+        this.$refs.snackbar.displaySnackbarTop('error', 'Please select user.');
         return;
       }
       const formData = {
-
         userId: this.form.userId,
       };
       const vm = this;
@@ -294,7 +318,8 @@ export default {
           for (let j = 0; j < entries.length; j++) {
             const entry = entries[j];
 
-            timeEntries.push({ Project: currentProject,
+            timeEntries.push({
+              Project: currentProject,
               'Entry Date': entry.entryDate,
               'Billable Hours': entry.hoursBillable,
               'Billable Comments': entry.commentsBillable,
@@ -304,7 +329,8 @@ export default {
               'Expense Category': entry.expenseCategory,
               'Expense Description': entry.expenseComment,
               'Revenue Amount': entry.revenueAmount,
-              'Revenue Description': entry.revenueComment });
+              'Revenue Description': entry.revenueComment,
+            });
           }
         }
         this.csvExport(timeEntries);
@@ -370,7 +396,7 @@ export default {
       if (!this.editMode) {
         const date = this.getDatePart(this.$store.state.timesheetsWeek.startDate);
         const selectedProjects = this.$store.state.allTimesheets.filter(
-          item => this.getDatePart(item.startDate) === date,
+          item => this.getDatePart(item.startDate) === date && item.userId == this.form.userId,
         );
         this.clearBatchEntry();
         for (let i = 0; i < selectedProjects.length; i++) {
@@ -458,8 +484,9 @@ export default {
       return new Date(parts[0], parts[1] - 1, parts[2]);
     },
     getDatePart(date) {
-      debugger;
-      if (typeof date !== 'string') { date = date.format('YYYY-MM-DD'); }
+      if (typeof date !== 'string') {
+        date = date.format('YYYY-MM-DD');
+      }
       date = this.stringToDate(date);
       return this.getDateInYYYYMMDD(date);
     },
@@ -482,6 +509,7 @@ export default {
       this.clearBatchEntry();
     },
     clearWeekEntry() {
+      this.recordTypeWeekly = 1;
       const weekDataBillable = [
         { day: 'Mon', description: '', hours: 0, date: '' },
         { day: 'Tue', description: '', hours: 0, date: '' },
@@ -525,6 +553,7 @@ export default {
       this.$refs.NonBillable.weekData = weekDataUnBillable;
     },
     clearBatchEntry() {
+      this.recordType = 1;
       this.$refs.nonBillableBatchEntry.weekEntries = [];
       this.$refs.billableBatchEntry.weekEntries = [];
       this.$refs.nonBillableBatchEntry.weekEntries.push(
@@ -537,18 +566,28 @@ export default {
     async saveAndClose() {
       if (this.$refs.AddimeRecords.validate()) {
         if (this.activeTab === 'weekly') {
+          if (
+            !this.$refs.Billable.validate()
+            || !this.$refs.NonBillable.validate()
+            || !this.$refs.AddRevenue.validate()
+            || !this.$refs.AddExpense.validate()
+          ) {
+            this.$refs.snackbar.displaySnackbarTop('error', 'Please correct validation errors.');
+            return;
+          }
           this.submitWeekData(true);
         } else {
           const nonBillableBatchEntry = this.$refs.nonBillableBatchEntry.prepareDataForSubmission();
           const billableBatchEntry = this.$refs.billableBatchEntry.prepareDataForSubmission();
           this.submitBatchData(nonBillableBatchEntry, billableBatchEntry, true);
         }
+      } else {
+        this.$refs.snackbar.displaySnackbarTop('error', 'Please correct validation errors.');
       }
     },
 
     submitBatchData(nonBillableBatchEntry, billableBatchEntry, needToClose = false) {
       const timeSheetEntries = [];
-      debugger;
       for (let itemIndex = 0; itemIndex < billableBatchEntry.length; itemIndex++) {
         const startDate = this.getDatePart(billableBatchEntry[itemIndex].startDate);
         const endDate = this.getDatePart(this.$store.state.timesheetsWeek.endDate);
@@ -572,7 +611,7 @@ export default {
         timeSheetEntry.endDate = endDate;
         timeSheetEntry.project = billableBatchEntry[itemIndex].projectId;
         timeSheetEntry.userId = this.form.userId;
-        const projectMou = this.$store.state.projects.filter(
+        const projectMou = this.projectList.filter(
           item => item.id === billableBatchEntry[itemIndex].projectId,
         );
         if (projectMou && projectMou[0]) {
@@ -656,9 +695,9 @@ export default {
           this.$refs.spinner.close();
           if (err && err.response && err.response.data) {
             const { message } = err.response.data.error;
-            this.$refs.snackbar.displaySnackbar('error', message);
+            this.$refs.snackbar.displaySnackbarTop('error', message);
           } else {
-            this.$refs.snackbar.displaySnackbar('error', 'Timesheet entry Error');
+            this.$refs.snackbar.displaySnackbarTop('error', 'Timesheet entry Error');
           }
         },
       );
@@ -706,9 +745,7 @@ export default {
           }
         }
         if (revenueDetails.length > 0) {
-          const revenue = revenueDetails.filter(
-            item => item.date === timeEntries[index].entryDate,
-          );
+          const revenue = revenueDetails.filter(item => item.date === timeEntries[index].entryDate);
           if (revenue[0]) {
             timeEntries[index].revenueAmount = revenue[0].amount === '' ? 0 : revenue[0].amount;
             timeEntries[index].revenueComment = revenue[0].description;
@@ -750,9 +787,9 @@ export default {
           this.$refs.spinner.close();
           if (err && err.response && err.response.data) {
             const { message } = err.response.data.error;
-            this.$refs.snackbar.displaySnackbar('error', message);
+            this.$refs.snackbar.displaySnackbarTop('error', message);
           } else {
-            this.$refs.snackbar.displaySnackbar('error', 'Timesheet entry Error');
+            this.$refs.snackbar.displaySnackbarTop('error', 'Timesheet entry Error');
           }
           return false;
         },
@@ -769,12 +806,11 @@ export default {
       this.dialog = false;
     },
     reset() {
-      // this.$refs.form.resetValidation();
+      this.$refs.AddimeRecords.resetValidation();
       this.clearTimeEntries();
       const data = this.initData();
       this.$data.valid = data.valid;
       this.$data.requiredRule = data.requiredRule;
-      this.$data.requireRadioButtondRule = data.requireRadioButtondRule;
       this.$data.dialog = data.dialog;
       this.$data.menu1 = data.menu1;
       this.$data.form = data.form;
@@ -802,9 +838,9 @@ export default {
         editMode: false,
         activeTab: 'weekly',
         recordType: 1,
+        recordTypeWeekly: 1,
         valid: true,
         requiredRule: [v => !!v || 'This field required'],
-        requireRadioButtondRule: [v => ((v || !v) && v != null) || 'This field required'],
         dialog: false,
         menu1: false,
         form: { ...form },
