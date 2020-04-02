@@ -187,6 +187,7 @@ export default {
                 'success',
                 'Project lead succesfully assigned.',
               );
+              this.fetchData();
             })
             .catch((err) => {
               if (

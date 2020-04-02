@@ -159,7 +159,7 @@ export const retrieveArchivedProjects = async () => {
     .getMany();
 };
 
-export const retrieveAllProjects = async (userId: string) => {
+export const retrieveAllProjects = async () => {
   const repo = projectRepo();
   return await repo
     .createQueryBuilder('p')
@@ -190,10 +190,9 @@ export const retrieveAllProjects = async (userId: string) => {
       'c.nonMinistryName'
     ])
     .where(
-      '(p.is_archived IS NULL OR p.is_archived = :is_archived) AND ((p."leadUserId" IS NULL OR p."leadUserId" != :userId) AND (p."backupUserId" IS NULL OR p."backupUserId" != :userId))',
+      '(p.is_archived IS NULL OR p.is_archived = :is_archived)',
       {
-        is_archived: false,
-        userId
+        is_archived: false
       }
     )
     .getMany();
