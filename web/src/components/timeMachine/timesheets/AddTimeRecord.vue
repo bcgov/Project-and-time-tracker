@@ -68,12 +68,17 @@
                   </v-flex>
 
                   <v-flex v-show="recordType === 1">
-                    <batch-time-entry ref="billableBatchEntry" :selectedItem="1"  :userId = form.userId></batch-time-entry>
+                    <batch-time-entry
+                      ref="billableBatchEntry"
+                      :selectedItem="1"
+                      :userId="form.userId"
+                    ></batch-time-entry>
                   </v-flex>
                   <v-flex v-show="recordType === 3">
                     <batch-time-entry
                       ref="nonBillableBatchEntry"
-                      :selectedItem="3" :userId = form.userId
+                      :selectedItem="3"
+                      :userId="form.userId"
                     ></batch-time-entry>
                   </v-flex>
                 </v-flex>
@@ -194,8 +199,10 @@ export default {
     },
     projectList() {
       if (typeof this.form.mou !== 'undefined' && typeof this.form.userId !== 'undefined') {
-        const mouProjects = this.$store.state.allProjects.filter(item => item.mou && (item.backupUserId === this.form.userId
-|| item.leadUserId === this.form.userId));
+        const mouProjects = this.$store.state.allProjects.filter(
+          item => item.mou
+            && (item.backupUserId === this.form.userId || item.leadUserId === this.form.userId),
+        );
         if (mouProjects.length === 0) {
           return [];
         }
@@ -677,7 +684,7 @@ export default {
       this.$refs.spinner.open();
       this.$store.dispatch('addBatchTimesheet', timeSheetEntries).then(
         () => {
-          this.$refs.snackbar.displaySnackbarTop('success', 'Successfully saved time entries.');
+          this.$refs.snackbar.displaySnackbar('success', 'Successfully saved time entries.');
           this.$refs.spinner.close();
           if (needToClose) {
             this.clearTimeEntries();
@@ -769,7 +776,7 @@ export default {
       this.$refs.spinner.open();
       this.$store.dispatch('addLightTimesheet', formData).then(
         () => {
-          this.$refs.snackbar.displaySnackbarTop('success', 'Successfully saved time entries.');
+          this.$refs.snackbar.displaySnackbar('success', 'Successfully saved time entries.');
           this.$refs.spinner.close();
           if (needToClose) {
             this.clearTimeEntries();
