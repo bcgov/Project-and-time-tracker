@@ -216,6 +216,7 @@ export default {
             .then(
               () => {
                 this.$refs.snackbar.displaySnackbar("success", "Updated");
+                 this.closeDialog();
               },
               err => {
                 try {
@@ -239,6 +240,7 @@ export default {
             .then(
               () => {
                 this.$refs.snackbar.displaySnackbar("success", "Updated");
+                this.closeDialog();
               },
               err => {
                 try {
