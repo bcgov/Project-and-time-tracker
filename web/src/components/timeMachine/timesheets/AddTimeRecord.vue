@@ -32,13 +32,15 @@
                   </v-flex>
                 </v-flex>
 
-                <v-flex v-if="form.mou" class="d-flex cardheadlabel2">
-                  <v-flex>
+                <v-flex  class="d-flex cardheadlabel2">
+                  <v-flex md4>
+                    <v-flex v-if="form.project && activeTab ==='weekly'">
                     <b>MOU amount:</b>
                     ${{ mouAmount }}
+                     </v-flex>
                   </v-flex>
-                  <v-flex> <b>Currently Billed:</b> $0 </v-flex>
-                   <v-flex> <b>Legal Billed Amount:</b> $0 </v-flex>
+                  <v-flex md4> <b>Currently Billed:</b> $0 </v-flex>
+                   <v-flex md4> <b>Legal Billed Amount:</b> $0 </v-flex>
                 </v-flex>
               </v-flex>
             </v-layout>
@@ -119,7 +121,7 @@
                       ></timesheets-calendar>
                     </v-flex>
                     <v-flex md6>
-                      <v-radio-group row v-model="recordType">
+                      <v-radio-group row v-model="recordTypeWeekly">
                         <v-radio label="Hours" :value="1"></v-radio>
                         <v-radio label="Expenses" :value="2"></v-radio>
                         <v-radio label="Revenue" :value="4"></v-radio>
@@ -127,16 +129,16 @@
                       </v-radio-group>
                     </v-flex>
                   </v-flex>
-                  <v-flex v-show="recordType === 1">
+                  <v-flex v-show="recordTypeWeekly === 1">
                     <timesheet-entry ref="Billable"></timesheet-entry>
                   </v-flex>
-                  <v-flex v-show="recordType === 2">
+                  <v-flex v-show="recordTypeWeekly === 2">
                     <expense-entry ref="AddExpense"></expense-entry>
                   </v-flex>
-                   <v-flex v-show="recordType === 4">
+                   <v-flex v-show="recordTypeWeekly === 4">
                     <revenue-entry ref="AddRevenue"></revenue-entry>
                   </v-flex>
-                  <v-flex v-show="recordType === 3">
+                  <v-flex v-show="recordTypeWeekly === 3">
                     <timesheet-entry ref="NonBillable" single-row></timesheet-entry>
                   </v-flex>
                 </v-flex>
@@ -484,6 +486,7 @@ export default {
       this.clearBatchEntry();
     },
     clearWeekEntry() {
+      this.recordTypeWeekly = 1;
       const weekDataBillable = [
         { day: 'Mon', description: '', hours: 0, date: '' },
         { day: 'Tue', description: '', hours: 0, date: '' },
@@ -527,6 +530,7 @@ export default {
       this.$refs.NonBillable.weekData = weekDataUnBillable;
     },
     clearBatchEntry() {
+      this.recordType = 1;
       this.$refs.nonBillableBatchEntry.weekEntries = [];
       this.$refs.billableBatchEntry.weekEntries = [];
       this.$refs.nonBillableBatchEntry.weekEntries.push(
@@ -803,6 +807,7 @@ export default {
         editMode: false,
         activeTab: 'weekly',
         recordType: 1,
+        recordTypeWeekly: 1,
         valid: true,
         requiredRule: [v => !!v || 'This field required'],
         dialog: false,

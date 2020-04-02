@@ -98,7 +98,7 @@
     </v-flex>
 
     <v-flex v-if="!editMode">
-      <v-btn @click="addRow">Add another entry</v-btn>
+      <v-btn class="btn-normal"  @click="addRow">ADD ANOTHER ENTRY</v-btn>
       <pre>
           <!-- {{ weekEntries }} -->
 
