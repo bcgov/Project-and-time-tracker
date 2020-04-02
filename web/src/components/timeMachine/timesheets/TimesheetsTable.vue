@@ -29,7 +29,7 @@
       <template>
         <v-data-table
           :headers="headers"
-          :items="allTimesheets"
+          :items="timesheetsList"
           hide-actions
           class="elevation-0 tm-v-datatable"
           item-key="id"
@@ -142,13 +142,11 @@ export default {
     projectsRfx() {
       return this.$store.state.projectsRfx;
     },
-    allTimesheets() {
-      debugger;
-      let timeRecords = this.$store.state.allTimesheets;
+    timesheetsList() {
+      let timeRecords = this.$store.state.userTimesheets;
       if (this.$refs.timesheetstoolbar) {
-        const currentUserId = this.fetchUser();
-        if (this.$refs.timesheetstoolbar.selectedFilter === 'Mine') {
-          timeRecords = timeRecords.filter(item => item.userId === currentUserId);
+        if (this.$refs.timesheetstoolbar.selectedFilter === 'All') {
+          timeRecords = this.$store.state.allTimesheets;
         }
       }
 
@@ -176,7 +174,7 @@ export default {
     editTimesheet(value) {
       this.startDateMain = this.$store.state.timesheetsWeek.startDate;
       this.endDateMain = this.$store.state.timesheetsWeek.endDate;
-      const found = this.$store.state.allTimesheets.find(element => element.id === value);
+      const found = this.timesheetsList.find(element => element.id === value);
       sessionStorage.setItem('selectedStartDate', found.startDate);
       sessionStorage.setItem('selectedEndDate', found.endDate);
       this.$refs.AddTimeRecord.reset();
@@ -197,13 +195,14 @@ export default {
       return projectLeadName;
     },
     async fetchData() {
-      if (this.$refs.spinner) {
-        this.$refs.spinner.open();
-      }
-      const timesheets = await this.$store.dispatch('fetchAllTimesheets');
+      if (this.$refs.spinner) { this.$refs.spinner.open(); }
+      await this.$store.dispatch('fetchUserTimesheets');
+      await this.$store.dispatch('fetchAllTimesheets');
       await this.$store.dispatch('fetchProjects'); // Needed in AddTimeRecord
-      console.log('gottimesheets', { timesheets });
+
+
       if (this.$refs.spinner) { this.$refs.spinner.close(); }
+
 
       // this.$store
       //   .dispatch('fetchProjects')

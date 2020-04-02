@@ -23,7 +23,7 @@
                   <v-flex md4>
                     <v-select class = 'currentuser'
                       v-model="form.userId"
-                      :rules="requiredRule"
+:rules="requiredRule"
                       :items="userList"
                       item-value="id"
                       item-text="contact.fullName"
@@ -79,7 +79,7 @@
                   <v-flex xs12>
                     <v-select
                       v-model="form.mou"
-                      :rules="requiredRule"
+:rules="requiredRule"
                       :items="mouList"
                       item-text="name"
                       item-value="id"
@@ -90,8 +90,8 @@
                   <v-flex xs12>
                     <v-select
                       v-model="form.project"
-                      :rules="requiredRule"
                       :items="projectList"
+                      :rules="requiredRule"
                       item-text="projectName"
                       item-value="id"
                       label="Project Name"
@@ -203,6 +203,9 @@ export default {
     },
     projectRfx() {
       if (typeof this.form.project !== 'undefined') {
+        if (this.$store.state.activeProjectRfxData.length === 1) {
+          if (this.$store.state.activeProjectRfxData[0].id === '') { return []; }
+        }
         return this.$store.state.activeProjectRfxData;
       }
       return [];
@@ -458,7 +461,6 @@ export default {
       return new Date(parts[0], parts[1] - 1, parts[2]);
     },
     getDatePart(date) {
-      debugger;
       if (typeof date !== 'string') { date = date.format('YYYY-MM-DD'); }
       date = this.stringToDate(date);
       return this.getDateInYYYYMMDD(date);
@@ -548,7 +550,6 @@ export default {
 
     submitBatchData(nonBillableBatchEntry, billableBatchEntry, needToClose = false) {
       const timeSheetEntries = [];
-      debugger;
       for (let itemIndex = 0; itemIndex < billableBatchEntry.length; itemIndex++) {
         const startDate = this.getDatePart(billableBatchEntry[itemIndex].startDate);
         const endDate = this.getDatePart(this.$store.state.timesheetsWeek.endDate);
@@ -769,12 +770,12 @@ export default {
       this.dialog = false;
     },
     reset() {
-      // this.$refs.form.resetValidation();
+      debugger;
+      this.$refs.AddimeRecords.resetValidation();
       this.clearTimeEntries();
       const data = this.initData();
       this.$data.valid = data.valid;
       this.$data.requiredRule = data.requiredRule;
-      this.$data.requireRadioButtondRule = data.requireRadioButtondRule;
       this.$data.dialog = data.dialog;
       this.$data.menu1 = data.menu1;
       this.$data.form = data.form;
@@ -804,7 +805,6 @@ export default {
         recordType: 1,
         valid: true,
         requiredRule: [v => !!v || 'This field required'],
-        requireRadioButtondRule: [v => ((v || !v) && v != null) || 'This field required'],
         dialog: false,
         menu1: false,
         form: { ...form },

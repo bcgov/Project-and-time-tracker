@@ -32,7 +32,7 @@
               max="24"
               step="0.01"
               min="0"
-              :rules = "hoursRule"
+
               oninput="validity.valid||(value=0);"
               v-model="props.item.monday.hours"
             ></v-text-field>
@@ -135,7 +135,7 @@ export default {
     return {
       // form: { ...form },
       props: { ...this.selectedItem },
-      hoursRule:[v => v % 0.25 === 0 || 'Please enter in quarter hours (0.25 = 15min)'],
+      hoursRule: [v => v % 0.25 === 0 || 'Please enter in quarter hours (0.25 = 15min)'],
       exludeProjects: [],
       projectRfx: '',
       weekData: [
@@ -157,7 +157,7 @@ export default {
         { text: 'Friday', value: 'contact.hourlyRate', sortable: false },
         { text: 'Comments', value: 'contact.fullName', sortable: false },
       ],
-      
+
       weekEntries: [this.createEmptyWeekEntry()],
       // weekEntries: this.cre
     };

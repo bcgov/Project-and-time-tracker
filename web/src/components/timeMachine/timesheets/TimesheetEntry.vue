@@ -73,7 +73,7 @@ export default {
     }
     return {
       valid: true,
-      hoursRule:[v => v % 0.25 === 0 || 'Please enter in quarter hours (0.25 = 15min)'],
+      hoursRule: [v => v % 0.25 === 0 || 'Please enter in quarter hours (0.25 = 15min)'],
       requiredRule: [v => !!v || 'This field required'],
       requireRadioButtondRule: [v => ((v || !v) && v != null) || 'This field required'],
       dialog: false,

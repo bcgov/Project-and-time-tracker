@@ -71,9 +71,8 @@ export default {
       amountRule: [(v) => {
         if (!v) return 'This field is required';
         const anyNonNumbers = v.toString().match(/[^\d,]+/g, '');
-        if (anyNonNumbers){
-          return 'Field must just be a number.'
-
+        if (anyNonNumbers) {
+          return 'Field must just be a number.';
         }
         return true;
       }],

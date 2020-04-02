@@ -101,19 +101,18 @@ export default {
           { day: 'Sat', description: '', amount: 0, category: '', date: '' },
           { day: 'Sun', description: '', amount: 0, category: '', date: '' },
         ],
-        amountRule: [(v) => {
+      amountRule: [(v) => {
         if (!v) return 'This field is required';
         const anyNonNumbers = v.toString().match(/[^\d,]+/g, '');
-        if (anyNonNumbers){
-          return 'Field must just be a number.'
-
+        if (anyNonNumbers) {
+          return 'Field must just be a number.';
         }
         return true;
-      }]
+      }],
     };
   },
 
-    watch: {
+  watch: {
     date() {
       this.dateFormatted = this.formatDate(this.date);
     },
