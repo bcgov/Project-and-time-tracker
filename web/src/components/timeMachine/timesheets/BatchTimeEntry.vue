@@ -1,6 +1,6 @@
 <template>
   <v-layout column justify-center>
-         <snackbar ref="snackbar"></snackbar>
+    <snackbar ref="snackbar"></snackbar>
     <v-flex>
       <v-data-table
         :headers="headers"
@@ -8,8 +8,8 @@
         hide-actions
         class="elevation-0 tm-v-datatable batch-entry"
       >
-        <template v-slot:items="props" >
-          <td >
+        <template v-slot:items="props">
+          <td>
             <v-select
               :items="allProjects"
               item-text="projectName"
@@ -32,7 +32,6 @@
               max="24"
               step="0.01"
               min="0"
-
               oninput="validity.valid||(value=0);"
               v-model="props.item.monday.hours"
             ></v-text-field>
@@ -43,7 +42,7 @@
               max="24"
               step="0.01"
               min="0"
-              :rules = "hoursRule"
+              :rules="hoursRule"
               oninput="validity.valid||(value=0);"
               v-model="props.item.tuesday.hours"
             ></v-text-field>
@@ -54,7 +53,7 @@
               max="24"
               step="0.01"
               min="0"
-              :rules = "hoursRule"
+              :rules="hoursRule"
               oninput="validity.valid||(value=0);"
               v-model="props.item.wednesday.hours"
             ></v-text-field>
@@ -65,7 +64,7 @@
               max="24"
               step="0.01"
               min="0"
-              :rules = "hoursRule"
+              :rules="hoursRule"
               oninput="validity.valid||(value=0);"
               v-model="props.item.thursday.hours"
             ></v-text-field>
@@ -76,7 +75,7 @@
               max="24"
               step="0.01"
               min="0"
-              :rules = "hoursRule"
+              :rules="hoursRule"
               oninput="validity.valid||(value=0);"
               v-model="props.item.friday.hours"
             ></v-text-field>
@@ -98,7 +97,7 @@
     </v-flex>
 
     <v-flex v-if="!editMode">
-      <v-btn class="btn-normal"  @click="addRow">ADD ANOTHER ENTRY</v-btn>
+      <v-btn class="btn-normal" @click="addRow">ADD ANOTHER ENTRY</v-btn>
       <pre>
           <!-- {{ weekEntries }} -->
 
@@ -176,6 +175,9 @@ export default {
     },
   },
   methods: {
+    validate() {
+      return this.form.validate();
+    },
     fetchUser() {
       const referenceId = this.$store.state.activeUser.refId;
       const user = this.$store.state.users.find(value => value.referenceId === referenceId);
@@ -187,11 +189,10 @@ export default {
       const selectedProjects = this.weekEntries.filter(
         item => item.projectId === selectedItem.projectId,
       );
-      if (selectedProjects.length === 1) { this.getTimeEntries(selectedItem); } else {
-        this.$refs.snackbar.displaySnackbar(
-          'info',
-          'This project is already added',
-        );
+      if (selectedProjects.length === 1) {
+        this.getTimeEntries(selectedItem);
+      } else {
+        this.$refs.snackbar.displaySnackbar('info', 'This project is already added');
         selectedItem.projectId = '';
       }
     },
@@ -276,6 +277,7 @@ export default {
       };
     },
     addRow() {
+      debugger;
       this.weekEntries.push(this.createEmptyWeekEntry());
     },
     prepareDataForSubmission() {

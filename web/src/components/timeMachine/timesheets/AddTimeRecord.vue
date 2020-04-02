@@ -21,9 +21,11 @@
                 <v-flex class="d-flex cardheadlabel1">
                   <v-flex md7 class="haederinfo">Information being entered by:</v-flex>
                   <v-flex md4>
-                    <v-select class = 'currentuser'
+                    <v-select
+                      class="currentuser"
                       v-model="form.userId"
-:rules="requiredRule"
+                      :rules="requiredRule"
+                      @change="onChangeUser()"
                       :items="userList"
                       item-value="id"
                       item-text="contact.fullName"
@@ -32,15 +34,15 @@
                   </v-flex>
                 </v-flex>
 
-                <v-flex  class="d-flex cardheadlabel2">
+                <v-flex class="d-flex cardheadlabel2">
                   <v-flex md4>
-                    <v-flex v-if="form.project && activeTab ==='weekly'">
-                    <b>MOU amount:</b>
-                    ${{ mouAmount }}
-                     </v-flex>
+                    <v-flex v-if="form.project && activeTab === 'weekly'">
+                      <b>MOU amount:</b>
+                      ${{ mouAmount }}
+                    </v-flex>
                   </v-flex>
                   <v-flex md4> <b>Currently Billed:</b> $0 </v-flex>
-                   <v-flex md4> <b>Legal Billed Amount:</b> $0 </v-flex>
+                  <v-flex md4> <b>Legal Billed Amount:</b> $0 </v-flex>
                 </v-flex>
               </v-flex>
             </v-layout>
@@ -81,7 +83,7 @@
                   <v-flex xs12>
                     <v-select
                       v-model="form.mou"
-:rules="requiredRule"
+                      :rules="requiredRule"
                       :items="mouList"
                       item-text="name"
                       item-value="id"
@@ -135,7 +137,7 @@
                   <v-flex v-show="recordTypeWeekly === 2">
                     <expense-entry ref="AddExpense"></expense-entry>
                   </v-flex>
-                   <v-flex v-show="recordTypeWeekly === 4">
+                  <v-flex v-show="recordTypeWeekly === 4">
                     <revenue-entry ref="AddRevenue"></revenue-entry>
                   </v-flex>
                   <v-flex v-show="recordTypeWeekly === 3">
@@ -147,12 +149,12 @@
           </v-card-text>
           <v-divider class="header-divider"></v-divider>
           <v-card-actions>
-            <v-btn class="btn-discard" @click="closeDialog()" :ripple="false">DISCARD TIMESHEET</v-btn>
+            <v-btn class="btn-discard" @click="closeDialog()" :ripple="false"
+              >DISCARD TIMESHEET</v-btn
+            >
             <v-flex class="add-btns">
               <v-btn class="btn-normal" @click="expotTimesheet()">EXPORT TIMESHEET</v-btn>
-              <v-btn class="add-new-row" color="primary" @click="saveAndClose()"
-                >SUBMIT</v-btn
-              >
+              <v-btn class="add-new-row" color="primary" @click="saveAndClose()">SUBMIT</v-btn>
             </v-flex>
           </v-card-actions>
         </v-card>
@@ -206,7 +208,9 @@ export default {
     projectRfx() {
       if (typeof this.form.project !== 'undefined') {
         if (this.$store.state.activeProjectRfxData.length === 1) {
-          if (this.$store.state.activeProjectRfxData[0].id === '') { return []; }
+          if (this.$store.state.activeProjectRfxData[0].id === '') {
+            return [];
+          }
         }
         return this.$store.state.activeProjectRfxData;
       }
@@ -244,6 +248,15 @@ export default {
     timeEntry: Object,
   },
   methods: {
+    onChangeUser() {
+      if (this.activeTab === 'weekly') {
+        if (this.form.projectId) {
+          this.getTimeEntries();
+        }
+      } else {
+        this.initializeBatchEntry();
+      }
+    },
     ConvertToCSV(objArray) {
       const array = typeof objArray !== 'object' ? JSON.parse(objArray) : objArray;
       let str = '';
@@ -262,7 +275,6 @@ export default {
       return str;
     },
 
-
     csvExport(arrData) {
       let csvContent = 'data:text/csv;charset=utf-8,';
       csvContent += [
@@ -280,12 +292,11 @@ export default {
     },
 
     expotTimesheet() {
-      if (!(this.form.userId)) {
+      if (!this.form.userId) {
         this.$refs.snackbar.displaySnackbar('error', 'Please select user.');
         return;
       }
       const formData = {
-
         userId: this.form.userId,
       };
       const vm = this;
@@ -299,7 +310,8 @@ export default {
           for (let j = 0; j < entries.length; j++) {
             const entry = entries[j];
 
-            timeEntries.push({ Project: currentProject,
+            timeEntries.push({
+              Project: currentProject,
               'Entry Date': entry.entryDate,
               'Billable Hours': entry.hoursBillable,
               'Billable Comments': entry.commentsBillable,
@@ -309,7 +321,8 @@ export default {
               'Expense Category': entry.expenseCategory,
               'Expense Description': entry.expenseComment,
               'Revenue Amount': entry.revenueAmount,
-              'Revenue Description': entry.revenueComment });
+              'Revenue Description': entry.revenueComment,
+            });
           }
         }
         this.csvExport(timeEntries);
@@ -375,7 +388,7 @@ export default {
       if (!this.editMode) {
         const date = this.getDatePart(this.$store.state.timesheetsWeek.startDate);
         const selectedProjects = this.$store.state.allTimesheets.filter(
-          item => this.getDatePart(item.startDate) === date,
+          item => this.getDatePart(item.startDate) === date && item.userId == this.form.userId,
         );
         this.clearBatchEntry();
         for (let i = 0; i < selectedProjects.length; i++) {
@@ -463,7 +476,9 @@ export default {
       return new Date(parts[0], parts[1] - 1, parts[2]);
     },
     getDatePart(date) {
-      if (typeof date !== 'string') { date = date.format('YYYY-MM-DD'); }
+      if (typeof date !== 'string') {
+        date = date.format('YYYY-MM-DD');
+      }
       date = this.stringToDate(date);
       return this.getDateInYYYYMMDD(date);
     },
@@ -543,12 +558,30 @@ export default {
     async saveAndClose() {
       if (this.$refs.AddimeRecords.validate()) {
         if (this.activeTab === 'weekly') {
+          if (
+            !this.$refs.Billable.validate()
+            || !this.$refs.NonBillable.validate()
+            || !this.$refs.AddRevenue.validate()
+            || !this.$refs.AddExpense.validate()
+          ) {
+            this.$refs.snackbar.displaySnackbar('error', 'Please correct validation errors.');
+            return;
+          }
           this.submitWeekData(true);
         } else {
+          if (
+            !this.$refs.billableBatchEntry.validate()
+            || !this.$refs.nonBillableBatchEntry.validate()
+          ) {
+            this.$refs.snackbar.displaySnackbar('error', 'Please correct validation errors.');
+            return;
+          }
           const nonBillableBatchEntry = this.$refs.nonBillableBatchEntry.prepareDataForSubmission();
           const billableBatchEntry = this.$refs.billableBatchEntry.prepareDataForSubmission();
           this.submitBatchData(nonBillableBatchEntry, billableBatchEntry, true);
         }
+      } else {
+        this.$refs.snackbar.displaySnackbar('error', 'Please correct validation errors.');
       }
     },
 
@@ -711,9 +744,7 @@ export default {
           }
         }
         if (revenueDetails.length > 0) {
-          const revenue = revenueDetails.filter(
-            item => item.date === timeEntries[index].entryDate,
-          );
+          const revenue = revenueDetails.filter(item => item.date === timeEntries[index].entryDate);
           if (revenue[0]) {
             timeEntries[index].revenueAmount = revenue[0].amount === '' ? 0 : revenue[0].amount;
             timeEntries[index].revenueComment = revenue[0].description;
@@ -774,7 +805,6 @@ export default {
       this.dialog = false;
     },
     reset() {
-      debugger;
       this.$refs.AddimeRecords.resetValidation();
       this.clearTimeEntries();
       const data = this.initData();
