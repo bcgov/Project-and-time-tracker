@@ -6,13 +6,7 @@
           <h1>You have successfully submitted your project</h1>
         </div>
       </v-flex>
-      <v-flex xs12>
-        <div class="v-form-container">
-          <h3
-            class="intake-secondary-header"
-          >You will receive an email with next steps within a few business days.</h3>
-        </div>
-      </v-flex>
+     
       <v-flex xs12 class="intake-success-button">
         <v-btn color="btnPrimary" class="white--text" @click="logout">Logout</v-btn>
       </v-flex>
