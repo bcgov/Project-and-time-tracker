@@ -2,14 +2,14 @@
   <v-card>
     <spinner ref="spinner"></spinner>
     <snackbar ref="snackbar"></snackbar>
-       <confirm ref="confirm"></confirm>
+    <confirm ref="confirm"></confirm>
     <v-toolbar v-if="title" card dense color="transparent">
       <v-toolbar-title>
         <h4>{{ title }}</h4>
       </v-toolbar-title>
     </v-toolbar>
     <v-container fluid>
-      <v-radio-group v-model="isResolved"  row>
+      <v-radio-group v-model="isResolved" row>
         <v-radio label="Logs In Progress" :value="false" isResolved></v-radio>
         <v-radio label="Resolved Logs" :value="true" isResolved></v-radio>
       </v-radio-group>
@@ -17,7 +17,6 @@
     <v-divider></v-divider>
 
     <v-card-text class="pa-0">
-     
       <template>
         <v-data-table
           :headers="headers"
@@ -47,7 +46,7 @@
                 </template>
                 <span>View Procurement Log</span>
               </v-tooltip>
-                <v-btn
+              <v-btn
                 small
                 color="btnPrimary"
                 class="white--text intake-table-approve-btn ma-0"
@@ -65,55 +64,81 @@
 <script>
 import Spinner from "../common/Spinner.vue";
 import ProcurementLog from "./Procurementlog.vue";
-import Confirm from '../common/Confirm.vue';
+import Confirm from "../common/Confirm.vue";
 import Snackbar from "../common/Snackbar.vue";
 export default {
   props: {
     title: String
   },
   components: {
-     Snackbar,
+    Snackbar,
     Spinner,
-     Confirm,
+    Confirm,
     ProcurementLog
   },
   data() {
     return {
       isResolved: true,
       headers: [
-        { text: "Log Type", value: "logType", align: "left", sortable: true,  width:"5%"},
+        {
+          text: "Log Type",
+          value: "logType",
+          align: "left",
+          sortable: true,
+          width: "5%"
+        },
         // { text: 'Risk Owner', value: 'riskOwner', sortable: false },
         {
           text: "Description of Issue",
           value: "issueDescription",
-          sortable: false, width:"15%"
+          sortable: false,
+          width: "15%"
         },
-        { text: "Date To Client", value: "dateToClient", sortable: false, width:"10%"},
+        {
+          text: "Date To Client",
+          value: "dateToClient",
+          sortable: false,
+          width: "10%"
+        },
         {
           text: "Method of Notification",
           value: "notificationMethod",
-          sortable: false, width:"10%"
+          sortable: false,
+          width: "10%"
         },
-         {
+        {
           text: "Decision Maker",
           value: "riskOwner",
-           sortable: false, width:"10%"
+          sortable: false,
+          width: "10%"
         },
-        { text: "Phase Impact", value: "phaseImpactName", sortable: false, width:"10%" },
-        { text: "Client Decision", value: "clientDecision", sortable: false, width:"10%"},
+        {
+          text: "Phase Impact",
+          value: "phaseImpactName",
+          sortable: false,
+          width: "10%"
+        },
+        {
+          text: "Client Decision",
+          value: "clientDecision",
+          sortable: false,
+          width: "10%"
+        },
         {
           text: "Resolution or Follow Up Date",
           value: "followUpDate",
-          sortable: false,width:"12%"
+          sortable: false,
+          width: "12%"
         },
         {
-          text: "Action",width:"15%"
+          text: "Action",
+          width: "15%"
         }
       ],
       logList: this.fetchData(),
       selectedLeadUser: "",
       selectedProjectBackup: "",
-      unResolved:[]
+      unResolved: []
     };
   },
   computed: {
@@ -126,10 +151,14 @@ export default {
         });
       }
       if (this.isResolved) {
-        const value = this.$store.state.allProcurementLog.filter(function (el) { return el.isResolved == true});
+        const value = this.$store.state.allProcurementLog.filter(function(el) {
+          return el.isResolved == true;
+        });
         return value;
       } else {
-       const value =  this.$store.state.allProcurementLog.filter(function (el) { return el.isResolved == false});
+        const value = this.$store.state.allProcurementLog.filter(function(el) {
+          return el.isResolved == false;
+        });
         return value;
       }
     }
@@ -141,40 +170,43 @@ export default {
     async resolveLog(id) {
       if (
         await this.$refs.confirm.open(
-          'info',
-          'Are you sure you want to resolve this log?',
+          "info",
+          "Are you sure you want to resolve this log?"
         )
       ) {
-       const found = this.$store.state.allProcurementLog.find(
-        element => element.id == id
-      );
-      console.log("result:", found);
-      found.isResolved = true;
-      console.log("new result",found);
-       await this.$store
-            .dispatch("updateProctLog", {
-              procurementlog: found
-            })
-            .then(
-              () => {
-                this.$refs.snackbar.displaySnackbar("success", "Resolved");
-              },
-              err => {
-                try {
-                  const { message } = err.response.data.error;
-                  this.$refs.snackbar.displaySnackbar("error", message);
-                } catch (ex) {
-                  this.$refs.snackbar.displaySnackbar(
-                    "error",
-                    "Failed to Resolve"
-                  );
-                }
+        const found = this.$store.state.allProcurementLog.find(
+          element => element.id == id
+        );
+        console.log("result:", found);
+        found.isResolved = true;
+        console.log("new result", found);
+        await this.$store
+          .dispatch("updateProctLog", {
+            procurementlog: found
+          })
+          .then(
+            () => {
+              this.$refs.snackbar.displaySnackbar("success", "Resolved");
+            },
+            err => {
+              try {
+                const { message } = err.response.data.error;
+                this.$refs.snackbar.displaySnackbar("error", message);
+              } catch (ex) {
+                this.$refs.snackbar.displaySnackbar(
+                  "error",
+                  "Failed to Resolve"
+                );
               }
-            );
-            
+            }
+          );
       }
     },
-   
+    async close() {
+      console.log("yeah close is calling");
+      this.fetchData();
+    },
+
     viewRequest(procId) {
       console.log(procId);
       console.log("complete list:", this.$store.state.allProcurementLog);
@@ -189,12 +221,14 @@ export default {
       if (this.$refs.spinner) {
         this.$refs.spinner.open();
       }
-      console.log('projId', this.$store.state.activeProject.id)
-      let procLogs = await this.$store.dispatch("fetchAllProcurementLog", {id: this.$store.state.activeProject.id});
+      console.log("projId", this.$store.state.activeProject.id);
+      let procLogs = await this.$store.dispatch("fetchAllProcurementLog", {
+        id: this.$store.state.activeProject.id
+      });
       let projRfxData = await this.$store.dispatch("fetchProjectRFxData", {
         id: this.$store.state.activeProject.id
       });
-     // this.$refs.spinner.close();
+      // this.$refs.spinner.close();
       return procLogs[0];
     }
   }
@@ -210,14 +244,14 @@ export default {
 
 .pa-0 >>> .tm-v-datatable thead th:nth-child(7),
 .pa-0 >>> .tm-v-datatable thead th:nth-child(8),
- .pa-0 >>> .tm-v-datatable thead th:nth-child(2),
-   .pa-0 >>> .tm-v-datatable thead th:nth-child(6),
-     .pa-0 >>> .tm-v-datatable thead th:nth-child(5),
-        .pa-0 >>> .tm-v-datatable thead th:nth-child(4),
-        .pa-0 >>> .tm-v-datatable thead th:nth-child(3) {
-    font-size: 14px !important;
-    font-weight: 700 !important;
-    word-break: break-word;
-    white-space: inherit !important;
+.pa-0 >>> .tm-v-datatable thead th:nth-child(2),
+.pa-0 >>> .tm-v-datatable thead th:nth-child(6),
+.pa-0 >>> .tm-v-datatable thead th:nth-child(5),
+.pa-0 >>> .tm-v-datatable thead th:nth-child(4),
+.pa-0 >>> .tm-v-datatable thead th:nth-child(3) {
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  word-break: break-word;
+  white-space: inherit !important;
 }
 </style>
