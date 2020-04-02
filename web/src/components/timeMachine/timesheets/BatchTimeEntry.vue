@@ -120,10 +120,14 @@ export default {
   },
   computed: {
     allProjects() {
-      const mouProjects = this.$store.state.projects.filter(
-        item => item.mou != null && item.mou !== '',
-      );
-      return mouProjects;
+      if (typeof this.userId !== 'undefined') {
+        const mouProjects = this.$store.state.allProjects.filter(
+          item => item.mou != null && item.mou !== '' && (item.backupUserId === this.userId
+|| item.leadUserId === this.userId),
+        );
+        return mouProjects;
+      }
+      return [];
     },
     selectedStartDate() {
       return this.$store.state.timesheetsWeek.startDate;
@@ -133,7 +137,6 @@ export default {
     //  const form = Object.assign({}, this.$props.timeEntry);
     return {
       // form: { ...form },
-      props: { ...this.selectedItem },
       hoursRule: [v => v % 0.25 === 0 || 'Please enter in quarter hours (0.25 = 15min)'],
       exludeProjects: [],
       projectRfx: '',
@@ -163,6 +166,7 @@ export default {
   },
   props: {
     selectedItem: Number,
+    userId: String,
   },
 
   watch: {
@@ -175,15 +179,8 @@ export default {
     },
   },
   methods: {
-    validate() {
-      return this.form.validate();
-    },
     fetchUser() {
-      const referenceId = this.$store.state.activeUser.refId;
-      const user = this.$store.state.users.find(value => value.referenceId === referenceId);
-      if (user && user.id) {
-        return user.id;
-      }
+      return this.userId;
     },
     onChangeProjectBatchEntry(selectedItem) {
       const selectedProjects = this.weekEntries.filter(
@@ -216,7 +213,7 @@ export default {
     },
     async getTimeEntries(seletedRow) {
       const date = this.getDatePart(this.$store.state.timesheetsWeek.startDate);
-      const mouProjects = this.$store.state.projects.filter(
+      const mouProjects = this.allProjects(
         item => item.mou != null && item.mou !== '' && item.id == seletedRow.projectId,
       );
       const formData = {
@@ -277,7 +274,6 @@ export default {
       };
     },
     addRow() {
-      debugger;
       this.weekEntries.push(this.createEmptyWeekEntry());
     },
     prepareDataForSubmission() {

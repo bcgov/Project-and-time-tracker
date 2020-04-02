@@ -1,8 +1,8 @@
 <template>
   <v-card>
     <spinner ref="spinner"></spinner>
-     <confirm ref="confirm"></confirm>
-     <snackbar ref="snackbar"></snackbar>
+    <confirm ref="confirm"></confirm>
+    <snackbar ref="snackbar"></snackbar>
     <v-toolbar v-if="title" card dense color="transparent">
       <v-toolbar-title>
         <h4>{{ title }}</h4>
@@ -21,7 +21,7 @@
             hide-details
           ></v-text-field>
         </v-flex>
-        <timesheets-toolbar ref="timesheetstoolbar" @refresh="fetchData" ></timesheets-toolbar>
+        <timesheets-toolbar ref="timesheetstoolbar" @refresh="fetchData"></timesheets-toolbar>
       </v-layout>
     </v-card-title>
     <v-divider></v-divider>
@@ -195,14 +195,15 @@ export default {
       return projectLeadName;
     },
     async fetchData() {
-      if (this.$refs.spinner) { this.$refs.spinner.open(); }
+      if (this.$refs.spinner) {
+        this.$refs.spinner.open();
+      }
       await this.$store.dispatch('fetchUserTimesheets');
       await this.$store.dispatch('fetchAllTimesheets');
-      await this.$store.dispatch('fetchProjects'); // Needed in AddTimeRecord
 
-
-      if (this.$refs.spinner) { this.$refs.spinner.close(); }
-
+      if (this.$refs.spinner) {
+        this.$refs.spinner.close();
+      }
 
       // this.$store
       //   .dispatch('fetchProjects')
@@ -223,19 +224,18 @@ export default {
     //     });
     // },
     async deleteTimesheet(id) {
-      if (
-        await this.$refs.confirm.open(
-          'danger',
-          'Are you sure to delete this record?',
-        )
-      ) {
+      if (await this.$refs.confirm.open('danger', 'Are you sure to delete this record?')) {
         await this.$store.dispatch('deleteTimesheet', { id });
         this.$refs.snackbar.displaySnackbar('success', 'Successfully deleted the record.');
         await this.fetchData();
       }
     },
+    async initalfetch() {
+      await this.$store.dispatch('fetchAllProjects');// Needed in AddTimeRecord
+    },
   },
   created() {
+    this.initalfetch();
     this.fetchData();
   },
 };

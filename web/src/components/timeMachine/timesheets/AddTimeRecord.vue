@@ -68,12 +68,12 @@
                   </v-flex>
 
                   <v-flex v-show="recordType === 1">
-                    <batch-time-entry ref="billableBatchEntry" :selectedItem="1"></batch-time-entry>
+                    <batch-time-entry ref="billableBatchEntry" :selectedItem="1"  :userId = form.userId></batch-time-entry>
                   </v-flex>
                   <v-flex v-show="recordType === 3">
                     <batch-time-entry
                       ref="nonBillableBatchEntry"
-                      :selectedItem="3"
+                      :selectedItem="3" :userId = form.userId
                     ></batch-time-entry>
                   </v-flex>
                 </v-flex>
@@ -193,8 +193,9 @@ export default {
       }
     },
     projectList() {
-      if (typeof this.form.mou !== 'undefined') {
-        const mouProjects = this.$store.state.projects.filter(item => item.mou);
+      if (typeof this.form.mou !== 'undefined' && typeof this.form.userId !== 'undefined') {
+        const mouProjects = this.$store.state.allProjects.filter(item => item.mou && (item.backupUserId === this.form.userId
+|| item.leadUserId === this.form.userId));
         if (mouProjects.length === 0) {
           return [];
         }
@@ -250,7 +251,7 @@ export default {
   methods: {
     onChangeUser() {
       if (this.activeTab === 'weekly') {
-        if (this.form.projectId) {
+        if (this.form.project) {
           this.getTimeEntries();
         }
       } else {
@@ -569,13 +570,6 @@ export default {
           }
           this.submitWeekData(true);
         } else {
-          if (
-            !this.$refs.billableBatchEntry.validate()
-            || !this.$refs.nonBillableBatchEntry.validate()
-          ) {
-            this.$refs.snackbar.displaySnackbar('error', 'Please correct validation errors.');
-            return;
-          }
           const nonBillableBatchEntry = this.$refs.nonBillableBatchEntry.prepareDataForSubmission();
           const billableBatchEntry = this.$refs.billableBatchEntry.prepareDataForSubmission();
           this.submitBatchData(nonBillableBatchEntry, billableBatchEntry, true);
@@ -610,7 +604,7 @@ export default {
         timeSheetEntry.endDate = endDate;
         timeSheetEntry.project = billableBatchEntry[itemIndex].projectId;
         timeSheetEntry.userId = this.form.userId;
-        const projectMou = this.$store.state.projects.filter(
+        const projectMou = this.projectList.filter(
           item => item.id === billableBatchEntry[itemIndex].projectId,
         );
         if (projectMou && projectMou[0]) {
