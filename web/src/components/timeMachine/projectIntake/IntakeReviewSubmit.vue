@@ -253,12 +253,12 @@
   </div>
 </template>
 <script>
-import "./intakeReviewSubmit.styl";
+import './intakeReviewSubmit.styl';
 
 export default {
   components: {},
   props: {
-    intakeValues: {}
+    intakeValues: {},
   },
   computed: {},
 
@@ -267,48 +267,48 @@ export default {
     const form = Object.assign({}, this.$props.intakeValues);
     return {
       form: { ...form },
-      panelState: [true]
+      panelState: [true],
     };
   },
   watch: {},
 
   methods: {
     maskPhone(e) {
-      var x = e.replace(/\D/g, "").match(/(\d{3})(\d{3})(\d{4})/);
-     return x = "(" + x[1] + ") " + x[2] + "-" + x[3];
+      let x = e.replace(/\D/g, '').match(/(\d{3})(\d{3})(\d{4})/);
+      return x = '(' + x[1] + ') ' + x[2] + '-' + x[3];
     },
     editItem(itemIndex) {
-      this.$emit("switch", itemIndex);
+      this.$emit('switch', itemIndex);
     },
     checkBoolenValues(value) {
       if (value) {
-        return "Yes";
+        return 'Yes';
       }
-      return "No";
+      return 'No';
     },
     getContactType(contactType) {
-      if (contactType === "clientfinance") {
-        return "Client Finance";
+      if (contactType === 'clientfinance') {
+        return 'Client Finance';
       }
-      if (contactType === "clientlead") {
-        return "Client Lead";
+      if (contactType === 'clientlead') {
+        return 'Client Lead';
       }
-      if (contactType === "clientsponsor") {
-        return "Client Sponsor";
+      if (contactType === 'clientsponsor') {
+        return 'Client Sponsor';
       }
-      if (contactType === "clientcontact") {
-        return "Client Contact";
+      if (contactType === 'clientcontact') {
+        return 'Client Contact';
       }
-      return "";
+      return '';
     },
     getProjectSector() {
       const projectSector = Object.assign(
         {},
-        this.$props.intakeValues.projectSector
+        this.$props.intakeValues.projectSector,
       );
       if (projectSector.id) {
         const sector = this.$store.state.projectSectors.filter(
-          item => item.id === projectSector.id
+          item => item.id === projectSector.id,
         );
         if (sector[0]) {
           return sector[0].projectSectorName;
@@ -316,27 +316,27 @@ export default {
       } else if (this.$props.intakeValues.otherProjectSectorName) {
         return this.$props.intakeValues.otherProjectSectorName;
       }
-      return "";
+      return '';
     },
     getMinistry() {
       if (this.$props.intakeValues.client.isNonMinistry) {
         return this.$props.intakeValues.client.nonMinistryName
           ? this.$props.intakeValues.client.nonMinistryName
-          : "";
+          : '';
       }
       const ministry = Object.assign(
         {},
-        this.$props.intakeValues.client.ministry
+        this.$props.intakeValues.client.ministry,
       );
       if (ministry.id) {
         const selectedMinistry = this.$store.state.ministries.filter(
-          item => item.id === ministry.id
+          item => item.id === ministry.id,
         );
         if (selectedMinistry[0]) {
           return selectedMinistry[0].ministryName;
         }
       }
-      return "";
+      return '';
     },
     print() {
       this.expandAll();
@@ -344,11 +344,15 @@ export default {
     },
     expandAll() {
       this.panelState = [true, true, true, true, true];
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>
+.review-submit .v-expansion-panel
+{
+ display:block !important;
+}
 @media print {
   .application--wrap > aside {
     display: none;
