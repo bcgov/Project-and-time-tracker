@@ -36,7 +36,7 @@
             <td class="text-xs-left">{{ props.item.riskOwner }}</td>
             <td class="text-xs-left">{{ props.item.phaseImpactName }}</td>
             <td class="text-xs-left">{{ props.item.clientDecision }}</td>
-            <td class="text-xs-left">{{ props.item.followUpDate | formatDate }}</td>
+            <td class="text-xs-left">{{ new Date(props.item.followUpDate).toString().slice(3,15)}}</td>
             <td width="10%" class="text-xs-left">
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
@@ -131,7 +131,7 @@ export default {
           text: 'Resolution or Follow Up Date',
           value: 'followUpDate',
           sortable: false,
-          width: '12%',
+          width: '11.3%',
         },
         {
           text: 'Action',
