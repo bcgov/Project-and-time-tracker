@@ -10,8 +10,8 @@
       <h1 class="projects-header">View {{ selected }}</h1>
       <v-layout row wrap>
       <v-flex xs12>
-        <projects-table v-if="selected === 'My Projects'"></projects-table>
-        <projects-table v-if="selected === 'All Projects'"></projects-table>
+        <projects-table v-if="selected === 'My Projects'" :selectedItem="2"></projects-table>
+        <projects-table v-if="selected === 'All Projects'" :selectedItem="1"></projects-table>
         <archived-projects-table v-if="selected === 'Archived Projects'"></archived-projects-table>
       </v-flex>
     </v-layout>
