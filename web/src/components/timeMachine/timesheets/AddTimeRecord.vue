@@ -225,12 +225,12 @@ export default {
       return [];
     },
     mouAmount() {
-      if (!this.form || !this.form.mou) {
+      if (!this.form || !this.form.mou || !this.form.project) {
         return '';
       }
-      const mou = this.$store.state.mouList.filter(item => item.id === this.form.mou);
-      if (mou[0]) {
-        return mou[0].name.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      const selectedProject = this.projectList.filter(item => item.id === this.form.project);
+      if (selectedProject[0]) {
+        return selectedProject[0].mouAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
       }
       return '';
     },

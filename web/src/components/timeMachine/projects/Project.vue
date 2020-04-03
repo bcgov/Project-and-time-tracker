@@ -41,7 +41,7 @@
                                         <v-layout v-for="(inneritem) in $store.state.allProjectNotes" :key="inneritem.id">
                                           <div style="width:100%" v-if="(inneritem.parentId)&&(inneritem.parentId == item.id)">
                                             <br>
-                                          <span class="reply-person"  v-html="inneritem.user.contact.fullName" />  
+                                          <span class="reply-person"  v-html="inneritem.user.contact.fullName" />
                                           <span class="reply-note-time" v-html="new Date(inneritem.noteTime).toString().slice(0,15)" />
                                           <br>
                                           <span class="reply-note"  v-html="inneritem.note" />
@@ -123,7 +123,8 @@
                       label="Search"
                       single-line
                       hide-details
-                    ></v-text-field>
+                      v-model="search"
+                      ></v-text-field>
                   </v-flex>
                   <!-- RFx Type and Phases -->
                   <v-tab-item value="rfx">
@@ -290,7 +291,7 @@
                           </v-layout>
                           <v-layout row wrap>
                             <v-flex xs12>
-                              <procurement-log-table ref="procurementtable"></procurement-log-table>
+                              <procurement-log-table ref="procurementtable" :search ="search"></procurement-log-table>
                             </v-flex>
                           </v-layout>
                         </v-container>
@@ -308,28 +309,28 @@
 </template>
 
 <script>
-import Vue from "vue";
-import VeeValidate from "vee-validate";
-import RFxDto from "@/domain/models/RFx.dto";
-import ContactDto from "@/domain/models/Contact.dto";
-import Material from "vuetify/es5/util/colors";
-import ProcurementLog from "./Procurementlog.vue";
-import ProjectBaseInfo from "./ProjectBaseInfo.vue";
-import projectNotes from "./projectNotes.vue";
-import ProjectContactInfo from "./ProjectContactInfo.vue";
-import ProjectRfx from "./ProjectRfx.vue";
-import ProjectFinanceInfo from "./ProjectFinanceInfo.vue";
-import projectRiskAssessment from "./ProjectRisk.vue";
-import Snackbar from "../common/Snackbar.vue";
-import ProjectAdditionalContactInfo from "./ProjectAddintionalContactInfo.vue";
-import ProcurementLogTable from "./ProcurementLogTable.vue";
+import Vue from 'vue';
+import VeeValidate from 'vee-validate';
+import RFxDto from '@/domain/models/RFx.dto';
+import ContactDto from '@/domain/models/Contact.dto';
+import Material from 'vuetify/es5/util/colors';
+import ProcurementLog from './Procurementlog.vue';
+import ProjectBaseInfo from './ProjectBaseInfo.vue';
+import projectNotes from './projectNotes.vue';
+import ProjectContactInfo from './ProjectContactInfo.vue';
+import ProjectRfx from './ProjectRfx.vue';
+import ProjectFinanceInfo from './ProjectFinanceInfo.vue';
+import projectRiskAssessment from './ProjectRisk.vue';
+import Snackbar from '../common/Snackbar.vue';
+import ProjectAdditionalContactInfo from './ProjectAddintionalContactInfo.vue';
+import ProcurementLogTable from './ProcurementLogTable.vue';
 
-import "./project.styl";
+import './project.styl';
 
 Vue.use(VeeValidate);
 
 const CLIENT_INFO_TYPES = {
-  CLIENT_CONTACT: "clientcontact"
+  CLIENT_CONTACT: 'clientcontact',
 };
 
 export default {
@@ -343,16 +344,16 @@ export default {
     ProjectAdditionalContactInfo,
     projectRiskAssessment,
     ProcurementLogTable,
-    ProcurementLog
+    ProcurementLog,
   },
   props: {
     title: String,
     ProcurementLog: {
       type: Function,
-      default: () => {}
-    }
+      default: () => {},
+    },
   },
-  $_veeValidate: { validator: "new" },
+  $_veeValidate: { validator: 'new' },
   computed: {
     project() {
       return this.$store.state.activeProject;
@@ -365,26 +366,26 @@ export default {
     // }
   },
   data() {
-    
     return {
+      search: '',
       rfxData: [new RFxDto()],
-      projectId: "",
+      projectId: '',
       enabled: true,
       initialLoad: true,
       color: Material,
-      selectedTab: "tab-1",
-      projectcomments : this.$store.state.allProjectNotes
-     
+      selectedTab: 'tab-1',
+      projectcomments: this.$store.state.allProjectNotes,
+
     };
   },
   watch: {
     enabled() {
       if (!this.enabled) this.$refs.projectClient.reset();
-    }
+    },
   },
   methods: {
     close() {
-    this.$refs.procurementtable.close();
+      this.$refs.procurementtable.close();
     },
     projectnotes() {
       return this.$store.state.allProjectNotes;
@@ -393,8 +394,8 @@ export default {
       this.$refs.ProcurementLog.reset();
       this.$refs.ProcurementLog.open();
     },
-     replynotes(value) {
-      let refvalue = value;
+    replynotes(value) {
+      const refvalue = value;
       console.log('refvalue', refvalue);
 
       this.$refs[refvalue][0].reset();
@@ -410,12 +411,12 @@ export default {
     // },
     projectContactData(contactType) {
       const contactData = this.$store.getters.getProjectContactByType(
-        contactType
+        contactType,
       );
       if (
-        this.initialLoad &&
-        contactType === "clientcontact" &&
-        this.$store.state.activeProjectContacts.length > 0
+        this.initialLoad
+        && contactType === 'clientcontact'
+        && this.$store.state.activeProjectContacts.length > 0
       ) {
         if (this.$store.state.activeProjectContacts.length > 2) {
           this.enabled = true;
@@ -432,26 +433,26 @@ export default {
 
       if (!(id === undefined)) {
         this.projectId = id;
-        this.$store.dispatch("fetchProject", { id: this.projectId });
-        this.$store.dispatch("fetchProjectRFxData", { id: this.projectId });
-        this.$store.dispatch("fetchProjectContacts", { id: this.projectId });
-        this.$store.dispatch("fetchprojectRiskAnswers", { id: this.projectId });
-        this.$store.dispatch("fetchAllProcurementLog", { id: this.projectId });
+        this.$store.dispatch('fetchProject', { id: this.projectId });
+        this.$store.dispatch('fetchProjectRFxData', { id: this.projectId });
+        this.$store.dispatch('fetchProjectContacts', { id: this.projectId });
+        this.$store.dispatch('fetchprojectRiskAnswers', { id: this.projectId });
+        this.$store.dispatch('fetchAllProcurementLog', { id: this.projectId });
       }
-       this.$store.dispatch("fetchAllProjectNotes", { id: this.projectId });
-      this.$store.dispatch("fetchintakeRiskQuestions");
+      this.$store.dispatch('fetchAllProjectNotes', { id: this.projectId });
+      this.$store.dispatch('fetchintakeRiskQuestions');
     },
     formatDate(date) {
       if (!date) return null;
 
-      const [year, month, day] = date.split("-");
+      const [year, month, day] = date.split('-');
       return `${month}/${day}/${year}`;
     },
     parseDate(date) {
       if (!date) return null;
 
-      const [month, day, year] = date.split("/");
-      return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+      const [month, day, year] = date.split('/');
+      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
     },
     addNewRFx() {
       const allRFXValid = this.validateRFXForm();
@@ -478,8 +479,7 @@ export default {
       this.$refs.projectFinancier.Validate();
       const projectLeadForm = this.$refs.projectLead.form || undefined;
       const projectSponsorForm = this.$refs.projectSponsor.form || undefined;
-      const projectFinancierForm =
-        this.$refs.projectFinancier.form || undefined;
+      const projectFinancierForm = this.$refs.projectFinancier.form || undefined;
       const projectContactForm = this.$refs.projectClient
         ? this.$refs.projectClient.form
         : undefined;
@@ -490,41 +490,40 @@ export default {
         projectLeadForm,
         projectSponsorForm,
         projectContactForm,
-        projectFinancierForm
+        projectFinancierForm,
       ].filter(contact => contact !== undefined);
       if (contacts instanceof Array && contacts.length > 0) {
-        await this.$store.dispatch("updateProjectContacts", {
+        await this.$store.dispatch('updateProjectContacts', {
           id: this.projectId,
-          contacts
+          contacts,
         });
-        this.$refs.snackbar.displaySnackbar("success", "Saved");
+        this.$refs.snackbar.displaySnackbar('success', 'Saved');
       }
     },
     async saveFinanceCodes() {
-      const projectFinanceForm =
-        this.$refs.projectFinanceInfo.financeInfo || undefined;
+      const projectFinanceForm = this.$refs.projectFinanceInfo.financeInfo || undefined;
       if (this.$refs.projectFinanceInfo.validate()) {
         if (this.project && this.project.client && this.project.client.id) {
           await this.$store
-            .dispatch("updateProjectFinanceCodes", {
+            .dispatch('updateProjectFinanceCodes', {
               id: this.project.client.id,
-              financeCodes: projectFinanceForm
+              financeCodes: projectFinanceForm,
             })
             .then(
               () => {
-                this.$refs.snackbar.displaySnackbar("success", "Updated");
+                this.$refs.snackbar.displaySnackbar('success', 'Updated');
               },
-              err => {
+              (err) => {
                 try {
                   const { message } = err.response.data.error;
-                  this.$refs.snackbar.displaySnackbar("error", message);
+                  this.$refs.snackbar.displaySnackbar('error', message);
                 } catch (ex) {
                   this.$refs.snackbar.displaySnackbar(
-                    "error",
-                    "Failed to update"
+                    'error',
+                    'Failed to update',
                   );
                 }
-              }
+              },
             );
         }
       }
@@ -532,7 +531,7 @@ export default {
     initializeRisk() {
       this.$refs.projectRiskAssessment.updateInitalData();
       this.$refs.projectRiskAssessment.editScreen = false;
-    }
+    },
   },
   created() {
     while (this.$store.state.activeProjectContacts.length > 0) {
@@ -541,12 +540,12 @@ export default {
 
     // if no rfx, add one
     if (this.projectRfxData.length === 0) {
-      console.log("addinging initial rfx");
+      console.log('addinging initial rfx');
       this.addNewRFx();
     }
 
     this.fetchData();
-  }
+  },
 };
 </script>
 <style scoped>

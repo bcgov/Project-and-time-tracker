@@ -294,9 +294,9 @@ export default {
     ministries() {
       return this.$store.state.ministries;
     },
-    mouList(){
+    mouList() {
       return this.$store.state.mouList;
-    }
+    },
   },
   data() {
     const form = Object.assign({}, this.$props.project);
@@ -328,12 +328,11 @@ export default {
       amountRule: [(v) => {
         if (!v) return 'This field is required';
         const anyNonNumbers = v.toString().match(/[^\d,]+/g, '');
-        if (anyNonNumbers){
-          return 'Field must just be a number.'
-
+        if (anyNonNumbers) {
+          return 'Field must just be a number.';
         }
         return true;
-      }]
+      }],
     };
   },
   watch: {
@@ -368,22 +367,21 @@ export default {
       return `${month}/${day}/${year}`;
     },
     onBlurNumber(e) {
-    this.visible = false;
-        this.temp = this.amount;
-        this.amount = this.thousandSeprator(this.amount);
+      this.visible = false;
+      this.temp = this.amount;
+      this.amount = this.thousandSeprator(this.amount);
     },
     onFocusText() {
-    this.visible = true;
-        this.amount = this.temp;
+      this.visible = true;
+      this.amount = this.temp;
     },
     thousandSeprator(amount) {
     if (amount !== '' || amount !== undefined || amount !== 0 || amount !== '0' || amount !== null)
     {
         return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    } else
-    {
+    } 
         return amount;
-    }
+    
     },
     parseDate(date) {
       if (!date) return null;
@@ -398,13 +396,13 @@ export default {
       const scope = this;
       if (this.$refs.projectBaseInfo.validate()) {
         // ministry part starts
-        for(var i=0;i<this.$store.state.ministries.length; i++) {
-          if(this.$store.state.ministries[i].id == this.form.client.ministry.id) {
-           this.form.client.ministry.ministryName = this.$store.state.ministries[i].ministryName;
+        for (let i = 0; i < this.$store.state.ministries.length; i++) {
+          if (this.form.client && this.form.client.ministry && this.$store.state.ministries[i].id == this.form.client.ministry.id) {
+            this.form.client.ministry.ministryName = this.$store.state.ministries[i].ministryName;
           }
         }
         if (this.form.client.isNonMinistry) {
-         // this.form.client.ministry = undefined;
+          // this.form.client.ministry = undefined;
         } else {
           this.form.client.NonMinistryName = undefined;
         }
@@ -444,10 +442,10 @@ export default {
         );
       }
     },
-    async createMOU(){
+    async createMOU() {
       // TODO - Check that pre-existing MOU doesn't already exist
-      if (this.project.mou){
-        const newMouID = await this.$store.dispatch('createMOU', {name: this.project.mou});
+      if (this.project.mou) {
+        const newMouID = await this.$store.dispatch('createMOU', { name: this.project.mou });
       }
     },
     fetchData() {
