@@ -294,9 +294,14 @@ export default {
 
       const data = encodeURI(csvContent);
       const link = document.createElement('a');
-      link.setAttribute('href', data);
-      link.setAttribute('download', 'export.csv');
-      link.click();
+      if (window.navigator.msSaveOrOpenBlob) {
+        var blob = new Blob([data]);
+        window.navigator.msSaveOrOpenBlob(blob, "export.csv");
+      } else {
+        link.setAttribute("href", data);
+        link.setAttribute("download", "export.csv");
+        link.click();
+      }
     },
 
     expotTimesheet() {
