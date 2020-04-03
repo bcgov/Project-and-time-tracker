@@ -36,7 +36,7 @@
             <td class="text-xs-left">{{ props.item.riskOwner }}</td>
             <td class="text-xs-left">{{ props.item.phaseImpactName }}</td>
             <td class="text-xs-left">{{ props.item.clientDecision }}</td>
-            <td class="text-xs-left">{{ props.item.followUpDate | formatDate }}</td>
+            <td class="text-xs-left">{{ new Date(props.item.followUpDate).toString().slice(3,15)}}</td>
             <td width="10%" class="text-xs-left">
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
@@ -71,7 +71,7 @@ import Snackbar from '../common/Snackbar.vue';
 export default {
   props: {
     title: String,
-    search: String,
+   search: String,
   },
   components: {
     Snackbar,
@@ -131,7 +131,7 @@ export default {
           text: 'Resolution or Follow Up Date',
           value: 'followUpDate',
           sortable: false,
-          width: '12%',
+          width: '11.3%',
         },
         {
           text: 'Action',
@@ -146,13 +146,6 @@ export default {
   },
   computed: {
     allProcLogs() {
-      if (this.search) {
-        return this.$store.state.allProcurementLog.filter(item => {
-          return item.project.projectName
-            .toLowerCase()
-            .includes(this.search.toLowerCase());
-        });
-      }
       if (this.isResolved) {
         const value = this.$store.state.allProcurementLog.filter(function(el) {
           return el.isResolved == true;

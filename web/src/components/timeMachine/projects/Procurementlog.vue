@@ -1,17 +1,20 @@
 <template>
   <v-layout row justify-center class="proc-layout">
     <snackbar ref="snackbar"></snackbar>
-    <v-dialog id="ProcurementLog" class="proc-dialgue" max-width="70%" v-model="dialog">
+    <v-dialog id="ProcurementLog" class="proc-dialgue" max-width="50%" v-model="dialog">
       <v-form ref="ProcurementLogs" v-model="valid" lazy-validation>
         <spinner ref="spinner"></spinner>
         <v-card>
           <v-card-text class="card-contents">
-            <v-flex md12>
+            <v-flex md12 row wrap>
               <v-card-title>
                 <span class="headline">Add New Log</span>
+                 <v-spacer></v-spacer>
+                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" @click="closelog()" viewBox="0 0 18 18"><path d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"/></svg>
               </v-card-title>
+              
               <v-divider class="header-divider"></v-divider>
-            </v-flex>
+           </v-flex>
             <v-layout row wrap>
               <v-flex md6>
                 <div class="v-form-container">
@@ -140,7 +143,7 @@
               </v-flex>
 
               <v-flex md12>
-                <v-flex d-flex justify-end>
+                <v-flex d-flex class="buttondiv" justify-end>
                   <v-btn
                     class="add-log-button"
                     color="btnPrimary"
@@ -185,6 +188,10 @@ export default {
     timeEntry: Object
   },
   methods: {
+    closelog() {
+      this.$emit("close");
+      this.dialog = false;
+    },
     async saveProcurementLog() {
       console.log(this.logType, this.notificationMethod, this.phaseImpactName);
       // const projectFinanceForm = this.$refs.ProcurementLogs || undefined;
@@ -354,6 +361,13 @@ export default {
   width: 150px;
   flex: 0 0 200px !important;
   margin-right: 3%;
+}
+.headline {
+  font-weight: 500;
+  margin-left: 15px;
+}
+.buttondiv {
+ margin-bottom: 2%;
 }
 .v-dialog:not(.v-dialog--fullscreen) {
   max-width: 70%;
