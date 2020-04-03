@@ -28,9 +28,13 @@
          :search="search"
         >
           <template slot="items" slot-scope="props">
-            <td class="text-xs-left">{{ props.item.logType }}</td>
+            <td><procurement-log ref="ProcurementLog"></procurement-log>
+              <span class="clickable" @click="viewRequest(props.item.id)">{{ props.item.logType }}</span>
+            </td>
             <!-- <td class="text-xs-left">{{ props.item.riskOwner }}</td> -->
-            <td class="text-xs-left">{{ props.item.descriptionOfIssue }}</td>
+            <td class="text-xs-left"><procurement-log ref="ProcurementLog"></procurement-log>
+            <span class="clickable" @click="viewRequest(props.item.id)">{{ props.item.descriptionOfIssue.toString().slice(0,30)+'...' }}
+            </span></td>
             <td class="text-xs-left">{{ props.item.dateToClient | formatDate }}</td>
             <td class="text-xs-left">{{ props.item.notificationMethod }}</td>
             <td class="text-xs-left">{{ props.item.riskOwner }}</td>
@@ -38,7 +42,7 @@
             <td class="text-xs-left">{{ props.item.clientDecision }}</td>
             <td class="text-xs-left">{{ new Date(props.item.followUpDate).toString().slice(3,15)}}</td>
             <td width="10%" class="text-xs-left">
-              <v-tooltip top>
+              <!-- <v-tooltip top>
                 <template v-slot:activator="{ on }">
                   <procurement-log ref="ProcurementLog"></procurement-log>
                   <v-btn flat icon color="grey" v-on="on" @click="viewRequest(props.item.id)">
@@ -46,7 +50,7 @@
                   </v-btn>
                 </template>
                 <span>View Procurement Log</span>
-              </v-tooltip>
+              </v-tooltip> -->
               <v-btn
                 small
                 color="btnPrimary"
