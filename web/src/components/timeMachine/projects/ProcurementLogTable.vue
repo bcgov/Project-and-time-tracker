@@ -71,7 +71,7 @@ import Snackbar from '../common/Snackbar.vue';
 export default {
   props: {
     title: String,
-    search: String,
+   search: String,
   },
   components: {
     Snackbar,
@@ -146,13 +146,6 @@ export default {
   },
   computed: {
     allProcLogs() {
-      if (this.search) {
-        return this.$store.state.allProcurementLog.filter(item => {
-          return item.project.projectName
-            .toLowerCase()
-            .includes(this.search.toLowerCase());
-        });
-      }
       if (this.isResolved) {
         const value = this.$store.state.allProcurementLog.filter(function(el) {
           return el.isResolved == true;
