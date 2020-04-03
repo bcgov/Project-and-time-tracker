@@ -19,7 +19,7 @@
               :complete="e1 > 1"
               step="1"
             >
-              Project
+              Procurement Project
               <br />Information
             </v-stepper-step>
             <v-divider class="first-divider"></v-divider>
