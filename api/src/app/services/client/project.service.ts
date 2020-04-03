@@ -118,7 +118,8 @@ export const retrieveProjects = async () => {
       'p.projectFailImpact',
       'p.projectSuccess',
       'p.otherProjectSectorName',
-      'c.nonMinistryName'
+      'c.nonMinistryName',
+      'p.mouAmount'
     ])
     .where('p.is_archived IS NULL OR p.is_archived = :is_archived', {
       is_archived: false
@@ -187,14 +188,12 @@ export const retrieveAllProjects = async () => {
       'p.projectFailImpact',
       'p.projectSuccess',
       'p.otherProjectSectorName',
-      'c.nonMinistryName'
+      'c.nonMinistryName',
+      'p.mouAmount'
     ])
-    .where(
-      '(p.is_archived IS NULL OR p.is_archived = :is_archived)',
-      {
-        is_archived: false
-      }
-    )
+    .where('(p.is_archived IS NULL OR p.is_archived = :is_archived)', {
+      is_archived: false
+    })
     .getMany();
 };
 export const retrieveProjectsByUserId = async (userId: string) => {
