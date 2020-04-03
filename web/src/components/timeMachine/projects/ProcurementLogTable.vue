@@ -19,13 +19,13 @@
     <v-card-text class="pa-0">
       <template>
         <v-data-table
-        :search="search"
           :headers="headers"
           :items="allProcLogs"
           hide-actions
           class="elevation-0 tm-v-datatable"
           disable-initial-sort
           aria-multiline="true"
+         :search="search"
         >
           <template slot="items" slot-scope="props">
             <td class="text-xs-left">{{ props.item.logType }}</td>
@@ -87,7 +87,7 @@ export default {
           text: 'Log Type',
           value: 'logType',
           align: 'left',
-          sortable: true,
+          sortable: false,
           width: '5%',
         },
         // { text: 'Risk Owner', value: 'riskOwner', sortable: false },
@@ -224,14 +224,16 @@ export default {
       if (this.$refs.spinner) {
         this.$refs.spinner.open();
       }
-      console.log('projId', this.$store.state.activeProject.id);
+      const { params } = this.$router.currentRoute;
+      const id = params.id || undefined;
+      console.log('projId', id);
       const procLogs = await this.$store.dispatch('fetchAllProcurementLog', {
-        id: this.$store.state.activeProject.id,
+        id,
       });
       const projRfxData = await this.$store.dispatch('fetchProjectRFxData', {
-        id: this.$store.state.activeProject.id,
+        id,
       });
-      // this.$refs.spinner.close();
+      this.$refs.spinner.close();
       return procLogs[0];
     },
   },
