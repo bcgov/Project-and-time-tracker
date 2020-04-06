@@ -25,7 +25,7 @@
                       class="currentuser"
                       v-model="form.userId"
                       :rules="requiredRule"
-                      @input="onChangeUser()"
+                      @input="onChangeUser(form.userId)"
                       :items="userList"
                       item-value="id"
                       item-text="contact.fullName"
@@ -292,12 +292,13 @@ export default {
       this.timesheet[this.weeklyProjectIndex].mou = this.form.mou;
       this.getTimeEntries();
     },
-    onChangeUser() {
+    onChangeUser(userId) {
+      this.clearTimesheet();
+      this.form.userId = userId;
       this.userMouProjects = this.$store.state.allProjects.filter(
         item => item.mou
           && (item.backupUserId === this.form.userId || item.leadUserId === this.form.userId),
       );
-      this.clearTimesheet();
     },
     ConvertToCSV(objArray) {
       const array = typeof objArray !== 'object' ? JSON.parse(objArray) : objArray;
@@ -387,7 +388,7 @@ export default {
       const vm = this;
       vm.$store.dispatch('fetchTimesheetEntries', formData).then(() => {
         const obj = vm.$store.state.timesheetEntryData;
-        if (vm.$store.state.timesheetEntryData) {
+        if (obj && obj.timesheetEntries) {
           vm.timesheet[vm.weeklyProjectIndex].entries = obj.timesheetEntries;
           vm.timesheet[vm.weeklyProjectIndex].project = this.form.project;
           vm.timesheet[vm.weeklyProjectIndex].mou = this.form.mou;
@@ -404,8 +405,7 @@ export default {
       vm.$store.dispatch('fetchTimesheetById', { id: timeSheetId }).then(() => {
         const obj = vm.$store.state.timesheetById;
 
-        vm.form.userId = obj.userId;
-        this.onChangeUser();
+        this.onChangeUser(obj.userId);
 
         vm.timesheet[vm.weeklyProjectIndex].entries = obj.timesheetEntries;
         vm.timesheet[vm.weeklyProjectIndex].startDate = obj.startDate;
@@ -502,10 +502,10 @@ export default {
         entryDate.setDate(entryDate.getDate() + 1);
       }
       timesheetItem.entries = timesheetEntries;
-      timesheetItem.projectRfx = undefined;
-      timesheetItem.project = '';
+      timesheetItem.projectRfx = this.form.rfx ? this.form.rfx : undefined;
+      timesheetItem.project = this.form.project;
       timesheetItem.userId = this.form.userId;
-      timesheetItem.mou = '';
+      timesheetItem.mou = this.form.mou;
       timesheetItem.startDate = timesheetItem.entries[0].entryDate;
       timesheetItem.endDate = timesheetItem.entries[6].entryDate;
       this.timesheet.push(timesheetItem);
