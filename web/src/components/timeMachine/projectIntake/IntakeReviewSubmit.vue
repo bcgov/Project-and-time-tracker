@@ -43,7 +43,7 @@
             <v-flex v-if="$props.intakeValues.isReprocurement">
               <v-btn color="primary" @click="editItem(1)" class="edit-link">edit</v-btn>
               <v-flex sm12>
-                <h4>Date original contract ends</h4>
+                <h4>Date original contract ends </h4>
               </v-flex>
               <v-flex sm12>{{ $props.intakeValues.dateOfReprocurement }}</v-flex>
             </v-flex>
