@@ -34,6 +34,7 @@
     "register-service-worker": "^1.6.2",
     "roboto-fontface": "*",
     "url-parse": "^1.4.4",
+    "v-calendar": "^1.0.2",
     "vee-validate": "^2.1.4",
     "vue": "2.6.8",
     "vue-fullcalendar": "^1.0.9",
