@@ -18,6 +18,8 @@ export const DB_CONFIG = process.env.environment ? {
 
 console.log('DB_Config - ', { DB_CONFIG });
 
+console.log('Processenv', {env: process.env})
+
 
 // ARC TODO - Use process.env to store keycloak creds on server
 // https://cli.vuejs.org/guide/mode-and-env.html#example-staging-mode
