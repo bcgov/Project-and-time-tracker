@@ -42,7 +42,8 @@ export const saveContactAction = async (ctx: Koa.Context) => {
       if (contacts[index].contactType === 'clientcontact') {
         isClientContactExist = true;
       }
-      if (!contacts[index].id) {
+      console.log(contacts[index].id);
+      if (!contacts[index].id || contacts[index].id === undefined) {
         contacts[index].id = undefined;
         contacts[index].contactType = 'clientcontact';
         const createdContact = await createContact(contacts[index]);
@@ -57,7 +58,8 @@ export const saveContactAction = async (ctx: Koa.Context) => {
           orgPosition: contact.orgPosition,
           orgName: contact.orgName,
           email: contact.email,
-          phoneNumber: contact.phoneNumber
+          phoneNumber: contact.phoneNumber,
+          roleName: contact.roleName
         });
       }
     }

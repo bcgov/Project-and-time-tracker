@@ -33,11 +33,17 @@
                                 <div class="column">
                                   <div class="card">
                                     <div class="headerdivstyle">
-                                    <span class="headerspan" v-html="item.user.contact.fullName" />
-                                    <span v-html="new Date(item.noteTime).toString().slice(0,25)" /></div>
-                                    <br/>
-                                    <span style="float:left;margin-left:3%;text-align: justify;padding-right: 30px;"  v-html="item.note" />
-                                      <br/>
+                                      <span class="headerspan" v-html="item.user.contact.fullName" />
+                                      <span
+                                        v-html="new Date(item.noteTime).toString().slice(0,25)"
+                                      />
+                                    </div>
+                                    <br />
+                                    <span
+                                      style="float:left;margin-left:3%;text-align: justify;padding-right: 30px;"
+                                      v-html="item.note"
+                                    />
+                                    <br />
                                     <v-btn
                                       flat
                                       large
@@ -60,7 +66,7 @@
                                 </div>
                               </div>
                               <br />
-                              <project-notes :ref=item.id></project-notes>
+                              <project-notes :ref="item.id"></project-notes>
                             </v-flex>
                           </v-flex>
                         </v-layout>
@@ -187,27 +193,32 @@
                                 :contactNameLabel="'Financial Contact Name'"
                               />
                             </v-flex>
-                            <v-flex xs12 md6 my-3>
-                              <div>
-                                <v-checkbox
-                                  color="primary"
-                                  v-model="enabled"
-                                  class="v-form-container"
-                                >
-                                  <template v-slot:label>
-                                    <h3>Additional Contact</h3>
-                                  </template>
-                                </v-checkbox>
-                              </div>
+                            <v-flex
+                              xs12
+                              md6
+                              my-3
+                              v-for="(addcontact, index) in AllContactData"
+                              :key="index"
+                              :value="0"
+                            >
                               <project-additional-contact-info
-                                v-if="enabled"
-                                ref="projectClient"
-                                :contact="projectContactData('clientcontact')"
+                                :additionalContact="addcontact"
+                                ref="additionalcontactinfo"
+                                :contact="addcontact"
                                 :contactNameLabel="'Contact Name'"
                                 :isRequired="false"
                               />
                             </v-flex>
                           </v-layout>
+                          <v-card>
+                            <v-flex xs12>
+                              <div class="contact-button-div">
+                                <v-btn color="primary" @click="addNewContact">
+                                  <v-icon left dark>add</v-icon>Add Contactsss
+                                </v-btn>
+                              </div>
+                            </v-flex>
+                          </v-card>
                           <v-layout>
                             <v-flex xs12 py-2>
                               <div class="v-form-container">
@@ -303,6 +314,7 @@ import Vue from "vue";
 import VeeValidate from "vee-validate";
 import RFxDto from "@/domain/models/RFx.dto";
 import ContactDto from "@/domain/models/Contact.dto";
+import AdditionalContact from "@/domain/models/AdditionalContact.dto";
 import Material from "vuetify/es5/util/colors";
 import ProcurementLog from "./Procurementlog.vue";
 import ProjectBaseInfo from "./ProjectBaseInfo.vue";
@@ -350,22 +362,33 @@ export default {
     },
     projectRfxData() {
       return this.$store.state.activeProjectRfxData;
-    },
+    }
+
     // projectcomments() {
     //   return this.$store.state.allProjectNotes;
     // }
   },
   data() {
-    
     return {
+      additionalContact: [new AdditionalContact()],
       rfxData: [new RFxDto()],
       projectId: "",
       enabled: true,
       initialLoad: true,
       color: Material,
       selectedTab: "tab-1",
-      projectcomments : this.$store.state.allProjectNotes
-     
+      projectcomments: this.$store.state.allProjectNotes,
+      allContacts: [],
+      contactCount: this.$store.state.activeProjectContacts.filter(function(
+        item
+      ) {
+        return item.contactType === "clientcontact";
+      }).length,
+      AllContactData: this.$store.state.activeProjectContacts.filter(function(
+        item
+      ) {
+        return item.contactType === "clientcontact";
+      })
     };
   },
   watch: {
@@ -374,6 +397,21 @@ export default {
     }
   },
   methods: {
+    getClientContactData() {
+      const contactData = this.$store.state.activeProjectContacts;
+      var clientcontacts = contactData.filter(function(item) {
+        return item.contactType === "clientcontact";
+      });
+      return clientcontacts;
+    },
+    addNewContact() {
+      this.contactCount = this.contactCount + 1;
+      const contactobj ={
+        id: undefined, contactType: '', userId: '', fullName: '', orgName: '',
+        orgPosition: '', email: '', phoneNumber: '', addressLine1: '', addressLine2: '',
+        city: '', province: '', country: '', postalCode: '', roleName: '' }
+      this.AllContactData.push(contactobj);
+    },
     projectnotes() {
       return this.$store.state.allProjectNotes;
     },
@@ -381,9 +419,8 @@ export default {
       this.$refs.ProcurementLog.reset();
       this.$refs.ProcurementLog.open();
     },
-     replynotes(value) {
+    replynotes(value) {
       let refvalue = value;
-      console.log('refvalue', refvalue);
 
       this.$refs[refvalue][0].reset();
       this.$refs[refvalue][0].open(value);
@@ -414,10 +451,15 @@ export default {
       }
       return contactData && contactData.id ? contactData : new ContactDto();
     },
+    projectAdditionalContactData(index) {
+      const contactData = this.$store.getters.getProjectContactByType(
+        "clientcontact"
+      );
+      return contactData && contactData.id ? contactData : new ContactDto();
+    },
     fetchData() {
       const { params } = this.$router.currentRoute;
       const id = params.id || undefined;
-
       if (!(id === undefined)) {
         this.projectId = id;
         this.$store.dispatch("fetchProject", { id: this.projectId });
@@ -426,7 +468,7 @@ export default {
         this.$store.dispatch("fetchprojectRiskAnswers", { id: this.projectId });
         this.$store.dispatch("fetchAllProcurementLog", { id: this.projectId });
       }
-       this.$store.dispatch("fetchAllProjectNotes", { id: this.projectId });
+      this.$store.dispatch("fetchAllProjectNotes", { id: this.projectId });
       this.$store.dispatch("fetchintakeRiskQuestions");
     },
     formatDate(date) {
@@ -446,7 +488,6 @@ export default {
       if (allRFXValid) {
         this.projectRfxData.push(new RFxDto());
       }
-      console.log({ allRFXValid });
     },
     validateRFXForm() {
       // Validates all RFX Forms, true only if all forms are valid.
@@ -461,6 +502,7 @@ export default {
       return true;
     },
     async saveProjectContacts() {
+      console.log(this.AllContactData);
       this.$refs.projectLead.Validate();
       this.$refs.projectSponsor.Validate();
       this.$refs.projectFinancier.Validate();
@@ -474,12 +516,22 @@ export default {
       if (projectContactForm !== undefined) {
         projectContactForm.contactType = CLIENT_INFO_TYPES.CLIENT_CONTACT;
       }
-      const contacts = [
+      for (var i = 0; i < this.contactCount; i++) {
+        if (this.$refs.additionalcontactinfo[i]) {
+          this.$refs.additionalcontactinfo[i].form.contactType =
+            "clientcontact";
+          this.allContacts.push(this.$refs.additionalcontactinfo[i].form);
+        }
+      }
+      console.log("allcontacts afet add:", this.allContacts);
+      let contacts = [
         projectLeadForm,
         projectSponsorForm,
         projectContactForm,
         projectFinancierForm
       ].filter(contact => contact !== undefined);
+      contacts = contacts.concat(this.allContacts);
+      console.log("contacts before update", contacts);
       if (contacts instanceof Array && contacts.length > 0) {
         await this.$store.dispatch("updateProjectContacts", {
           id: this.projectId,
@@ -529,7 +581,6 @@ export default {
 
     // if no rfx, add one
     if (this.projectRfxData.length === 0) {
-      console.log("addinging initial rfx");
       this.addNewRFx();
     }
 
@@ -575,9 +626,9 @@ export default {
   margin-right: 80%;
 }
 .headerdivstyle {
-background-color: #57789a;
-    padding: 15px;
-    color: white;
+  background-color: #57789a;
+  padding: 15px;
+  color: white;
 }
 .notecontent {
   float: left;
