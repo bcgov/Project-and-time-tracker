@@ -108,6 +108,13 @@ export const getMyTimesheets = async (ctx: Koa.Context) => {
     ctx.throw(err.message);
   }
 };
+export const getTimesheetbyId = async (ctx: Koa.Context) => {
+  try {
+    ctx.body = await retrieveTimesheetById(ctx.params.id);
+  } catch (err) {
+    ctx.throw(err.message);
+  }
+};
 
 export const timeSheetLight = async (ctx: Koa.Context) => {
   try {
@@ -551,6 +558,7 @@ const router: Router = new Router(routerOpts);
 // router.get('/', authorize, getTimesheets);
 router.get('/all', authorize, getAllTimesheets);
 router.get('/user', authorize, getMyTimesheets);
+router.get('/:id', authorize, getTimesheetbyId);
 router.post('/timesheetentries', authorize, timesheetEntries);
 router.post('/', authorize, createTimesheetAction);
 router.post('/light', authorize, createLightTimesheet);

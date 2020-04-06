@@ -49,6 +49,7 @@ export const retrieveTimesheetById = async (id: string) => {
     .innerJoinAndSelect('t.mou', 'm')
     .leftJoinAndSelect('t.timesheetEntries', 'te')
     .where('t.id = :id', { id: id })
+    .orderBy('te.entryDate', 'ASC')
     .getOne();
   if (!res) {
     throw Error(`timesheet not found for the id specified: ${id}`);
@@ -60,26 +61,20 @@ export const retrieveAllTimesheets = async () => {
   const repo = timesheetRepo();
   return await repo
     .createQueryBuilder('t')
-    .leftJoinAndSelect('t.projectRfx', 'pr')
     .innerJoinAndSelect('t.project', 'p')
-    .innerJoinAndSelect('t.mou', 'm')
-    .leftJoinAndSelect('t.timesheetEntries', 'te')
     .leftJoinAndSelect('t.user', 'u')
     .leftJoinAndSelect('u.contact', 'c')
-    .orderBy('te.entryDate', 'ASC')
+    .orderBy('t.startDate', 'ASC')
     .getMany();
 };
 export const retrieveMyTimesheets = async userId => {
   const repo = timesheetRepo();
   return await repo
     .createQueryBuilder('t')
-    .leftJoinAndSelect('t.projectRfx', 'pr')
     .innerJoinAndSelect('t.project', 'p')
-    .innerJoinAndSelect('t.mou', 'm')
-    .leftJoinAndSelect('t.timesheetEntries', 'te')
     .leftJoinAndSelect('t.user', 'u')
     .leftJoinAndSelect('u.contact', 'c')
-    .orderBy('te.entryDate', 'ASC')
+    .orderBy('t.startDate', 'ASC')
     .where('t.userId = :userId', {
       userId
     })

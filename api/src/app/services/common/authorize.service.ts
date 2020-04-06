@@ -52,6 +52,7 @@ const commonForPSBAdminAndUser = [
   'POST/timesheet/timesheetentriesByDate',
   'POST/timesheet/timesheetentriesByUser',
   'GET/timesheet/user',
+  'GET/timesheet/:id',
   'POST/timesheet/',
   'POST/timesheet/light',
   'POST/timesheet/batch',

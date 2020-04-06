@@ -5,7 +5,7 @@
       id="AddTimeRecord"
       content-class="add-time-record"
       v-model="dialog"
-      @input="closeDialog()"
+      @input="closeDialog(false)"
     >
       <v-form ref="AddimeRecords" v-model="valid" lazy-validation>
         <spinner ref="spinner"></spinner>
@@ -25,7 +25,7 @@
                       class="currentuser"
                       v-model="form.userId"
                       :rules="requiredRule"
-                      @change="onChangeUser()"
+                      @input="onChangeUser()"
                       :items="userList"
                       item-value="id"
                       item-text="contact.fullName"
@@ -48,7 +48,7 @@
             </v-layout>
             <v-divider class="header-divider"></v-divider>
             <v-tabs v-model="activeTab">
-              <v-tab href="#batch" @click="initializeBatchEntry()">Batch Entry</v-tab>
+              <v-tab href="#batch">Batch Entry</v-tab>
               <v-tab href="#weekly">Weekly Entry</v-tab>
               <v-tab-item value="batch">
                 <v-flex>
@@ -56,13 +56,13 @@
                     <v-flex md6 v-show="!editMode">
                       <timesheets-calendar
                         ref="TimeCalenderBatch"
-                        @next="initializeBatchEntry"
+                        @next="clearTimeEntries"
                       ></timesheets-calendar>
                     </v-flex>
                     <v-flex md6>
                       <v-radio-group row v-model="recordType">
                         <v-radio label="Hours" :value="1"></v-radio>
-                        <v-radio label="Unbillable Hours" :value="3"></v-radio>
+                        <v-radio label="Unbillable Hours" :value="2"></v-radio>
                       </v-radio-group>
                     </v-flex>
                   </v-flex>
@@ -72,13 +72,19 @@
                       ref="billableBatchEntry"
                       :selectedItem="1"
                       :userId="form.userId"
+                      :timesheet="timesheet"
+                      :projectList="userMouProjects"
+                      @add-row="addTimeSheetRow"
                     ></batch-time-entry>
                   </v-flex>
-                  <v-flex v-show="recordType === 3">
+                  <v-flex v-show="recordType === 2">
                     <batch-time-entry
                       ref="nonBillableBatchEntry"
-                      :selectedItem="3"
+                      :selectedItem="2"
                       :userId="form.userId"
+                      :timesheet="timesheet"
+                      :projectList="userMouProjects"
+                      @add-row="addTimeSheetRow"
                     ></batch-time-entry>
                   </v-flex>
                 </v-flex>
@@ -94,6 +100,7 @@
                       item-value="id"
                       label="MOU"
                       :disabled="editMode"
+                      @input="onChangeMou()"
                     ></v-select>
                   </v-flex>
                   <v-flex xs12>
@@ -104,18 +111,19 @@
                       item-text="projectName"
                       item-value="id"
                       label="Project Name"
-                      @change="onChangeProjectWeeklyEntry(form.project)"
+                      @input="onChangeProjectWeeklyEntry(form.project)"
                       :disabled="editMode"
                     ></v-select>
                   </v-flex>
 
                   <v-flex xs12>
                     <v-select
-                      v-model="form.Rfx"
+                      v-model="form.rfx"
                       :items="projectRfx"
                       item-text="rfxName"
                       item-value="id"
                       label="Project Rfx"
+                      @input="onChangeProjectRfx()"
                     ></v-select>
                   </v-flex>
                 </v-flex>
@@ -131,22 +139,44 @@
                       <v-radio-group row v-model="recordTypeWeekly">
                         <v-radio label="Hours" :value="1"></v-radio>
                         <v-radio label="Expenses" :value="2"></v-radio>
-                        <v-radio label="Revenue" :value="4"></v-radio>
-                        <v-radio label="Unbillable Hours" :value="3"></v-radio>
+                        <v-radio label="Revenue" :value="3"></v-radio>
+                        <v-radio label="Unbillable Hours" :value="4"></v-radio>
                       </v-radio-group>
                     </v-flex>
                   </v-flex>
                   <v-flex v-show="recordTypeWeekly === 1">
-                    <timesheet-entry ref="Billable"></timesheet-entry>
+                    <timesheet-entry
+                      ref="Billable"
+                      :timesheet="timesheet"
+                      :selectedItem="1"
+                      :days="timesheetEntryDays"
+                      :projectIndex="weeklyProjectIndex"
+                    ></timesheet-entry>
                   </v-flex>
                   <v-flex v-show="recordTypeWeekly === 2">
-                    <expense-entry ref="AddExpense"></expense-entry>
-                  </v-flex>
-                  <v-flex v-show="recordTypeWeekly === 4">
-                    <revenue-entry ref="AddRevenue"></revenue-entry>
+                    <expense-entry
+                      ref="AddExpense"
+                      :timesheet="timesheet"
+                      :days="timesheetEntryDays"
+                      :projectIndex="weeklyProjectIndex"
+                    ></expense-entry>
                   </v-flex>
                   <v-flex v-show="recordTypeWeekly === 3">
-                    <timesheet-entry ref="NonBillable" single-row></timesheet-entry>
+                    <revenue-entry
+                      ref="AddRevenue"
+                      :timesheet="timesheet"
+                      :days="timesheetEntryDays"
+                      :projectIndex="weeklyProjectIndex"
+                    ></revenue-entry>
+                  </v-flex>
+                  <v-flex v-show="recordTypeWeekly === 4">
+                    <timesheet-entry
+                      ref="NonBillable"
+                      :timesheet="timesheet"
+                      :selectedItem="4"
+                      :days="timesheetEntryDays"
+                      :projectIndex="weeklyProjectIndex"
+                    ></timesheet-entry>
                   </v-flex>
                 </v-flex>
               </v-tab-item>
@@ -154,31 +184,33 @@
           </v-card-text>
           <v-divider class="header-divider"></v-divider>
           <v-card-actions>
-            <v-btn class="btn-discard" @click="closeDialog()" :ripple="false"
+            <v-btn class="btn-discard" @click="closeDialog(false)" :ripple="false"
               >DISCARD TIMESHEET</v-btn
             >
             <v-flex class="add-btns">
               <v-btn class="btn-normal" @click="expotTimesheet()">EXPORT TIMESHEET</v-btn>
-              <v-btn class="add-new-row" color="primary" @click="saveAndClose()">SUBMIT</v-btn>
+              <v-btn class="add-new-row" color="primary" @click="save()">SUBMIT</v-btn>
             </v-flex>
           </v-card-actions>
         </v-card>
       </v-form>
+      <!-- <pre>
+
+     Timesheet:{{this.timesheet}}
+        </pre> -->
     </v-dialog>
   </v-layout>
 </template>
 <script>
 import './addtimerecord.styl';
 import moment from 'moment';
-import Calendar from 'v-calendar/lib/components/calendar.umd';
-import DatePicker from 'v-calendar/lib/components/date-picker.umd';
 import Snackbar from '../common/Snackbar.vue';
 import Spinner from '../common/Spinner.vue';
 import TimesheetsCalendar from './TimesheetsCalendar.vue';
 import ExpenseEntry from './AddExpense.vue';
 import RevenueEntry from './AddRevenue.vue';
 import TimesheetEntry from './TimesheetEntry.vue';
-import BatchTimeEntry from './BatchTimeEntry';
+import BatchTimeEntry from './BatchTimeEntry.vue';
 
 export default {
   computed: {
@@ -188,31 +220,10 @@ export default {
     userList() {
       return this.$store.state.users;
     },
-
     timesheetEntryData() {
       return this.$store.state.timesheetEntryData;
     },
-    dateRangeDiffInDays() {
-      if (this.dateRange.start && this.dateRange.end) {
-        return Math.abs(moment(this.dateRange.start).diff(moment(this.dateRange.end), 'days'));
-      }
-    },
-    projectList() {
-      if (typeof this.form.mou !== 'undefined' && typeof this.form.userId !== 'undefined') {
-        const mouProjects = this.$store.state.allProjects.filter(
-          item => item.mou
-            && (item.backupUserId === this.form.userId || item.leadUserId === this.form.userId),
-        );
-        if (mouProjects.length === 0) {
-          return [];
-        }
-        const Projects = mouProjects.filter(item => item.mou.id === this.form.mou);
-        if (Projects.length > 0) {
-          return Projects;
-        }
-      }
-      return [];
-    },
+
     projectRfx() {
       if (typeof this.form.project !== 'undefined') {
         if (this.$store.state.activeProjectRfxData.length === 1) {
@@ -228,15 +239,11 @@ export default {
       if (!this.form || !this.form.mou || !this.form.project) {
         return '';
       }
-      const selectedProject = this.projectList.filter(item => item.id === this.form.project);
+      const selectedProject = this.userMouProjects.filter(item => item.id === this.form.project);
       if (selectedProject[0]) {
         return selectedProject[0].mouAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
       }
       return '';
-    },
-    hoursForRange() {
-      // const hours = this.dateRangeDiffInDays * days... how to get days from <timesheet-entry> or similar?
-      return 'todo';
     },
   },
   components: {
@@ -252,37 +259,59 @@ export default {
     return this.initData();
   },
   watch: {},
-  props: {
-    timeEntry: Object,
+  props: {},
+  created() {
+    this.clearTimesheet();
   },
   methods: {
-    onChangeUser() {
-      if (this.activeTab === 'weekly') {
-        if (this.form.project) {
-          this.getTimeEntries();
-        }
+    onChangeMou() {
+      if (
+        typeof this.form.mou !== 'undefined'
+        && typeof this.form.userId !== 'undefined'
+        && this.form.mou
+        && this.form.userId
+      ) {
+        this.projectList = this.userMouProjects.filter(
+          item => item.mou
+            && (item.backupUserId === this.form.userId || item.leadUserId === this.form.userId)
+            && item.mou.id === this.form.mou,
+        );
       } else {
-        this.initializeBatchEntry();
+        this.projectList = [];
       }
+    },
+    onChangeProjectWeeklyEntry(projectId) {
+      this.$store.dispatch('fetchProjectRFxData', { id: projectId });
+      // Keep index of weekly entry selected project. This is used to set props value to weekly entry components.
+      for (let index = 0; index < this.timesheet.length; index++) {
+        if (this.timesheet[index].project === projectId) {
+          this.weeklyProjectIndex = index;
+        }
+      }
+      this.timesheet[this.weeklyProjectIndex].project = projectId;
+      this.timesheet[this.weeklyProjectIndex].mou = this.form.mou;
+      this.getTimeEntries();
+    },
+    onChangeUser() {
+      this.userMouProjects = this.$store.state.allProjects.filter(
+        item => item.mou
+          && (item.backupUserId === this.form.userId || item.leadUserId === this.form.userId),
+      );
+      this.clearTimesheet();
     },
     ConvertToCSV(objArray) {
       const array = typeof objArray !== 'object' ? JSON.parse(objArray) : objArray;
-      let str = '';
-
+      const str = '';
       for (let i = 0; i < array.length; i++) {
         let line = '';
         for (const index in array[i]) {
           if (line != '') line += ',';
-
           line += array[i][index];
         }
-
         str += `${line}\r\n`;
       }
-
       return str;
     },
-
     csvExport(arrData) {
       let csvContent = 'data:text/csv;charset=utf-8,';
       csvContent += [
@@ -295,15 +324,14 @@ export default {
       const data = encodeURI(csvContent);
       const link = document.createElement('a');
       if (window.navigator.msSaveOrOpenBlob) {
-        var blob = new Blob([data]);
-        window.navigator.msSaveOrOpenBlob(blob, "export.csv");
+        const blob = new Blob([data]);
+        window.navigator.msSaveOrOpenBlob(blob, 'export.csv');
       } else {
-        link.setAttribute("href", data);
-        link.setAttribute("download", "export.csv");
+        link.setAttribute('href', data);
+        link.setAttribute('download', 'export.csv');
         link.click();
       }
     },
-
     expotTimesheet() {
       if (!this.form.userId) {
         this.$refs.snackbar.displaySnackbarTop('error', 'Please select user.');
@@ -313,16 +341,13 @@ export default {
         userId: this.form.userId,
       };
       const vm = this;
-
       vm.$store.dispatch('fetchTimesheetEntriesByUser', formData).then(() => {
         const timeEntries = [];
         for (let i = 0; i < vm.$store.state.timesheetEntryDatabyUser.length; i++) {
           const entries = vm.$store.state.timesheetEntryDatabyUser[i].timesheetEntries;
           const currentProject = vm.$store.state.timesheetEntryDatabyUser[i].project.projectName;
-
           for (let j = 0; j < entries.length; j++) {
             const entry = entries[j];
-
             timeEntries.push({
               Project: currentProject,
               'Entry Date': entry.entryDate,
@@ -341,9 +366,6 @@ export default {
         this.csvExport(timeEntries);
       });
     },
-    onChangeMouWeeklyEntry() {
-      return this.projectList;
-    },
 
     async checkWeekChangeWeekly() {
       this.getTimeEntries();
@@ -354,135 +376,69 @@ export default {
       this.$refs.nonBillableBatchEntry.editMode = false;
       this.editMode = false;
       const date = this.getDatePart(this.$store.state.timesheetsWeek.startDate);
-      const rfxId = this.form.Rfx;
+      const rfxId = this.form.rfx;
       const formData = {
         mou: this.form.mou,
         project: this.form.project,
-        projectRfx: rfxId ? this.form.Rfx : '',
+        projectRfx: rfxId ? this.form.rfx : '',
         startDate: date,
         userId: this.form.userId,
       };
       const vm = this;
       vm.$store.dispatch('fetchTimesheetEntries', formData).then(() => {
-        this.$refs.billableBatchEntry.weekEntries[0].projectId = this.form.project;
-        this.$refs.nonBillableBatchEntry.weekEntries[0].projectId = this.form.project;
-        vm.initTimeEntries(vm.$store.state.timesheetEntryData);
+        const obj = vm.$store.state.timesheetEntryData;
+        if (vm.$store.state.timesheetEntryData) {
+          vm.timesheet[vm.weeklyProjectIndex].entries = obj.timesheetEntries;
+          vm.timesheet[vm.weeklyProjectIndex].project = this.form.project;
+          vm.timesheet[vm.weeklyProjectIndex].mou = this.form.mou;
+          vm.timesheet[vm.weeklyProjectIndex].projectRfx = this.form.projectRfx;
+          vm.timesheet[vm.weeklyProjectIndex].userId = this.form.userId;
+          vm.timesheet[vm.weeklyProjectIndex].startDate = obj.startDate;
+          vm.timesheet[vm.weeklyProjectIndex].endDate = obj.endDate;
+        }
       });
     },
 
-    async editTimeEntries(obj) {
-      this.$store.state.timesheetsWeek.startDate = obj.startDate;
-      this.$store.state.timesheetsWeek.endDate = obj.endDate;
-      this.$refs.TimeCalenderWeekly.setCalendarText();
-      this.$refs.TimeCalenderBatch.setCalendarText();
-      this.form.userId = obj.user.id;
-      this.form.mou = obj.mou.id;
-      this.onChangeMouWeeklyEntry();
-      this.form.project = obj.project.id;
-      this.$store.dispatch('fetchProjectRFxData', { id: obj.project.id });
-      // this.onChangeProjectWeeklyEntry(obj.project.id);
-      this.form.Rfx = obj.projectRfx ? obj.projectRfx.id : '';
-      this.activeTab = 'weekly';
-      this.$refs.billableBatchEntry.weekEntries[0].projectId = obj.project.id;
-      this.$refs.nonBillableBatchEntry.weekEntries[0].projectId = obj.project.id;
-      this.initTimeEntries(obj);
-      this.editMode = true;
-      this.$refs.billableBatchEntry.editMode = true;
-      this.$refs.nonBillableBatchEntry.editMode = true;
-    },
-    formatWeekData(weekData) {
-      const weeks = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-      for (let i = 0; i < weekData[i].length; i++) {
-        weekData[i].day = weeks[i];
-      }
-      return weekData;
-    },
-    initializeBatchEntry() {
-      if (!this.editMode) {
-        const date = this.getDatePart(this.$store.state.timesheetsWeek.startDate);
-        const selectedProjects = this.$store.state.allTimesheets.filter(
-          item => this.getDatePart(item.startDate) === date && item.userId == this.form.userId,
-        );
-        this.clearBatchEntry();
-        for (let i = 0; i < selectedProjects.length; i++) {
-          if (i > 0) {
-            this.$refs.billableBatchEntry.addRow();
-            this.$refs.nonBillableBatchEntry.addRow();
-          }
+    async editTimeEntries(timeSheetId) {
+      const vm = this;
+      vm.$store.dispatch('fetchTimesheetById', { id: timeSheetId }).then(() => {
+        const obj = vm.$store.state.timesheetById;
 
-          this.$refs.billableBatchEntry.weekEntries[i].projectId = selectedProjects[i].project.id;
-          this.$refs.nonBillableBatchEntry.weekEntries[i].projectId = selectedProjects[i].project.id;
-          if (selectedProjects[i].timesheetEntries.length > 4) {
-            const selectedEntries = selectedProjects[i].timesheetEntries;
-            this.$refs.billableBatchEntry.weekEntries[i].monday.hours = selectedEntries[0].hoursBillable;
-            this.$refs.billableBatchEntry.weekEntries[i].tuesday.hours = selectedEntries[1].hoursBillable;
-            this.$refs.billableBatchEntry.weekEntries[i].wednesday.hours = selectedEntries[2].hoursBillable;
-            this.$refs.billableBatchEntry.weekEntries[i].thursday.hours = selectedEntries[3].hoursBillable;
-            this.$refs.billableBatchEntry.weekEntries[i].friday.hours = selectedEntries[4].hoursBillable;
+        vm.form.userId = obj.userId;
+        this.onChangeUser();
 
-            this.$refs.nonBillableBatchEntry.weekEntries[i].monday.hours = selectedEntries[0].hoursUnBillable;
-            this.$refs.nonBillableBatchEntry.weekEntries[i].tuesday.hours = selectedEntries[1].hoursUnBillable;
-            this.$refs.nonBillableBatchEntry.weekEntries[i].wednesday.hours = selectedEntries[2].hoursUnBillable;
-            this.$refs.nonBillableBatchEntry.weekEntries[i].thursday.hours = selectedEntries[3].hoursUnBillable;
-            this.$refs.nonBillableBatchEntry.weekEntries[i].friday.hours = selectedEntries[4].hoursUnBillable;
-          }
-        }
-      }
-    },
-    initTimeEntries(timesheetEntryData) {
-      if (timesheetEntryData && timesheetEntryData.timesheetEntries) {
-        for (let index = 0; index < timesheetEntryData.timesheetEntries.length; index++) {
-          const entry = timesheetEntryData.timesheetEntries[index];
+        vm.timesheet[vm.weeklyProjectIndex].entries = obj.timesheetEntries;
+        vm.timesheet[vm.weeklyProjectIndex].startDate = obj.startDate;
+        vm.timesheet[vm.weeklyProjectIndex].endDate = obj.endDate;
+        vm.timesheet[vm.weeklyProjectIndex].userId = obj.userId;
+        vm.timesheet[vm.weeklyProjectIndex].mou = obj.mou.id;
+        vm.timesheet[vm.weeklyProjectIndex].project = obj.project.id;
+        vm.timesheet[vm.weeklyProjectIndex].projectRfx = obj.projectRfx
+          ? obj.projectRfx.id
+          : undefined;
 
-          // Weekly entry expenses
-          this.$refs.AddExpense.weekData[index].entryDate = entry.entryDate;
-          this.$refs.AddExpense.weekData[index].category = entry.expenseCategory;
-          this.$refs.AddExpense.weekData[index].amount = entry.expenseAmount;
-          this.$refs.AddExpense.weekData[index].description = entry.expenseComment;
+        vm.$store.state.timesheetsWeek.startDate = vm.timesheet[vm.weeklyProjectIndex].startDate;
+        vm.$store.state.timesheetsWeek.endDate = vm.timesheet[vm.weeklyProjectIndex].endDate;
+        vm.$refs.TimeCalenderWeekly.setCalendarText();
+        vm.$refs.TimeCalenderBatch.setCalendarText();
 
-          // Weekly entry revenue
-          this.$refs.AddRevenue.weekData[index].entryDate = entry.entryDate;
-          this.$refs.AddRevenue.weekData[index].amount = entry.revenueAmount;
-          this.$refs.AddRevenue.weekData[index].description = entry.revenueComment;
+        vm.form.mou = vm.timesheet[vm.weeklyProjectIndex].mou;
+        this.onChangeMou();
 
-          // Weekly entry billable
-          this.$refs.Billable.weekData[index].entryDate = entry.entryDate;
-          this.$refs.Billable.weekData[index].hours = entry.hoursBillable;
-          this.$refs.Billable.weekData[index].description = entry.commentsBillable;
+        vm.form.project = vm.timesheet[vm.weeklyProjectIndex].project;
+        vm.$store.dispatch('fetchProjectRFxData', { id: vm.form.project });
+        vm.form.rfx = vm.timesheet[vm.weeklyProjectIndex].projectRfx
+          ? vm.timesheet[vm.weeklyProjectIndex].projectRfx.id
+          : undefined;
 
-          // Weekly entry non billable
-          this.$refs.NonBillable.weekData[index].entryDate = entry.entryDate;
-          this.$refs.NonBillable.weekData[index].hours = entry.hoursUnBillable;
-          this.$refs.NonBillable.weekData[index].description = entry.commentsUnBillable;
-        }
-
-        this.$refs.AddRevenue.weekData = this.formatWeekData(this.$refs.AddRevenue.weekData);
-        this.$refs.AddExpense.weekData = this.formatWeekData(this.$refs.AddExpense.weekData);
-        this.$refs.Billable.weekData = this.formatWeekData(this.$refs.Billable.weekData);
-        this.$refs.NonBillable.weekData = this.formatWeekData(this.$refs.NonBillable.weekData);
-
-        // Batch entry  billable
-        this.$refs.billableBatchEntry.weekEntries[0].monday.hours = this.$refs.Billable.weekData[0].hours;
-        this.$refs.billableBatchEntry.weekEntries[0].tuesday.hours = this.$refs.Billable.weekData[1].hours;
-        this.$refs.billableBatchEntry.weekEntries[0].wednesday.hours = this.$refs.Billable.weekData[2].hours;
-        this.$refs.billableBatchEntry.weekEntries[0].thursday.hours = this.$refs.Billable.weekData[3].hours;
-        this.$refs.billableBatchEntry.weekEntries[0].friday.hours = this.$refs.Billable.weekData[4].hours;
-
-        // Batch entry non billable
-        this.$refs.nonBillableBatchEntry.weekEntries[0].monday.hours = this.$refs.NonBillable.weekData[0].hours;
-        this.$refs.nonBillableBatchEntry.weekEntries[0].tuesday.hours = this.$refs.NonBillable.weekData[1].hours;
-        this.$refs.nonBillableBatchEntry.weekEntries[0].wednesday.hours = this.$refs.NonBillable.weekData[2].hours;
-        this.$refs.nonBillableBatchEntry.weekEntries[0].thursday.hours = this.$refs.NonBillable.weekData[3].hours;
-        this.$refs.nonBillableBatchEntry.weekEntries[0].friday.hours = this.$refs.NonBillable.weekData[4].hours;
-      }
-    },
-
-    onChangeProjectWeeklyEntry(projectId) {
-      this.$store.dispatch('fetchProjectRFxData', { id: projectId });
-      this.getTimeEntries();
+        vm.activeTab = 'weekly';
+        vm.editMode = true;
+        vm.$refs.billableBatchEntry.editMode = true;
+        vm.$refs.nonBillableBatchEntry.editMode = true;
+      });
     },
     onChangeProjectRfx() {
-      this.getTimeEntries();
+      this.timesheet[this.weeklyProjectIndex].projectRfx = this.form.rfx;
     },
     stringToDate(dateString) {
       const parts = dateString.split('-');
@@ -498,224 +454,37 @@ export default {
     getDateInYYYYMMDD(date) {
       // year
       const yyyy = `${date.getFullYear()}`;
-
       // month
       let mm = `0${date.getMonth() + 1}`; // prepend 0 // +1 is because Jan is 0
       mm = mm.substr(mm.length - 2); // take last 2 chars
-
       // day
       let dd = `0${date.getDate()}`; // prepend 0
       dd = dd.substr(dd.length - 2); // take last 2 chars
-
       return `${yyyy}-${mm}-${dd}`;
     },
+    clearTimesheet() {
+      this.form.mou = '';
+      this.form.project = '';
+      this.form.rfx = '';
+      this.form.userId = '';
+      this.form.userId = this.fetchUser();
+      this.clearTimeEntries();
+    },
     clearTimeEntries() {
-      this.clearWeekEntry();
-      this.clearBatchEntry();
-    },
-    clearWeekEntry() {
+      this.timesheet = [];
+      this.addTimeSheetRow();
       this.recordTypeWeekly = 1;
-      const weekDataBillable = [
-        { day: 'Mon', description: '', hours: 0, date: '' },
-        { day: 'Tue', description: '', hours: 0, date: '' },
-        { day: 'Wed', description: '', hours: 0, date: '' },
-        { day: 'Thu', description: '', hours: 0, date: '' },
-        { day: 'Fri', description: '', hours: 0, date: '' },
-        { day: 'Sat', description: '', hours: 0, date: '' },
-        { day: 'Sun', description: '', hours: 0, date: '' },
-      ];
-      const weekDataUnBillable = [
-        { day: 'Mon', description: '', hours: 0, date: '' },
-        { day: 'Tue', description: '', hours: 0, date: '' },
-        { day: 'Wed', description: '', hours: 0, date: '' },
-        { day: 'Thu', description: '', hours: 0, date: '' },
-        { day: 'Fri', description: '', hours: 0, date: '' },
-        { day: 'Sat', description: '', hours: 0, date: '' },
-        { day: 'Sun', description: '', hours: 0, date: '' },
-      ];
-      const weekDataExpenses = [
-        { day: 'Mon', description: '', amount: 0, category: '', date: '' },
-        { day: 'Tue', description: '', amount: 0, category: '', date: '' },
-        { day: 'Wed', description: '', amount: 0, category: '', date: '' },
-        { day: 'Thu', description: '', amount: 0, category: '', date: '' },
-        { day: 'Fri', description: '', amount: 0, category: '', date: '' },
-        { day: 'Sat', description: '', amount: 0, category: '', date: '' },
-        { day: 'Sun', description: '', amount: 0, category: '', date: '' },
-      ];
-      const weekDataRevenue = [
-        { day: 'Mon', description: '', amount: 0, date: '' },
-        { day: 'Tue', description: '', amount: 0, date: '' },
-        { day: 'Wed', description: '', amount: 0, date: '' },
-        { day: 'Thu', description: '', amount: 0, date: '' },
-        { day: 'Fri', description: '', amount: 0, date: '' },
-        { day: 'Sat', description: '', amount: 0, date: '' },
-        { day: 'Sun', description: '', amount: 0, date: '' },
-      ];
-
-      this.$refs.AddRevenue.weekData = weekDataRevenue;
-      this.$refs.AddExpense.weekData = weekDataExpenses;
-      this.$refs.Billable.weekData = weekDataBillable;
-      this.$refs.NonBillable.weekData = weekDataUnBillable;
-    },
-    clearBatchEntry() {
       this.recordType = 1;
-      this.$refs.nonBillableBatchEntry.weekEntries = [];
-      this.$refs.billableBatchEntry.weekEntries = [];
-      this.$refs.nonBillableBatchEntry.weekEntries.push(
-        this.$refs.nonBillableBatchEntry.createEmptyWeekEntry(),
-      );
-      this.$refs.billableBatchEntry.weekEntries.push(
-        this.$refs.billableBatchEntry.createEmptyWeekEntry(),
-      );
+      this.weeklyProjectIndex = 0;
     },
-    async saveAndClose() {
-      if (this.$refs.AddimeRecords.validate()) {
-        if (this.activeTab === 'weekly') {
-          if (
-            !this.$refs.Billable.validate()
-            || !this.$refs.NonBillable.validate()
-            || !this.$refs.AddRevenue.validate()
-            || !this.$refs.AddExpense.validate()
-          ) {
-            this.$refs.snackbar.displaySnackbarTop('error', 'Please correct validation errors.');
-            return;
-          }
-          this.submitWeekData(true);
-        } else {
-          const nonBillableBatchEntry = this.$refs.nonBillableBatchEntry.prepareDataForSubmission();
-          const billableBatchEntry = this.$refs.billableBatchEntry.prepareDataForSubmission();
-          this.submitBatchData(nonBillableBatchEntry, billableBatchEntry, true);
-        }
-      } else {
-        this.$refs.snackbar.displaySnackbarTop('error', 'Please correct validation errors.');
+    addTimeSheetRow() {
+      let entryDate = new Date();
+      if (this.$store.state.timesheetsWeek && this.$store.state.timesheetsWeek.startDate) {
+        const startDate = this.stringToDate(this.$store.state.timesheetsWeek.startDate);
+        entryDate = new Date(startDate);
       }
-    },
-
-    submitBatchData(nonBillableBatchEntry, billableBatchEntry, needToClose = false) {
-      const timeSheetEntries = [];
-      for (let itemIndex = 0; itemIndex < billableBatchEntry.length; itemIndex++) {
-        const startDate = this.getDatePart(billableBatchEntry[itemIndex].startDate);
-        const endDate = this.getDatePart(this.$store.state.timesheetsWeek.endDate);
-        const entries = billableBatchEntry[itemIndex].timesheetEntry;
-        const timeEntries = [];
-        const timeSheetEntry = {};
-
-        for (let index = 0; index < entries.length; index++) {
-          const dateOfEntry = this.getDatePart(entries[index].entryDate);
-          const entry = {
-            entryDate: dateOfEntry,
-            hoursBillable: entries[index].hours ? entries[index].hours : 0,
-            hoursUnBillable: 0,
-            commentsBillable: '',
-            commentsUnBillable: '',
-          };
-          timeEntries.push(entry);
-        }
-        timeSheetEntry.entries = timeEntries;
-        timeSheetEntry.startDate = startDate;
-        timeSheetEntry.endDate = endDate;
-        timeSheetEntry.project = billableBatchEntry[itemIndex].projectId;
-        timeSheetEntry.userId = this.form.userId;
-        const projectMou = this.projectList.filter(
-          item => item.id === billableBatchEntry[itemIndex].projectId,
-        );
-        if (projectMou && projectMou[0]) {
-          timeSheetEntry.mou = projectMou[0].mou.id;
-        }
-
-        if (!timeSheetEntry.project) continue;
-        // timeSheetEntry.comment = billableBatchEntry[itemIndex].comment;
-        timeSheetEntries.push(timeSheetEntry);
-      }
-
-      for (let itemIndex = 0; itemIndex < nonBillableBatchEntry.length; itemIndex++) {
-        const timeSheetEntry = {};
-        const startDate = this.getDatePart(nonBillableBatchEntry[itemIndex].startDate);
-        const endDate = this.getDatePart(nonBillableBatchEntry[itemIndex].endDate);
-        timeSheetEntry.startDate = startDate;
-        timeSheetEntry.endDate = endDate;
-
-        timeSheetEntry.project = nonBillableBatchEntry[itemIndex].projectId;
-        if (!timeSheetEntry.project) continue;
-        // timeSheetEntry.comment = nonBillableBatchEntry[itemIndex].comment;
-        const entries = nonBillableBatchEntry[itemIndex].timesheetEntry;
-
-        // check for billable entry for the project, then update fields only
-        const existingProjectEntry = timeSheetEntries.filter(
-          item => item.startDate === timeSheetEntry.startDate && item.project === timeSheetEntry.project,
-        );
-        if (existingProjectEntry[0]) {
-          // assuming one record for a project
-
-          for (let index = 0; index < entries.length; index++) {
-            // select existing entries
-            const dateOfEntry = this.getDatePart(entries[index].entryDate);
-            const existingEntry = existingProjectEntry[0].entries.filter(
-              item => item.entryDate === dateOfEntry,
-            );
-            if (existingEntry[0]) {
-              // update the item
-              existingEntry[0].hoursUnBillable = entries[index].hours;
-            } else {
-              // add new item
-              const entry = {
-                entryDate: dateOfEntry,
-                hoursBillable: 0,
-                hoursUnBillable: entries[index].hours ? entries[index].hours : 0,
-                commentsBillable: '',
-                commentsUnBillable: '',
-              };
-              existingProjectEntry.push(entry);
-            }
-          }
-        } else {
-          // add new project
-          const timeEntries = [];
-          for (let index = 0; index < entries.length; index++) {
-            const dateOfEntry = this.getDatePart(entries[index].entryDate);
-            const entry = {
-              entryDate: dateOfEntry,
-              hoursBillable: 0,
-              hoursUnBillable: entries[index].hours ? entries[index].hours : 0,
-              commentsBillable: '',
-              commentsUnBillable: '',
-            };
-            timeEntries.push(entry);
-          }
-          timeSheetEntry.entries = timeEntries;
-          timeSheetEntries.push(timeSheetEntry);
-        }
-      }
-      this.$refs.spinner.open();
-      this.$store.dispatch('addBatchTimesheet', timeSheetEntries).then(
-        () => {
-          this.$refs.snackbar.displaySnackbar('success', 'Successfully saved time entries.');
-          this.$refs.spinner.close();
-          if (needToClose) {
-            this.clearTimeEntries();
-            this.closeDialog();
-          }
-        },
-        (err) => {
-          this.$refs.spinner.close();
-          if (err && err.response && err.response.data) {
-            const { message } = err.response.data.error;
-            this.$refs.snackbar.displaySnackbarTop('error', message);
-          } else {
-            this.$refs.snackbar.displaySnackbarTop('error', 'Timesheet entry Error');
-          }
-        },
-      );
-    },
-    submitWeekData(needToClose = false) {
-      const billableDetails = this.$refs.Billable.onBillableclick();
-      const nonBillableDetails = this.$refs.NonBillable.nonBillableclick();
-      const revenueDetails = this.$refs.AddRevenue.updateDate();
-      const expensesDetails = this.$refs.AddExpense.updateDate();
-
-      const timeEntries = [];
-      const startDate = this.stringToDate(this.$store.state.timesheetsWeek.startDate);
-      const entryDate = new Date(startDate);
+      const timesheetEntries = [];
+      const timesheetItem = {};
       for (let index = 0; index < 7; index++) {
         const entry = {
           entryDate: this.getDateInYYYYMMDD(entryDate),
@@ -729,64 +498,42 @@ export default {
           revenueAmount: 0,
           revenueComment: '',
         };
-        timeEntries.push(entry);
-        if (billableDetails.length > 0) {
-          const billable = billableDetails.filter(
-            item => item.date === timeEntries[index].entryDate,
-          );
-          if (billable[0]) {
-            timeEntries[index].hoursBillable = billable[0].hours === '' ? 0 : billable[0].hours;
-            timeEntries[index].commentsBillable = billable[0].description;
-          }
-        }
-
-        if (nonBillableDetails.length > 0) {
-          const unBillable = nonBillableDetails.filter(
-            item => item.date === timeEntries[index].entryDate,
-          );
-          if (unBillable[0]) {
-            timeEntries[index].hoursUnBillable = unBillable[0].hours === '' ? 0 : unBillable[0].hours;
-            timeEntries[index].commentsUnBillable = unBillable[0].description;
-          }
-        }
-        if (revenueDetails.length > 0) {
-          const revenue = revenueDetails.filter(item => item.date === timeEntries[index].entryDate);
-          if (revenue[0]) {
-            timeEntries[index].revenueAmount = revenue[0].amount === '' ? 0 : revenue[0].amount;
-            timeEntries[index].revenueComment = revenue[0].description;
-          }
-        }
-        if (expensesDetails.length > 0) {
-          const expense = expensesDetails.filter(
-            item => item.date === timeEntries[index].entryDate,
-          );
-          if (expense[0]) {
-            timeEntries[index].expenseCategory = expense[0].category;
-            timeEntries[index].expenseAmount = expense[0].amount === '' ? 0 : expense[0].amount;
-            timeEntries[index].expenseComment = expense[0].description;
-          }
-        }
+        timesheetEntries.push(entry);
         entryDate.setDate(entryDate.getDate() + 1);
       }
+      timesheetItem.entries = timesheetEntries;
+      timesheetItem.projectRfx = undefined;
+      timesheetItem.project = '';
+      timesheetItem.userId = this.form.userId;
+      timesheetItem.mou = '';
+      timesheetItem.startDate = timesheetItem.entries[0].entryDate;
+      timesheetItem.endDate = timesheetItem.entries[6].entryDate;
+      this.timesheet.push(timesheetItem);
+    },
+    async save() {
+      if (this.$refs.AddimeRecords.validate()) {
+        if (
+          !this.$refs.Billable.validate()
+          || !this.$refs.NonBillable.validate()
+          || !this.$refs.AddRevenue.validate()
+          || !this.$refs.AddExpense.validate()
+        ) {
+          this.$refs.snackbar.displaySnackbarTop('error', 'Please correct validation errors.');
+        } else {
+          this.saveTimesheets();
+        }
+      } else {
+        this.$refs.snackbar.displaySnackbarTop('error', 'Please correct validation errors.');
+      }
+    },
 
-      const formData = {
-        entries: timeEntries,
-        mou: this.form.mou,
-        project: this.form.project,
-        projectRfx: this.form.Rfx,
-        startDate: timeEntries[0].entryDate,
-        endDate: timeEntries[6].entryDate,
-        userId: this.form.userId,
-      };
+    saveTimesheets() {
       this.$refs.spinner.open();
-      this.$store.dispatch('addLightTimesheet', formData).then(
+      this.$store.dispatch('addBatchTimesheet', this.timesheet).then(
         () => {
           this.$refs.snackbar.displaySnackbar('success', 'Successfully saved time entries.');
           this.$refs.spinner.close();
-          if (needToClose) {
-            this.clearTimeEntries();
-            this.closeDialog();
-          }
+          this.closeDialog(true);
         },
         (err) => {
           this.$refs.spinner.close();
@@ -796,50 +543,45 @@ export default {
           } else {
             this.$refs.snackbar.displaySnackbarTop('error', 'Timesheet entry Error');
           }
-          return false;
         },
       );
     },
     open() {
+      this.clearTimesheet();
       this.dialog = true;
       setTimeout(() => {
-        document.getElementsByClassName('v-dialog v-dialog--active')[0].scrollTop = 0;
+        if (document.getElementsByClassName('v-dialog v-dialog--active')[0]) {
+          document.getElementsByClassName('v-dialog v-dialog--active')[0].scrollTop = 0;
+        }
       }, 400);
     },
-    closeDialog() {
-      this.$emit('close');
+    closeDialog(needRefresh) {
       this.dialog = false;
-    },
-    reset() {
-      this.$refs.AddimeRecords.resetValidation();
-      this.clearTimeEntries();
-      const data = this.initData();
-      this.$data.valid = data.valid;
-      this.$data.requiredRule = data.requiredRule;
-      this.$data.dialog = data.dialog;
-      this.$data.menu1 = data.menu1;
-      this.$data.form = data.form;
-      this.$data.dateFormatted = data.dateFormatted;
-      this.$data.existingTimeEntries = data.existingTimeEntries;
-      this.activeTab = 'weekly';
-      this.$refs.TimeCalenderWeekly.setCalendarText();
-      this.$refs.TimeCalenderBatch.setCalendarText();
+      this.$emit('close-timesheet', needRefresh);
     },
     fetchUser() {
       const referenceId = this.$store.state.activeUser.refId;
       const user = this.$store.state.users.find(value => value.referenceId === referenceId);
       if (user && user.id) {
+        this.userMouProjects = this.$store.state.allProjects.filter(
+          item => item.mou && (item.backupUserId === user.id || item.leadUserId === user.id),
+        );
         return user.id;
       }
+      return '';
     },
     initData() {
-      const form = Object.assign({}, this.$props.timeEntry);
+      const form = Object.assign({});
       if (!form.date) {
         form.date = moment().format('YYYY-MM-DD');
       }
       form.userId = this.fetchUser();
-      const existingTimeEntries = [];
       return {
+        weeklyProjectIndex: 0,
+        timesheetEntryDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        timesheet: [],
+        userMouProjects: [],
+        projectList: [],
         editMode: false,
         activeTab: 'weekly',
         recordType: 1,
@@ -847,12 +589,7 @@ export default {
         valid: true,
         requiredRule: [v => !!v || 'This field required'],
         dialog: false,
-        menu1: false,
         form: { ...form },
-        dateFormatted: undefined,
-        existingTimeEntries,
-        addRecordLoading: false,
-        dateRange: { start: null, end: null },
       };
     },
   },

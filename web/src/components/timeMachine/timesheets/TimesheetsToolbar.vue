@@ -1,16 +1,16 @@
 <template>
   <v-layout class="timesheets-toolbar" d-flex style="width: 100%;">
     <v-flex d-flex justify-center align-start>
-        <v-flex md12>
+      <v-flex md12>
         <v-radio-group v-model="selectedFilter" row>
-        <v-radio label="My Timesheets" value="Mine"></v-radio>
-        <v-radio label="Everyone's Timesheets" value="All"></v-radio>
-      </v-radio-group>
+          <v-radio label="My Timesheets" value="Mine"></v-radio>
+          <v-radio label="Everyone's Timesheets" value="All"></v-radio>
+        </v-radio-group>
       </v-flex>
       <!-- <timesheets-calendar ref="WeekSelection"></timesheets-calendar> -->
     </v-flex>
     <v-flex d-flex justify-end>
-      <add-time-record ref="AddTimeRecord" @close="close"></add-time-record>
+      <add-time-record ref="AddTimeRecord" @close-timesheet="closeTimesheet"></add-time-record>
       <v-btn class="add-timesheet-button" color="btnPrimary" dark @click="newTimeRecord"
         >+ Add Time Record</v-btn
       >
@@ -42,20 +42,21 @@ export default {
     },
   },
   methods: {
-    close() {
+    closeTimesheet(needRefresh) {
       sessionStorage.setItem('selectedStartDate', this.startDateMain);
       sessionStorage.setItem('selectedEndDate', this.endDateMain);
       this.$store.state.timesheetsWeek.startDate = this.startDateMain;
       this.$store.state.timesheetsWeek.endDate = this.endDateMain;
       // this.$refs.WeekSelection.setCalendarText();
-      this.$emit('refresh');
+      if (needRefresh) {
+        this.$emit('refresh');
+      }
     },
     newTimeRecord() {
       this.startDateMain = this.$store.state.timesheetsWeek.startDate;
       this.endDateMain = this.$store.state.timesheetsWeek.endDate;
       sessionStorage.setItem('selectedStartDate', this.startDateMain);
       sessionStorage.setItem('selectedEndDate', this.endDateMain);
-      this.$refs.AddTimeRecord.reset();
       this.$refs.AddTimeRecord.open();
     },
   },
