@@ -132,7 +132,7 @@
                     <v-flex md6 v-show="!editMode">
                       <timesheets-calendar
                         ref="TimeCalenderWeekly"
-                        @next="checkWeekChangeWeekly"
+                        @next="getTimeSheets"
                       ></timesheets-calendar>
                     </v-flex>
                     <v-flex md6>
@@ -223,7 +223,6 @@ export default {
     timesheetEntryData() {
       return this.$store.state.timesheetEntryData;
     },
-
     projectRfx() {
       if (typeof this.form.project !== 'undefined') {
         if (this.$store.state.activeProjectRfxData.length === 1) {
@@ -264,6 +263,44 @@ export default {
     this.clearTimesheet();
   },
   methods: {
+    fetchUser() {
+      const referenceId = this.$store.state.activeUser.refId;
+      const user = this.$store.state.users.find(value => value.referenceId === referenceId);
+      if (user && user.id) {
+        this.userMouProjects = this.$store.state.allProjects.filter(
+          item => item.mou && (item.backupUserId === user.id || item.leadUserId === user.id),
+        );
+        return user.id;
+      }
+      return '';
+    },
+    initData() {
+      const form = Object.assign({});
+      return {
+        weeklyProjectIndex: 0,
+        timesheetEntryDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        timesheet: [],
+        userMouProjects: [],
+        projectList: [],
+        editMode: false,
+        activeTab: 'weekly',
+        recordType: 1,
+        recordTypeWeekly: 1,
+        valid: true,
+        requiredRule: [v => !!v || 'This field required'],
+        dialog: false,
+        form: { ...form },
+      };
+    },
+    onChangeUser(userId, editMode = false) {
+      this.clearTimesheet();
+      this.form.userId = userId;
+      this.userMouProjects = this.$store.state.allProjects.filter(
+        item => item.mou
+          && (item.backupUserId === this.form.userId || item.leadUserId === this.form.userId),
+      );
+      if (!editMode) { this.getTimeSheets(); }
+    },
     onChangeMou() {
       if (
         typeof this.form.mou !== 'undefined'
@@ -281,24 +318,233 @@ export default {
       }
     },
     onChangeProjectWeeklyEntry(projectId) {
-      this.$store.dispatch('fetchProjectRFxData', { id: projectId });
+      if (projectId !== '' && projectId !== undefined) { this.$store.dispatch('fetchProjectRFxData', { id: projectId }); }
       // Keep index of weekly entry selected project. This is used to set props value to weekly entry components.
+      this.timesheet = this.timesheet.filter(item => (item.project !== '' && item.project !== undefined));
+      let projectIndex = -1;
       for (let index = 0; index < this.timesheet.length; index++) {
         if (this.timesheet[index].project === projectId) {
-          this.weeklyProjectIndex = index;
+          projectIndex = index;
         }
       }
-      this.timesheet[this.weeklyProjectIndex].project = projectId;
-      this.timesheet[this.weeklyProjectIndex].mou = this.form.mou;
-      this.getTimeEntries();
+      if (projectIndex === -1) {
+        if (this.timesheet[0] && this.timesheet[0].project === undefined) {
+          this.weeklyProjectIndex = 0;
+          this.timesheet[this.weeklyProjectIndex].project = projectId;
+          this.timesheet[this.weeklyProjectIndex].mou = this.form.mou;
+        } else {
+          this.addTimeSheetRow();
+          this.weeklyProjectIndex = this.timesheet.length - 1;
+        }
+      } else {
+        this.weeklyProjectIndex = projectIndex;
+      }
     },
-    onChangeUser(userId) {
+    onChangeProjectRfx() {
+      this.timesheet[this.weeklyProjectIndex].projectRfx = this.form.rfx;
+    },
+    async getTimeSheets() {
       this.clearTimesheet();
-      this.form.userId = userId;
-      this.userMouProjects = this.$store.state.allProjects.filter(
-        item => item.mou
-          && (item.backupUserId === this.form.userId || item.leadUserId === this.form.userId),
+      const date = this.getDatePart(this.$store.state.timesheetsWeek.startDate);
+
+      const formData = {
+        startDate: date,
+        userId: this.form.userId,
+      };
+      const vm = this;
+      vm.$store.dispatch('fetchTimesheetEntries', formData).then(() => {
+        const obj = vm.$store.state.timesheetEntryData;
+        if (obj && obj[0] && obj[0].timesheetEntries) {
+          vm.timesheet = [];
+          for (let index = 0; index < obj.length; index++) {
+            const timesheetItem = {};
+            timesheetItem.project = obj[index].project.id;
+            timesheetItem.mou = obj[index].mou.id;
+            timesheetItem.projectRfx = obj[index].projectRfx;
+            timesheetItem.userId = obj[index].userId;
+            timesheetItem.startDate = obj[index].startDate;
+            timesheetItem.endDate = obj[index].endDate;
+            timesheetItem.entries = obj[index].timesheetEntries;
+            vm.timesheet.push(timesheetItem);
+          }
+          vm.$refs.billableBatchEntry.editMode = false;
+          vm.$refs.nonBillableBatchEntry.editMode = false;
+          vm.editMode = false;
+          if (!vm.form.project && vm.timesheet.length > 0) {
+            vm.form.mou = vm.timesheet[0].mou;
+            vm.onChangeMou();
+            vm.form.project = vm.timesheet[0].project;
+          }
+          vm.onChangeProjectWeeklyEntry(vm.form.project);
+        }
+      });
+    },
+
+    async editTimeEntries(timeSheetId) {
+      const vm = this;
+      vm.$store.dispatch('fetchTimesheetById', { id: timeSheetId }).then(() => {
+        const obj = vm.$store.state.timesheetById;
+
+        this.onChangeUser(obj.userId, true);
+
+        vm.timesheet[vm.weeklyProjectIndex].entries = obj.timesheetEntries;
+        vm.timesheet[vm.weeklyProjectIndex].startDate = obj.startDate;
+        vm.timesheet[vm.weeklyProjectIndex].endDate = obj.endDate;
+        vm.timesheet[vm.weeklyProjectIndex].userId = obj.userId;
+        vm.timesheet[vm.weeklyProjectIndex].mou = obj.mou.id;
+        vm.timesheet[vm.weeklyProjectIndex].project = obj.project.id;
+        vm.timesheet[vm.weeklyProjectIndex].projectRfx = obj.projectRfx
+          ? obj.projectRfx.id
+          : undefined;
+
+        vm.$store.state.timesheetsWeek.startDate = vm.timesheet[vm.weeklyProjectIndex].startDate;
+        vm.$store.state.timesheetsWeek.endDate = vm.timesheet[vm.weeklyProjectIndex].endDate;
+        vm.$refs.TimeCalenderWeekly.setCalendarText();
+        vm.$refs.TimeCalenderBatch.setCalendarText();
+
+        vm.form.mou = vm.timesheet[vm.weeklyProjectIndex].mou;
+        this.onChangeMou();
+
+        vm.form.project = vm.timesheet[vm.weeklyProjectIndex].project;
+        vm.$store.dispatch('fetchProjectRFxData', { id: vm.form.project });
+        vm.form.rfx = vm.timesheet[vm.weeklyProjectIndex].projectRfx
+          ? vm.timesheet[vm.weeklyProjectIndex].projectRfx.id
+          : undefined;
+
+        vm.activeTab = 'weekly';
+        vm.editMode = true;
+        vm.$refs.billableBatchEntry.editMode = true;
+        vm.$refs.nonBillableBatchEntry.editMode = true;
+      });
+    },
+
+    open() {
+      this.form.userId = this.fetchUser();
+      if (this.form.userId) { this.onChangeUser(this.form.userId); } else { this.clearTimesheet(); }
+      this.dialog = true;
+      setTimeout(() => {
+        if (document.getElementsByClassName('v-dialog v-dialog--active')[0]) {
+          document.getElementsByClassName('v-dialog v-dialog--active')[0].scrollTop = 0;
+        }
+      }, 400);
+    },
+    closeDialog(needRefresh) {
+      this.dialog = false;
+      this.$emit('close-timesheet', needRefresh);
+    },
+    async save() {
+      if (this.$refs.AddimeRecords.validate()) {
+        if (
+          !this.$refs.Billable.validate()
+          || !this.$refs.NonBillable.validate()
+          || !this.$refs.AddRevenue.validate()
+          || !this.$refs.AddExpense.validate()
+        ) {
+          this.$refs.snackbar.displaySnackbarTop('error', 'Please correct validation errors.');
+        } else {
+          this.saveTimesheets();
+        }
+      } else {
+        this.$refs.snackbar.displaySnackbarTop('error', 'Please correct validation errors.');
+      }
+    },
+
+    saveTimesheets() {
+      this.timesheet = this.timesheet.filter(item => (item.project !== '' && item.project !== undefined));
+      this.$refs.spinner.open();
+      this.$store.dispatch('addBatchTimesheet', this.timesheet).then(
+        () => {
+          this.$refs.snackbar.displaySnackbar('success', 'Successfully saved time entries.');
+          this.$refs.spinner.close();
+          this.closeDialog(true);
+        },
+        (err) => {
+          this.$refs.spinner.close();
+          if (err && err.response && err.response.data) {
+            const { message } = err.response.data.error;
+            this.$refs.snackbar.displaySnackbarTop('error', message);
+          } else {
+            this.$refs.snackbar.displaySnackbarTop('error', 'Timesheet entry Error');
+          }
+        },
       );
+    },
+
+    stringToDate(dateString) {
+      const parts = dateString.split('-');
+      return new Date(parts[0], parts[1] - 1, parts[2]);
+    },
+    getDatePart(date) {
+      if (typeof date !== 'string') {
+        date = date.format('YYYY-MM-DD');
+      }
+      date = this.stringToDate(date);
+      return this.getDateInYYYYMMDD(date);
+    },
+    getDateInYYYYMMDD(date) {
+      // year
+      const yyyy = `${date.getFullYear()}`;
+      // month
+      let mm = `0${date.getMonth() + 1}`; // prepend 0 // +1 is because Jan is 0
+      mm = mm.substr(mm.length - 2); // take last 2 chars
+      // day
+      let dd = `0${date.getDate()}`; // prepend 0
+      dd = dd.substr(dd.length - 2); // take last 2 chars
+      return `${yyyy}-${mm}-${dd}`;
+    },
+    clearTimesheet() {
+      this.form.mou = undefined;
+      this.form.project = undefined;
+      this.form.rfx = undefined;
+      this.clearTimeEntries();
+    },
+    clearTimeEntries() {
+      this.timesheet = [];
+      this.addTimeSheetRow();
+      this.recordTypeWeekly = 1;
+      this.recordType = 1;
+      this.weeklyProjectIndex = 0;
+    },
+    addTimeSheetRow() {
+      let entryDate = new Date();
+      if (this.$store.state.timesheetsWeek && this.$store.state.timesheetsWeek.startDate) {
+        const startDate = this.stringToDate(this.$store.state.timesheetsWeek.startDate);
+        entryDate = new Date(startDate);
+      }
+      const timesheetEntries = [];
+      const timesheetItem = {};
+      for (let index = 0; index < 7; index++) {
+        const entry = {
+          entryDate: this.getDateInYYYYMMDD(entryDate),
+          hoursBillable: 0,
+          hoursUnBillable: 0,
+          commentsBillable: '',
+          commentsUnBillable: '',
+          expenseAmount: 0,
+          expenseComment: '',
+          expenseCategory: '',
+          revenueAmount: 0,
+          revenueComment: '',
+        };
+        timesheetEntries.push(entry);
+        entryDate.setDate(entryDate.getDate() + 1);
+      }
+      timesheetItem.entries = timesheetEntries;
+      if (this.activeTab === 'weekly') {
+        timesheetItem.projectRfx = this.form.rfx ? this.form.rfx : undefined;
+        timesheetItem.project = this.form.project;
+        timesheetItem.userId = this.form.userId;
+        timesheetItem.mou = this.form.mou;
+      } else {
+        timesheetItem.projectRfx = undefined;
+        timesheetItem.project = undefined;
+        timesheetItem.userId = this.form.userId;
+        timesheetItem.mou = undefined;
+      }
+
+      timesheetItem.startDate = timesheetItem.entries[0].entryDate;
+      timesheetItem.endDate = timesheetItem.entries[6].entryDate;
+      this.timesheet.push(timesheetItem);
     },
     ConvertToCSV(objArray) {
       const array = typeof objArray !== 'object' ? JSON.parse(objArray) : objArray;
@@ -366,231 +612,6 @@ export default {
         }
         this.csvExport(timeEntries);
       });
-    },
-
-    async checkWeekChangeWeekly() {
-      this.getTimeEntries();
-    },
-    async getTimeEntries() {
-      this.clearTimeEntries();
-      this.$refs.billableBatchEntry.editMode = false;
-      this.$refs.nonBillableBatchEntry.editMode = false;
-      this.editMode = false;
-      const date = this.getDatePart(this.$store.state.timesheetsWeek.startDate);
-      const rfxId = this.form.rfx;
-      const formData = {
-        mou: this.form.mou,
-        project: this.form.project,
-        projectRfx: rfxId ? this.form.rfx : '',
-        startDate: date,
-        userId: this.form.userId,
-      };
-      const vm = this;
-      vm.$store.dispatch('fetchTimesheetEntries', formData).then(() => {
-        const obj = vm.$store.state.timesheetEntryData;
-        if (obj && obj.timesheetEntries) {
-          vm.timesheet[vm.weeklyProjectIndex].entries = obj.timesheetEntries;
-          vm.timesheet[vm.weeklyProjectIndex].project = this.form.project;
-          vm.timesheet[vm.weeklyProjectIndex].mou = this.form.mou;
-          vm.timesheet[vm.weeklyProjectIndex].projectRfx = this.form.projectRfx;
-          vm.timesheet[vm.weeklyProjectIndex].userId = this.form.userId;
-          vm.timesheet[vm.weeklyProjectIndex].startDate = obj.startDate;
-          vm.timesheet[vm.weeklyProjectIndex].endDate = obj.endDate;
-        }
-      });
-    },
-
-    async editTimeEntries(timeSheetId) {
-      const vm = this;
-      vm.$store.dispatch('fetchTimesheetById', { id: timeSheetId }).then(() => {
-        const obj = vm.$store.state.timesheetById;
-
-        this.onChangeUser(obj.userId);
-
-        vm.timesheet[vm.weeklyProjectIndex].entries = obj.timesheetEntries;
-        vm.timesheet[vm.weeklyProjectIndex].startDate = obj.startDate;
-        vm.timesheet[vm.weeklyProjectIndex].endDate = obj.endDate;
-        vm.timesheet[vm.weeklyProjectIndex].userId = obj.userId;
-        vm.timesheet[vm.weeklyProjectIndex].mou = obj.mou.id;
-        vm.timesheet[vm.weeklyProjectIndex].project = obj.project.id;
-        vm.timesheet[vm.weeklyProjectIndex].projectRfx = obj.projectRfx
-          ? obj.projectRfx.id
-          : undefined;
-
-        vm.$store.state.timesheetsWeek.startDate = vm.timesheet[vm.weeklyProjectIndex].startDate;
-        vm.$store.state.timesheetsWeek.endDate = vm.timesheet[vm.weeklyProjectIndex].endDate;
-        vm.$refs.TimeCalenderWeekly.setCalendarText();
-        vm.$refs.TimeCalenderBatch.setCalendarText();
-
-        vm.form.mou = vm.timesheet[vm.weeklyProjectIndex].mou;
-        this.onChangeMou();
-
-        vm.form.project = vm.timesheet[vm.weeklyProjectIndex].project;
-        vm.$store.dispatch('fetchProjectRFxData', { id: vm.form.project });
-        vm.form.rfx = vm.timesheet[vm.weeklyProjectIndex].projectRfx
-          ? vm.timesheet[vm.weeklyProjectIndex].projectRfx.id
-          : undefined;
-
-        vm.activeTab = 'weekly';
-        vm.editMode = true;
-        vm.$refs.billableBatchEntry.editMode = true;
-        vm.$refs.nonBillableBatchEntry.editMode = true;
-      });
-    },
-    onChangeProjectRfx() {
-      this.timesheet[this.weeklyProjectIndex].projectRfx = this.form.rfx;
-    },
-    stringToDate(dateString) {
-      const parts = dateString.split('-');
-      return new Date(parts[0], parts[1] - 1, parts[2]);
-    },
-    getDatePart(date) {
-      if (typeof date !== 'string') {
-        date = date.format('YYYY-MM-DD');
-      }
-      date = this.stringToDate(date);
-      return this.getDateInYYYYMMDD(date);
-    },
-    getDateInYYYYMMDD(date) {
-      // year
-      const yyyy = `${date.getFullYear()}`;
-      // month
-      let mm = `0${date.getMonth() + 1}`; // prepend 0 // +1 is because Jan is 0
-      mm = mm.substr(mm.length - 2); // take last 2 chars
-      // day
-      let dd = `0${date.getDate()}`; // prepend 0
-      dd = dd.substr(dd.length - 2); // take last 2 chars
-      return `${yyyy}-${mm}-${dd}`;
-    },
-    clearTimesheet() {
-      this.form.mou = '';
-      this.form.project = '';
-      this.form.rfx = '';
-      this.form.userId = '';
-      this.form.userId = this.fetchUser();
-      this.clearTimeEntries();
-    },
-    clearTimeEntries() {
-      this.timesheet = [];
-      this.addTimeSheetRow();
-      this.recordTypeWeekly = 1;
-      this.recordType = 1;
-      this.weeklyProjectIndex = 0;
-    },
-    addTimeSheetRow() {
-      let entryDate = new Date();
-      if (this.$store.state.timesheetsWeek && this.$store.state.timesheetsWeek.startDate) {
-        const startDate = this.stringToDate(this.$store.state.timesheetsWeek.startDate);
-        entryDate = new Date(startDate);
-      }
-      const timesheetEntries = [];
-      const timesheetItem = {};
-      for (let index = 0; index < 7; index++) {
-        const entry = {
-          entryDate: this.getDateInYYYYMMDD(entryDate),
-          hoursBillable: 0,
-          hoursUnBillable: 0,
-          commentsBillable: '',
-          commentsUnBillable: '',
-          expenseAmount: 0,
-          expenseComment: '',
-          expenseCategory: '',
-          revenueAmount: 0,
-          revenueComment: '',
-        };
-        timesheetEntries.push(entry);
-        entryDate.setDate(entryDate.getDate() + 1);
-      }
-      timesheetItem.entries = timesheetEntries;
-      timesheetItem.projectRfx = this.form.rfx ? this.form.rfx : undefined;
-      timesheetItem.project = this.form.project;
-      timesheetItem.userId = this.form.userId;
-      timesheetItem.mou = this.form.mou;
-      timesheetItem.startDate = timesheetItem.entries[0].entryDate;
-      timesheetItem.endDate = timesheetItem.entries[6].entryDate;
-      this.timesheet.push(timesheetItem);
-    },
-    async save() {
-      if (this.$refs.AddimeRecords.validate()) {
-        if (
-          !this.$refs.Billable.validate()
-          || !this.$refs.NonBillable.validate()
-          || !this.$refs.AddRevenue.validate()
-          || !this.$refs.AddExpense.validate()
-        ) {
-          this.$refs.snackbar.displaySnackbarTop('error', 'Please correct validation errors.');
-        } else {
-          this.saveTimesheets();
-        }
-      } else {
-        this.$refs.snackbar.displaySnackbarTop('error', 'Please correct validation errors.');
-      }
-    },
-
-    saveTimesheets() {
-      this.$refs.spinner.open();
-      this.$store.dispatch('addBatchTimesheet', this.timesheet).then(
-        () => {
-          this.$refs.snackbar.displaySnackbar('success', 'Successfully saved time entries.');
-          this.$refs.spinner.close();
-          this.closeDialog(true);
-        },
-        (err) => {
-          this.$refs.spinner.close();
-          if (err && err.response && err.response.data) {
-            const { message } = err.response.data.error;
-            this.$refs.snackbar.displaySnackbarTop('error', message);
-          } else {
-            this.$refs.snackbar.displaySnackbarTop('error', 'Timesheet entry Error');
-          }
-        },
-      );
-    },
-    open() {
-      this.clearTimesheet();
-      this.dialog = true;
-      setTimeout(() => {
-        if (document.getElementsByClassName('v-dialog v-dialog--active')[0]) {
-          document.getElementsByClassName('v-dialog v-dialog--active')[0].scrollTop = 0;
-        }
-      }, 400);
-    },
-    closeDialog(needRefresh) {
-      this.dialog = false;
-      this.$emit('close-timesheet', needRefresh);
-    },
-    fetchUser() {
-      const referenceId = this.$store.state.activeUser.refId;
-      const user = this.$store.state.users.find(value => value.referenceId === referenceId);
-      if (user && user.id) {
-        this.userMouProjects = this.$store.state.allProjects.filter(
-          item => item.mou && (item.backupUserId === user.id || item.leadUserId === user.id),
-        );
-        return user.id;
-      }
-      return '';
-    },
-    initData() {
-      const form = Object.assign({});
-      if (!form.date) {
-        form.date = moment().format('YYYY-MM-DD');
-      }
-      form.userId = this.fetchUser();
-      return {
-        weeklyProjectIndex: 0,
-        timesheetEntryDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-        timesheet: [],
-        userMouProjects: [],
-        projectList: [],
-        editMode: false,
-        activeTab: 'weekly',
-        recordType: 1,
-        recordTypeWeekly: 1,
-        valid: true,
-        requiredRule: [v => !!v || 'This field required'],
-        dialog: false,
-        form: { ...form },
-      };
     },
   },
 };

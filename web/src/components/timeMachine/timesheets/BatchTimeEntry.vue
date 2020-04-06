@@ -133,6 +133,8 @@ export default {
         const selProject = this.projectList.find(item => item.id === selectedItem.project);
         if (selProject) {
           selectedItem.mou = selProject.mou.id;
+          selectedItem.project = selProject.id;
+          selectedItem.projectRfx = undefined;
         }
       }
     },

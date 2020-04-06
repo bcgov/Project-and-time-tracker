@@ -11,7 +11,7 @@ import {
   retrieveForLightTimesheetPreview,
   retrieveAllTimesheets,
   retrieveForLightTimesheetByUser,
-  retrieveForLightTimesheetByDate,
+  retrieveTimesheetByUserAndDate,
   retrieveMyTimesheets
 } from '../../../services/client/timesheet.service';
 import { ITimesheet } from '../../../models/interfaces/i-timesheet';
@@ -59,7 +59,7 @@ export const timesheetEntries = async (ctx: Koa.Context) => {
       return;
     }
     console.log(model);
-    ctx.body = await retrieveForLightTimesheet(model);
+    ctx.body = await retrieveTimesheetByUserAndDate(model);
   } catch (err) {
     ctx.throw(err.message);
   }
@@ -79,19 +79,6 @@ export const timeEntryByUser = async (ctx: Koa.Context) => {
   }
 };
 
-export const timeEntryByDate = async (ctx: Koa.Context) => {
-  try {
-    const model = ctx.request.body as ITimesheet;
-    if (!model) {
-      ctx.throw('no data Found');
-      return;
-    }
-    console.log(model);
-    ctx.body = await retrieveForLightTimesheetByDate(model);
-  } catch (err) {
-    ctx.throw(err.message);
-  }
-};
 export const getAllTimesheets = async (ctx: Koa.Context) => {
   try {
     // TODO - If user is NOT admin, return only the sheets by user id?
@@ -564,7 +551,6 @@ router.post('/', authorize, createTimesheetAction);
 router.post('/light', authorize, createLightTimesheet);
 router.post('/batch', authorize, createBatchTimesheet);
 router.post('/getLight', authorize, timeSheetLight);
-router.post('/timesheetentriesByDate', authorize, timeEntryByDate);
 router.post('/timesheetentriesByUser', authorize, timeEntryByUser);
 router.patch('/:id', authorize, updateTimesheetAction);
 router.delete('/:id', authorize, deleteTimesheetAction);

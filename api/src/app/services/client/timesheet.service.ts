@@ -116,12 +116,14 @@ export const retrieveForLightTimesheetByUser = async model => {
     .getMany();
   return res;
 };
-export const retrieveForLightTimesheetByDate = async model => {
+export const retrieveTimesheetByUserAndDate = async model => {
   const repo = timesheetRepo();
   const res = await repo
     .createQueryBuilder('t')
     .leftJoinAndSelect('t.timesheetEntries', 'te')
     .innerJoinAndSelect('t.project', 'p')
+    .innerJoinAndSelect('t.mou', 'm')
+    .leftJoinAndSelect('t.projectRfx', 'pr')
     .orderBy('te.entryDate', 'ASC')
     .where(
       ' t."userId" = :userId AND' +
