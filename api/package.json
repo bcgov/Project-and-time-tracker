@@ -1,5 +1,5 @@
 {
-  "name": "aot-core",
+  "name": "timemachine-api",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -7,7 +7,8 @@
     "test": "mocha -r ts-node/register **/**/*.test.ts || true",
     "test-watch": "nodemon --exec npm test",
     "lint": "tslint --project tsconfig.json --format stylish",
-    "build": "run-s clean && run-p build:*",
+    "build": "npm run serve",
+    "build-orig": "run-s clean && run-p build:*",
     "build:main": "tsc -p tsconfig.json || true",
     "build:module": "tsc -p tsconfig.module.json",
     "clean": "rimraf dist",
