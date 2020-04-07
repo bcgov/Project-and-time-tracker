@@ -149,6 +149,6 @@ export default {
     box-shadow: none !important;
 }
 .intake-base-info-header-content {
-  margin-left:38% !important;
+  margin-left:35% !important;
 }
 </style>
