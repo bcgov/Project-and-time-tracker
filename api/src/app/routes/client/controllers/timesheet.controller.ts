@@ -11,7 +11,7 @@ import {
   retrieveForLightTimesheetPreview,
   retrieveAllTimesheets,
   retrieveForLightTimesheetByUser,
-  retrieveForLightTimesheetByDate,
+  retrieveTimesheetByUserAndDate,
   retrieveMyTimesheets
 } from '../../../services/client/timesheet.service';
 import { ITimesheet } from '../../../models/interfaces/i-timesheet';
@@ -59,7 +59,7 @@ export const timesheetEntries = async (ctx: Koa.Context) => {
       return;
     }
     console.log(model);
-    ctx.body = await retrieveForLightTimesheet(model);
+    ctx.body = await retrieveTimesheetByUserAndDate(model);
   } catch (err) {
     ctx.throw(err.message);
   }
@@ -79,19 +79,6 @@ export const timeEntryByUser = async (ctx: Koa.Context) => {
   }
 };
 
-export const timeEntryByDate = async (ctx: Koa.Context) => {
-  try {
-    const model = ctx.request.body as ITimesheet;
-    if (!model) {
-      ctx.throw('no data Found');
-      return;
-    }
-    console.log(model);
-    ctx.body = await retrieveForLightTimesheetByDate(model);
-  } catch (err) {
-    ctx.throw(err.message);
-  }
-};
 export const getAllTimesheets = async (ctx: Koa.Context) => {
   try {
     // TODO - If user is NOT admin, return only the sheets by user id?
@@ -104,6 +91,13 @@ export const getMyTimesheets = async (ctx: Koa.Context) => {
   try {
     const auth = ctx.state.auth as IAuth;
     ctx.body = await retrieveMyTimesheets(auth.userId);
+  } catch (err) {
+    ctx.throw(err.message);
+  }
+};
+export const getTimesheetbyId = async (ctx: Koa.Context) => {
+  try {
+    ctx.body = await retrieveTimesheetById(ctx.params.id);
   } catch (err) {
     ctx.throw(err.message);
   }
@@ -551,14 +545,15 @@ const router: Router = new Router(routerOpts);
 // router.get('/', authorize, getTimesheets);
 router.get('/all', authorize, getAllTimesheets);
 router.get('/user', authorize, getMyTimesheets);
+router.get('/:id', authorize, getTimesheetbyId);
 router.post('/timesheetentries', authorize, timesheetEntries);
-router.post('/', authorize, createTimesheetAction);
-router.post('/light', authorize, createLightTimesheet);
 router.post('/batch', authorize, createBatchTimesheet);
-router.post('/getLight', authorize, timeSheetLight);
-router.post('/timesheetentriesByDate', authorize, timeEntryByDate);
 router.post('/timesheetentriesByUser', authorize, timeEntryByUser);
-router.patch('/:id', authorize, updateTimesheetAction);
 router.delete('/:id', authorize, deleteTimesheetAction);
+
+// router.post('/', authorize, createTimesheetAction);
+// router.post('/light', authorize, createLightTimesheet);
+// router.post('/getLight', authorize, timeSheetLight);
+// router.patch('/:id', authorize, updateTimesheetAction);
 
 export default router;

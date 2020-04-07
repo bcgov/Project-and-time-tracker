@@ -53,7 +53,7 @@ const store = new Vuex.Store({
     rfxTypes: [],
     timesheetEntryData: [],
     timesheetEntryDatabyUser: [],
-    timesheetEntryDatabyDate: [],
+    timesheetById: [],
     projectRiskAnswers: [],
     intakeRiskQuestions: [],
     mouList: [],
@@ -148,8 +148,8 @@ const store = new Vuex.Store({
     fetchTimesheetEntries(state, data) {
       state.timesheetEntryData = data;
     },
-    fetchTimesheetEntriesByDate(state, data) {
-      state.timesheetEntryDatabyDate = data;
+    fetchTimesheetById(state, data) {
+      state.timesheetById = data;
     },
     fetchTimesheetEntriesByUser(state, data) {
       state.timesheetEntryDatabyUser = data;
@@ -547,13 +547,13 @@ const store = new Vuex.Store({
         ctx.commit("fetchprojectRiskAnswers", content);
       });
     },
-    async fetchTimesheetEntriesByDate(ctx, req) {
+    async fetchTimesheetById(ctx, req) {
       const body = req;
       const api = await $http
-        .post(`${API_URI}/timesheet/timesheetentriesByDate`, body)
+        .get(`${API_URI}/timesheet/${req.id}`, body)
         .then((res) => {
           const content = res.data;
-          ctx.commit('fetchTimesheetEntriesByDate', content);
+          ctx.commit('fetchTimesheetById', content);
           return Promise.resolve(content);
         })
         .catch(err => Promise.reject(err.response));

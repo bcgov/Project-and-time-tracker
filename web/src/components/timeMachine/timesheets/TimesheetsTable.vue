@@ -26,6 +26,10 @@
     </v-card-title>
     <v-divider></v-divider>
     <v-card-text class="pa-0">
+       <add-time-record
+                    ref="AddTimeRecord"
+                    @close-timesheet="closeTimesheet"
+                  ></add-time-record>
       <template>
         <v-data-table
           :headers="headers"
@@ -47,7 +51,6 @@
             <td class="text-xs-center">
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
-                  <add-time-record ref="AddTimeRecord" @close="close"></add-time-record>
                   <v-btn flat icon color="grey" @click="editTimesheet(props.item.id)" v-on="on">
                     <v-icon>edit</v-icon>
                   </v-btn>
@@ -149,7 +152,6 @@ export default {
           timeRecords = this.$store.state.allTimesheets;
         }
       }
-
       if (this.search) {
         timeRecords = timeRecords.filter(item => item.project.projectName.toLowerCase().includes(this.search.toLowerCase()));
       }
@@ -157,19 +159,14 @@ export default {
     },
   },
   methods: {
-    fetchUser() {
-      const referenceId = this.$store.state.activeUser.refId;
-      const user = this.$store.state.users.find(value => value.referenceId === referenceId);
-      if (user && user.id) {
-        return user.id;
-      }
-    },
-    close() {
+    closeTimesheet(needRefresh) {
       sessionStorage.setItem('selectedStartDate', this.startDateMain);
       sessionStorage.setItem('selectedEndDate', this.endDateMain);
       this.$store.state.timesheetsWeek.startDate = this.startDateMain;
       this.$store.state.timesheetsWeek.endDate = this.endDateMain;
-      this.fetchData();
+      if (needRefresh) {
+        this.fetchData();
+      }
     },
     editTimesheet(value) {
       this.startDateMain = this.$store.state.timesheetsWeek.startDate;
@@ -177,9 +174,8 @@ export default {
       const found = this.timesheetsList.find(element => element.id === value);
       sessionStorage.setItem('selectedStartDate', found.startDate);
       sessionStorage.setItem('selectedEndDate', found.endDate);
-      this.$refs.AddTimeRecord.reset();
-      this.$refs.AddTimeRecord.open();
-      this.$refs.AddTimeRecord.editTimeEntries(found);
+      this.$refs.AddTimeRecord.open(true); // specifies edit mode
+      this.$refs.AddTimeRecord.editTimeEntries(value);
     },
     getFullname(projectLeadId) {
       let projectLeadName = null;
@@ -198,8 +194,13 @@ export default {
       if (this.$refs.spinner) {
         this.$refs.spinner.open();
       }
-      await this.$store.dispatch('fetchUserTimesheets');
-      await this.$store.dispatch('fetchAllTimesheets');
+      if (this.$refs.timesheetstoolbar.selectedFilter === 'All') {
+        await this.$store.dispatch('fetchAllTimesheets');
+        this.$store.dispatch('fetchUserTimesheets');
+      } else {
+        await this.$store.dispatch('fetchUserTimesheets');
+        this.$store.dispatch('fetchAllTimesheets');
+      }
 
       if (this.$refs.spinner) {
         this.$refs.spinner.close();
@@ -231,12 +232,13 @@ export default {
       }
     },
     async initalfetch() {
-      await this.$store.dispatch('fetchAllProjects');// Needed in AddTimeRecord
+      await this.$store.dispatch('fetchAllProjects'); // Needed in AddTimeRecord
+      await this.$store.dispatch('fetchUserTimesheets');
+      await this.$store.dispatch('fetchAllTimesheets');
     },
   },
   created() {
     this.initalfetch();
-    this.fetchData();
   },
 };
 </script>
