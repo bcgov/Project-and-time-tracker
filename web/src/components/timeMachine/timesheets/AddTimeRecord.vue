@@ -155,7 +155,7 @@
                   <v-flex v-show="recordTypeWeekly === 1">
                     <timesheet-entry
                       ref="Billable"
-                      :timesheet="timesheet"
+                      :timesheet="computeTimesheet"
                       :selectedItem="1"
                       :days="timesheetEntryDays"
                       :projectIndex="weeklyProjectIndex"
@@ -164,7 +164,7 @@
                   <v-flex v-show="recordTypeWeekly === 2">
                     <expense-entry
                       ref="AddExpense"
-                      :timesheet="timesheet"
+                      :timesheet="computeTimesheet"
                       :days="timesheetEntryDays"
                       :projectIndex="weeklyProjectIndex"
                     ></expense-entry>
@@ -172,7 +172,7 @@
                   <v-flex v-show="recordTypeWeekly === 3">
                     <revenue-entry
                       ref="AddRevenue"
-                      :timesheet="timesheet"
+                      :timesheet="computeTimesheet"
                       :days="timesheetEntryDays"
                       :projectIndex="weeklyProjectIndex"
                     ></revenue-entry>
@@ -180,7 +180,7 @@
                   <v-flex v-show="recordTypeWeekly === 4">
                     <timesheet-entry
                       ref="NonBillable"
-                      :timesheet="timesheet"
+                      :timesheet="computeTimesheet"
                       :selectedItem="4"
                       :days="timesheetEntryDays"
                       :projectIndex="weeklyProjectIndex"
@@ -222,6 +222,18 @@ import BatchTimeEntry from './BatchTimeEntry.vue';
 
 export default {
   computed: {
+    computeTimesheet: {
+      get() {
+        if (this.form.project === undefined || this.form.project === '') {
+          if (this.blankTimesheet.length === 0) { this.addTimeSheetRow(true); }
+
+          return this.blankTimesheet;
+        }
+        return this.timesheet;
+      },
+
+    },
+
     mouList() {
       return this.$store.state.mouList;
     },
@@ -288,6 +300,7 @@ export default {
         weeklyProjectIndex: 0,
         timesheetEntryDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
         timesheet: [],
+        blankTimesheet: [],
         userMouProjects: [],
         projectList: [],
         editMode: false,
@@ -326,27 +339,28 @@ export default {
       } else {
         this.projectList = [];
       }
-      if (this.projectList.length > 0) {
-        this.selectWeeklyProject(this.projectList[0].id, this.form.mou);
-      } else { this.selectWeeklyProject(undefined, this.form.mou); }
+      // if (this.projectList.length > 0) {
+      //   this.selectWeeklyProject(this.projectList[0].id, this.form.mou);
+      // } else { this.selectWeeklyProject(undefined, this.form.mou); }
     },
     onBatchEntry() {
       if (this.timesheet.length > 1) {
         this.timesheet = this.timesheet.filter(
           item => item.project !== '' && item.project !== undefined,
         );
-        this.selectWeeklyProject(this.form.project, this.form.mou);
+        if (this.timesheet.length === 0) { this.AddimeRecords(); }
+        // this.selectWeeklyProject(this.form.project, this.form.mou);
       }
     },
     onWeekEntry() {
-      if (this.form.Project === undefined || this.form.Project === '') {
-        if (this.timesheet.length > 0) {
-          this.form.mou = this.timesheet[0].mou;
-          const projectId = this.timesheet[0].project;
-          this.onChangeMou();
-          this.selectWeeklyProject(projectId, this.timesheet[0].mou);
-        }
-      }
+      // if (this.form.Project === undefined || this.form.Project === '') {
+      //   if (this.timesheet.length > 0) {
+      //     this.form.mou = this.timesheet[0].mou;
+      //     const projectId = this.timesheet[0].project;
+      //     this.onChangeMou();
+      //     this.selectWeeklyProject(projectId, this.timesheet[0].mou);
+      //   }
+      // }
     },
     selectWeeklyProject(projectId, mou) {
       let projectIndex = -1;
@@ -356,7 +370,11 @@ export default {
         }
       }
       if (projectIndex === -1) {
-        this.weeklyProjectIndex = 0;
+        this.timesheet = this.timesheet.filter(
+          item => item.project !== '' && item.project !== undefined,
+        );
+        this.addTimeSheetRow();
+        this.weeklyProjectIndex = this.timesheet.length - 1;
       } else {
         this.weeklyProjectIndex = projectIndex;
       }
@@ -365,8 +383,8 @@ export default {
       }
       this.timesheet[this.weeklyProjectIndex].project = projectId;
       this.timesheet[this.weeklyProjectIndex].mou = mou;
-      this.form.mou = mou;
-      this.form.project = projectId;
+      // this.form.mou = mou;
+      // this.form.project = projectId;
     },
     onChangeProjectWeeklyEntry() {
       if (this.form.project !== '' && this.form.project !== undefined) {
@@ -375,6 +393,8 @@ export default {
 
       // Keep index of weekly entry selected project. This is used to set props value to weekly entry components.
       this.selectWeeklyProject(this.form.project, this.form.mou);
+      this.blankTimesheet = [];
+      this.addTimeSheetRow(true);
     },
     onChangeProjectRfx() {
       this.timesheet[this.weeklyProjectIndex].projectRfx = this.form.rfx;
@@ -410,12 +430,12 @@ export default {
           vm.$refs.billableBatchEntry.editMode = false;
           vm.$refs.nonBillableBatchEntry.editMode = false;
           vm.editMode = false;
-          if (!vm.form.project && vm.timesheet.length > 0) {
-            vm.form.mou = vm.timesheet[0].mou;
-            vm.onChangeMou();
-            vm.form.project = vm.timesheet[0].project;
-          }
-          vm.selectWeeklyProject(vm.form.project, vm.form.mou);
+          // if (!vm.form.project && vm.timesheet.length > 0) {
+          //   vm.form.mou = vm.timesheet[0].mou;
+          //   vm.onChangeMou();
+          //   vm.form.project = vm.timesheet[0].project;
+          // }
+          // vm.selectWeeklyProject(vm.form.project, vm.form.mou);
         }
       });
     },
@@ -455,6 +475,8 @@ export default {
         vm.editMode = true;
         vm.$refs.billableBatchEntry.editMode = true;
         vm.$refs.nonBillableBatchEntry.editMode = true;
+        this.blankTimesheet = [];
+        this.addTimeSheetRow(true);
       });
     },
 
@@ -560,7 +582,7 @@ export default {
       this.recordType = 1;
       this.weeklyProjectIndex = 0;
     },
-    addTimeSheetRow() {
+    addTimeSheetRow(blankRow = false) {
       let entryDate = new Date();
       if (this.$store.state.timesheetsWeek && this.$store.state.timesheetsWeek.startDate) {
         const startDate = this.stringToDate(this.$store.state.timesheetsWeek.startDate);
@@ -585,21 +607,21 @@ export default {
         entryDate.setDate(entryDate.getDate() + 1);
       }
       timesheetItem.entries = timesheetEntries;
-      if (this.activeTab === 'weekly') {
-        timesheetItem.projectRfx = this.form.rfx ? this.form.rfx : undefined;
-        timesheetItem.project = this.form.project;
-        timesheetItem.userId = this.form.userId;
-        timesheetItem.mou = this.form.mou;
-      } else {
-        timesheetItem.projectRfx = undefined;
-        timesheetItem.project = undefined;
-        timesheetItem.userId = this.form.userId;
-        timesheetItem.mou = undefined;
-      }
+      // if (this.activeTab === 'weekly' && !blankRow) {
+      //   timesheetItem.projectRfx = this.form.rfx ? this.form.rfx : undefined;
+      //   timesheetItem.project = this.form.project;
+      //   timesheetItem.userId = this.form && this.form.userId ? this.form.userId : undefined;
+      //   timesheetItem.mou = this.form.mou;
+      // } else {
+      timesheetItem.projectRfx = undefined;
+      timesheetItem.project = undefined;
+      timesheetItem.userId = this.form && this.form.userId ? this.form.userId : undefined;
+      timesheetItem.mou = undefined;
+      // }
 
       timesheetItem.startDate = timesheetItem.entries[0].entryDate;
       timesheetItem.endDate = timesheetItem.entries[6].entryDate;
-      this.timesheet.push(timesheetItem);
+      if (!blankRow) { this.timesheet.push(timesheetItem); } else { this.blankTimesheet.push(timesheetItem); }
     },
     ConvertToCSV(objArray) {
       const array = typeof objArray !== 'object' ? JSON.parse(objArray) : objArray;
