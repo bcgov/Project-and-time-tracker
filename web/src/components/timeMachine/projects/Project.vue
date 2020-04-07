@@ -200,6 +200,7 @@
                               :key="index"
                               :value="0"
                             >
+                             <h3 class="v-form-container">Additional Contact</h3>
                               <project-additional-contact-info
                                 :additionalContact="addcontact"
                                 ref="additionalcontactinfo"
