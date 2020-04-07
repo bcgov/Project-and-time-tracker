@@ -202,10 +202,10 @@
           </v-card-actions>
         </v-card>
       </v-form>
-      <pre>
+      <!-- <pre>
 
      Timesheet:{{this.timesheet}}
-        </pre>
+        </pre> -->
     </v-dialog>
   </v-layout>
 </template>
@@ -332,7 +332,6 @@ export default {
     },
     onBatchEntry() {
       if (this.timesheet.length > 1) {
-        debugger;
         this.timesheet = this.timesheet.filter(
           item => item.project !== '' && item.project !== undefined,
         );
@@ -461,6 +460,7 @@ export default {
 
     open(editMode = false) {
       this.initData();
+      this.$refs.AddimeRecords.resetValidation();
       this.form.userId = this.fetchUser();
       if (this.form.userId) {
         this.onChangeUser(this.form.userId, editMode);
@@ -487,9 +487,16 @@ export default {
           || !this.$refs.AddExpense.validate()
         ) {
           this.$refs.snackbar.displaySnackbarTop('error', 'Please correct validation errors.');
-        } else {
-          this.saveTimesheets();
+        } else if (this.activeTab === 'batch') {
+          const validRecords = this.timesheet.filter(
+            item => item.project !== '' && item.project !== undefined,
+          );
+
+          if (validRecords.length === 0) {
+            return;
+          }
         }
+        this.saveTimesheets();
       } else {
         this.$refs.snackbar.displaySnackbarTop('error', 'Please correct validation errors.');
       }

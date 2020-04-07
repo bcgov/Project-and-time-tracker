@@ -9,7 +9,7 @@
         class="elevation-0 tm-v-datatable batch-entry"
       >
         <template v-slot:items="props">
-          <td>
+          <td >
             <v-select
               :items="userProjects"
               item-text="projectName"
@@ -25,7 +25,7 @@
               </template>-->
             </v-select>
           </td>
-          <td v-for="index in 5" :key="index">
+          <td v-for="index in 5" :key="index" >
             <v-flex v-if="selectedItem == 1">
               <v-text-field
                 type="number"

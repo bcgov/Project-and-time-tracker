@@ -26,6 +26,10 @@
     </v-card-title>
     <v-divider></v-divider>
     <v-card-text class="pa-0">
+       <add-time-record
+                    ref="AddTimeRecord"
+                    @close-timesheet="closeTimesheet"
+                  ></add-time-record>
       <template>
         <v-data-table
           :headers="headers"
@@ -47,10 +51,6 @@
             <td class="text-xs-center">
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
-                  <add-time-record
-                    ref="AddTimeRecord"
-                    @close-timesheet="closeTimesheet"
-                  ></add-time-record>
                   <v-btn flat icon color="grey" @click="editTimesheet(props.item.id)" v-on="on">
                     <v-icon>edit</v-icon>
                   </v-btn>

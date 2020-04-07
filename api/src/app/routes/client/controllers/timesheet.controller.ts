@@ -547,12 +547,13 @@ router.get('/all', authorize, getAllTimesheets);
 router.get('/user', authorize, getMyTimesheets);
 router.get('/:id', authorize, getTimesheetbyId);
 router.post('/timesheetentries', authorize, timesheetEntries);
-router.post('/', authorize, createTimesheetAction);
-router.post('/light', authorize, createLightTimesheet);
 router.post('/batch', authorize, createBatchTimesheet);
-router.post('/getLight', authorize, timeSheetLight);
 router.post('/timesheetentriesByUser', authorize, timeEntryByUser);
-router.patch('/:id', authorize, updateTimesheetAction);
 router.delete('/:id', authorize, deleteTimesheetAction);
+
+// router.post('/', authorize, createTimesheetAction);
+// router.post('/light', authorize, createLightTimesheet);
+// router.post('/getLight', authorize, timeSheetLight);
+// router.patch('/:id', authorize, updateTimesheetAction);
 
 export default router;
