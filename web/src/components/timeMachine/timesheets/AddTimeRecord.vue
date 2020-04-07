@@ -136,7 +136,7 @@
                     <v-flex md6 v-show="!editMode">
                       <timesheets-calendar
                         ref="TimeCalenderWeekly"
-                        @next="getTimeSheets"
+                        @next="onChangeWeek"
                       ></timesheets-calendar>
                     </v-flex>
                     <v-flex md6>
@@ -398,9 +398,11 @@ export default {
     onChangeProjectRfx() {
       this.timesheet[this.weeklyProjectIndex].projectRfx = this.form.rfx;
     },
-
-    async getTimeSheets() {
-      this.clearTimesheet();
+    onChangeWeek() {
+      this.getTimeSheets(true);
+    },
+    async getTimeSheets(weekChange = false) {
+      this.clearTimesheet(weekChange);
       if (!this.form.userId) {
         return;
       }
@@ -509,7 +511,8 @@ export default {
         ) {
           this.$refs.snackbar.displaySnackbarTop('error', 'Please correct validation errors.');
           return;
-        } if (this.activeTab === 'batch') {
+        }
+        if (this.activeTab === 'batch') {
           const validRecords = this.timesheet.filter(
             item => item.project !== '' && item.project !== undefined,
           );
@@ -569,10 +572,12 @@ export default {
       dd = dd.substr(dd.length - 2); // take last 2 chars
       return `${yyyy}-${mm}-${dd}`;
     },
-    clearTimesheet() {
-      this.form.mou = undefined;
-      this.form.project = undefined;
-      this.form.rfx = undefined;
+    clearTimesheet(weekChange = false) {
+      if (!weekChange) {
+        this.form.mou = undefined;
+        this.form.project = undefined;
+        this.form.rfx = undefined;
+      }
       this.clearTimeEntries();
     },
     clearTimeEntries() {
