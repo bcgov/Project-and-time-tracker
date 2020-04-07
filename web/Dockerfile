@@ -1,15 +1,18 @@
-# FIRST STAGE OF MULTI-STAGE BUILD: BUILD APPLICATION
-
 FROM node:8.11.1
+
+# copy project files and folders to the web directory
 COPY . /web
+
+# make the 'web' folder the current working directory
 WORKDIR /web
-# RUN npm install
-RUN npm cache clean --force && npm install
+
+# install project dependencies
+RUN npm install
+
+
+# build app for production with minification
 RUN npm run build
 
-# SECOND STAGE OF MULTI-STAGE BUILD:  HOST OUTPUT FROM STAGE1 W/ NGINX
+EXPOSE 8080
 
-FROM nginx:latest
-WORKDIR /app/
-COPY nginx.conf.template /etc/nginx/nginx.conf
-COPY --from=0 /web/dist .
+CMD [ "npm", "run", "serve" ]

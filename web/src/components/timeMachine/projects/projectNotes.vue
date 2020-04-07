@@ -7,11 +7,14 @@
         <v-card style="width:100%">
           <v-card-text class="card-contents">
             <v-layout row wrap>
+              <v-flex md12 v-if="replyNoteName" class="replyheaderdiv">
+                <div class="replytoheader">Reply to: {{replyNoteName}}</div>
+              </v-flex>
               <v-flex md12>
                 <div class="v-form-container">
                   <v-textarea
                     name="project-description"
-                    label="write your notes"
+                    label="Please input your note below"
                     v-model="userNote"
                     no-resize
                   ></v-textarea>
@@ -80,7 +83,11 @@ export default {
         })
         .then(
           () => {
+            const { params } = this.$router.currentRoute;
+            const id = params.id || undefined;
+            this.$store.dispatch("fetchAllProjectNotes", { id: id });
             this.$refs.snackbar.displaySnackbar("success", "Updated");
+            this.closeDialog();
           },
           err => {
             try {
@@ -97,7 +104,8 @@ export default {
       const [month, day, year] = date.split("/");
       return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
     },
-    open(value) {
+    open(value, name) {
+      this.replyNoteName = name;
       this.flag = value;
       this.dialog = true;
       setTimeout(() => {
@@ -107,6 +115,7 @@ export default {
       }, 400);
     },
     closeDialog() {
+      this.$emit("closeNotes");
       this.dialog = false;
     },
     reset() {
@@ -127,6 +136,7 @@ export default {
         ],
         dialog: false,
         userNote: "",
+        replyNoteName: undefined,
         parentNoteId: undefined
       };
     }
@@ -134,10 +144,22 @@ export default {
 };
 </script>
 <style scoped>
+.replyheaderdiv {
+  background-color: gainsboro;
+}
+
+.replytoheader {
+  margin-left: 40px;
+  font-size: medium;
+  font-weight: 600;
+}
 .add-log-button {
   width: 150px;
   flex: 0 0 200px !important;
   margin-right: 3%;
+}
+.primary-heading {
+  margin-top: 10px !important;
 }
 .v-dialog:not(.v-dialog--fullscreen) {
   max-width: 40%;

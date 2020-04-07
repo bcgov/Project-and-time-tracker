@@ -142,8 +142,13 @@ export default {
 
     editProject(id) {
       this.$store.state.activeProject.id = id;
-      this.$store.dispatch('fetchAllProjectNotes', { id: this.$store.state.activeProject.id });
-      this.$router.push({ path: `project/${id}` });
+      this.$store.dispatch("fetchAllProjectNotes", { id: this.$store.state.activeProject.id });
+      ;
+      this.$store.dispatch("fetchProjectContacts", { id: this.$store.state.activeProject.id })
+            .then( (res) =>{
+               this.$router.push({ path: `project/${id}` })
+            }
+               );
     },
     async archivePrompt(item, archiveVal) {
       if (
