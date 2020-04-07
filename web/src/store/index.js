@@ -953,13 +953,15 @@ const store = new Vuex.Store({
       return Promise.resolve(api);
     },
     // Project Contacts Requests
-    fetchProjectContacts(ctx, req) {
+   async fetchProjectContacts(ctx, req) {
       // TODO: Make sure it's the right kind of ID - eg. numeric or GUID/UUID
-      $http.get(`${API_URI}/contact/${req.id}/by-project-id`)
+     const api = await $http.get(`${API_URI}/contact/${req.id}/by-project-id`)
         .then((res) => {
           const content = res.data;
           ctx.commit('fetchProjectContacts', content);
+          return Promise.resolve(content);
         });
+        return Promise.resolve(api);
     },
     updateProjectContacts(ctx, req) {
       const body = req.contacts;

@@ -85,7 +85,6 @@
                   </v-card>
                 </v-expansion-panel-content>
               </v-expansion-panel>
-
               <!--
 
   Temporarily commented out, but will be restored after demo.
@@ -394,22 +393,33 @@ export default {
   watch: {
     enabled() {
       if (!this.enabled) this.$refs.projectClient.reset();
+    },
+    getcustdata() {
+      const { params } = this.$router.currentRoute;
+      const id = params.id || undefined;
+      this.$store.dispatch("fetchProjectContacts", { id: id });
     }
   },
   methods: {
-    getClientContactData() {
-      const contactData = this.$store.state.activeProjectContacts;
-      var clientcontacts = contactData.filter(function(item) {
-        return item.contactType === "clientcontact";
-      });
-      return clientcontacts;
-    },
     addNewContact() {
       this.contactCount = this.contactCount + 1;
-      const contactobj ={
-        id: undefined, contactType: '', userId: '', fullName: '', orgName: '',
-        orgPosition: '', email: '', phoneNumber: '', addressLine1: '', addressLine2: '',
-        city: '', province: '', country: '', postalCode: '', roleName: '' }
+      const contactobj = {
+        id: undefined,
+        contactType: "",
+        userId: "",
+        fullName: "",
+        orgName: "",
+        orgPosition: "",
+        email: "",
+        phoneNumber: "",
+        addressLine1: "",
+        addressLine2: "",
+        city: "",
+        province: "",
+        country: "",
+        postalCode: "",
+        roleName: ""
+      };
       this.AllContactData.push(contactobj);
     },
     projectnotes() {
@@ -437,26 +447,15 @@ export default {
       const contactData = this.$store.getters.getProjectContactByType(
         contactType
       );
-      if (
-        this.initialLoad &&
-        contactType === "clientcontact" &&
-        this.$store.state.activeProjectContacts.length > 0
-      ) {
-        if (this.$store.state.activeProjectContacts.length > 2) {
-          this.enabled = true;
-        } else {
-          this.enabled = false;
-        }
-        this.initialLoad = false;
-      }
+
       return contactData && contactData.id ? contactData : new ContactDto();
     },
-    projectAdditionalContactData(index) {
-      const contactData = this.$store.getters.getProjectContactByType(
-        "clientcontact"
-      );
-      return contactData && contactData.id ? contactData : new ContactDto();
-    },
+    // projectAdditionalContactData(index) {
+    //   const contactData = this.$store.getters.getProjectContactByType(
+    //     "clientcontact"
+    //   );
+    //   return contactData && contactData.id ? contactData : new ContactDto();
+    // },
     fetchData() {
       const { params } = this.$router.currentRoute;
       const id = params.id || undefined;
@@ -575,15 +574,14 @@ export default {
     }
   },
   created() {
-    while (this.$store.state.activeProjectContacts.length > 0) {
-      this.$store.state.activeProjectContacts.pop();
-    }
-
+    // while (this.$store.state.activeProjectContacts.length > 0) {
+    //   this.$store.state.activeProjectContacts.pop();
+    // }
+    console.log("from created:", this.$store.state.activeProjectContacts);
     // if no rfx, add one
     if (this.projectRfxData.length === 0) {
       this.addNewRFx();
     }
-
     this.fetchData();
   }
 };
