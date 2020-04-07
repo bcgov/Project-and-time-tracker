@@ -50,12 +50,8 @@
             </v-layout>
             <v-divider class="header-divider"></v-divider>
             <v-tabs v-model="activeTab">
-              <v-tab href="#batch" @click="onBatchEntry()"
-                >Batch Entry</v-tab
-              >
-              <v-tab href="#weekly" @click="onWeekEntry()"
-                >Weekly Entry</v-tab
-              >
+              <v-tab href="#batch" @click="onBatchEntry()">Batch Entry</v-tab>
+              <v-tab href="#weekly" @click="onWeekEntry()">Weekly Entry</v-tab>
               <v-tab-item value="batch">
                 <v-flex>
                   <v-flex class="d-flex" cols="12" sm="6">
@@ -225,13 +221,14 @@ export default {
     computeTimesheet: {
       get() {
         if (this.form.project === undefined || this.form.project === '') {
-          if (this.blankTimesheet.length === 0) { this.addTimeSheetRow(true); }
+          if (this.blankTimesheet.length === 0) {
+            this.addTimeSheetRow(true);
+          }
 
           return this.blankTimesheet;
         }
         return this.timesheet;
       },
-
     },
 
     mouList() {
@@ -348,7 +345,9 @@ export default {
         this.timesheet = this.timesheet.filter(
           item => item.project !== '' && item.project !== undefined,
         );
-        if (this.timesheet.length === 0) { this.AddimeRecords(); }
+        if (this.timesheet.length === 0) {
+          this.AddimeRecords();
+        }
         // this.selectWeeklyProject(this.form.project, this.form.mou);
       }
     },
@@ -509,7 +508,8 @@ export default {
           || !this.$refs.AddExpense.validate()
         ) {
           this.$refs.snackbar.displaySnackbarTop('error', 'Please correct validation errors.');
-        } else if (this.activeTab === 'batch') {
+          return;
+        } if (this.activeTab === 'batch') {
           const validRecords = this.timesheet.filter(
             item => item.project !== '' && item.project !== undefined,
           );
@@ -621,7 +621,11 @@ export default {
 
       timesheetItem.startDate = timesheetItem.entries[0].entryDate;
       timesheetItem.endDate = timesheetItem.entries[6].entryDate;
-      if (!blankRow) { this.timesheet.push(timesheetItem); } else { this.blankTimesheet.push(timesheetItem); }
+      if (!blankRow) {
+        this.timesheet.push(timesheetItem);
+      } else {
+        this.blankTimesheet.push(timesheetItem);
+      }
     },
     ConvertToCSV(objArray) {
       const array = typeof objArray !== 'object' ? JSON.parse(objArray) : objArray;
