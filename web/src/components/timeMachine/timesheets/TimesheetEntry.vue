@@ -37,14 +37,14 @@
               v-model="item.hoursUnBillable"
             ></v-text-field>
           </v-flex>
-          <v-flex md8>
-            <v-flex md8 v-if="selectedItem == 1">
+          <v-flex md8 v-if="selectedItem == 1">
+
               <v-text-field v-model="item.commentsBillable"></v-text-field>
             </v-flex>
             <v-flex md8 v-else>
               <v-text-field v-model="item.commentsUnBillable"></v-text-field>
             </v-flex>
-          </v-flex>
+
           <v-flex md2>
             <v-tooltip top open-delay="500">
               <template v-slot:activator="{ on }">

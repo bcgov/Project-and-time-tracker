@@ -174,7 +174,7 @@ export default {
       const found = this.timesheetsList.find(element => element.id === value);
       sessionStorage.setItem('selectedStartDate', found.startDate);
       sessionStorage.setItem('selectedEndDate', found.endDate);
-      this.$refs.AddTimeRecord.open();
+      this.$refs.AddTimeRecord.open(true); // specifies edit mode
       this.$refs.AddTimeRecord.editTimeEntries(value);
     },
     getFullname(projectLeadId) {

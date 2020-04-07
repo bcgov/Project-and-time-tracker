@@ -29,7 +29,9 @@
                       :items="userList"
                       item-value="id"
                       item-text="contact.fullName"
+                      :disabled="editMode"
                       label="User"
+                      validate-on-blur
                     ></v-select>
                   </v-flex>
                 </v-flex>
@@ -48,8 +50,12 @@
             </v-layout>
             <v-divider class="header-divider"></v-divider>
             <v-tabs v-model="activeTab">
-              <v-tab href="#batch">Batch Entry</v-tab>
-              <v-tab href="#weekly">Weekly Entry</v-tab>
+              <v-tab href="#batch" @click="onBatchEntry()"
+                >Batch Entry</v-tab
+              >
+              <v-tab href="#weekly" @click="onWeekEntry()"
+                >Weekly Entry</v-tab
+              >
               <v-tab-item value="batch">
                 <v-flex>
                   <v-flex class="d-flex" cols="12" sm="6">
@@ -101,6 +107,7 @@
                       label="MOU"
                       :disabled="editMode"
                       @input="onChangeMou()"
+                      validate-on-blur
                     ></v-select>
                   </v-flex>
                   <v-flex xs12>
@@ -111,8 +118,9 @@
                       item-text="projectName"
                       item-value="id"
                       label="Project Name"
-                      @input="onChangeProjectWeeklyEntry(form.project)"
+                      @input="onChangeProjectWeeklyEntry()"
                       :disabled="editMode"
+                      validate-on-blur
                     ></v-select>
                   </v-flex>
 
@@ -194,10 +202,10 @@
           </v-card-actions>
         </v-card>
       </v-form>
-      <!-- <pre>
+      <pre>
 
      Timesheet:{{this.timesheet}}
-        </pre> -->
+        </pre>
     </v-dialog>
   </v-layout>
 </template>
@@ -299,7 +307,9 @@ export default {
         item => item.mou
           && (item.backupUserId === this.form.userId || item.leadUserId === this.form.userId),
       );
-      if (!editMode) { this.getTimeSheets(); }
+      if (!editMode) {
+        this.getTimeSheets();
+      }
     },
     onChangeMou() {
       if (
@@ -316,11 +326,30 @@ export default {
       } else {
         this.projectList = [];
       }
+      if (this.projectList.length > 0) {
+        this.selectWeeklyProject(this.projectList[0].id, this.form.mou);
+      } else { this.selectWeeklyProject(undefined, this.form.mou); }
     },
-    onChangeProjectWeeklyEntry(projectId) {
-      if (projectId !== '' && projectId !== undefined) { this.$store.dispatch('fetchProjectRFxData', { id: projectId }); }
-      // Keep index of weekly entry selected project. This is used to set props value to weekly entry components.
-      this.timesheet = this.timesheet.filter(item => (item.project !== '' && item.project !== undefined));
+    onBatchEntry() {
+      if (this.timesheet.length > 1) {
+        debugger;
+        this.timesheet = this.timesheet.filter(
+          item => item.project !== '' && item.project !== undefined,
+        );
+        this.selectWeeklyProject(this.form.project, this.form.mou);
+      }
+    },
+    onWeekEntry() {
+      if (this.form.Project === undefined || this.form.Project === '') {
+        if (this.timesheet.length > 0) {
+          this.form.mou = this.timesheet[0].mou;
+          const projectId = this.timesheet[0].project;
+          this.onChangeMou();
+          this.selectWeeklyProject(projectId, this.timesheet[0].mou);
+        }
+      }
+    },
+    selectWeeklyProject(projectId, mou) {
       let projectIndex = -1;
       for (let index = 0; index < this.timesheet.length; index++) {
         if (this.timesheet[index].project === projectId) {
@@ -328,23 +357,35 @@ export default {
         }
       }
       if (projectIndex === -1) {
-        if (this.timesheet[0] && this.timesheet[0].project === undefined) {
-          this.weeklyProjectIndex = 0;
-          this.timesheet[this.weeklyProjectIndex].project = projectId;
-          this.timesheet[this.weeklyProjectIndex].mou = this.form.mou;
-        } else {
-          this.addTimeSheetRow();
-          this.weeklyProjectIndex = this.timesheet.length - 1;
-        }
+        this.weeklyProjectIndex = 0;
       } else {
         this.weeklyProjectIndex = projectIndex;
       }
+      if (projectId !== '' && projectId !== undefined) {
+        this.$store.dispatch('fetchProjectRFxData', { id: projectId });
+      }
+      this.timesheet[this.weeklyProjectIndex].project = projectId;
+      this.timesheet[this.weeklyProjectIndex].mou = mou;
+      this.form.mou = mou;
+      this.form.project = projectId;
+    },
+    onChangeProjectWeeklyEntry() {
+      if (this.form.project !== '' && this.form.project !== undefined) {
+        this.$store.dispatch('fetchProjectRFxData', { id: this.form.project });
+      }
+
+      // Keep index of weekly entry selected project. This is used to set props value to weekly entry components.
+      this.selectWeeklyProject(this.form.project, this.form.mou);
     },
     onChangeProjectRfx() {
       this.timesheet[this.weeklyProjectIndex].projectRfx = this.form.rfx;
     },
+
     async getTimeSheets() {
       this.clearTimesheet();
+      if (!this.form.userId) {
+        return;
+      }
       const date = this.getDatePart(this.$store.state.timesheetsWeek.startDate);
 
       const formData = {
@@ -375,7 +416,7 @@ export default {
             vm.onChangeMou();
             vm.form.project = vm.timesheet[0].project;
           }
-          vm.onChangeProjectWeeklyEntry(vm.form.project);
+          vm.selectWeeklyProject(vm.form.project, vm.form.mou);
         }
       });
     },
@@ -418,9 +459,14 @@ export default {
       });
     },
 
-    open() {
+    open(editMode = false) {
+      this.initData();
       this.form.userId = this.fetchUser();
-      if (this.form.userId) { this.onChangeUser(this.form.userId); } else { this.clearTimesheet(); }
+      if (this.form.userId) {
+        this.onChangeUser(this.form.userId, editMode);
+      } else {
+        this.clearTimesheet();
+      }
       this.dialog = true;
       setTimeout(() => {
         if (document.getElementsByClassName('v-dialog v-dialog--active')[0]) {
@@ -450,7 +496,9 @@ export default {
     },
 
     saveTimesheets() {
-      this.timesheet = this.timesheet.filter(item => (item.project !== '' && item.project !== undefined));
+      this.timesheet = this.timesheet.filter(
+        item => item.project !== '' && item.project !== undefined,
+      );
       this.$refs.spinner.open();
       this.$store.dispatch('addBatchTimesheet', this.timesheet).then(
         () => {
