@@ -8,9 +8,7 @@
           <v-card-text class="card-contents">
             <v-layout row wrap>
               <v-flex md12 v-if="replyNoteName" class="replyheaderdiv">
-                <div class="replytoheader">
-                  Reply to: {{replyNoteName}}
-                </div>
+                <div class="replytoheader">Reply to: {{replyNoteName}}</div>
               </v-flex>
               <v-flex md12>
                 <div class="v-form-container">
@@ -85,8 +83,11 @@ export default {
         })
         .then(
           () => {
+            const { params } = this.$router.currentRoute;
+            const id = params.id || undefined;
+            this.$store.dispatch("fetchAllProjectNotes", { id: id });
             this.$refs.snackbar.displaySnackbar("success", "Updated");
-             this.closeDialog();
+            this.closeDialog();
           },
           err => {
             try {
@@ -103,7 +104,7 @@ export default {
       const [month, day, year] = date.split("/");
       return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
     },
-    open(value,name) {
+    open(value, name) {
       this.replyNoteName = name;
       this.flag = value;
       this.dialog = true;
@@ -135,7 +136,7 @@ export default {
         ],
         dialog: false,
         userNote: "",
-        replyNoteName:undefined,
+        replyNoteName: undefined,
         parentNoteId: undefined
       };
     }
@@ -149,8 +150,8 @@ export default {
 
 .replytoheader {
   margin-left: 40px;
-    font-size: medium;
-    font-weight: 600;
+  font-size: medium;
+  font-weight: 600;
 }
 .add-log-button {
   width: 150px;

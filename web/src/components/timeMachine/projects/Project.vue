@@ -439,9 +439,9 @@ export default {
       this.$refs.procurementtable.close();
     },
     closeNotes() {
-       const { params } = this.$router.currentRoute;
-      const id = params.id || undefined;
-      this.$store.dispatch("fetchAllProjectNotes", { id: id });
+      //  const { params } = this.$router.currentRoute;
+      // const id = params.id || undefined;
+      // this.$store.dispatch("fetchAllProjectNotes", { id: id });
     },
     projectnotes() {
       return this.$store.state.allProjectNotes;
