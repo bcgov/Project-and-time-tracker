@@ -94,7 +94,6 @@
                       </v-card-text>
                     </div>
                   </v-card>
-                  {{$store.state.allProjectNotes}}
               <!--
 
   Temporarily commented out, but will be restored after demo.
