@@ -11,7 +11,8 @@ import {
   retrieveForLightTimesheetPreview,
   retrieveAllTimesheets,
   retrieveForLightTimesheetByUser,
-  retrieveForLightTimesheetByDate
+  retrieveForLightTimesheetByDate,
+  retrieveMyTimesheets
 } from '../../../services/client/timesheet.service';
 import { ITimesheet } from '../../../models/interfaces/i-timesheet';
 import {
@@ -95,6 +96,14 @@ export const getAllTimesheets = async (ctx: Koa.Context) => {
   try {
     // TODO - If user is NOT admin, return only the sheets by user id?
     ctx.body = await retrieveAllTimesheets();
+  } catch (err) {
+    ctx.throw(err.message);
+  }
+};
+export const getMyTimesheets = async (ctx: Koa.Context) => {
+  try {
+    const auth = ctx.state.auth as IAuth;
+    ctx.body = await retrieveMyTimesheets(auth.userId);
   } catch (err) {
     ctx.throw(err.message);
   }
@@ -541,7 +550,7 @@ const router: Router = new Router(routerOpts);
 
 // router.get('/', authorize, getTimesheets);
 router.get('/all', authorize, getAllTimesheets);
-router.get('/:id', authorize, getTimesheetById);
+router.get('/user', authorize, getMyTimesheets);
 router.post('/timesheetentries', authorize, timesheetEntries);
 router.post('/', authorize, createTimesheetAction);
 router.post('/light', authorize, createLightTimesheet);

@@ -10,7 +10,7 @@
         <div class="v-form-container">
           <h3
             class="intake-secondary-header"
-          >You will receive an email with next steps within 24 hours</h3>
+          >You will receive an email with next steps within a few business days.</h3>
         </div>
       </v-flex>
       <v-flex xs12 class="intake-success-button">
@@ -21,13 +21,13 @@
 </template>
 
 <script>
-import './intakesuccess.styl';
+import "./intakesuccess.styl";
 
 export default {
   methods: {
     logout() {
-      this.$router.push({ path: 'logout' });
-    },
-  },
+      this.$router.push({ path: "logout" });
+    }
+  }
 };
 </script>

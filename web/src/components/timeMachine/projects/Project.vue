@@ -20,7 +20,7 @@
                     </v-card-text>
                   </v-card>
                   <v-card>
-                    <div style="padding:5px;border-top-style: ridge;">
+                    <div class="note-div" >
                       <div class="primary-heading">
                         <!-- <img src="@/assets/bulb.svg"> -->
                         <label class="sub-header-large" style="margin-left:25px">Notes</label>
@@ -33,17 +33,20 @@
                                 <div class="column">
                                   <div class="card">
                                     <div class="headerdivstyle">
-                                      <span class="headerspan" v-html="item.user.contact.fullName" />
-                                      <span
-                                        v-html="new Date(item.noteTime).toString().slice(0,25)"
-                                      />
-                                    </div>
-                                    <br />
-                                    <span
-                                      style="float:left;margin-left:3%;text-align: justify;padding-right: 30px;"
-                                      v-html="item.note"
-                                    />
-                                    <br />
+                                    <span class="headerspan" v-html="item.user.contact.fullName" />
+                                    <span v-html="new Date(item.noteTime).toString().slice(0,15)" /></div>
+                                    <br/>
+                                    <span class="main-note" v-html="item.note" />
+                                      <br/>
+                                        <v-layout v-for="(inneritem) in $store.state.allProjectNotes" :key="inneritem.id">
+                                          <div style="width:100%" v-if="(inneritem.parentId)&&(inneritem.parentId == item.id)">
+                                            <br>
+                                          <span class="reply-person"  v-html="inneritem.user.contact.fullName" />
+                                          <span class="reply-note-time" v-html="new Date(inneritem.noteTime).toString().slice(0,15)" />
+                                          <br>
+                                          <span class="reply-note"  v-html="inneritem.note" />
+                                          </div>
+                                          </v-layout>
                                     <v-btn
                                       flat
                                       large
@@ -119,7 +122,8 @@
                       label="Search"
                       single-line
                       hide-details
-                    ></v-text-field>
+                      v-model="search"
+                      ></v-text-field>
                   </v-flex>
                   <!-- RFx Type and Phases -->
                   <v-tab-item value="rfx">
@@ -281,7 +285,7 @@
                               </h4>
                             </v-flex>
                             <v-flex d-flex justify-end>
-                              <procurement-log ref="ProcurementLog"></procurement-log>
+                              <procurement-log ref="ProcurementLog" @close="close"></procurement-log>
                               <v-btn
                                 class="add-timesheet-button"
                                 color="btnPrimary"
@@ -292,7 +296,7 @@
                           </v-layout>
                           <v-layout row wrap>
                             <v-flex xs12>
-                              <procurement-log-table></procurement-log-table>
+                              <procurement-log-table ref="procurementtable" :search ="search"></procurement-log-table>
                             </v-flex>
                           </v-layout>
                         </v-container>
@@ -327,12 +331,12 @@ import Snackbar from "../common/Snackbar.vue";
 import ProjectAdditionalContactInfo from "./ProjectAddintionalContactInfo.vue";
 import ProcurementLogTable from "./ProcurementLogTable.vue";
 
-import "./project.styl";
+import './project.styl';
 
 Vue.use(VeeValidate);
 
 const CLIENT_INFO_TYPES = {
-  CLIENT_CONTACT: "clientcontact"
+  CLIENT_CONTACT: 'clientcontact',
 };
 
 export default {
@@ -346,16 +350,16 @@ export default {
     ProjectAdditionalContactInfo,
     projectRiskAssessment,
     ProcurementLogTable,
-    ProcurementLog
+    ProcurementLog,
   },
   props: {
     title: String,
     ProcurementLog: {
       type: Function,
-      default: () => {}
-    }
+      default: () => {},
+    },
   },
-  $_veeValidate: { validator: "new" },
+  $_veeValidate: { validator: 'new' },
   computed: {
     project() {
       return this.$store.state.activeProject;
@@ -371,8 +375,9 @@ export default {
   data() {
     return {
       additionalContact: [new AdditionalContact()],
+      search: '',
       rfxData: [new RFxDto()],
-      projectId: "",
+      projectId: '',
       enabled: true,
       initialLoad: true,
       color: Material,
@@ -401,6 +406,7 @@ export default {
       this.$store.dispatch("fetchProjectContacts", { id: id });
     }
   },
+    
   methods: {
     addNewContact() {
       this.contactCount = this.contactCount + 1;
@@ -422,6 +428,9 @@ export default {
         roleName: ""
       };
       this.AllContactData.push(contactobj);
+  },
+    close() {
+      this.$refs.procurementtable.close();
     },
     projectnotes() {
       return this.$store.state.allProjectNotes;
@@ -432,7 +441,6 @@ export default {
     },
     replynotes(value) {
       let refvalue = value;
-
       this.$refs[refvalue][0].reset();
       this.$refs[refvalue][0].open(value);
     },
@@ -446,9 +454,8 @@ export default {
     // },
     projectContactData(contactType) {
       const contactData = this.$store.getters.getProjectContactByType(
-        contactType
+        contactType,
       );
-
       return contactData && contactData.id ? contactData : new ContactDto();
     },
     // projectAdditionalContactData(index) {
@@ -462,11 +469,11 @@ export default {
       const id = params.id || undefined;
       if (!(id === undefined)) {
         this.projectId = id;
-        this.$store.dispatch("fetchProject", { id: this.projectId });
-        this.$store.dispatch("fetchProjectRFxData", { id: this.projectId });
-        this.$store.dispatch("fetchProjectContacts", { id: this.projectId });
-        this.$store.dispatch("fetchprojectRiskAnswers", { id: this.projectId });
-        this.$store.dispatch("fetchAllProcurementLog", { id: this.projectId });
+        this.$store.dispatch('fetchProject', { id: this.projectId });
+        this.$store.dispatch('fetchProjectRFxData', { id: this.projectId });
+        this.$store.dispatch('fetchProjectContacts', { id: this.projectId });
+        this.$store.dispatch('fetchprojectRiskAnswers', { id: this.projectId });
+        this.$store.dispatch('fetchAllProcurementLog', { id: this.projectId });
       }
       this.$store.dispatch("fetchAllProjectNotes", { id: this.projectId });
       this.$store.dispatch("fetchintakeRiskQuestions");
@@ -474,14 +481,14 @@ export default {
     formatDate(date) {
       if (!date) return null;
 
-      const [year, month, day] = date.split("-");
+      const [year, month, day] = date.split('-');
       return `${month}/${day}/${year}`;
     },
     parseDate(date) {
       if (!date) return null;
 
-      const [month, day, year] = date.split("/");
-      return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+      const [month, day, year] = date.split('/');
+      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
     },
     addNewRFx() {
       const allRFXValid = this.validateRFXForm();
@@ -508,8 +515,7 @@ export default {
       this.$refs.projectFinancier.Validate();
       const projectLeadForm = this.$refs.projectLead.form || undefined;
       const projectSponsorForm = this.$refs.projectSponsor.form || undefined;
-      const projectFinancierForm =
-        this.$refs.projectFinancier.form || undefined;
+      const projectFinancierForm = this.$refs.projectFinancier.form || undefined;
       const projectContactForm = this.$refs.projectClient
         ? this.$refs.projectClient.form
         : undefined;
@@ -528,43 +534,42 @@ export default {
         projectLeadForm,
         projectSponsorForm,
         projectContactForm,
-        projectFinancierForm
+        projectFinancierForm,
       ].filter(contact => contact !== undefined);
       contacts = contacts.concat(this.allContacts);
       console.log("contacts before update", contacts);
       if (contacts instanceof Array && contacts.length > 0) {
-        await this.$store.dispatch("updateProjectContacts", {
+        await this.$store.dispatch('updateProjectContacts', {
           id: this.projectId,
-          contacts
+          contacts,
         });
-        this.$refs.snackbar.displaySnackbar("success", "Saved");
+        this.$refs.snackbar.displaySnackbar('success', 'Saved');
       }
     },
     async saveFinanceCodes() {
-      const projectFinanceForm =
-        this.$refs.projectFinanceInfo.financeInfo || undefined;
+      const projectFinanceForm = this.$refs.projectFinanceInfo.financeInfo || undefined;
       if (this.$refs.projectFinanceInfo.validate()) {
         if (this.project && this.project.client && this.project.client.id) {
           await this.$store
-            .dispatch("updateProjectFinanceCodes", {
+            .dispatch('updateProjectFinanceCodes', {
               id: this.project.client.id,
-              financeCodes: projectFinanceForm
+              financeCodes: projectFinanceForm,
             })
             .then(
               () => {
-                this.$refs.snackbar.displaySnackbar("success", "Updated");
+                this.$refs.snackbar.displaySnackbar('success', 'Updated');
               },
-              err => {
+              (err) => {
                 try {
                   const { message } = err.response.data.error;
-                  this.$refs.snackbar.displaySnackbar("error", message);
+                  this.$refs.snackbar.displaySnackbar('error', message);
                 } catch (ex) {
                   this.$refs.snackbar.displaySnackbar(
-                    "error",
-                    "Failed to update"
+                    'error',
+                    'Failed to update',
                   );
                 }
-              }
+              },
             );
         }
       }
@@ -572,7 +577,7 @@ export default {
     initializeRisk() {
       this.$refs.projectRiskAssessment.updateInitalData();
       this.$refs.projectRiskAssessment.editScreen = false;
-    }
+    },
   },
   created() {
     // while (this.$store.state.activeProjectContacts.length > 0) {
@@ -581,6 +586,7 @@ export default {
     console.log("from created:", this.$store.state.activeProjectContacts);
     // if no rfx, add one
     if (this.projectRfxData.length === 0) {
+      console.log('addinging initial rfx');
       this.addNewRFx();
     }
     this.fetchData();

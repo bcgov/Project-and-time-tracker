@@ -58,6 +58,8 @@ export const validateToken = async (ctx: Koa.Context, next: () => Promise<any>) 
         }
         if (authorizationData.realm_access.roles.includes('PSB_Admin')) {
           authData.role = 'PSB_Admin';
+        } else if (authorizationData.realm_access.roles.includes('PSB_Intake_User')) {
+          authData.role = 'PSB_Intake_User';
         } else if (authorizationData.realm_access.roles.includes('PSB_User')) {
           authData.role = 'PSB_User';
         } else if (authorizationData.realm_access.roles.includes('User')) {

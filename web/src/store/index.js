@@ -68,6 +68,7 @@ const store = new Vuex.Store({
     activeProjectContacts: [],
     projects: [],
     archivedProjects: [],
+    allProjects: [],
     projectsRfx: new HashTable(),
     // Timesheets component
     activeTimesheetEntryRowId: null, // Row of timesheet entries (1 week)
@@ -75,6 +76,7 @@ const store = new Vuex.Store({
     timesheets: [],
     unbilledTimesheets: [],
     timesheetEntries: [],
+    userTimesheets: [],
     allTimesheets: [], // used in table view of all timesheets
     allProcurementLog: [],
     allProjectNotes: [],
@@ -290,6 +292,27 @@ const store = new Vuex.Store({
     fetchArchivedProjects(state, data) {
       state.archivedProjects = data;
     },
+    fetchAllProjects(state, data) {
+      state.allProjects  = []; //reset state, helps when archiving/deleting.
+      if (data instanceof Array) {
+        data.forEach((project) => {
+          project.projectLeadUserId = project.leadUserId;
+
+          project.projectBackupUserId = project.backupUserId;
+          project.ministryInformation = project.ministryInformation
+          const exists = state.allProjects.filter(item => item.id === project.id) || [];
+
+          if (exists.length > 0) {
+            const itemIdx = state.allProjects.indexOf(exists[0]);
+            state.allProjects[itemIdx] = merge(state.allProjects[itemIdx], project);
+          } else {
+            state.allProjects.push(project);
+          }
+        });
+      }
+
+     
+    },
     addProject() {
       throw new Error('Not implemented!');
     },
@@ -356,6 +379,10 @@ const store = new Vuex.Store({
     fetchAllTimesheets(state, data) {
       console.log('fetchAllTimesheets', data);
       state.allTimesheets = data;
+    },
+    fetchUserTimesheets(state, data) {
+      console.log('fetchUserTimesheets', data);
+      state.userTimesheets = data;
     },
     fetchAllProcurementLog(state, data) {
       console.log('fetchAllProcurementLog', data);
@@ -858,6 +885,15 @@ const store = new Vuex.Store({
           ctx.commit('fetchArchivedProjects', content);
         });
     },
+    fetchAllProjects(ctx) {
+      $http
+        .get(`${API_URI}/project/all`)
+        .then((res) => {
+          let content = res.data;
+          content = res.data.map(project => project);
+          ctx.commit('fetchAllProjects', content);
+        });
+    },
     archiveProject(ctx, { id, is_archived }) {
       if (!(is_archived === true || is_archived === false)) {
         throw new Error(`is_archived must be boolean, instead you provided: ${typeof is_archived}`)
@@ -1051,6 +1087,11 @@ const store = new Vuex.Store({
       ctx.commit('fetchAllTimesheets', res.data);
       return Promise.resolve(res.data);
     },
+    async fetchUserTimesheets(ctx) {
+      const res = await $http.get(`${API_URI}/timesheet/user`)
+      ctx.commit('fetchUserTimesheets', res.data);
+      return Promise.resolve(res.data);
+    },    
     async fetchAllProcurementLog(ctx, req) {
       const res = await $http.get(`${API_URI}/procurement/${req.id}`)
       ctx.commit('fetchAllProcurementLog', res.data);

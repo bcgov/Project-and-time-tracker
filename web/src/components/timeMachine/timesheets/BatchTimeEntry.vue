@@ -1,6 +1,6 @@
 <template>
   <v-layout column justify-center>
-         <snackbar ref="snackbar"></snackbar>
+    <snackbar ref="snackbar"></snackbar>
     <v-flex>
       <v-data-table
         :headers="headers"
@@ -8,8 +8,8 @@
         hide-actions
         class="elevation-0 tm-v-datatable batch-entry"
       >
-        <template v-slot:items="props" >
-          <td >
+        <template v-slot:items="props">
+          <td>
             <v-select
               :items="allProjects"
               item-text="projectName"
@@ -29,40 +29,54 @@
             <!-- TODO - Swap the below out with "hoursUnbillable" if above is selected. Maybe with a prop, "isUnbillable"?-->
             <v-text-field
               type="number"
-              single-line
-              label="Hours"
+              max="24"
+              step="0.01"
+              min="0"
+              oninput="validity.valid||(value=0);"
               v-model="props.item.monday.hours"
             ></v-text-field>
           </td>
           <td>
             <v-text-field
               type="number"
-              single-line
-              label="Hours"
+              max="24"
+              step="0.01"
+              min="0"
+              :rules="hoursRule"
+              oninput="validity.valid||(value=0);"
               v-model="props.item.tuesday.hours"
             ></v-text-field>
           </td>
           <td>
             <v-text-field
               type="number"
-              single-line
-              label="Hours"
+              max="24"
+              step="0.01"
+              min="0"
+              :rules="hoursRule"
+              oninput="validity.valid||(value=0);"
               v-model="props.item.wednesday.hours"
             ></v-text-field>
           </td>
           <td>
             <v-text-field
               type="number"
-              single-line
-              label="Hours"
+              max="24"
+              step="0.01"
+              min="0"
+              :rules="hoursRule"
+              oninput="validity.valid||(value=0);"
               v-model="props.item.thursday.hours"
             ></v-text-field>
           </td>
           <td>
             <v-text-field
               type="number"
-              single-line
-              label="Hours"
+              max="24"
+              step="0.01"
+              min="0"
+              :rules="hoursRule"
+              oninput="validity.valid||(value=0);"
               v-model="props.item.friday.hours"
             ></v-text-field>
           </td>
@@ -83,7 +97,7 @@
     </v-flex>
 
     <v-flex v-if="!editMode">
-      <v-btn @click="addRow">Add another entry</v-btn>
+      <v-btn class="btn-normal" @click="addRow">ADD ANOTHER ENTRY</v-btn>
       <pre>
           <!-- {{ weekEntries }} -->
 
@@ -106,10 +120,14 @@ export default {
   },
   computed: {
     allProjects() {
-      const mouProjects = this.$store.state.projects.filter(
-        item => item.mou != null && item.mou !== '',
-      );
-      return mouProjects;
+      if (typeof this.userId !== 'undefined') {
+        const mouProjects = this.$store.state.allProjects.filter(
+          item => item.mou != null && item.mou !== '' && (item.backupUserId === this.userId
+|| item.leadUserId === this.userId),
+        );
+        return mouProjects;
+      }
+      return [];
     },
     selectedStartDate() {
       return this.$store.state.timesheetsWeek.startDate;
@@ -119,13 +137,15 @@ export default {
     //  const form = Object.assign({}, this.$props.timeEntry);
     return {
       // form: { ...form },
-      props: { ...this.selectedItem },
+      hoursRule: [v => v % 0.25 === 0 || 'Please enter in quarter hours (0.25 = 15min)'],
       exludeProjects: [],
       projectRfx: '',
       weekData: [
         { day: 'Mon', description: '', hours: 0, date: '' },
         { day: 'Tue', description: '', hours: 0, date: '' },
         { day: 'Wed', description: '', hours: 0, date: '' },
+        { day: 'Thur', description: '', hours: 0, date: '' },
+        { day: 'Fri', description: '', hours: 0, date: '' },
       ],
       valid: true,
       editMode: false,
@@ -146,6 +166,7 @@ export default {
   },
   props: {
     selectedItem: Number,
+    userId: String,
   },
 
   watch: {
@@ -159,21 +180,16 @@ export default {
   },
   methods: {
     fetchUser() {
-      const referenceId = this.$store.state.activeUser.refId;
-      const user = this.$store.state.users.find(value => value.referenceId === referenceId);
-      if (user && user.id) {
-        return user.id;
-      }
+      return this.userId;
     },
     onChangeProjectBatchEntry(selectedItem) {
       const selectedProjects = this.weekEntries.filter(
         item => item.projectId === selectedItem.projectId,
       );
-      if (selectedProjects.length === 1) { this.getTimeEntries(selectedItem); } else {
-        this.$refs.snackbar.displaySnackbar(
-          'info',
-          'This project is already added',
-        );
+      if (selectedProjects.length === 1) {
+        this.getTimeEntries(selectedItem);
+      } else {
+        this.$refs.snackbar.displaySnackbar('info', 'This project is already added');
         selectedItem.projectId = '';
       }
     },
@@ -197,7 +213,7 @@ export default {
     },
     async getTimeEntries(seletedRow) {
       const date = this.getDatePart(this.$store.state.timesheetsWeek.startDate);
-      const mouProjects = this.$store.state.projects.filter(
+      const mouProjects = this.allProjects(
         item => item.mou != null && item.mou !== '' && item.id == seletedRow.projectId,
       );
       const formData = {
@@ -236,7 +252,7 @@ export default {
       const obj = {};
       timesheetEntryDays.map(
         dayString => (obj[dayString] = {
-          hours: undefined,
+          hours: 0,
         }),
       );
       return obj;

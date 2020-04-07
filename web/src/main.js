@@ -16,7 +16,6 @@ import store from '@/store';
 
 import VForm from '@/modules/widgets/Form.vue';
 import VField from '@/modules/widgets/Field.vue';
-import VueCurrencyInput from 'vue-currency-input'
 import VCalendar from 'v-calendar';
 
 
@@ -26,7 +25,6 @@ Vue.use(VCalendar, {
 });
 
 Vue.use(VueQuillEditor);
-Vue.use(VueCurrencyInput, { globalOptions: { currency: 'CAD'}});
 Vue.filter('formatDate', function(value)
 {
   if (value) {
@@ -34,6 +32,19 @@ Vue.filter('formatDate', function(value)
   }
 }
 );
+
+Vue.filter('withCommas', (value) => {
+  if (!value) return;
+  const anyNonNumbers = value.toString().match(/[^\d,]+/g, '');
+  if (anyNonNumbers){
+    return value;
+  }
+  const stripped = value.toString().replace(/,/g, '') // Remove commas to get real number, so 1,245 != 1.
+  const format = new Intl.NumberFormat().format(stripped)
+  // console.log('withCommas', {value, format, stripped})
+  return format;
+})
+
 Vue.component('v-form', VForm);
 Vue.component('v-field', VField);
 // Useful for v-selects, this opens them when tabbed into them

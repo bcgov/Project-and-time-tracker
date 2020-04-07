@@ -137,16 +137,12 @@
         <div class="v-form-container">
           <v-text-field
             class="required"
-            :rules="requiredRule"
+            :rules="amountRule"
             prepend-inner-icon="attach_money"
             label="Contract Amount"
-            type="number"
-            :min="0"
-            step="any"
             oninput="validity.valid||(value='');"
-            @blur="onBlurNumber"
-            @focus="onFocusText"
-            v-model="form.contractValue"
+            :value='form.contractValue | withCommas'
+            @blur='v => form.contractValue = parseFloat(v.target.value)'
           ></v-text-field>
         </div>
       </v-flex>
@@ -298,9 +294,9 @@ export default {
     ministries() {
       return this.$store.state.ministries;
     },
-    mouList(){
+    mouList() {
       return this.$store.state.mouList;
-    }
+    },
   },
   data() {
     const form = Object.assign({}, this.$props.project);
@@ -329,6 +325,14 @@ export default {
       saveProjectLoading: false,
       ministryInformation: this.$store.state.ministryInformation,
       mouSearch: null,
+      amountRule: [(v) => {
+        if (!v) return 'This field is required';
+        const anyNonNumbers = v.toString().match(/[^\d,]+/g, '');
+        if (anyNonNumbers) {
+          return 'Field must just be a number.';
+        }
+        return true;
+      }],
     };
   },
   watch: {
@@ -340,7 +344,7 @@ export default {
     },
     project(value) {
       this.form = value;
-      
+
       const inputProjectSector = this.form.projectSector || null;
       if (!inputProjectSector) {
         this.form.projectSector = new ProjectSectorDto();
@@ -363,22 +367,21 @@ export default {
       return `${month}/${day}/${year}`;
     },
     onBlurNumber(e) {
-    this.visible = false;
-        this.temp = this.amount;
-        this.amount = this.thousandSeprator(this.amount);
+      this.visible = false;
+      this.temp = this.amount;
+      this.amount = this.thousandSeprator(this.amount);
     },
     onFocusText() {
-    this.visible = true;
-        this.amount = this.temp;
+      this.visible = true;
+      this.amount = this.temp;
     },
     thousandSeprator(amount) {
     if (amount !== '' || amount !== undefined || amount !== 0 || amount !== '0' || amount !== null)
     {
         return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    } else
-    {
+    } 
         return amount;
-    }
+    
     },
     parseDate(date) {
       if (!date) return null;
@@ -393,18 +396,18 @@ export default {
       const scope = this;
       if (this.$refs.projectBaseInfo.validate()) {
         // ministry part starts
-        for(var i=0;i<this.$store.state.ministries.length; i++) {
-          if(this.$store.state.ministries[i].id == this.form.client.ministry.id) {
-           this.form.client.ministry.ministryName = this.$store.state.ministries[i].ministryName;
+        for (let i = 0; i < this.$store.state.ministries.length; i++) {
+          if (this.form.client && this.form.client.ministry && this.$store.state.ministries[i].id == this.form.client.ministry.id) {
+            this.form.client.ministry.ministryName = this.$store.state.ministries[i].ministryName;
           }
         }
         if (this.form.client.isNonMinistry) {
-          this.form.client.ministry = undefined;
+          // this.form.client.ministry = undefined;
         } else {
           this.form.client.NonMinistryName = undefined;
         }
         this.$store.state.ministryInformation = true;
-        
+
         // ministry part ends
 
         const projectData = Object.assign({}, this.form);
@@ -439,10 +442,10 @@ export default {
         );
       }
     },
-    async createMOU(){
+    async createMOU() {
       // TODO - Check that pre-existing MOU doesn't already exist
-      if (this.project.mou){
-        const newMouID = await this.$store.dispatch('createMOU', {name: this.project.mou});
+      if (this.project.mou) {
+        const newMouID = await this.$store.dispatch('createMOU', { name: this.project.mou });
       }
     },
     fetchData() {

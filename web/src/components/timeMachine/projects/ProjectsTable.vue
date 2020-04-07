@@ -23,7 +23,7 @@
               <span class="clickable" @click="editProject(props.item.id)">{{ props.item.projectName }}</span>
             </td>
             <!-- <td class="text-xs-left">{{ props.item.projectName}} </td> -->
-            <td class="text-xs-left">{{ [props.item.client.ministry?props.item.client.ministry.ministryName: props.item.client.nonMinistryName, props.item.orgDivision].join(" ") }}</td>
+            <td class="text-xs-left">{{ [props.item.client.isNonMinistry?props.item.client.nonMinistryName:props.item.client.ministry.ministryName, props.item.orgDivision].join(" ") }}</td>
             <td class="text-xs-left table-dropdown">
               <v-select
                 :items="userList"
@@ -100,6 +100,7 @@ import Snackbar from '../common/Snackbar.vue';
 export default {
   props: {
     title: String,
+    selectedItem: Number,
   },
   components: {
     Snackbar,
@@ -122,18 +123,19 @@ export default {
       selectedLeadUser: '',
       selectedProjectBackup: '',
     };
-
   },
   computed: {
     projects() {
+      if (this.selectedItem === 1) { return this.$store.state.allProjects; }
       return this.$store.state.projects;
     },
     userList() {
       return this.$store.state.users;
     },
-    },
+  },
   methods: {
     fetchData() {
+      this.$store.dispatch('fetchAllProjects');
       this.$store.dispatch('fetchProjects');
     },
 
@@ -148,15 +150,15 @@ export default {
             }
                );
     },
-    async archivePrompt(item, archiveVal){
+    async archivePrompt(item, archiveVal) {
       if (
         await this.$refs.confirm.open(
-          "info",
-          `Are you sure to archive project: ${item.projectName}?`)
-      )
-      {
+          'info',
+          `Are you sure to archive project: ${item.projectName}?`,
+        )
+      ) {
         item.is_archived = archiveVal;
-        await this.$store.dispatch("archiveProject", {id: item.id, is_archived: archiveVal});
+        await this.$store.dispatch('archiveProject', { id: item.id, is_archived: archiveVal });
         this.$store.dispatch('fetchProjects');
       }
     },
@@ -189,6 +191,7 @@ export default {
                 'success',
                 'Project lead succesfully assigned.',
               );
+              this.fetchData();
             })
             .catch((err) => {
               if (
@@ -270,13 +273,13 @@ export default {
         this.$refs.snackbar.displaySnackbar('success', 'Deleted.');
       }
     },
-    formatDate(dateStr){
-      const split = dateStr.split("T")
-      if (split){
-        return split[0]
+    formatDate(dateStr) {
+      const split = dateStr.split('T');
+      if (split) {
+        return split[0];
       }
       return dateStr;
-    }
+    },
   },
   created() {
     this.fetchData();

@@ -10,8 +10,9 @@ const pageBasedOnRole = (role) => {
   let page = 'Unauthorized';
   switch (role) {
     case 'User': page = 'timemachineIntakeIntroduction'; break;
-    case 'PSB_User': page = 'dashboard'; break;
-    case 'PSB_Admin': page = 'dashboard'; break;
+    case 'PSB_User': page = 'projects'; break;
+    case 'PSB_Intake_User': page = 'projects'; break;
+    case 'PSB_Admin': page = 'projects'; break;
     default: break;
   }
   return page;
