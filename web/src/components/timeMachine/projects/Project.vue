@@ -14,12 +14,17 @@
                       <label class="sub-header-large">Project Overview</label>
                     </div>
                   </template>
-                  <v-card>
+                  <v-card class="baseinfostyle">
                     <v-card-text>
                       <project-base-info ref="projectBaseInfo" :project="project"></project-base-info>
                     </v-card-text>
                   </v-card>
-                  <v-card>
+                  <v-spacer></v-spacer>
+                   <v-spacer></v-spacer>
+                 
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+               <v-card>
                     <div class="note-div" >
                       <div class="primary-heading">
                         <!-- <img src="@/assets/bulb.svg"> -->
@@ -34,7 +39,7 @@
                                   <div class="card">
                                     <div class="headerdivstyle">
                                     <span class="headerspan" v-html="item.user.contact.fullName" />
-                                    <span v-html="new Date(item.noteTime).toString().slice(0,15)" /></div>
+                                    <span class="headerdate" v-html="new Date(item.noteTime).toString().slice(0,15)" /></div>
                                     <br/>
                                     <span class="main-note" v-html="item.note" />
                                       <br/>
@@ -74,20 +79,18 @@
                           </v-flex>
                         </v-layout>
                         <v-flex md12>
-                          <project-notes ref="projectNoteNew"></project-notes>
+                          <project-notes ref="projectNoteNew" @closeNotes="closeNotes"></project-notes>
                           <v-btn
                             style="margin-left: 77%;"
                             class="add-timesheet-button"
                             color="btnPrimary"
                             dark
                             @click="newnotes(1)"
-                          >Add Note</v-btn>
+                          >Create Note</v-btn>
                         </v-flex>
                       </v-card-text>
                     </div>
                   </v-card>
-                </v-expansion-panel-content>
-              </v-expansion-panel>
               <!--
 
   Temporarily commented out, but will be restored after demo.
@@ -218,7 +221,7 @@
                             <v-flex xs12>
                               <div class="contact-button-div">
                                 <v-btn color="primary" @click="addNewContact">
-                                  <v-icon left dark>add</v-icon>Add Contactsss
+                                  <v-icon left dark>add</v-icon>Add Contacts
                                 </v-btn>
                               </div>
                             </v-flex>
@@ -432,6 +435,11 @@ export default {
     close() {
       this.$refs.procurementtable.close();
     },
+    closeNotes() {
+       const { params } = this.$router.currentRoute;
+      const id = params.id || undefined;
+      this.$store.dispatch("fetchAllProjectNotes", { id: id });
+    },
     projectnotes() {
       return this.$store.state.allProjectNotes;
     },
@@ -628,18 +636,30 @@ export default {
   text-align: center;
 }
 .headerspan {
-  margin-right: 80%;
+ float: left;
+ margin-top: -1%;
+}
+.headerdate {
+ float: right;
+ margin-left: 2%;
+ margin-top: -1%;
 }
 .headerdivstyle {
   background-color: #57789a;
-  padding: 15px;
+  padding: 2%;
   color: white;
 }
 .notecontent {
   float: left;
   margin-left: 3%;
 }
+.primary-heading {
+  margin-top: 10px !important;
+}
 .replybutton {
   float: left;
+}
+.baseinfostyle {
+  border: solid 1px #eae8e8 !important;
 }
 </style>

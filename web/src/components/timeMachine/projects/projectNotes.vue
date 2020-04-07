@@ -11,7 +11,7 @@
                 <div class="v-form-container">
                   <v-textarea
                     name="project-description"
-                    label="write your notes"
+                    label="Please input your note below"
                     v-model="userNote"
                     no-resize
                   ></v-textarea>
@@ -81,6 +81,7 @@ export default {
         .then(
           () => {
             this.$refs.snackbar.displaySnackbar("success", "Updated");
+             this.closeDialog();
           },
           err => {
             try {
@@ -107,6 +108,7 @@ export default {
       }, 400);
     },
     closeDialog() {
+      this.$emit("closeNotes");
       this.dialog = false;
     },
     reset() {
@@ -138,6 +140,9 @@ export default {
   width: 150px;
   flex: 0 0 200px !important;
   margin-right: 3%;
+}
+.primary-heading {
+  margin-top: 10px !important;
 }
 .v-dialog:not(.v-dialog--fullscreen) {
   max-width: 40%;
