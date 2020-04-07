@@ -7,6 +7,11 @@
         <v-card style="width:100%">
           <v-card-text class="card-contents">
             <v-layout row wrap>
+              <v-flex md12 v-if="replyNoteName" class="replyheaderdiv">
+                <div class="replytoheader">
+                  Reply to: {{replyNoteName}}
+                </div>
+              </v-flex>
               <v-flex md12>
                 <div class="v-form-container">
                   <v-textarea
@@ -98,7 +103,8 @@ export default {
       const [month, day, year] = date.split("/");
       return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
     },
-    open(value) {
+    open(value,name) {
+      this.replyNoteName = name;
       this.flag = value;
       this.dialog = true;
       setTimeout(() => {
@@ -129,6 +135,7 @@ export default {
         ],
         dialog: false,
         userNote: "",
+        replyNoteName:undefined,
         parentNoteId: undefined
       };
     }
@@ -136,6 +143,15 @@ export default {
 };
 </script>
 <style scoped>
+.replyheaderdiv {
+  background-color: gainsboro;
+}
+
+.replytoheader {
+  margin-left: 40px;
+    font-size: medium;
+    font-weight: 600;
+}
 .add-log-button {
   width: 150px;
   flex: 0 0 200px !important;

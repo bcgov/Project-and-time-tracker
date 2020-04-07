@@ -52,12 +52,13 @@
                                           <span class="reply-note"  v-html="inneritem.note" />
                                           </div>
                                           </v-layout>
-                                    <v-btn
+                                          <v-layout  style="display:block">
+                                             <v-btn
                                       flat
                                       large
                                       color="primary"
-                                      @click="replynotes(item.id)"
-                                      style="margin-right: 80%;"
+                                      @click="replynotes(item.id,item.user.contact.fullName)"
+                                      style="padding: 1%;display: flex;margin-bottom: 5px;"
                                     >
                                       <svg
                                         xmlns="http://www.w3.org/2000/svg"
@@ -68,8 +69,10 @@
                                         <path
                                           d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z"
                                         />
-                                      </svg> Reply
+                                      </svg> REPLY
                                     </v-btn>
+                                          </v-layout>
+                                   
                                   </div>
                                 </div>
                               </div>
@@ -91,6 +94,7 @@
                       </v-card-text>
                     </div>
                   </v-card>
+                  {{$store.state.allProjectNotes}}
               <!--
 
   Temporarily commented out, but will be restored after demo.
@@ -447,14 +451,14 @@ export default {
       this.$refs.ProcurementLog.reset();
       this.$refs.ProcurementLog.open();
     },
-    replynotes(value) {
+    replynotes(value,name) {
       let refvalue = value;
       this.$refs[refvalue][0].reset();
-      this.$refs[refvalue][0].open(value);
+      this.$refs[refvalue][0].open(value,name);
     },
     newnotes(value) {
       this.$refs.projectNoteNew.reset();
-      this.$refs.projectNoteNew.open(value);
+      this.$refs.projectNoteNew.open(value,undefined);
     },
     // saveProjectRfxData(index) {
     //
@@ -605,7 +609,7 @@ export default {
 .column {
   float: left;
   width: 100%;
-  padding: 0 10px;
+  padding: 0 30px;
 }
 
 /* Remove extra left and right margins, due to padding */
@@ -634,6 +638,9 @@ export default {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   padding: 0px;
   text-align: center;
+}
+.v-btn:hover:before {
+background-color:transparent;
 }
 .headerspan {
  float: left;
