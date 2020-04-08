@@ -86,7 +86,7 @@ export default {
   },
   data() {
     return {
-      isResolved: true,
+      isResolved: false,
       headers: [
         {
           text: 'Log Type',
