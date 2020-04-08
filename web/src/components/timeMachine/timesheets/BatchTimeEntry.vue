@@ -128,7 +128,9 @@ export default {
   methods: {
     handleClick(projectId) {
       if (projectId === undefined) {this.previousSelection = '';}
-      else {this.previousSelection = projectId;}
+      else {
+        this.previousSelection = projectId;
+        }
     },
     onChangeProjectBatchEntry(index, selectedItem) {
       const selectedProjects = this.timesheet.filter(
@@ -142,8 +144,8 @@ export default {
           debugger;
           //  selectedItem.project = this.previousSelection;
           //  this.timesheet[index].project = this.previousSelection;
-          selectedItem.project = undefined;
-          this.timesheet[index].project = undefined;
+         selectedItem.project = undefined;
+         this.timesheet[index].project = undefined;
         }
       } else {
         const selProject = this.projectList.find(item => item.id === selectedItem.project);
