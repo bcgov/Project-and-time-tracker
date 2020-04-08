@@ -64,7 +64,7 @@ export const retrieveAllTimesheets = async () => {
     .innerJoinAndSelect('t.project', 'p')
     .leftJoinAndSelect('t.user', 'u')
     .leftJoinAndSelect('u.contact', 'c')
-    .orderBy('t.startDate', 'ASC')
+    .orderBy('t.dateModified', 'DESC')
     .getMany();
 };
 export const retrieveMyTimesheets = async userId => {
@@ -74,7 +74,7 @@ export const retrieveMyTimesheets = async userId => {
     .innerJoinAndSelect('t.project', 'p')
     .leftJoinAndSelect('t.user', 'u')
     .leftJoinAndSelect('u.contact', 'c')
-    .orderBy('t.startDate', 'ASC')
+    .orderBy('t.dateModified', 'DESC')
     .where('t.userId = :userId', {
       userId
     })

@@ -39,7 +39,7 @@
           item-key="id"
         >
           <template slot="items" slot-scope="props">
-            <td class="text-xs-left">{{ props.item.startDate }}</td>
+            <td class="text-xs-left">{{ props.item.dateModified.toString().slice(0,10) }}</td>
             <td class="text-xs-left">{{ props.item.user.contact.fullName }}</td>
             <!-- <td class="text-xs-left">{{ props.item.projectName}} </td> -->
             <td class="text-xs-left">{{ props.item.project.projectName }}</td>
@@ -113,7 +113,7 @@ export default {
       headers: [
         {
           text: 'Date of Entry',
-          value: 'startDate',
+          value: 'dateModified',
           align: 'left',
           sortable: true,
         },
