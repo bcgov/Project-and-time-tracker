@@ -3,5 +3,7 @@ export interface IRiskQuestions {
   question: string;
   category: number;
   riskLevel: number;
-  questionNo: number;  
+  questionNo: number;
+  isStrategicContact: boolean;
+  is_PSB: boolean;
 }

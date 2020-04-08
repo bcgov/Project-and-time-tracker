@@ -27,8 +27,11 @@ export interface IProjectIntake {
   previousContractBackground: string;
   projectFailImpact: string;
   projectSuccess: string;
-  riskScore: number;
-  riskLevel: number;
   otherProjectSectorName: string;
   isNonMinistry: boolean;
+  intakeRiskLevel: string;
+  riskScore: number;
+  isSPOEngagement: boolean;
+  IntakeriskScore: number;
+  psbRiskScore: number;
 }

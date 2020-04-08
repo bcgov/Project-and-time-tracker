@@ -48,7 +48,16 @@ export class ProjectIntake {
   riskScore: number;
 
   @Column({ type: 'int', nullable: true })
-  riskLevel: number;
+  psbRiskScore: number;
+
+  @Column({ type: 'int', nullable: true })
+  IntakeriskScore: number;
+
+  @Column({ type: 'boolean', nullable: true })
+  isSPOEngagement: boolean;
+
+  @Column({ type: 'int', nullable: true })
+  intakeRiskLevel: string;
 
   @Column({ type: 'timestamp', nullable: true })
   dateCreated: Date;
@@ -79,7 +88,6 @@ export class ProjectIntake {
 
   @Column({ type: 'text', nullable: true })
   projectSuccess: string;
-
 
   @Column({ type: 'text', nullable: true })
   otherProjectSectorName: string;

@@ -20,4 +20,6 @@ export class RiskQuestions {
   @Column({ type: 'boolean', nullable: false })
   is_PSB: boolean;
 
+  @Column({ type: 'boolean', nullable: false })
+  isStrategicContact: boolean;
 }
