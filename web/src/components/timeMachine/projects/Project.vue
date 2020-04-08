@@ -20,80 +20,94 @@
                     </v-card-text>
                   </v-card>
                   <v-spacer></v-spacer>
-                   <v-spacer></v-spacer>
-                 
+                  <v-spacer></v-spacer>
                 </v-expansion-panel-content>
               </v-expansion-panel>
-               <v-card>
-                    <div class="note-div" >
-                      <div class="primary-heading">
-                        <!-- <img src="@/assets/bulb.svg"> -->
-                        <label class="sub-header-large" style="margin-left:25px">Notes</label>
-                      </div>
-                      <v-card-text>
-                        <v-layout v-for="(item) in $store.state.allProjectNotes" :key="item.id">
-                          <v-flex v-if="!item.parentId" d-flex justify-end>
-                            <v-flex md12>
-                              <div class="row">
-                                <div class="column">
-                                  <div class="card">
-                                    <div class="headerdivstyle">
-                                    <span class="headerspan" v-html="item.user.contact.fullName" />
-                                    <span class="headerdate" v-html="new Date(item.noteTime).toString().slice(0,15)" /></div>
-                                    <br/>
-                                    <span class="main-note" v-html="item.note" />
-                                      <br/>
-                                        <v-layout v-for="(inneritem) in $store.state.allProjectNotes" :key="inneritem.id">
-                                          <div style="width:100%" v-if="(inneritem.parentId)&&(inneritem.parentId == item.id)">
-                                            <br>
-                                          <span class="reply-person"  v-html="inneritem.user.contact.fullName" />
-                                          <span class="reply-note-time" v-html="new Date(inneritem.noteTime).toString().slice(0,15)" />
-                                          <br>
-                                          <span class="reply-note"  v-html="inneritem.note" />
-                                          </div>
-                                          </v-layout>
-                                          <v-layout  style="display:block">
-                                             <v-btn
-                                      flat
-                                      large
-                                      color="primary"
-                                      @click="replynotes(item.id,item.user.contact.fullName)"
-                                      style="padding: 1%;display: flex;margin-bottom: 5px;"
-                                    >
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="24"
-                                        height="24"
-                                        viewBox="0 0 24 24"
-                                      >
-                                        <path
-                                          d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z"
-                                        />
-                                      </svg> REPLY
-                                    </v-btn>
-                                          </v-layout>
-                                   
-                                  </div>
-                                </div>
-                              </div>
-                              <br />
-                              <project-notes :ref="item.id"></project-notes>
-                            </v-flex>
-                          </v-flex>
-                        </v-layout>
+              <v-card>
+                <div class="note-div">
+                  <div class="note-heading">
+                    <!-- <img src="@/assets/bulb.svg"> -->
+                    <label class="sub-header-notes">Notes</label>
+                  </div>
+                  <v-card-text>
+                    <v-layout v-for="(item) in $store.state.allProjectNotes" :key="item.id">
+                      <v-flex v-if="!item.parentId" d-flex justify-end>
                         <v-flex md12>
-                          <project-notes ref="projectNoteNew" @closeNotes="closeNotes"></project-notes>
-                          <v-btn
-                            style="margin-left: 77%;"
-                            class="add-timesheet-button"
-                            color="btnPrimary"
-                            dark
-                            @click="newnotes(1)"
-                          >Create Note</v-btn>
+                          <div class="row">
+                            <div class="column">
+                              <div class="card">
+                                <div class="headerdivstyle">
+                                  <span class="headerspan" v-html="item.user.contact.fullName" />
+                                  <span
+                                    class="headerdate"
+                                    v-html="new Date(item.noteTime).toString().slice(0,15)"
+                                  />
+                                </div>
+                                <br />
+                                <span class="main-note" v-html="item.note" />
+                                <br />
+                                <v-layout
+                                  v-for="(inneritem) in $store.state.allProjectNotes"
+                                  :key="inneritem.id"
+                                >
+                                  <div
+                                    style="width:100%"
+                                    v-if="(inneritem.parentId)&&(inneritem.parentId == item.id)"
+                                  >
+                                    <br />
+                                    <span
+                                      class="reply-person"
+                                      v-html="inneritem.user.contact.fullName"
+                                    />
+                                    <span
+                                      class="reply-note-time"
+                                      v-html="new Date(inneritem.noteTime).toString().slice(0,15)"
+                                    />
+                                    <br />
+                                    <span class="reply-note" v-html="inneritem.note" />
+                                  </div>
+                                </v-layout>
+                                <v-layout class="replylayout">
+                                  <v-btn
+                                    class="replybutton"
+                                    flat
+                                    large
+                                    color="primary"
+                                    @click="replynotes(item.id,item.user.contact.fullName)"
+                                  >
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width="24"
+                                      height="24"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path
+                                        d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z"
+                                      />
+                                    </svg> REPLY
+                                  </v-btn>
+                                </v-layout>
+                              </div>
+                            </div>
+                          </div>
+                          <br />
+                          <project-notes :ref="item.id"></project-notes>
                         </v-flex>
-                      </v-card-text>
-                    </div>
-                  </v-card>
+                      </v-flex>
+                    </v-layout>
+                    <v-flex md12>
+                      <project-notes ref="projectNoteNew" @closeNotes="closeNotes"></project-notes>
+                      <v-flex class="create-note" xs3 offset-xs9 align-end>
+                      <v-btn
+                        color="btnPrimary"
+                        dark
+                        @click="newnotes(1)"
+                      >Create Note</v-btn>
+                      </v-flex>
+                    </v-flex>
+                  </v-card-text>
+                </div>
+              </v-card>
               <!--
 
   Temporarily commented out, but will be restored after demo.
@@ -129,7 +143,7 @@
                       single-line
                       hide-details
                       v-model="search"
-                      ></v-text-field>
+                    ></v-text-field>
                   </v-flex>
                   <!-- RFx Type and Phases -->
                   <v-tab-item value="rfx">
@@ -210,7 +224,7 @@
                               :key="index"
                               :value="0"
                             >
-                             <h3 class="v-form-container">Additional Contact</h3>
+                              <h3 class="v-form-container">Additional Contact</h3>
                               <project-additional-contact-info
                                 :additionalContact="addcontact"
                                 ref="additionalcontactinfo"
@@ -302,7 +316,7 @@
                           </v-layout>
                           <v-layout row wrap>
                             <v-flex xs12>
-                              <procurement-log-table ref="procurementtable" :search ="search"></procurement-log-table>
+                              <procurement-log-table ref="procurementtable" :search="search"></procurement-log-table>
                             </v-flex>
                           </v-layout>
                         </v-container>
@@ -337,12 +351,12 @@ import Snackbar from "../common/Snackbar.vue";
 import ProjectAdditionalContactInfo from "./ProjectAddintionalContactInfo.vue";
 import ProcurementLogTable from "./ProcurementLogTable.vue";
 
-import './project.styl';
+import "./project.styl";
 
 Vue.use(VeeValidate);
 
 const CLIENT_INFO_TYPES = {
-  CLIENT_CONTACT: 'clientcontact',
+  CLIENT_CONTACT: "clientcontact"
 };
 
 export default {
@@ -356,16 +370,16 @@ export default {
     ProjectAdditionalContactInfo,
     projectRiskAssessment,
     ProcurementLogTable,
-    ProcurementLog,
+    ProcurementLog
   },
   props: {
     title: String,
     ProcurementLog: {
       type: Function,
-      default: () => {},
-    },
+      default: () => {}
+    }
   },
-  $_veeValidate: { validator: 'new' },
+  $_veeValidate: { validator: "new" },
   computed: {
     project() {
       return this.$store.state.activeProject;
@@ -381,9 +395,9 @@ export default {
   data() {
     return {
       additionalContact: [new AdditionalContact()],
-      search: '',
+      search: "",
       rfxData: [new RFxDto()],
-      projectId: '',
+      projectId: "",
       enabled: true,
       initialLoad: true,
       color: Material,
@@ -412,7 +426,7 @@ export default {
       this.$store.dispatch("fetchProjectContacts", { id: id });
     }
   },
-    
+
   methods: {
     addNewContact() {
       this.contactCount = this.contactCount + 1;
@@ -434,7 +448,7 @@ export default {
         roleName: ""
       };
       this.AllContactData.push(contactobj);
-  },
+    },
     close() {
       this.$refs.procurementtable.close();
     },
@@ -450,14 +464,14 @@ export default {
       this.$refs.ProcurementLog.reset();
       this.$refs.ProcurementLog.open();
     },
-    replynotes(value,name) {
+    replynotes(value, name) {
       let refvalue = value;
       this.$refs[refvalue][0].reset();
-      this.$refs[refvalue][0].open(value,name);
+      this.$refs[refvalue][0].open(value, name);
     },
     newnotes(value) {
       this.$refs.projectNoteNew.reset();
-      this.$refs.projectNoteNew.open(value,undefined);
+      this.$refs.projectNoteNew.open(value, undefined);
     },
     // saveProjectRfxData(index) {
     //
@@ -465,7 +479,7 @@ export default {
     // },
     projectContactData(contactType) {
       const contactData = this.$store.getters.getProjectContactByType(
-        contactType,
+        contactType
       );
       return contactData && contactData.id ? contactData : new ContactDto();
     },
@@ -480,11 +494,11 @@ export default {
       const id = params.id || undefined;
       if (!(id === undefined)) {
         this.projectId = id;
-        this.$store.dispatch('fetchProject', { id: this.projectId });
-        this.$store.dispatch('fetchProjectRFxData', { id: this.projectId });
-        this.$store.dispatch('fetchProjectContacts', { id: this.projectId });
-        this.$store.dispatch('fetchprojectRiskAnswers', { id: this.projectId });
-        this.$store.dispatch('fetchAllProcurementLog', { id: this.projectId });
+        this.$store.dispatch("fetchProject", { id: this.projectId });
+        this.$store.dispatch("fetchProjectRFxData", { id: this.projectId });
+        this.$store.dispatch("fetchProjectContacts", { id: this.projectId });
+        this.$store.dispatch("fetchprojectRiskAnswers", { id: this.projectId });
+        this.$store.dispatch("fetchAllProcurementLog", { id: this.projectId });
       }
       this.$store.dispatch("fetchAllProjectNotes", { id: this.projectId });
       this.$store.dispatch("fetchintakeRiskQuestions");
@@ -492,14 +506,14 @@ export default {
     formatDate(date) {
       if (!date) return null;
 
-      const [year, month, day] = date.split('-');
+      const [year, month, day] = date.split("-");
       return `${month}/${day}/${year}`;
     },
     parseDate(date) {
       if (!date) return null;
 
-      const [month, day, year] = date.split('/');
-      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+      const [month, day, year] = date.split("/");
+      return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
     },
     addNewRFx() {
       const allRFXValid = this.validateRFXForm();
@@ -526,7 +540,8 @@ export default {
       this.$refs.projectFinancier.Validate();
       const projectLeadForm = this.$refs.projectLead.form || undefined;
       const projectSponsorForm = this.$refs.projectSponsor.form || undefined;
-      const projectFinancierForm = this.$refs.projectFinancier.form || undefined;
+      const projectFinancierForm =
+        this.$refs.projectFinancier.form || undefined;
       const projectContactForm = this.$refs.projectClient
         ? this.$refs.projectClient.form
         : undefined;
@@ -545,42 +560,43 @@ export default {
         projectLeadForm,
         projectSponsorForm,
         projectContactForm,
-        projectFinancierForm,
+        projectFinancierForm
       ].filter(contact => contact !== undefined);
       contacts = contacts.concat(this.allContacts);
       console.log("contacts before update", contacts);
       if (contacts instanceof Array && contacts.length > 0) {
-        await this.$store.dispatch('updateProjectContacts', {
+        await this.$store.dispatch("updateProjectContacts", {
           id: this.projectId,
-          contacts,
+          contacts
         });
-        this.$refs.snackbar.displaySnackbar('success', 'Saved');
+        this.$refs.snackbar.displaySnackbar("success", "Saved");
       }
     },
     async saveFinanceCodes() {
-      const projectFinanceForm = this.$refs.projectFinanceInfo.financeInfo || undefined;
+      const projectFinanceForm =
+        this.$refs.projectFinanceInfo.financeInfo || undefined;
       if (this.$refs.projectFinanceInfo.validate()) {
         if (this.project && this.project.client && this.project.client.id) {
           await this.$store
-            .dispatch('updateProjectFinanceCodes', {
+            .dispatch("updateProjectFinanceCodes", {
               id: this.project.client.id,
-              financeCodes: projectFinanceForm,
+              financeCodes: projectFinanceForm
             })
             .then(
               () => {
-                this.$refs.snackbar.displaySnackbar('success', 'Updated');
+                this.$refs.snackbar.displaySnackbar("success", "Updated");
               },
-              (err) => {
+              err => {
                 try {
                   const { message } = err.response.data.error;
-                  this.$refs.snackbar.displaySnackbar('error', message);
+                  this.$refs.snackbar.displaySnackbar("error", message);
                 } catch (ex) {
                   this.$refs.snackbar.displaySnackbar(
-                    'error',
-                    'Failed to update',
+                    "error",
+                    "Failed to update"
                   );
                 }
-              },
+              }
             );
         }
       }
@@ -588,7 +604,7 @@ export default {
     initializeRisk() {
       this.$refs.projectRiskAssessment.updateInitalData();
       this.$refs.projectRiskAssessment.editScreen = false;
-    },
+    }
   },
   created() {
     // while (this.$store.state.activeProjectContacts.length > 0) {
@@ -597,7 +613,7 @@ export default {
     console.log("from created:", this.$store.state.activeProjectContacts);
     // if no rfx, add one
     if (this.projectRfxData.length === 0) {
-      console.log('addinging initial rfx');
+      console.log("addinging initial rfx");
       this.addNewRFx();
     }
     this.fetchData();
@@ -639,16 +655,16 @@ export default {
   text-align: center;
 }
 .v-btn:hover:before {
-background-color:transparent;
+  background-color: transparent;
 }
 .headerspan {
- float: left;
- margin-top: -1%;
+  float: left;
+  margin-top: -1%;
 }
 .headerdate {
- float: right;
- margin-left: 2%;
- margin-top: -1%;
+  float: right;
+  margin-left: 2%;
+  margin-top: -1%;
 }
 .headerdivstyle {
   background-color: #57789a;
@@ -659,13 +675,35 @@ background-color:transparent;
   float: left;
   margin-left: 3%;
 }
-.primary-heading {
-  margin-top: 10px !important;
+.note-heading {
+  box-shadow: -2px 6px 0px -5px #dbdbdb;
+  margin-bottom: 3%;
+  color: var(--v-background-base) !important;
+  width: 100%;
+  /* padding-bottom: 10px; */
 }
 .replybutton {
-  float: left;
+  padding: 1%;
+  display: flex;
+  margin-bottom: 5px;
 }
 .baseinfostyle {
   border: solid 1px #eae8e8 !important;
+}
+.replylayout {
+  display: block;
+}
+.sub-header-notes {
+  margin-left: 5px;
+  font-weight: bold;
+  font-size: 18px;
+  width: auto;
+  padding-left: 2%;
+  margin-right: 1rem;
+  white-space: nowrap;
+}
+.create-note {
+  margin-left: 88% !important;
+  margin-bottom:1% ;
 }
 </style>
