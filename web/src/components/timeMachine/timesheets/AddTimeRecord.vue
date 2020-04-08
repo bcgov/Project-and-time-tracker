@@ -427,6 +427,9 @@ export default {
             timesheetItem.entries = obj[index].timesheetEntries;
             vm.timesheet.push(timesheetItem);
           }
+        vm.$refs.TimeCalenderWeekly.setCalendarText();
+        vm.$refs.TimeCalenderBatch.setCalendarText();
+
           vm.$refs.billableBatchEntry.editMode = false;
           vm.$refs.nonBillableBatchEntry.editMode = false;
           vm.editMode = false;
