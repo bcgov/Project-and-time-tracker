@@ -53,6 +53,7 @@
               </v-tooltip> -->
               <v-btn
                 small
+                v-if="!isResolved" 
                 color="btnPrimary"
                 class="white--text intake-table-approve-btn ma-0"
                 @click="resolveLog(props.item.id)"

@@ -9,12 +9,22 @@
             <v-flex md12 row wrap>
               <v-card-title>
                 <span class="headline">Add New Log</span>
-                 <v-spacer></v-spacer>
-                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" @click="closelog()" viewBox="0 0 18 18"><path d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"/></svg>
+                <v-spacer></v-spacer>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  @click="closelog()"
+                  viewBox="0 0 18 18"
+                >
+                  <path
+                    d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"
+                  />
+                </svg>
               </v-card-title>
-              
+
               <v-divider class="header-divider"></v-divider>
-           </v-flex>
+            </v-flex>
             <v-layout row wrap>
               <v-flex md6>
                 <div class="v-form-container">
@@ -90,7 +100,7 @@
                 </v-flex>
               </v-layout>
               <v-layout row wrap>
-                <v-flex md6>
+                <v-flex md12>
                   <div class="v-form-container">
                     <v-select
                       v-model="phaseImpactName"
@@ -101,47 +111,48 @@
                     ></v-select>
                   </div>
                 </v-flex>
+              </v-layout>
+              <v-layout row wrap>
                 <v-flex md6>
                   <div class="v-form-container">
                     <v-text-field v-model="clientDecision" label="Client Decision"></v-text-field>
                   </div>
                 </v-flex>
-              </v-layout>
-              <v-flex md6>
-                <div class="v-form-container">
-                  <v-menu
-                    v-model="menu2"
-                    :close-on-content-click="false"
-                    :nudge-right="40"
-                    lazy
-                    transition="scale-transition"
-                    offset-y
-                    full-width
-                    max-width="290px"
-                    min-width="290px"
-                  >
-                    <template v-slot:activator="{ on }">
-                      <v-text-field
-                        readonly
-                        :rules="requiredRule"
+                <v-flex md6>
+                  <div class="v-form-container">
+                    <v-menu
+                      v-model="menu2"
+                      :close-on-content-click="false"
+                      :nudge-right="40"
+                      lazy
+                      transition="scale-transition"
+                      offset-y
+                      full-width
+                      max-width="290px"
+                      min-width="290px"
+                    >
+                      <template v-slot:activator="{ on }">
+                        <v-text-field
+                          readonly
+                          :rules="requiredRule"
+                          v-model="followUpDate"
+                          label="Follow Up Date"
+                          persistent-hint
+                          prepend-inner-icon="event"
+                          @blur="date = parseDate(dateFormatted)"
+                          v-on="on"
+                        ></v-text-field>
+                      </template>
+                      <v-date-picker
                         v-model="followUpDate"
-                        label="Follow Up Date"
-                        persistent-hint
-                        prepend-inner-icon="event"
-                        @blur="date = parseDate(dateFormatted)"
-                        v-on="on"
-                      ></v-text-field>
-                    </template>
-                    <v-date-picker
-                      v-model="followUpDate"
-                      no-title
-                      @input="menu2 = false"
-                      :min="new Date().toISOString()"
-                    ></v-date-picker>
-                  </v-menu>
-                </div>
-              </v-flex>
-
+                        no-title
+                        @input="menu2 = false"
+                        :min="new Date().toISOString()"
+                      ></v-date-picker>
+                    </v-menu>
+                  </div>
+                </v-flex>
+              </v-layout>
               <v-flex md12>
                 <v-flex d-flex class="buttondiv" justify-end>
                   <v-btn
@@ -189,6 +200,7 @@ export default {
   },
   methods: {
     closelog() {
+      this.initData();
       this.$emit("close");
       this.dialog = false;
     },
@@ -253,7 +265,6 @@ export default {
               try {
                 const { message } = err.response.data.error;
                 this.$refs.snackbar.displaySnackbar("error", message);
-               
               } catch (ex) {
                 this.$refs.snackbar.displaySnackbar(
                   "error",
@@ -297,12 +308,20 @@ export default {
       }, 400);
     },
     closeDialog() {
+      this.issueDescription = "";
       this.$emit("close");
       this.dialog = false;
     },
     reset() {
+      this.dateToClient = "";
+      this.followUpDate = "";
+      this.riskOwnerName = "";
+      this.issueDescription = "";
+      this.clientDecision = "";
+      this.notificationMethod = "";
+      this.phaseImpactName = "";
+      this.logType = "";
       // this.$refs.form.resetValidation();
-      const data = this.initData();
     },
     initData() {
       const form = Object.assign({}, this.$props.timeEntry);
@@ -325,12 +344,10 @@ export default {
         dateFormatted: undefined,
         dateToClient: "",
         followUpDate: "",
+        phaseImpactName:"",
         riskOwnerName: "",
         issueDescription: "",
         isResolved: false,
-        existingTimeEntries,
-        addRecordLoading: false,
-        dateRange: { start: null, end: null },
         logType: "",
         itemList: [
           { id: "Contact Update", logType: "Contact Update" },
@@ -343,12 +360,6 @@ export default {
           { id: "Phone", notificationMethod: "Phone" },
           { id: "Email", notificationMethod: "Email" },
           { id: "In person", notificationMethod: "In person" }
-        ],
-        phaseImpactName: "",
-        phaseImpactList: [
-          { id: "impact 1", phaseImpactName: "impact 1" },
-          { id: "impact 2", phaseImpactName: "impact 2" },
-          { id: "impact 3", phaseImpactName: "impact 3" }
         ],
         clientDecision: ""
       };
@@ -367,7 +378,7 @@ export default {
   margin-left: 15px;
 }
 .buttondiv {
- margin-bottom: 2%;
+  margin-bottom: 2%;
 }
 .v-dialog:not(.v-dialog--fullscreen) {
   max-width: 70%;
