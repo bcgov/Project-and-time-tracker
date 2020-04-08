@@ -58,7 +58,7 @@
                     <v-flex md6 v-show="!editMode">
                       <timesheets-calendar
                         ref="TimeCalenderBatch"
-                        @next="clearTimeEntries"
+                        @next="onChangeWeek"
                       ></timesheets-calendar>
                     </v-flex>
                     <v-flex md6>
