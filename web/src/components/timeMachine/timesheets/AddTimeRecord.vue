@@ -241,15 +241,16 @@ export default {
       return this.$store.state.timesheetEntryData;
     },
     projectRfx() {
-      if (typeof this.form.project !== 'undefined') {
-        if (this.$store.state.activeProjectRfxData.length === 1) {
-          if (this.$store.state.activeProjectRfxData[0].id === '') {
-            return [];
-          }
-        }
-        return this.$store.state.activeProjectRfxData;
-      }
-      return [];
+      return this.$store.state.activeProjectRfxData;
+      // if (typeof this.form.project !== 'undefined') {
+      //   if (this.$store.state.activeProjectRfxData.length === 1) {
+      //     if (this.$store.state.activeProjectRfxData[0].id === '') {
+      //       return [];
+      //     }
+      //   }
+      //   return this.$store.state.activeProjectRfxData;
+      // }
+      // return [];
     },
     mouAmount() {
       if (!this.form || !this.form.mou || !this.form.project) {
@@ -377,19 +378,17 @@ export default {
       } else {
         this.weeklyProjectIndex = projectIndex;
       }
+
+      this.timesheet[this.weeklyProjectIndex].project = projectId;
+      this.timesheet[this.weeklyProjectIndex].mou = mou;
+
       if (projectId !== '' && projectId !== undefined) {
         this.$store.dispatch('fetchProjectRFxData', { id: projectId });
       }
-      this.timesheet[this.weeklyProjectIndex].project = projectId;
-      this.timesheet[this.weeklyProjectIndex].mou = mou;
       // this.form.mou = mou;
       // this.form.project = projectId;
     },
     onChangeProjectWeeklyEntry() {
-      if (this.form.project !== '' && this.form.project !== undefined) {
-        this.$store.dispatch('fetchProjectRFxData', { id: this.form.project });
-      }
-
       // Keep index of weekly entry selected project. This is used to set props value to weekly entry components.
       this.selectWeeklyProject(this.form.project, this.form.mou);
       this.blankTimesheet = [];
