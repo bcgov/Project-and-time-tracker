@@ -128,7 +128,10 @@ export default {
       );
       if (selectedProjects.length > 1) {
         this.$refs.snackbar.displaySnackbar('info', 'This project is already added');
-        selectedItem.project = '';
+        selectedItem.project = undefined;
+        this.timesheet = this.timesheet.filter(
+          item => item.project !== '' && item.project !== undefined,
+        );
       } else {
         const selProject = this.projectList.find(item => item.id === selectedItem.project);
         if (selProject) {
