@@ -2,21 +2,21 @@
 kind: Template
 apiVersion: v1
 metadata:
-  name: "${API_NAME}-build-template"
+  name: "${NAME}-build-template"
   creationTimestamp: 
 objects:
 - kind: ImageStream
   apiVersion: v1
   metadata:
-    name: "${API_NAME}-${TAG_NAME}"
+    name: "${NAME}-${TAG_NAME}"
 - kind: BuildConfig
   apiVersion: v1
   metadata:
-    name: "${API_NAME}-build-${TAG_NAME}"
+    name: "${NAME}-build-${TAG_NAME}"
     labels:
-      app: "${API_NAME}-build-${TAG_NAME}"
+      app: "${NAME}-build-${TAG_NAME}"
   spec:
-    runPolicy: Serial
+    runPolicy: Serial`
     source:
       type: Git
       git:
@@ -28,13 +28,13 @@ objects:
     output:
       to:
         kind: ImageStreamTag
-        name: "${API_NAME}-${TAG_NAME}:latest"
+        name: "${NAME}-${TAG_NAME}:latest"
 parameters:
-- name: API_NAME
+- name: NAME
   displayName: Name
   description: The name assigned to all of the resources defined in this template.
   required: true
-  value: timemachine-web
+  value: timemachine-api
 - name: GIT_REPO_URL
   displayName: Git Repo URL
   description: The URL to your GIT repo.
@@ -54,4 +54,4 @@ parameters:
   displayName: Environment Name
   description: The name of the environment you ultimately wish to deploy to (dev, test, prod)
   required: true
-  value: test
+  value: dev

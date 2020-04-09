@@ -9,9 +9,9 @@ EXPOSE 8081
 COPY ./nginx.conf.template /etc/nginx/nginx.conf
 
 
-WORKDIR /code
-
-COPY ./dist .
+# WORKDIR /code
+# COPY ./dist .
+COPY ./dist /app
 
 EXPOSE 8080:8080
 
