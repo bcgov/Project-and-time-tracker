@@ -4,7 +4,6 @@ server {
     location / {
         root   /usr/share/nginx/html/timemachine;
         index  index.html;
-        # try_files $uri $uri/ /index.html;
     }
 
     # For status of ngnix service, OpenShift is configured to call this
@@ -15,41 +14,3 @@ server {
         access_log off;
     }
 }
-
-# server {
-#     listen       8081;
-#     server_name  localhost;
-#     port_in_redirect off;
-
-#     location / {
-#       root   /app;
-#       index  index.html;
-#       try_files $uri $uri/ /index.html;
-#     }
-
-#      location /arc {
-#       root   /app;
-#       index  index.html;
-#       try_files $uri $uri/ /index.html;
-#     }
-
-#     location /arcnodirect {
-#       root   /app;
-#       index  index.html;
-#       try_files $uri $uri/ /index.html;
-#     }
-    
-
-#     error_page   500 502 503 504  /50x.html;
-#     location = /50x.html {
-#       root   /usr/share/nginx/html;
-#     }
-
-#     # For status of ngnix service, OpenShift is configured to call this
-#     location /nginx_status {
-#         # Enable Nginx stats
-#         stub_status on;
-#         # No need to log this request, its just noise
-#         access_log off;
-#     }
-# }
