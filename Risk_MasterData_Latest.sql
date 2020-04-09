@@ -1,20 +1,27 @@
 INSERT INTO public.risk_questions (id,question,category,"riskLevel","questionNo","is_PSB","isStrategicContact") VALUES 
-('2d4fd180-ef23-4134-8014-be2ec8ed1ec5','Will there be high public interest in the project?',4,2,2,false,true)
-,('a19f05bd-8172-4994-b991-fc717b0e46f2','Are there any unique socio-economic considerations that must be taken into account?',4,2,1,false,false)
-,('7867249a-657a-489a-9203-1754ed8885cc','How many separate contracts are estimated as a result this procurement project?',1,1,2,false,false)
-,('1f71e8bc-5b88-40c3-ab99-553368ebf685','How many Ministries or BPS Entities are directly involved in the procurement project?',2,2,2,false,true)
-,('c81159f4-42bb-48b1-8338-592df3b43eff','Will the services being procured be public facing?',2,2,4,true,true)
-,('ec300240-d516-40d4-b9b3-8a23d8f4e951','Will the resulting contract offer government an opportunity for innovation or modernization?',2,2,3,false,true)
-,('94ec86da-f955-4e3d-b0ba-932b3044abdb','When is the expected date of the contract execution or start date?',2,2,1,false,false)
-,('e11046b5-dfcf-4343-aff8-651670cc783f','Does the organization anticipate a shortage of available internal personnel with appropriate skills during a significant period of the project? (i.e. SME''s, PM''s, Change Management, etc.)',3,2,2,false,false)
+('ee895822-a724-4fe7-9792-4f1f61c7dd95','Are there unique complex variables within this procurement project? Such as: <ul><li>The services currently reside outside of government with a vendor</li><li>There may require a transition from one vendor to another</li><li>There are a small number of individual requirements to define</li><li>There is a potential labour impact to the procurement</li><li>Other high impact unique feature not listed</li></ul>',2,1,7,true,false)
+,('2cf75e3a-fba2-4202-84f3-f025c47c7f19','What is the supplier capability and willingness?',2,2,8,true,false)
+,('1c0b9190-ccf9-4239-9209-11d737933a8b','Consider the following criteria regarding knowledge and experience:<ul><li>The project will use a proven approach</li><li>This type of project has been done before in the BC Gov</li><li>The project will use resources that have been applied to this type of project before</li></ul>',2,2,9,true,false)
 ,('a08e56db-b334-4270-affc-a8f6e2c0fd0a','What level of priority is the project to the owning Ministry?',3,2,1,false,false)
-,('183b80f2-4688-41fd-ae1c-5a6e7f777c3f','Does this procurement project have a documented project plan with clearly identified Roles & Responsibilities?',1,2,3,true,false)
+,('e11046b5-dfcf-4343-aff8-651670cc783f','Does the organization anticipate a shortage of available internal personnel with appropriate skills during a significant period of the project? (i.e. SME''s, PM''s, Change Management, etc.)',3,2,2,false,false)
+,('396d3b41-ac62-48a6-b311-9d06b2d889a5','How many total people (part-time or full-time on the project, including BC Gov employees and individual contractors) are required to complete this procurement project at its peak activity?',3,2,3,true,false)
+,('af58b76a-bd24-4d98-8db1-8adb2650ed83','Has the assigned lead from the project team worked on a project of this size and complexity before?',3,2,4,true,false)
+,('e969a6eb-2819-445f-a3f5-1aad40ad75b4','What is the estimated Total Contract Value of this procurement project?',1,1,1,false,false)
+,('183b80f2-4688-41fd-ae1c-5a6e7f777c3f','Does this procurement project have a documented project plan with clearly identified Roles & Responsibilities?',1,2,3,false,false)
+,('ef0491c5-4715-4f97-a314-21c26164a5d2','Is the project susceptible to time delays? Time delays can have a number of causes, such as the following:<ul><li>Crosses Election periods</li><li>Key timelines happen around End of Fiscal</li><li>Complex Governance Requirements</li><li>Known Capacity Issues</li><li>Timelines are compressed or unattainable</li><li>Involves emerging technologies</li></ul>',1,1,4,true,true)
 ;
 INSERT INTO public.risk_questions (id,question,category,"riskLevel","questionNo","is_PSB","isStrategicContact") VALUES 
-('e969a6eb-2819-445f-a3f5-1aad40ad75b4','What is the estimated Total Contract Value of this procurement project?',1,1,1,false,false)
+('a19f05bd-8172-4994-b991-fc717b0e46f2','Are there any unique socio-economic considerations that must be taken into account?',4,2,1,false,false)
+,('7867249a-657a-489a-9203-1754ed8885cc','How many separate contracts are estimated as a result this procurement project?',1,1,2,false,false)
+,('94ec86da-f955-4e3d-b0ba-932b3044abdb','When is the expected date of the contract execution or start date?',2,2,1,false,false)
+,('1f71e8bc-5b88-40c3-ab99-553368ebf685','How many Ministries or BPS Entities are directly involved in the procurement project?',2,2,2,false,false)
+,('ec300240-d516-40d4-b9b3-8a23d8f4e951','Will the resulting contract offer government an opportunity for innovation or modernization?',2,2,3,false,false)
+,('c81159f4-42bb-48b1-8338-592df3b43eff','Will the services being procured be public facing?',2,2,4,false,false)
+,('7f7cb3f0-7668-438d-97bc-db053ed2e767','Will the procurement result in a contract that is one of a larger bundle of contracts supporting a strategic initiative? (i.e. requires an integrator)',2,2,5,true,true)
+,('4b667ac6-0015-46ce-bb49-4b19a8d3c3b3','What is the anticipated procurement approach?',2,1,6,true,true)
+,('2d4fd180-ef23-4134-8014-be2ec8ed1ec5','Will there be high public interest in the project?',4,2,2,false,false)
+,('ba44a355-b2dc-4c86-b9d0-5a0a68fb55bc','Are there unique challenges to ensure that this project complies with relevant Treasury Board policy requirements, such as those regarding security, GBA+, privacy, and management of government information?',4,2,3,true,false)
 ;
-
-
 
 
 INSERT INTO public.risk_answers (id,answer,score,order_id,"questionId") VALUES 
@@ -67,4 +74,43 @@ INSERT INTO public.risk_answers (id,answer,score,order_id,"questionId") VALUES
 ;
 INSERT INTO public.risk_answers (id,answer,score,order_id,"questionId") VALUES 
 ('c94f6e3a-f9d0-4347-9786-46c439664e99','Yes',3,2,'e11046b5-dfcf-4343-aff8-651670cc783f')
+,('23815f9c-c74e-4ea6-bade-0da084a3833e',' No, the project is not susceptible.',2,1,'ef0491c5-4715-4f97-a314-21c26164a5d2')
+,('8bb16bd3-3102-4c3c-9285-53f86a2aee6c','Yes, the project is moderately susceptible; time delays will have minor effects on the schedule.',6,2,'ef0491c5-4715-4f97-a314-21c26164a5d2')
+,('a7cecc23-7b00-4497-911d-3dffb14498aa','Yes, the project is highly susceptible; time delays will have major effects on the schedule.',10,3,'ef0491c5-4715-4f97-a314-21c26164a5d2')
+,('169b59d2-c2ba-4e70-90f2-bead560abd6e','No',1,1,'7f7cb3f0-7668-438d-97bc-db053ed2e767')
+,('bbb4fc0f-a7e8-453e-a9e7-5c0ded9f0f19','Yes',3,2,'7f7cb3f0-7668-438d-97bc-db053ed2e767')
+,('98a38c05-c026-4c6c-b8d3-bcd0f213b2fe','Directed (sole-source, NOI).',2,1,'4b667ac6-0015-46ce-bb49-4b19a8d3c3b3')
+,('46a73ee2-4dc5-49dc-a647-23d16fc2cdd9','A standing offer call-up or Supply Arrangement',4,2,'4b667ac6-0015-46ce-bb49-4b19a8d3c3b3')
+,('147aefa0-34c5-4777-809e-dfcfec232759','A public tender (request for quotation, invitation to tender, request for proposal).',6,3,'4b667ac6-0015-46ce-bb49-4b19a8d3c3b3')
+,('444707f4-2de0-4e70-a81b-dad881f023f2','Use of new procurement tools (but have been approved by LSB/PSB)',8,4,'4b667ac6-0015-46ce-bb49-4b19a8d3c3b3')
+;
+INSERT INTO public.risk_answers (id,answer,score,order_id,"questionId") VALUES 
+('c28e4b9d-8f45-489e-83af-72c288f4b8d4','Complex process (NRFP, JSRFP, etc...).',10,5,'4b667ac6-0015-46ce-bb49-4b19a8d3c3b3')
+,('e40d11ff-4c86-4088-bf4c-41af9350afb4','None of the statements are true.',0,1,'ee895822-a724-4fe7-9792-4f1f61c7dd95')
+,('db3d0033-406f-4e86-91f5-4a974649d806','One of the statements is true.',2,2,'ee895822-a724-4fe7-9792-4f1f61c7dd95')
+,('09a308f8-3972-4623-865c-37740a21a57e','Two of the statements are true.',4,3,'ee895822-a724-4fe7-9792-4f1f61c7dd95')
+,('b15d201c-ba31-4bd4-b30a-cd50cfdf4182','Three of the statements are true.',6,4,'ee895822-a724-4fe7-9792-4f1f61c7dd95')
+,('02b626dd-00f0-4f36-b786-649fa5c69f75','Four of the statements are true.',8,5,'ee895822-a724-4fe7-9792-4f1f61c7dd95')
+,('9d8f6078-99c6-480f-bb31-c7240121c42d','All Five of the statements are true.',10,6,'ee895822-a724-4fe7-9792-4f1f61c7dd95')
+,('6e87e312-d7be-4e53-bcf7-c88fb3418a2e','There are qualified suppliers in the market willing to work with the BC Gov and are capable of providing these services',1,1,'2cf75e3a-fba2-4202-84f3-f025c47c7f19')
+,('a0cf0ff6-68b1-45ee-aabc-d64a8a7459b1','There is a limited number of qualified suppliers in the market or some suppliers are reluctant to work with the BC Gov',3,2,'2cf75e3a-fba2-4202-84f3-f025c47c7f19')
+,('0e053577-cd27-4523-98ab-a6d9717cf5f8','It is estimated that only one supplier or there are no qualified suppliers that can meet the requirements.',5,3,'2cf75e3a-fba2-4202-84f3-f025c47c7f19')
+;
+INSERT INTO public.risk_answers (id,answer,score,order_id,"questionId") VALUES 
+('cc7e4067-8ede-4e29-bc97-b2403c5ab720','All three criteria are met.',1,1,'1c0b9190-ccf9-4239-9209-11d737933a8b')
+,('5eef2187-0221-480c-9465-615f9b82fb6b','Two of the three criteria are met.',2,2,'1c0b9190-ccf9-4239-9209-11d737933a8b')
+,('0b7cff89-3545-4263-baab-a7c08236cb6b','One of the three criteria is met.',3,3,'1c0b9190-ccf9-4239-9209-11d737933a8b')
+,('e2c212ae-e0ae-4bc2-91fc-5732c195559d','None of the three criteria are met.',4,4,'1c0b9190-ccf9-4239-9209-11d737933a8b')
+,('e114025b-21c1-44ed-abb6-d5688ec573ec','1',1,1,'396d3b41-ac62-48a6-b311-9d06b2d889a5')
+,('010e233b-fcc6-45aa-a2c9-8d2c46665e4d','2-5',2,2,'396d3b41-ac62-48a6-b311-9d06b2d889a5')
+,('1dc52fbd-7f9b-422c-b4f5-53d32e13b431','6-11',3,3,'396d3b41-ac62-48a6-b311-9d06b2d889a5')
+,('5dd68b4e-ad62-4f36-af5e-bcc7c39c2bcb','12-20',4,4,'396d3b41-ac62-48a6-b311-9d06b2d889a5')
+,('710fcba6-2467-408e-847b-59d2dac4aa57','20',5,5,'396d3b41-ac62-48a6-b311-9d06b2d889a5')
+,('d2caec47-98ac-4fdc-bf35-26c33fba33c1','Yes',1,1,'af58b76a-bd24-4d98-8db1-8adb2650ed83')
+;
+INSERT INTO public.risk_answers (id,answer,score,order_id,"questionId") VALUES 
+('6bd6dbd9-7b56-44ab-a4ce-a54dfd3019ad','No',3,2,'af58b76a-bd24-4d98-8db1-8adb2650ed83')
+,('c63862fb-45a1-4553-bc2d-00a596295fd2','The project fully complies with all applicable policies. Alternatively, the project is not subject to any of these policies.',1,1,'ba44a355-b2dc-4c86-b9d0-5a0a68fb55bc')
+,('6e423de0-3f4b-4bd2-8b63-b646c0d4e8ba','There are some challenges associated with policy requirements, but the project team is adequately equipped to address these.',2,2,'ba44a355-b2dc-4c86-b9d0-5a0a68fb55bc')
+,('49c74b7a-5d7a-4efa-86a6-f7c1d6db0f50','There are some challenges associated with policy requirements and there is a lack of confidence that policy requirements can be met on schedule and within the budget.',3,3,'ba44a355-b2dc-4c86-b9d0-5a0a68fb55bc')
 ;

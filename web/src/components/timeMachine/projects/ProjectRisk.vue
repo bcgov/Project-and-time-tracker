@@ -1,20 +1,24 @@
-<template>
-  <v-layout row wrap py-2>
+<template >
+  <v-layout row wrap py-2  class="project-risk-edit">
        <snackbar ref="snackbar"></snackbar>
        <spinner ref="spinner"></spinner>
     <!-- <h2>Risk Assessment</h2> -->
     <v-flex class="mb-4">
       <label class="primary-heading sub-header-large">Risk Assessment</label>
 
-      <div v-if="intakeScore" class="all-risk-scores">
+      <div class="all-risk-scores">
         <!-- PROBLEM: RISK LEVEL SHOULD RE-CALCULATE EVERY TIME USERS MODIFY CHECKBOXES BELOW -->
-        <div class="risk-items"> <span class="bold">Intake Risk Score: &nbsp;</span>
+        <div class="risk-items" v-if="intakeScore && intakeScore.level"> <span class="bold">Intake Risk Score: &nbsp;</span>
         <span :class="`level-${intakeScore.level}`">{{ intakeScore.level }} ( {{ intakeScore.percentage }}% )</span></div>
-       <div class="risk-items"> <span class="bold">PSB Risk Score: &nbsp;</span>
+
+       <div class="risk-items" v-if="psbScore && psbScore.level"> <span class="bold">PSB Risk Score: &nbsp;</span>
         <span :class="`level-${psbScore.level}`">{{ psbScore.level }} ( {{ psbScore.percentage }}% )</span></div>
-        <div class="risk-items"> <span class="bold">Total Risk Score: &nbsp;</span>
+
+        <div class="risk-items" v-if="totalScore && totalScore.level"> <span class="bold">Total Risk Score: &nbsp;</span>
         <span :class="`level-${totalScore.level}`">{{ totalScore.level }} ( {{ totalScore.percentage }}% )</span></div>
-        <div class="risk-items"> <span class="bold">SPO Engagement Need? &nbsp;</span>
+
+        <div class="risk-items" v-if="needSpo"> <span class="bold">SPO Engagement Need? &nbsp;</span>
+
         <span >{{needSpo}}</span></div>
       </div>
 
@@ -442,7 +446,7 @@ export default {
           return 0;
         })
         // Sum all the scores
-        .reduce((a, cur) => a + cur);
+        .reduce((a, cur) => a + cur, 0);
 
       const percentage = ((score / totalPossibleScore) * 100).toFixed(2);
       // eslint-disable-next-line consistent-return
@@ -461,7 +465,7 @@ export default {
       this.psbScore = this.calculateItemScore(this.intakeRiskQuestions.filter(item => item.is_PSB));
       this.totalScore = this.calculateItemScore(this.intakeRiskQuestions);
       this.spoScore = this.calculateItemScore(this.intakeRiskQuestions.filter(item => item.isStrategicContact));
-      this.needSpo = this.spoScore > 15 ? 'YES' : 'NO';
+      this.needSpo = this.spoScore.score > 15 ? 'YES' : 'NO';
     },
     calculateData() {
       this.calculateRiskScore();
