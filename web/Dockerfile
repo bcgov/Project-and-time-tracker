@@ -1,4 +1,4 @@
-FROM node:8.11.1
+FROM node:12.14.1
 
 # copy project files and folders to the web directory
 COPY . /web
@@ -11,8 +11,9 @@ RUN npm install
 
 
 # build app for production with minification
-RUN npm run build
+# RUN npm run build
+CMD npm run build
 
-EXPOSE 8080
+# EXPOSE 8080
 
-CMD [ "npm", "run", "serve" ]
+# CMD [ "npm", "run", "serve" ]

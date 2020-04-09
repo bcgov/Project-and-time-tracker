@@ -1,0 +1,98 @@
+---
+kind: Template
+apiVersion: v1
+metadata:
+  name: timemachine-web
+  namespace: aifsul-tools
+  creationTimestamp: 
+objects:
+
+# Two image-streams.  "-vue" is intermediate stream used for chain build
+- kind: ImageStream
+  apiVersion: v1
+  metadata:
+    name: "${NAME}-vue"
+- kind: ImageStream
+  apiVersion: v1
+  metadata:
+    name: "${NAME}"
+
+# Build-configs.  First is intermediate build
+- kind: BuildConfig
+  apiVersion: v1
+  metadata:
+    name: "${NAME}-vue"
+    creationTimestamp: 
+    labels:
+      app: "${NAME}-vue"
+  spec:
+    runPolicy: Serial
+    completionDeadlineSeconds: 1800
+    triggers:
+    - type: ImageChange
+    source:
+      type: Git
+      git:
+        uri: "${GIT_SOURCE_URL}"
+        ref: "${GIT_REFERENCE}"
+      contextDir: "${CONTEXT_DIR}"
+    strategy:
+      type: Docker
+    output:
+      to:
+        kind: ImageStreamTag
+        name: "${NAME}-vue:latest"
+  status:
+    lastVersion: 0
+
+
+# Create the vue-on-nginx final build
+- kind: BuildConfig
+  apiVersion: v1
+  metadata:
+    name: ${NAME}
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: ${NAME}:latest
+    source:
+      type: Dockerfile
+      contextDir: openshift/templates/nginx
+      images:
+      - from: 
+          kind: ImageStreamTag
+          name: ${NAME}-vue:latest
+        paths: 
+          # Is this path modified by contextDir above? If so, remove contextDir and replace
+          # with dockerFilePath
+        - sourcePath: /dist
+          destinationDir: "."
+    strategy:
+      type: Docker
+    triggers:
+    - imageChange: {}
+      type: ImageChange
+
+
+parameters:
+- name: NAME
+  displayName: Name
+  description: The name assigned to all of the objects defined in this template.
+  required: true
+  value: timemachine-web
+- name: GIT_SOURCE_URL
+  displayName: GIT Source Repo URL
+  description: A GIT URL to your source code.
+  required: true
+  value: https://github.com/bcgov/Project-and-time-tracker.git
+- name: GIT_REFERENCE
+  displayName: Git Reference
+  description: Optional branch, tag, or commit.
+  required: true
+  value: master
+- name: CONTEXT_DIR
+  displayName: contextDir
+  description: Sub directory,  e.g. `api/` or `web/`
+  required: true
+  value: web/
