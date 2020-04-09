@@ -29,4 +29,4 @@ export const keycloakConfig = {
     adminPassword: process.env.kc_adminPassword || ENVIRONMENT_CONFIG.keyCloak.adminPassword
 };
 
-// console.log('Keycloak config', {keycloakConfig});
+console.log('Keycloak config', {keycloakConfig});
