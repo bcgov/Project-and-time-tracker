@@ -357,7 +357,7 @@ export default {
       }
     },
     onWeekEntry() {
-      if (this.selectWeeklyProject !== 0 && this.timesheet[this.selectWeeklyProject].deleted) { this.selectWeeklyProject = 0; }
+      if (this.weeklyProjectIndex !== 0 && this.timesheet[this.weeklyProjectIndex].deleted) { this.weeklyProjectIndex = 0; }
     },
     selectWeeklyProject(projectId, mou) {
       let projectIndex = -1;
@@ -462,7 +462,6 @@ export default {
         vm.timesheet[vm.weeklyProjectIndex].projectRfx = obj.projectRfx
           ? obj.projectRfx.id
           : undefined;
-        debugger;
         vm.timesheet[vm.weeklyProjectIndex].deleted = false;
         vm.$store.state.timesheetsWeek.startDate = vm.timesheet[vm.weeklyProjectIndex].startDate;
         vm.$store.state.timesheetsWeek.endDate = vm.timesheet[vm.weeklyProjectIndex].endDate;

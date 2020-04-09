@@ -139,14 +139,14 @@ export default {
       }
     },
     async onChangeProjectBatchEntry(index, selectedItem, project) {
-      if (this.previousSelection !== '') {
+      if (this.previousSelection !== '' && selectedItem.id !== undefined && selectedItem.id !== '') {
         if (!(await this.$refs.confirm.open(
           'info',
           'Are you sure to change project?',
         )
         )) {
           project = this.previousSelection;
-          selectedItem.deleted = true;
+          if (this.timesheet.length > 1) { selectedItem.deleted = true; }
           return;
         }
       }
@@ -157,10 +157,10 @@ export default {
         this.$refs.snackbar.displaySnackbar('info', 'This project is already added');
         if (this.timesheet.length - 1 === index) {
           selectedItem.project = undefined;
-          selectedItem.deleted = true;
+          if (this.timesheet.length > 1) { selectedItem.deleted = true; }
         } else {
           project = this.previousSelection;
-          selectedItem.deleted = true;
+          if (this.timesheet.length > 1) { selectedItem.deleted = true; }
         }
         // selectedItem.deleted = true;
       }
