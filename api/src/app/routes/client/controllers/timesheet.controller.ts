@@ -153,13 +153,11 @@ export const createBatchTimesheet = async (ctx: Koa.Context) => {
         ctx.throw('no data Found');
         return;
       }
-
-      // const validationErrors = await validateCreateTimesheet(model);
-      // if (validationErrors.length > 0) {
-      //   ctx.throw(validationErrors.join(','));
-      //   return;
-      // }
-
+      if (model.id && model.deleted) {
+        await deleteEntryByTimesheetId(model.id);
+        await deleteTimesheet(model.id);
+        continue;
+      }
       let timesheet = await retrieveForLightTimesheet(model);
 
       console.log('createLightTimesheet, does timesheet exist?', { timesheet });
@@ -228,10 +226,18 @@ export const createBatchTimesheet = async (ctx: Koa.Context) => {
         return prev + Number(cur.hoursUnBillable);
       }, 0);
 
-      await updateTimesheet(timesheetId, {
-        hoursAccured: billableSum + nonBillableSum,
-        batchEntryComments: model.batchEntryComments
-      });
+      if (model.projectRfx) {
+        await updateTimesheet(timesheetId, {
+          hoursAccured: billableSum + nonBillableSum,
+          batchEntryComments: model.batchEntryComments,
+          projectRfx: model.projectRfx
+        });
+      } else {
+        await updateTimesheet(timesheetId, {
+          hoursAccured: billableSum + nonBillableSum,
+          batchEntryComments: model.batchEntryComments
+        });
+      }
     }
 
     ctx.body = 'success';
@@ -550,10 +556,10 @@ router.post('/timesheetentries', authorize, timesheetEntries);
 router.post('/batch', authorize, createBatchTimesheet);
 router.post('/timesheetentriesByUser', authorize, timeEntryByUser);
 router.delete('/:id', authorize, deleteTimesheetAction);
+router.patch('/:id', authorize, updateTimesheetAction);
 
+//router.post('/getLight', authorize, timeSheetLight);
 // router.post('/', authorize, createTimesheetAction);
 // router.post('/light', authorize, createLightTimesheet);
-// router.post('/getLight', authorize, timeSheetLight);
-// router.patch('/:id', authorize, updateTimesheetAction);
 
 export default router;
