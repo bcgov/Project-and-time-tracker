@@ -6,6 +6,7 @@
     max-width="390"
     @keydown.esc="cancel"
     v-bind:style="{ zIndex: 200}"
+    :persistent=persistantValue
   >
     <v-card>
       <v-toolbar dark :color="color" dense flat>
@@ -35,11 +36,17 @@ export default {
     type: null,
     color: 'primary',
     icon: null,
+    persistantValue:false
   }),
   methods: {
+    revertback() {
+     this.$emit('close')
+    },
     open(type, message) {
       this.dialog = true;
-      if (type === 'info') {
+      if (type === 'info' || type === 'infoAssign') {
+        if(type === 'infoAssign')
+        this.persistantValue = true
         this.title = 'Confirmation';
         if (message === '') {
           this.message = 'Are you sure to confirm this?';
