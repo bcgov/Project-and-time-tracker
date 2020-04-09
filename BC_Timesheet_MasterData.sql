@@ -72,7 +72,6 @@ INSERT INTO rfx_phase("rfxPhaseName") VALUES ('Drafting');
 INSERT INTO rfx_phase("rfxPhaseName") VALUES ('Posted');
 INSERT INTO rfx_phase("rfxPhaseName") VALUES ('Evaluation');
 INSERT INTO rfx_phase("rfxPhaseName") VALUES ('Award');
--- INSERT INTO rfx_phase("rfxPhaseName") VALUES ('Contract Management');
 INSERT INTO rfx_phase("rfxPhaseName") VALUES ('Closed Out');
 INSERT INTO rfx_phase("rfxPhaseName") VALUES ('Suspended');
 INSERT INTO rfx_phase("rfxPhaseName") VALUES ('Cancelled');
