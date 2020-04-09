@@ -1,6 +1,7 @@
 <template>
   <v-layout column justify-center>
     <snackbar ref="snackbar"></snackbar>
+    <confirm ref="confirm"></confirm>
     <v-flex>
       <v-data-table
         :headers="headers"
@@ -8,21 +9,24 @@
         hide-actions
         class="elevation-0 tm-v-datatable batch-entry"
       >
-        <template v-slot:items="props">
-
+        <template v-slot:items="props" >
+            <template v-if="!props.item.deleted">
           <td>
+
+
             <v-select
-              auto-focus="true"
-              :items="userProjects"
-              item-text="projectName"
-              item-value="id"
-              v-model="props.item.project"
-              :key="props.item.project"
-              @focus="handleClick(props.item.project)"
-              @change="onChangeProjectBatchEntry(props.index, props.item)"
-              label="Project Name"
-              :disabled="editMode"
-            >
+
+                :items="userProjects"
+                @click.native="getProject(props.item.project)"
+                @change="onChangeProjectBatchEntry(props.index, props.item,props.item.project)"
+                v-model="props.item.project"
+                item-value="id"
+                item-text="projectName"
+                 :disabled="editMode"
+                 label="Project Name"
+              ></v-select>
+
+
               <!-- TODO - Truncate name if Proj name too long -->
               <!-- <template v-slot:selection='{item}'>
                         {{ item.projectName }}
@@ -51,7 +55,7 @@
               ></v-text-field>
             </v-flex>
           </td>
-
+          </template>
         </template>
       </v-data-table>
     </v-flex>
@@ -62,9 +66,10 @@
 </template>
 <script>
 import Snackbar from '../common/Snackbar.vue';
+import Confirm from '../common/Confirm.vue';
 
 export default {
-  components: { Snackbar },
+  components: { Snackbar, Confirm },
   computed: {
     userProjects() {
       return this.projectList;
@@ -128,35 +133,42 @@ export default {
   },
   watch: {},
   methods: {
-    handleClick(projectId) {
-      if (projectId === undefined) { this.previousSelection = ''; } else {
-        this.previousSelection = projectId;
+    getProject(project) {
+      if (project === undefined) { this.previousSelection = ''; } else {
+        this.previousSelection = project;
       }
     },
-    onChangeProjectBatchEntry(index, selectedItem) {
+    async onChangeProjectBatchEntry(index, selectedItem, project) {
+      if (this.previousSelection !== '' && selectedItem.id !== undefined && selectedItem.id !== '') {
+        if (!(await this.$refs.confirm.open(
+          'info',
+          'Are you sure to change project?',
+        )
+        )) {
+          project = this.previousSelection;
+          if (this.timesheet.length > 1) { selectedItem.deleted = true; }
+          return;
+        }
+      }
       const selectedProjects = this.timesheet.filter(
-        item => item.project && item.project === selectedItem.project,
+        item => item.project && item.project === project && !selectedItem.deleted,
       );
       if (selectedProjects.length > 1) {
         this.$refs.snackbar.displaySnackbar('info', 'This project is already added');
-        if (index === this.timesheet.length - 1 && this.previousSelection === '') {
-          this.timesheet.pop();
-        } else {
-          debugger;
-          //  selectedItem.project = this.previousSelection;
-          //  this.timesheet[index].project = this.previousSelection;
+        if (this.timesheet.length - 1 === index) {
           selectedItem.project = undefined;
-          this.timesheet[index].project = undefined;
+          if (this.timesheet.length > 1) { selectedItem.deleted = true; }
+        } else {
+          project = this.previousSelection;
+          if (this.timesheet.length > 1) { selectedItem.deleted = true; }
         }
-      } else {
-        const selProject = this.projectList.find(item => item.id === selectedItem.project);
-        if (selProject) {
-          selectedItem.mou = selProject.mou.id;
-          selectedItem.project = selProject.id;
-          selectedItem.projectRfx = undefined;
-        }
+        // selectedItem.deleted = true;
       }
-      this.previousSelection = '';
+      const selProject = this.projectList.find(item => item.id === project);
+      if (selProject) {
+        selectedItem.mou = selProject.mou.id;
+        selectedItem.projectRfx = undefined;
+      }
     },
     addRow() {
       this.$emit('add-row');

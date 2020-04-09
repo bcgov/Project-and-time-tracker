@@ -15,4 +15,5 @@ export interface ITimesheet {
   entries: ITimesheetEntry[];
   hoursAccured: number;
   batchEntryComments: string;
+  deleted: boolean;
 }
