@@ -15,8 +15,6 @@ COPY ./nginx.conf.template /etc/nginx/conf.d
 # COPY ./dist .
 COPY ./dist /app
 
-EXPOSE 8080:8080
-
 # CMD ["nginx", "-g", "daemon off;"]
 # INSTEAD OF USING CMD, COPY FROM BCSS
 RUN envsubst < /etc/nginx/conf.d/nginx.conf.template > /etc/nginx/conf.d/default.conf
