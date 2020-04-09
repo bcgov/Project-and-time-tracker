@@ -30,9 +30,11 @@ export const retrieveQuestions = async () => {
       'q.category AS "category"',
       'q.is_PSB AS "is_PSB"',
       'q.riskLevel AS "riskLevel"',
-      'q.questionNo AS "questionNo"'
+      'q.questionNo AS "questionNo"',
+      'q."is_PSB" AS "is_PSB"',
+      'q."isStrategicContact" AS "isStrategicContact"'
     ])
-    .where ('q."is_PSB" = :is_PSB', {is_PSB : false})
+    // .where ('q."is_PSB" = :is_PSB', {is_PSB : false})
     .getRawMany();
   for (let index = 0; index < res.length; index++) {
     res[index].answer = await retrieveAnswersByQuestionId(res[index].id);
@@ -70,6 +72,7 @@ export const retrieveProjectQuestions = async (id: string) => {
       'q.question AS "question"',
       'a.answer AS "answer"',
       'q.id AS "questionId"',
+      'q.category AS "category"',
       'a.id AS "answerid"',
       'a.score AS "score"',
       'a.order_id AS "order_id"',
@@ -106,31 +109,47 @@ export const updateRiskAnalysis = async (obj, projectId) => {
     .getOne();
   if (!intakeRes)
     throw Error(`Intake entry not found for project : ${projectId}`);
-  for (let index = 0; index < obj.length; index++) {
+
+  if (obj.scores) {
+    intakeRes.intakeRiskLevel = obj.scores.intakeRiskLevel;
+    intakeRes.riskScore = obj.scores.riskScore
+      ? obj.scores.riskScore
+      : undefined;
+    intakeRes.isSPOEngagement = obj.scores.isSPOEngagement;
+    intakeRes.IntakeriskScore = obj.scores.IntakeriskScore
+      ? obj.scores.IntakeriskScore
+      : undefined;
+    intakeRes.psbRiskScore = obj.scores.psbRiskScore
+      ? obj.scores.psbRiskScore
+      : undefined;
+  }
+  await intakeRepo().save(intakeRes);
+
+  for (let index = 0; index < obj.risk.length; index++) {
     const repo = riskAnalysisRespo();
-    if (obj[index].id) {
+    if (obj.risk[index].id) {
       const res = await repo
         .createQueryBuilder('an')
         .innerJoinAndSelect('an.question', 'q')
         .leftJoinAndSelect('an.answer', 'a')
         .innerJoinAndSelect('an.intake', 'i')
         .where('an.id = :id and an.intake = :intakeId', {
-          id: obj[index].id,
+          id: obj.risk[index].id,
           intakeId: intakeRes.id
         })
         .getOne();
       if (!res) {
         throw Error(`risk analysis not found for : ${obj[index].id}`);
       }
-      res.answer = obj[index].answerId;
-      res.score = obj[index].score;
+      res.answer = obj.risk[index].answerId;
+      res.score = obj.risk[index].score;
       await riskAnalysisRespo().save(res);
-    } else if (obj[index].answerId != null) {
+    } else if (obj.risk[index].answerId != null) {
       let ProjectRisk: ProjectRiskAnalysis = riskAnalysisRespo().create();
-      ProjectRisk.answer = obj[index].answerId;
+      ProjectRisk.answer = obj.risk[index].answerId;
       ProjectRisk.intake = intakeRes;
-      ProjectRisk.question = obj[index].questionId;
-      ProjectRisk.score = obj[index].score;
+      ProjectRisk.question = obj.risk[index].questionId;
+      ProjectRisk.score = obj.risk[index].score;
       ProjectRisk.dateCreated = new Date();
       ProjectRisk.dateModified = new Date();
       await riskAnalysisRespo().save(ProjectRisk);

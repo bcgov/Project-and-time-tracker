@@ -6,17 +6,26 @@
     <v-flex class="mb-4">
       <label class="primary-heading sub-header-large">Risk Assessment</label>
 
-      <div v-if="score">
+      <div v-if="intakeScore" class="all-risk-scores">
         <!-- PROBLEM: RISK LEVEL SHOULD RE-CALCULATE EVERY TIME USERS MODIFY CHECKBOXES BELOW -->
-        <span class="bold">Current Risk Level: &nbsp;</span>
-        <span :class="`level-${score.level}`">{{ score.level }} ( {{ score.percentage }}% )</span>
+        <div class="risk-items"> <span class="bold">Intake Risk Score: &nbsp;</span>
+        <span :class="`level-${intakeScore.level}`">{{ intakeScore.level }} ( {{ intakeScore.percentage }}% )</span></div>
+       <div class="risk-items"> <span class="bold">PSB Risk Score: &nbsp;</span>
+        <span :class="`level-${psbScore.level}`">{{ psbScore.level }} ( {{ psbScore.percentage }}% )</span></div>
+        <div class="risk-items"> <span class="bold">Total Risk Score: &nbsp;</span>
+        <span :class="`level-${totalScore.level}`">{{ totalScore.level }} ( {{ totalScore.percentage }}% )</span></div>
+        <div class="risk-items"> <span class="bold">SPO Engagement Need? &nbsp;</span>
+        <span >{{needSpo}}</span></div>
       </div>
 
-      <!-- <pre>
+      <pre>
 
-Developer only (TODO Remove)
-{{ score }}</pre
-      > -->
+intake:{{ intakeScore }}
+psb:{{ psbScore }}
+total:{{ totalScore }}
+spo:{{ spoScore }}
+
+</pre>
     </v-flex>
 
     <v-form
@@ -91,7 +100,7 @@ Developer only (TODO Remove)
             <template v-slot:header>
               <div class="primary-heading">
                 <v-flex xs11>
-                  <label class="sub-header-large">High Impact Risk Factors</label>
+                  <label class="sub-header-large">SIZE & SCOPE</label>
                 </v-flex>
               </div>
             </template>
@@ -103,7 +112,7 @@ Developer only (TODO Remove)
                   :key="item.id"
                   class="risk-analysis"
                 >
-                  <div v-if="item.riskLevel == 1">
+                  <div v-if="item.category == 1">
                     <v-card-text class="pl-4">
                       <v-flex>
                         <v-flex sm11
@@ -126,7 +135,7 @@ Developer only (TODO Remove)
             <template v-slot:header>
               <div class="primary-heading">
                 <v-flex xs11>
-                  <label class="sub-header-large">Low Impact Risk Factors</label>
+                  <label class="sub-header-large">PROCESS COMPLEXITY</label>
                 </v-flex>
               </div>
             </template>
@@ -138,7 +147,80 @@ Developer only (TODO Remove)
                   :key="item.id"
                   class="risk-analysis"
                 >
-                  <div v-if="item.riskLevel == 2">
+                  <div v-if="item.category == 2">
+                    <v-card-text class="pl-4">
+                      <v-flex>
+                        <v-flex sm11
+                          ><b><div v-html="item.question" class="question-text"></div></b>
+                        </v-flex>
+                        <v-flex
+                          ><v-btn :ripple="false" class="edit-link" @click="editProjectRisk"
+                            >edit</v-btn
+                          ></v-flex
+                        >
+                        <v-flex sm12>{{ item.answer }}</v-flex>
+                      </v-flex>
+                    </v-card-text>
+                  </div></v-flex
+                >
+              </v-card-text>
+            </v-card>
+          </v-expansion-panel-content>
+
+          <v-expansion-panel-content>
+            <template v-slot:header>
+              <div class="primary-heading">
+                <v-flex xs11>
+                  <label class="sub-header-large">CAPACITY</label>
+                </v-flex>
+              </div>
+            </template>
+            <v-card>
+              <v-card-text>
+                <v-flex
+                  sm12
+                  v-for="item in projectRiskAnswers"
+                  :key="item.id"
+                  class="risk-analysis"
+                >
+                  <div v-if="item.category == 3">
+                    <v-card-text class="pl-4">
+                      <v-flex>
+                        <v-flex sm11
+                          ><b><div v-html="item.question" class="question-text"></div></b>
+                        </v-flex>
+                        <v-flex
+                          ><v-btn :ripple="false" class="edit-link" @click="editProjectRisk"
+                            >edit</v-btn
+                          ></v-flex
+                        >
+                        <v-flex sm12>{{ item.answer }}</v-flex>
+                      </v-flex>
+                    </v-card-text>
+                  </div></v-flex
+                >
+              </v-card-text>
+            </v-card>
+          </v-expansion-panel-content>
+
+
+          <v-expansion-panel-content>
+            <template v-slot:header>
+              <div class="primary-heading">
+                <v-flex xs11>
+                  <label class="sub-header-large">UNIQUE ATTRIBUTES</label>
+                </v-flex>
+              </div>
+            </template>
+            <v-card>
+              <v-card-text>
+                <v-flex
+                  sm12
+                  v-for="item in projectRiskAnswers"
+                  :key="item.id"
+                  class="risk-analysis"
+                >
+                  <div v-if="item.category == 4">
                     <v-card-text class="pl-4">
                       <v-flex>
                         <v-flex sm11
@@ -199,7 +281,11 @@ export default {
       // Initialize using props
       form: { ...form },
       intakeRiskAssessment: this.$store.state.intakeRiskAssessment,
-      score: undefined,
+      intakeScore: undefined,
+      psbScore: undefined,
+      totalScore: undefined,
+      spoScore: undefined,
+      needSpo: 'No',
     };
   },
   watch: {},
@@ -258,9 +344,22 @@ export default {
       const riskAnalysis = this.prepareRiskAnalysis();
       this.$refs.spinner.open();
       const projectId = this.$store.state.activeProject.id;
+      let isSPO = false;
+      if (this.needSpo === 'YES') { isSPO = true; }
+
+      let riskLevel = 0;
+      if (this.intakeScore.level === 'High') { riskLevel = 1; } else if (this.intakeScore.level === 'Medium') { riskLevel = 2; } else if (this.intakeScore.level === 'Low') { riskLevel = 3; }
+
       const formData = {
         projectId,
         risk: riskAnalysis,
+        scores: {
+          IntakeriskScore: this.intakeScore ? this.intakeScore.percentage : undefined,
+          psbRiskScore: this.psbScore ? this.psbScore.percentage : undefined,
+          riskScore: this.totalScore ? this.totalScore.percentage : undefined,
+          intakeRiskLevel: riskLevel,
+          isSPOEngagement: isSPO,
+        },
       };
       this.$store.dispatch('updateRiskAnalysis', formData).then(
         (res) => {
@@ -320,13 +419,9 @@ export default {
       }
       return riskLevel;
     },
-    calculateRiskScore() {
-      // Get value of current answer
-      if (!this.intakeRiskQuestions) return;
-
+    calculateItemScore(riskQuestions) {
       let totalPossibleScore = 0;
-
-      const score = [...this.intakeRiskQuestions]
+      const score = [...riskQuestions]
         // Convert to scores
         .map((question) => {
           const totalPossible = question.answer.map(answer => answer.score);
@@ -346,11 +441,10 @@ export default {
           }
           return 0;
         })
-
         // Sum all the scores
         .reduce((a, cur) => a + cur);
-      const percentage = ((score / totalPossibleScore) * 100).toFixed(2);
 
+      const percentage = ((score / totalPossibleScore) * 100).toFixed(2);
       // eslint-disable-next-line consistent-return
       return {
         score,
@@ -359,8 +453,18 @@ export default {
         level: this.getRiskLevel(percentage),
       };
     },
+    calculateRiskScore() {
+      // Get value of current answer
+      if (!this.intakeRiskQuestions) return;
+
+      this.intakeScore = this.calculateItemScore(this.intakeRiskQuestions.filter(item => !(item.is_PSB)));
+      this.psbScore = this.calculateItemScore(this.intakeRiskQuestions.filter(item => item.is_PSB));
+      this.totalScore = this.calculateItemScore(this.intakeRiskQuestions);
+      this.spoScore = this.calculateItemScore(this.intakeRiskQuestions.filter(item => item.isStrategicContact));
+      this.needSpo = this.spoScore > 15 ? 'YES' : 'NO';
+    },
     calculateData() {
-      this.score = this.calculateRiskScore();
+      this.calculateRiskScore();
     },
   },
 };

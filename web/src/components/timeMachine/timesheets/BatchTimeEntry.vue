@@ -9,6 +9,8 @@
         class="elevation-0 tm-v-datatable batch-entry"
       >
         <template v-slot:items="props">
+        <template v-if="!props.item.is_PSB">
+
           <td>
             <v-select
               auto-focus="true"
@@ -50,6 +52,7 @@
               ></v-text-field>
             </v-flex>
           </td>
+           </template>
         </template>
       </v-data-table>
     </v-flex>
@@ -127,10 +130,9 @@ export default {
   watch: {},
   methods: {
     handleClick(projectId) {
-      if (projectId === undefined) {this.previousSelection = '';}
-      else {
+      if (projectId === undefined) { this.previousSelection = ''; } else {
         this.previousSelection = projectId;
-        }
+      }
     },
     onChangeProjectBatchEntry(index, selectedItem) {
       const selectedProjects = this.timesheet.filter(
@@ -144,8 +146,8 @@ export default {
           debugger;
           //  selectedItem.project = this.previousSelection;
           //  this.timesheet[index].project = this.previousSelection;
-         selectedItem.project = undefined;
-         this.timesheet[index].project = undefined;
+          selectedItem.project = undefined;
+          this.timesheet[index].project = undefined;
         }
       } else {
         const selProject = this.projectList.find(item => item.id === selectedItem.project);

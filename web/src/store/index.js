@@ -1103,7 +1103,7 @@ const store = new Vuex.Store({
       return Promise.resolve(res.data);
     },
     async updateRiskAnalysis(ctx, req) {
-      const body = req.risk;
+      const body = req;
       const api = await $http
         .patch(`${API_URI}/project-risk/${req.projectId}/update`, body)
         .then(res => {

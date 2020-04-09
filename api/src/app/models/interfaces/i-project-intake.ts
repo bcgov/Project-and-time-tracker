@@ -29,7 +29,7 @@ export interface IProjectIntake {
   projectSuccess: string;
   otherProjectSectorName: string;
   isNonMinistry: boolean;
-  intakeRiskLevel: string;
+  intakeRiskLevel: number;
   riskScore: number;
   isSPOEngagement: boolean;
   IntakeriskScore: number;

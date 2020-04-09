@@ -44,20 +44,20 @@ export class ProjectIntake {
   @Column({ type: 'uuid', nullable: true })
   approverUserId: string;
 
-  @Column({ type: 'int', nullable: true })
+  @Column({ type: 'double precision', nullable: true })
   riskScore: number;
 
-  @Column({ type: 'int', nullable: true })
+  @Column({ type: 'double precision', nullable: true })
   psbRiskScore: number;
 
-  @Column({ type: 'int', nullable: true })
+  @Column({ type: 'double precision', nullable: true })
   IntakeriskScore: number;
 
   @Column({ type: 'boolean', nullable: true })
   isSPOEngagement: boolean;
 
   @Column({ type: 'int', nullable: true })
-  intakeRiskLevel: string;
+  intakeRiskLevel: number;
 
   @Column({ type: 'timestamp', nullable: true })
   dateCreated: Date;

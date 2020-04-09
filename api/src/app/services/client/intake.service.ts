@@ -34,7 +34,8 @@ export const retrieveIntakes = async () => {
       'c.nonMinistryName AS "nonMinistryName"',
       'd.name AS "mouName"',
       'i."mouId" AS "mouId"',
-      'i.isMinistry AS "isMinistry"'
+      'i.isMinistry AS "isMinistry"',
+      'i.intakeRiskLevel  AS "intakeRiskLevel"'
     ])
     .getRawMany();
 };
