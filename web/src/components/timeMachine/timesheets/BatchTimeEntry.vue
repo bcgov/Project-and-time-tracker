@@ -9,7 +9,6 @@
         class="elevation-0 tm-v-datatable batch-entry"
       >
         <template v-slot:items="props">
-        <template v-if="!props.item.is_PSB">
 
           <td>
             <v-select
@@ -52,7 +51,7 @@
               ></v-text-field>
             </v-flex>
           </td>
-           </template>
+
         </template>
       </v-data-table>
     </v-flex>

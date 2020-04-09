@@ -66,7 +66,7 @@ export default {
   },
   computed: {
     intakeRiskQuestion() {
-      return this.$store.state.intakeRiskQuestions;
+      return this.$store.state.intakeRiskQuestions.filter(item => !(item.is_PSB));
     },
   },
   data() {
