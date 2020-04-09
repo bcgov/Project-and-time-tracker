@@ -104,7 +104,7 @@
               </td>
           </template>
         </v-data-table>
-        <v-dialog v-if="dialog" v-model="dialog" width="800" margin-top="91px">
+        <v-dialog v-if="dialog" v-model="dialog"  @input="closeDialog(false)"  width="800" margin-top="91px">
           <v-card>
             <v-card-text>
               <v-icon
@@ -231,6 +231,9 @@ export default {
     },
   },
   methods: {
+    closeDialog() {
+      project.projectBackupId = this.selectedProjectBackup;
+    },
     calculatedvalue(item) {
       const res = item.isNonMinistry == true ? item.nonMinistryName : item.ministryName;
       // return [ res, item.orgDivision].join(" ");
@@ -268,8 +271,8 @@ export default {
       if (projectId && leadId) {
         if (
           await this.$refs.confirm.open(
-            'info',
-            `Are you sure to assign ${leadName} to ${projectName}?`,
+            'infoAssign',
+            `Are you sure to assign ${leadName} to ${projectName}?`
           )
         ) {
           this.$store
@@ -325,7 +328,7 @@ export default {
       if (projectId && backupId) {
         if (
           await this.$refs.confirm.open(
-            'info',
+            'infoAssign',
             `Are you sure to assign ${backupName} to ${projectName}?`,
           )
         ) {

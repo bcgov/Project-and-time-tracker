@@ -23,107 +23,93 @@
                   <v-spacer></v-spacer>
                 </v-expansion-panel-content>
               </v-expansion-panel>
-              <v-card>
-                <div class="note-div">
-                  <div class="note-heading">
-                    <!-- <img src="@/assets/bulb.svg"> -->
-                    <label class="sub-header-notes">Notes</label>
-                  </div>
-                  <v-card-text>
-                    <v-layout v-for="(item) in $store.state.allProjectNotes" :key="item.id">
-                      <v-flex v-if="!item.parentId" d-flex justify-end>
-                        <v-flex md12>
-                          <div class="row">
-                            <div class="column">
-                              <div class="card">
-                                <div class="headerdivstyle">
-                                  <span class="headerspan" v-html="item.user.contact.fullName" />
-                                  <span
-                                    class="headerdate"
-                                    v-html="new Date(item.noteTime).toString().slice(0,15)"
-                                  />
-                                </div>
-                                <br />
-                                <span class="main-note" v-html="item.note" />
-                                <br />
-                                <v-layout
-                                  v-for="(inneritem) in $store.state.allProjectNotes"
-                                  :key="inneritem.id"
-                                >
-                                  <div
-                                    style="width:100%"
-                                    v-if="(inneritem.parentId)&&(inneritem.parentId == item.id)"
-                                  >
-                                    <br />
-                                    <span
-                                      class="reply-person"
-                                      v-html="inneritem.user.contact.fullName"
-                                    />
-                                    <span
-                                      class="reply-note-time"
-                                      v-html="new Date(inneritem.noteTime).toString().slice(0,15)"
-                                    />
-                                    <br />
-                                    <span class="reply-note" v-html="inneritem.note" />
-                                  </div>
-                                </v-layout>
-                                <v-layout class="replylayout">
-                                  <v-btn
-                                    class="replybutton"
-                                    flat
-                                    large
-                                    color="primary"
-                                    @click="replynotes(item.id,item.user.contact.fullName)"
-                                  >
-                                    <svg
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      width="24"
-                                      height="24"
-                                      viewBox="0 0 24 24"
-                                    >
-                                      <path
-                                        d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z"
+              <v-expansion-panel class="mt-3" :value="0">
+                <v-expansion-panel-content>
+                  <template v-slot:header>
+                    <div class="primary-heading">
+                      <!-- <img src="@/assets/bulb.svg"> -->
+                      <label class="sub-header-large">Notes</label>
+                    </div>
+                  </template>
+                  <v-card>
+                    <div class="note-div">
+                      <v-card-text>
+                        <v-layout v-for="(item) in $store.state.allProjectNotes" :key="item.id">
+                          <v-flex v-if="!item.parentId" d-flex justify-end>
+                            <v-flex md12>
+                              <div class="row">
+                                <div class="column">
+                                  <div class="card">
+                                    <div class="headerdivstyle">
+                                      <span class="headerspan" v-html="item.user.contact.fullName" />
+                                      <span
+                                        class="headerdate"
+                                        v-html="new Date(item.noteTime).toString().slice(0,15)"
                                       />
-                                    </svg> REPLY
-                                  </v-btn>
-                                </v-layout>
+                                    </div>
+                                    <br />
+                                    <span class="main-note" v-html="item.note" />
+                                    <br />
+                                    <v-layout
+                                      v-for="(inneritem) in $store.state.allProjectNotes"
+                                      :key="inneritem.id"
+                                    >
+                                      <div
+                                        style="width:100%"
+                                        v-if="(inneritem.parentId)&&(inneritem.parentId == item.id)"
+                                      >
+                                        <br />
+                                        <span
+                                          class="reply-person"
+                                          v-html="inneritem.user.contact.fullName"
+                                        />
+                                        <span
+                                          class="reply-note-time"
+                                          v-html="new Date(inneritem.noteTime).toString().slice(0,15)"
+                                        />
+                                        <br />
+                                        <span class="reply-note" v-html="inneritem.note" />
+                                      </div>
+                                    </v-layout>
+                                    <v-layout class="replylayout">
+                                      <v-btn
+                                        class="replybutton"
+                                        flat
+                                        large
+                                        color="primary"
+                                        @click="replynotes(item.id,item.user.contact.fullName)"
+                                      >
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          width="24"
+                                          height="24"
+                                          viewBox="0 0 24 24"
+                                        >
+                                          <path
+                                            d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z"
+                                          />
+                                        </svg> REPLY
+                                      </v-btn>
+                                    </v-layout>
+                                  </div>
+                                </div>
                               </div>
-                            </div>
-                          </div>
-                          <br />
-                          <project-notes :ref="item.id"></project-notes>
+                              <br />
+                              <project-notes :ref="item.id"></project-notes>
+                            </v-flex>
+                          </v-flex>
+                        </v-layout>
+                        <v-flex md12>
+                          <project-notes ref="projectNoteNew" @closeNotes="closeNotes"></project-notes>
+                          <v-flex class="create-note" xs3 offset-xs9 align-end>
+                            <v-btn color="btnPrimary" dark @click="newnotes(1)">Create Note</v-btn>
+                          </v-flex>
                         </v-flex>
-                      </v-flex>
-                    </v-layout>
-                    <v-flex md12>
-                      <project-notes ref="projectNoteNew" @closeNotes="closeNotes"></project-notes>
-                      <v-flex class="create-note" xs3 offset-xs9 align-end>
-                      <v-btn
-                        color="btnPrimary"
-                        dark
-                        @click="newnotes(1)"
-                      >Create Note</v-btn>
-                      </v-flex>
-                    </v-flex>
-                  </v-card-text>
-                </div>
-              </v-card>
-              <!--
-
-  Temporarily commented out, but will be restored after demo.
-
-  <div>
-  <v-expansion-panel class="mt-4" :value=0>
-  <v-expansion-panel-content>
-  <template v-slot:header>
-      <div class="primary-heading">
-              <label class="sub-header-large">Notes</label>
-              <label class="sub-header-large">-----------To do-----------------</label>
-</div>
-</template>
-</v-expansion-panel-content>
-</v-expansion-panel>
-              </div>-->
+                      </v-card-text>
+                    </div>
+                  </v-card>
+                </v-expansion-panel-content>
+              </v-expansion-panel>
               <div>
                 <v-tabs class="mt-4">
                   <v-tab ripple href="#rfx">RFx Type and Phase</v-tab>
@@ -704,6 +690,6 @@ export default {
 }
 .create-note {
   margin-left: 88% !important;
-  margin-bottom:1% ;
+  margin-bottom: 1%;
 }
 </style>

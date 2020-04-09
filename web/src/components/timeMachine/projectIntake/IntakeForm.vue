@@ -393,24 +393,24 @@ export default {
       this.nextButtonClick(item);
     },
     checkedit(msg) {
-      if (msg === 1) {
+      if (msg === 1 || msg==="1") {
         this.e1 = 1;
         this.isEditMBInfo = false;
         this.isEditContactInfo = false;
         this.isEditRiskInfo = false;
-      } else if (msg === 2) {
+      } else if (msg === 2 || msg==="2") {
         this.e1 = 2;
         this.isEditPInnfo = true;
         this.isEditMBInfo = false;
         this.isEditContactInfo = false;
         this.isEditRiskInfo = false;
-      } else if (msg === 3) {
+      } else if (msg === 3 || msg==="3") {
         this.e1 = 3;
         this.isEditPInnfo = true;
         this.isEditMBInfo = true;
         this.isEditContactInfo = false;
         this.isEditRiskInfo = false;
-      } else if (msg === 4) {
+      } else if (msg === 4 || msg==="4") {
         this.e1 = 4;
         this.isEditPInnfo = true;
         this.isEditMBInfo = true;

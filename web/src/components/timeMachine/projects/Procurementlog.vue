@@ -103,11 +103,12 @@
                 <v-flex md12>
                   <div class="v-form-container">
                     <v-select
+                      :items="rfxPhases"
+                      class="required"
+                      label="Current Phase"
+                      item-value="rfxPhaseName"
+                      item-text="rfxPhaseName"
                       v-model="phaseImpactName"
-                      :items="projectRfx"
-                      item-text="rfxName"
-                      item-value="rfxName"
-                      label="Phase Impact"
                     ></v-select>
                   </div>
                 </v-flex>
@@ -185,6 +186,9 @@ export default {
   computed: {
     projectRfx() {
       return this.$store.state.activeProjectRfxData;
+    },
+    rfxPhases() {
+      return this.$store.state.rfxPhases;
     }
   },
   components: {
@@ -344,7 +348,7 @@ export default {
         dateFormatted: undefined,
         dateToClient: "",
         followUpDate: "",
-        phaseImpactName:"",
+        phaseImpactName: "",
         riskOwnerName: "",
         issueDescription: "",
         isResolved: false,
