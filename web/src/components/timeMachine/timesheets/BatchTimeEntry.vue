@@ -9,13 +9,16 @@
         class="elevation-0 tm-v-datatable batch-entry"
       >
         <template v-slot:items="props">
-          <td >
+          <td>
             <v-select
+              auto-focus="true"
               :items="userProjects"
               item-text="projectName"
               item-value="id"
               v-model="props.item.project"
-              @change="onChangeProjectBatchEntry(props.item)"
+              :key="props.item.project"
+              @focus="handleClick(props.item.project)"
+              @change="onChangeProjectBatchEntry(props.index, props.item)"
               label="Project Name"
               :disabled="editMode"
             >
@@ -25,7 +28,7 @@
               </template>-->
             </v-select>
           </td>
-          <td v-for="index in 5" :key="index" >
+          <td v-for="index in 5" :key="index">
             <v-flex v-if="selectedItem == 1">
               <v-text-field
                 type="number"
@@ -67,6 +70,7 @@ export default {
   },
   data() {
     return {
+      previousSelection: '',
       hoursRule: [v => v % 0.25 === 0 || 'Please enter in quarter hours (0.25 = 15min)'],
       valid: true,
       editMode: false,
@@ -122,13 +126,27 @@ export default {
   },
   watch: {},
   methods: {
-    onChangeProjectBatchEntry(selectedItem) {
+    handleClick(projectId) {
+      if (projectId === undefined) {this.previousSelection = '';}
+      else {
+        this.previousSelection = projectId;
+        }
+    },
+    onChangeProjectBatchEntry(index, selectedItem) {
       const selectedProjects = this.timesheet.filter(
         item => item.project && item.project === selectedItem.project,
       );
       if (selectedProjects.length > 1) {
         this.$refs.snackbar.displaySnackbar('info', 'This project is already added');
-        selectedItem.project = '';
+        if (index === this.timesheet.length - 1 && this.previousSelection === '') {
+          this.timesheet.pop();
+        } else {
+          debugger;
+          //  selectedItem.project = this.previousSelection;
+          //  this.timesheet[index].project = this.previousSelection;
+         selectedItem.project = undefined;
+         this.timesheet[index].project = undefined;
+        }
       } else {
         const selProject = this.projectList.find(item => item.id === selectedItem.project);
         if (selProject) {
@@ -137,6 +155,7 @@ export default {
           selectedItem.projectRfx = undefined;
         }
       }
+      this.previousSelection = '';
     },
     addRow() {
       this.$emit('add-row');

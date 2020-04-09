@@ -53,6 +53,7 @@
               </v-tooltip> -->
               <v-btn
                 small
+                v-if="!isResolved" 
                 color="btnPrimary"
                 class="white--text intake-table-approve-btn ma-0"
                 @click="resolveLog(props.item.id)"
@@ -85,7 +86,7 @@ export default {
   },
   data() {
     return {
-      isResolved: true,
+      isResolved: false,
       headers: [
         {
           text: 'Log Type',

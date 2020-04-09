@@ -273,7 +273,7 @@
                 large
                 color="primary"
                 class="back-link"
-              >&lt;Contact Information</v-btn>
+              >&lt; Contact Information</v-btn>
               <v-card class="mb-12" color="grey lighten-1" height="200px">
                 <intake-review
                   ref="intakeReview"
