@@ -70,6 +70,10 @@
               ></v-select>
             </td>
             <td class="text-xs-left">{{ props.item.estimatedCompletionDate | formatDate }}</td>
+             <td class="text-xs-left high-level" v-if="props.item.intakeRiskLevel=== 1">HIGH</td>
+             <td class="text-xs-left medium-level" v-else-if="props.item.intakeRiskLevel=== 2">MEDIUM</td>
+             <td class="text-xs-left low-level" v-else-if="props.item.intakeRiskLevel=== 3">LOW</td>
+             <td class="text-xs-left low-level" v-else> </td>
             <td class="text-xs-center">
               <div v-if="(props.item.status === 'approved')" class="approved-label caption">Approved</div>
               <v-btn
@@ -193,6 +197,7 @@ export default {
         { text: 'Project Lead', value: 'projectLeadId', sortable: false },
         { text: 'Project Backup', value: 'projectBackup', sortable: false },
         { text: 'Project Deadline', value: 'estimatedCompletionDate', sortable: true },
+        { text: 'Risk Score', value: 'intakeRiskLevel', sortable: true },
         { text: 'Status', value: 'approved', align: 'center', sortable: false },
         { text: 'Action', value: 'action', align: 'right', width: '110px', sortable: false },
       ],
@@ -211,8 +216,8 @@ export default {
   },
   computed: {
     intakeRequests() {
-     // console.log('intakeRequests', this.$store.state.intakeRequests);
-    
+      // console.log('intakeRequests', this.$store.state.intakeRequests);
+
       return this.$store.state.intakeRequests;
     },
     userList() {
@@ -221,16 +226,15 @@ export default {
       // potentially issue is 'contact' is null. How to get it non-null?
       return this.$store.state.users;
     },
-    mouList(){
+    mouList() {
       return this.$store.state.mouList;
-    }
+    },
   },
   methods: {
     calculatedvalue(item) {
-
-      const res = item.isNonMinistry==true ? item.nonMinistryName : item.ministryName;
+      const res = item.isNonMinistry == true ? item.nonMinistryName : item.ministryName;
       // return [ res, item.orgDivision].join(" ");
-      return res;//Since we need to return only Ministry Name and not Branch
+      return res;// Since we need to return only Ministry Name and not Branch
     },
     fetchData() {
       this.$store.dispatch('fetchIntakeRequests');
@@ -378,31 +382,30 @@ export default {
       this.mouProjectId = item.id;
       this.mouProject = item;
 
-      if (item.mouName){
+      if (item.mouName) {
         console.log('has mou!', item);
-        this.mou = {id: item.mouId, name: item.mouName};
+        this.mou = { id: item.mouId, name: item.mouName };
       }
 
       this.mouDialog = true;
     },
-    async assignMOU(){
+    async assignMOU() {
       // We have to use blur/nextTick in order to force the combobox to update it's value
       // This only happens if user goes from focusing on combobox to directly clicking 'Save'
       this.$refs.mouCombobox.blur();
       this.$nextTick(async () => {
-
         if (!this.mou || this.mou === '') return;
-        console.log('assignMOU', {project: this.mouProject, mou: this.mou})
+        console.log('assignMOU', { project: this.mouProject, mou: this.mou });
         let mouID = this.mou.id;
 
         // Create MOU if does not exist.
-        if (!mouID && this.mou){
-          console.log('creating mou', {mouID, mou: this.mou})
-          mouID = await this.$store.dispatch('createMOU', {name: this.mou});
+        if (!mouID && this.mou) {
+          console.log('creating mou', { mouID, mou: this.mou });
+          mouID = await this.$store.dispatch('createMOU', { name: this.mou });
         }
 
         const project = this.mouProject;
-        project.mou = {id: mouID, name: this.mou}
+        project.mou = { id: mouID, name: this.mou };
         const projResponse = await this.$store.dispatch('updateIntakeRequest', project);
         // console.log('assignMOU projResponse', {projResponse});
 
@@ -410,13 +413,13 @@ export default {
         this.mouDialog = false;
         // Clear modal for next time
         this.mou = undefined;
-      })
+      });
     },
-    toggleNewMou(event){
+    toggleNewMou(event) {
       console.log('toggle called');
       // this.isNewMOU = !this.isNewMOU;
       this.mou = undefined;
-    }
+    },
   },
   created() {
     this.fetchData();
