@@ -216,6 +216,7 @@ import RevenueEntry from './AddRevenue.vue';
 import TimesheetEntry from './TimesheetEntry.vue';
 import BatchTimeEntry from './BatchTimeEntry.vue';
 
+
 export default {
   computed: {
     computeTimesheet: {
@@ -337,6 +338,9 @@ export default {
       } else {
         this.projectList = [];
       }
+      this.form.project = undefined;
+      this.$store.state.activeProjectRfxData = [];
+      this.form.rfx = undefined;
       // if (this.projectList.length > 0) {
       //   this.selectWeeklyProject(this.projectList[0].id, this.form.mou);
       // } else { this.selectWeeklyProject(undefined, this.form.mou); }
@@ -353,19 +357,12 @@ export default {
       }
     },
     onWeekEntry() {
-      // if (this.form.Project === undefined || this.form.Project === '') {
-      //   if (this.timesheet.length > 0) {
-      //     this.form.mou = this.timesheet[0].mou;
-      //     const projectId = this.timesheet[0].project;
-      //     this.onChangeMou();
-      //     this.selectWeeklyProject(projectId, this.timesheet[0].mou);
-      //   }
-      // }
+      if (this.selectWeeklyProject !== 0 && this.timesheet[this.selectWeeklyProject].deleted) { this.selectWeeklyProject = 0; }
     },
     selectWeeklyProject(projectId, mou) {
       let projectIndex = -1;
       for (let index = 0; index < this.timesheet.length; index++) {
-        if (this.timesheet[index].project === projectId) {
+        if (this.timesheet[index].project === projectId && !this.timesheet[index].deleted) {
           projectIndex = index;
         }
       }
@@ -384,12 +381,16 @@ export default {
 
       if (projectId !== '' && projectId !== undefined) {
         this.$store.dispatch('fetchProjectRFxData', { id: projectId });
+        this.form.rfx = this.timesheet[this.weeklyProjectIndex].projectRfx;
       }
       // this.form.mou = mou;
       // this.form.project = projectId;
     },
     onChangeProjectWeeklyEntry() {
       // Keep index of weekly entry selected project. This is used to set props value to weekly entry components.
+
+      this.$store.state.activeProjectRfxData = [];
+      this.form.rfx = undefined;
       this.selectWeeklyProject(this.form.project, this.form.mou);
       this.blankTimesheet = [];
       this.addTimeSheetRow(true);
@@ -420,15 +421,17 @@ export default {
             const timesheetItem = {};
             timesheetItem.project = obj[index].project.id;
             timesheetItem.mou = obj[index].mou.id;
-            timesheetItem.projectRfx = obj[index].projectRfx;
+            timesheetItem.projectRfx = obj[index].projectRfx ? obj[index].projectRfx.id : undefined;
             timesheetItem.userId = obj[index].userId;
             timesheetItem.startDate = obj[index].startDate;
             timesheetItem.endDate = obj[index].endDate;
+            timesheetItem.deleted = false;
+            timesheetItem.id = obj[index].id;
             timesheetItem.entries = obj[index].timesheetEntries;
             vm.timesheet.push(timesheetItem);
           }
-        vm.$refs.TimeCalenderWeekly.setCalendarText();
-        vm.$refs.TimeCalenderBatch.setCalendarText();
+          vm.$refs.TimeCalenderWeekly.setCalendarText();
+          vm.$refs.TimeCalenderBatch.setCalendarText();
 
           vm.$refs.billableBatchEntry.editMode = false;
           vm.$refs.nonBillableBatchEntry.editMode = false;
@@ -459,7 +462,8 @@ export default {
         vm.timesheet[vm.weeklyProjectIndex].projectRfx = obj.projectRfx
           ? obj.projectRfx.id
           : undefined;
-
+        debugger;
+        vm.timesheet[vm.weeklyProjectIndex].deleted = false;
         vm.$store.state.timesheetsWeek.startDate = vm.timesheet[vm.weeklyProjectIndex].startDate;
         vm.$store.state.timesheetsWeek.endDate = vm.timesheet[vm.weeklyProjectIndex].endDate;
         vm.$refs.TimeCalenderWeekly.setCalendarText();
@@ -471,7 +475,7 @@ export default {
         vm.form.project = vm.timesheet[vm.weeklyProjectIndex].project;
         vm.$store.dispatch('fetchProjectRFxData', { id: vm.form.project });
         vm.form.rfx = vm.timesheet[vm.weeklyProjectIndex].projectRfx
-          ? vm.timesheet[vm.weeklyProjectIndex].projectRfx.id
+          ? vm.timesheet[vm.weeklyProjectIndex].projectRfx
           : undefined;
 
         vm.activeTab = 'weekly';
@@ -530,11 +534,11 @@ export default {
     },
 
     saveTimesheets() {
-      this.timesheet = this.timesheet.filter(
+      const submitItems = this.timesheet.filter(
         item => item.project !== '' && item.project !== undefined,
       );
       this.$refs.spinner.open();
-      this.$store.dispatch('addBatchTimesheet', this.timesheet).then(
+      this.$store.dispatch('addBatchTimesheet', submitItems).then(
         () => {
           this.$refs.snackbar.displaySnackbar('success', 'Successfully saved time entries.');
           this.$refs.spinner.close();
@@ -620,6 +624,8 @@ export default {
       //   timesheetItem.userId = this.form && this.form.userId ? this.form.userId : undefined;
       //   timesheetItem.mou = this.form.mou;
       // } else {
+      timesheetItem.id = undefined;
+      timesheetItem.deleted = false;
       timesheetItem.projectRfx = undefined;
       timesheetItem.project = undefined;
       timesheetItem.userId = this.form && this.form.userId ? this.form.userId : undefined;
