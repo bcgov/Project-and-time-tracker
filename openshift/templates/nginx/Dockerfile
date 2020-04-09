@@ -9,4 +9,9 @@ RUN sed -i.bak 's/^user/#user/' /etc/nginx/nginx.conf
 COPY ./dist /app
 COPY nginx.conf.template /etc/nginx/conf.d
 
+
+COPY ./dist/ /usr/share/nginx/html/timemachine
+ENV NGINX_SERVER_PORT=8081
+ENV NGINX_SERVER_NAME=localhost
+
 RUN envsubst < /etc/nginx/conf.d/nginx.conf.template > /etc/nginx/conf.d/default.conf
