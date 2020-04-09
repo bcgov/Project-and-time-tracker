@@ -11,16 +11,6 @@
   "objects": [
     {
       "apiVersion": "v1",
-      "kind": "ImageStream",
-      "metadata": {
-        "annotations": {
-          "description": "timemachine-api node image stream"
-        },
-        "name": "${SOURCE_NAME}"
-      }
-    },
-    {
-      "apiVersion": "v1",
       "kind": "DeploymentConfig",
       "metadata": {
         "creationTimestamp": null,
@@ -99,7 +89,7 @@
               "from": {
                 "kind": "ImageStreamTag",
                 "namespace": "${IMAGE_NAMESPACE}",
-                "name": "${SOURCE_NAME}:${TAG_NAME}"
+                "name": "${SOURCE_NAME}-${TAG_NAME}:latest"
               }
             }
           }
