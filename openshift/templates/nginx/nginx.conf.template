@@ -1,13 +1,27 @@
 server {
     listen       8081;
     server_name  localhost;
+    port_in_redirect off;
 
     location / {
-      port_in_redirect off;
       root   /app;
       index  index.html;
       try_files $uri $uri/ /index.html;
     }
+
+     location /arc {
+      root   /app;
+      index  index.html;
+      try_files $uri $uri/ /index.html;
+    }
+
+    location /arcnodirect {
+      root   /app;
+      index  index.html;
+      try_files $uri $uri/ /index.html;
+    }
+    
+
     error_page   500 502 503 504  /50x.html;
     location = /50x.html {
       root   /usr/share/nginx/html;
