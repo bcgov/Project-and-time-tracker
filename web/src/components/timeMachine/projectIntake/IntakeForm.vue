@@ -146,7 +146,7 @@
                 large
                 color="primary"
                 class="back-link"
-              >&lt;Risk Assessment</v-btn>
+              >&lt; Risk Assessment</v-btn>
               <div class="intake-contact-layout">
                 <v-flex md12 class="intake-base-info-header">
                   <span class="intake-base-info-header-content">Contact Information</span>
