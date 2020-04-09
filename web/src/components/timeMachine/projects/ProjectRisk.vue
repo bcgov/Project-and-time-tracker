@@ -18,14 +18,14 @@
         <span >{{needSpo}}</span></div>
       </div>
 
-      <pre>
+      <!-- <pre>
 
 intake:{{ intakeScore }}
 psb:{{ psbScore }}
 total:{{ totalScore }}
 spo:{{ spoScore }}
 
-</pre>
+</pre> -->
     </v-flex>
 
     <v-form
