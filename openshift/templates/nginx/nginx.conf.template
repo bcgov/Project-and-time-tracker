@@ -3,6 +3,7 @@ server {
     server_name  localhost;
 
     location / {
+      port_in_redirect off;
       root   /app;
       index  index.html;
       try_files $uri $uri/ /index.html;

@@ -2,7 +2,7 @@
 kind: Template
 apiVersion: v1
 metadata:
-  name: "${NAME}-build-template"
+  name: timemachine-web-build-template
   creationTimestamp: 
 objects:
 - kind: ImageStream
@@ -16,7 +16,7 @@ objects:
     labels:
       app: "${NAME}-build-${TAG_NAME}"
   spec:
-    runPolicy: Serial`
+    runPolicy: Serial
     source:
       type: Git
       git:
@@ -34,7 +34,7 @@ parameters:
   displayName: Name
   description: The name assigned to all of the resources defined in this template.
   required: true
-  value: timemachine-api
+  value: timemachine-web
 - name: GIT_REPO_URL
   displayName: Git Repo URL
   description: The URL to your GIT repo.
