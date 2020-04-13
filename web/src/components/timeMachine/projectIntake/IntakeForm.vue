@@ -57,7 +57,7 @@
             </v-stepper-step>
             <v-divider class="first-divider"></v-divider>
             <v-divider class="second-divider"></v-divider>
-            <v-stepper-step @click="checkedit(e1)" step="5">
+            <v-stepper-step @click="checkedit(e1)" :editable="isEditContactInfo"  edit-icon="5" :complete="e1 > 4" step="5">
               Review
               <br />& Submit
             </v-stepper-step>
@@ -361,6 +361,7 @@ export default {
       ministryInformation: this.$store.state.ministryInformation,
       contactInformation: this.$store.state.contactInformation,
       intakeRiskQuestions: this.$store.state.intakeRiskQuestions,
+      editall:false,
       valid: false,
       enabled: false,
       isEditPInnfo: false,
@@ -390,9 +391,12 @@ export default {
       this.contactData.push(new AdditionalContact());
     },
     moveToComponent(item) {
-      this.nextButtonClick(item);
+     // this.e1 = item;
+      this.checkedit(item,true);
     },
-    checkedit(msg) {
+    checkedit(msg,flag=false) {
+
+      if(!this.editall) {
       if (msg === 1 || msg==="1") {
         this.e1 = 1;
         this.isEditMBInfo = false;
@@ -421,6 +425,15 @@ export default {
         // this.isEditMBInfo = false;
         // this.isEditContactInfo = false;
         // this.isEditRiskInfo = false;
+      }
+      } else {
+          this.isEditMBInfo = true;
+          this.isEditPInnfo = true;
+          this.isEditRiskInfo = true;
+          this.isEditContactInfo = true;
+      }
+      if(flag) {
+        this.e1 =msg;
       }
     },
     fetchData() {
@@ -606,6 +619,7 @@ export default {
     },
     nextButtonClick(step) {
       if (step === 5) {
+        
         for (let i = 0; i < this.contactCount; i++) {
           const res = 'additionalcontactinfo' + i.toString();
           this.$refs.additionalcontactinfo[i].form.contactType =            'clientcontact';
@@ -619,6 +633,7 @@ export default {
           this.isEditPInnfo = true;
           this.isEditRiskInfo = true;
           this.isEditContactInfo = true;
+          this.editall=true;
           this.e1 = step;
         }
         const riskAnalysis = this.getRiskAnalysis();
