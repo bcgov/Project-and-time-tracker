@@ -391,10 +391,10 @@ export default {
       this.contactData.push(new AdditionalContact());
     },
     moveToComponent(item) {
-      this.e1 = item;
-      this.nextButtonClick(item);
+     // this.e1 = item;
+      this.checkedit(item,true);
     },
-    checkedit(msg) {
+    checkedit(msg,flag=false) {
 
       if(!this.editall) {
       if (msg === 1 || msg==="1") {
@@ -431,6 +431,9 @@ export default {
           this.isEditPInnfo = true;
           this.isEditRiskInfo = true;
           this.isEditContactInfo = true;
+      }
+      if(flag) {
+        this.e1 =msg;
       }
     },
     fetchData() {
