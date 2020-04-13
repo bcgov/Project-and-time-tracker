@@ -247,9 +247,13 @@ export default {
         item => item.id === this.$props.timesheet[sheetIndex].project,
       );
       const date = this.$props.timesheet[sheetIndex].entries[index].entryDate;
-      let description = '';
-      if (selProject) { description = `Date: ${date}        Project: ${selProject.projectName}`; } else { description = `Date: ${date}`; }
-      this.$refs.addComment.open(value, index, sheetIndex, type, description);
+      let dateVaue = '';
+      let projectValue = '';
+      if (selProject) { 
+        dateVaue = `Date: ${date}`;       
+        projectValue=`Project: ${selProject.projectName}`; 
+        } else { dateVaue = `Date: ${date}`; }
+      this.$refs.addComment.open(value, index, sheetIndex, type, dateVaue,projectValue);
     },
     savecomment(commentValue, index, sheetIndex, type) {
       if (type === 'billable') {

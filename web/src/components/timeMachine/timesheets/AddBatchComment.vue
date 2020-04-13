@@ -6,15 +6,26 @@
           <br /><v-layout row wrap>
             <v-flex md1></v-flex>
             <v-flex md10 class="headline"> Add a Description</v-flex>
-            <v-flex md1></v-flex>
+              
+            <v-flex md1>  <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  @click="closeDialog()"
+                  viewBox="0 0 18 18"
+                >
+                  <path
+                    d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"
+                  />
+                </svg>
+            </v-flex>
           </v-layout>
 
           <br />
           <v-divider></v-divider>
- <br />
           <v-layout row wrap>
             <v-flex md1></v-flex>
-            <v-flex md10> {{ description }}</v-flex>
+            <v-flex md10 class="description-date"><span class="datevalue"> {{ new Date(date).toString().slice(0,10)}} </span><span class="projectvalue"> {{project}}</span></v-flex>
             <v-flex md1></v-flex>
           </v-layout>
           <br />
@@ -65,8 +76,9 @@ export default {
       this.$emit('savecomment', this.batchComment, this.index, this.sheetIndex, this.type);
       this.closeDialog();
     },
-    open(value, index, sheetIndex, type, description) {
-      this.description = description;
+    open(value, index, sheetIndex, type, date, project) {
+      this.date = date;
+      this.project = project;
       this.type = type;
       this.sheetIndex = sheetIndex;
       this.index = index;
@@ -79,11 +91,13 @@ export default {
       this.batchComment = value;
     },
     closeDialog() {
+      this.batchComment ='';
       this.dialog = false;
     },
     initData() {
       return {
-        description: '',
+        date: '',
+        project:'',
         flag: undefined,
         valid: true,
         dialog: false,
@@ -117,5 +131,18 @@ export default {
 .v-dialog:not(.v-dialog--fullscreen) {
   max-width: 40%;
   max-height: 90%;
+}
+.headline {
+      font-weight: 500;
+}
+.description-date {
+  font-weight: 400;
+  color:rgb(160, 154, 154);
+}
+.datevalue {
+  padding-right: 15px;
+}
+.projectvalue {
+  padding-left: 15px;
 }
 </style>
