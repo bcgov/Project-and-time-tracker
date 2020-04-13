@@ -313,6 +313,7 @@ export default {
       };
     },
     onChangeUser(userId, editMode = false) {
+      if (this.$refs.spinner) { this.$refs.spinner.open(); }
       this.clearTimesheet();
       this.form.userId = userId;
       this.userMouProjects = this.$store.state.allProjects.filter(
@@ -322,6 +323,7 @@ export default {
       if (!editMode) {
         this.getTimeSheets();
       }
+      if (this.$refs.spinner) { this.$refs.spinner.close(); }
     },
     onChangeMou() {
       if (
@@ -387,6 +389,7 @@ export default {
       // this.form.project = projectId;
     },
     onChangeProjectWeeklyEntry() {
+      if (this.$refs.spinner) { this.$refs.spinner.open(); }
       // Keep index of weekly entry selected project. This is used to set props value to weekly entry components.
 
       this.$store.state.activeProjectRfxData = [];
@@ -394,12 +397,15 @@ export default {
       this.selectWeeklyProject(this.form.project, this.form.mou);
       this.blankTimesheet = [];
       this.addTimeSheetRow(true);
+      if (this.$refs.spinner) { this.$refs.spinner.close(); }
     },
     onChangeProjectRfx() {
       this.timesheet[this.weeklyProjectIndex].projectRfx = this.form.rfx;
     },
     onChangeWeek() {
+      if (this.$refs.spinner) { this.$refs.spinner.open(); }
       this.getTimeSheets(true);
+      if (this.$refs.spinner) { this.$refs.spinner.close(); }
     },
     async getTimeSheets(weekChange = false) {
       this.clearTimesheet(weekChange);

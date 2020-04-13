@@ -124,7 +124,7 @@ export const retrieveTimesheetByUserAndDate = async model => {
     .innerJoinAndSelect('t.project', 'p')
     .innerJoinAndSelect('t.mou', 'm')
     .leftJoinAndSelect('t.projectRfx', 'pr')
-    .orderBy('te.entryDate', 'ASC')
+    .orderBy('te.entryDate, te.dateCreated', 'ASC')
     .where(
       ' t."userId" = :userId AND' +
         ' t."startDate" = :entryDate AND t."endDate" >= :entryDate',

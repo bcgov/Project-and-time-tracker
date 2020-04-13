@@ -299,6 +299,7 @@ export default {
         selectedItem.mou = selProject.mou.id;
         selectedItem.projectRfx = undefined;
       }
+      this.previousSelection = undefined;
     },
     addRow() {
       this.$emit('add-row');
