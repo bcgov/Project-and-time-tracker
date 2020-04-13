@@ -16,7 +16,7 @@
               @click="checkedit(e1)"
               :editable="isEditPInnfo"
               edit-icon="1"
-              :complete="e1 > 1"
+              :complete="e1 > 1  || editall"
               step="1"
             >
               Procurement Project
@@ -28,7 +28,7 @@
               @click="checkedit(e1)"
               :editable="isEditMBInfo"
               edit-icon="2"
-              :complete="e1 > 2"
+              :complete="e1 > 2 || editall"
               step="2"
             >Ministry/Branch Information</v-stepper-step>
             <v-divider class="first-divider"></v-divider>
@@ -37,7 +37,7 @@
               @click="checkedit(e1)"
               :editable="isEditRiskInfo"
               edit-icon="3"
-              :complete="e1 > 3"
+              :complete="e1 > 3 || editall"
               step="3"
             >
               Risk
@@ -49,7 +49,7 @@
               @click="checkedit(e1)"
               :editable="isEditContactInfo"
               edit-icon="4"
-              :complete="e1 > 4"
+              :complete="e1 > 4 || editall"
               step="4"
             >
               Contact
@@ -495,12 +495,7 @@ export default {
       this.$refs.projectFinance.onNextClicked();
 
       const riskAnalysis = this.getRiskAnalysis();
-      // const mappedScores = riskAnalysis.map(o => o.score);
-      // let scoreSum = 0;
-      // if (mappedScores.length != 0) {
-      //   scoreSum = mappedScores.reduce((a, c) => a + c);
-      // }
-      debugger;
+
       const riskResult = this.$refs.intakeRiskAssessment.calculateRiskScore();
       let riskLevel = 0;
       if (riskResult.level === 'High') { riskLevel = 1; } else if (riskResult.level === 'Medium') { riskLevel = 2; } else if (riskResult.level === 'Low') { riskLevel = 3; }
@@ -561,7 +556,6 @@ export default {
         && this.$store.state.intakeRisk
       ) {
         this.$refs.spinner.open();
-        debugger;
         console.log('contractValue', { contractValue: formData.estimatedContractValue });
         formData.estimatedContractValue = formData.estimatedContractValue;
         this.$store.dispatch('addIntakeRequest', formData).then(
