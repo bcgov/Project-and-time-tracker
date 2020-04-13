@@ -26,6 +26,7 @@
                 item-text="projectName"
                 :disabled="editMode"
                 label="Project Name"
+                return-object
               ></v-select>
 
               <!-- TODO - Truncate name if Proj name too long -->
@@ -181,7 +182,7 @@ export default {
   },
   data() {
     return {
-      previousSelection: '',
+      previousSelection: undefined,
       hoursRule: [v => v % 0.25 === 0 || 'Please enter in quarter hours (0.25 = 15min)'],
       valid: true,
       editMode: false,
@@ -256,46 +257,43 @@ export default {
       }
     },
     getProject(project) {
-      if (project === undefined) {
-        this.previousSelection = '';
-      } else {
-        this.previousSelection = project;
+      this.previousSelection = undefined;
+      if (project !== undefined) {
+        const selProject = this.projectList.find(item => item.id === project);
+        if (selProject) { this.previousSelection = selProject; }
       }
     },
     async onChangeProjectBatchEntry(index, selectedItem, project) {
       if (
-        this.previousSelection !== ''
-        && selectedItem.id !== undefined
-        && selectedItem.id !== ''
+        this.previousSelection !== undefined
       ) {
         if (!(await this.$refs.confirm.open('info', 'Are you sure to change project?'))) {
-          project = this.previousSelection;
-          if (this.timesheet.length > 1) {
-            selectedItem.deleted = true;
-          }
+          selectedItem.project = this.previousSelection.id;
+          this.previousSelection = undefined;
           return;
         }
       }
       const selectedProjects = this.timesheet.filter(
-        item => item.project && item.project === project && !selectedItem.deleted,
+        item => item.project && (item.project === project.id || item.project.id === project.id) && !item.deleted,
       );
       if (selectedProjects.length > 1) {
         this.$refs.snackbar.displaySnackbar('info', 'This project is already added');
-        if (this.timesheet.length - 1 === index) {
-          selectedItem.project = undefined;
-          if (this.timesheet.length > 1) {
-            selectedItem.deleted = true;
-          }
-        } else {
-          project = this.previousSelection;
-          if (this.timesheet.length > 1) {
-            selectedItem.deleted = true;
-          }
+
+        if (this.previousSelection && this.previousSelection.id) { selectedItem.project = this.previousSelection.id; } else { selectedItem.project = this.previousSelection; }
+
+        const projectsNotDeleted = this.timesheet.filter(
+          item => !item.deleted,
+        );
+
+        if (projectsNotDeleted.length > 1 && this.timesheet.length - 1 === index && this.previousSelection === undefined) {
+          selectedItem.deleted = true;
         }
-        // selectedItem.deleted = true;
+        this.previousSelection = undefined;
+        return;
       }
-      const selProject = this.projectList.find(item => item.id === project);
+      const selProject = this.projectList.find(item => item.id === project.id);
       if (selProject) {
+        selectedItem.project = selProject.id;
         selectedItem.mou = selProject.mou.id;
         selectedItem.projectRfx = undefined;
       }
