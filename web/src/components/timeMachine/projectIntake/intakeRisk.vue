@@ -138,7 +138,7 @@ export default {
       };
     },
     calculateRiskScore() {
-      return this.calculateItemScore(this.intakeRiskQuestions.filter(item => !(item.is_PSB)));
+      return this.calculateItemScore(this.intakeRiskQuestion);
       // this.totalScore = this.calculateItemScore(this.intakeRiskQuestions);
       // this.spoScore = this.calculateItemScore(this.intakeRiskQuestions.filter(item => item.isStrategicContact));
     },
@@ -151,8 +151,6 @@ export default {
         this.categoryList[item.category - 1].showStatus = true;
         item.showStatus = true;
       }
-
-      // const score = this.calculateRiskScore();
     },
     onNextClicked() {
       if (this.$refs.intakeRiskAssessment.validate()) {

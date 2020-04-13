@@ -361,7 +361,7 @@ export default {
       ministryInformation: this.$store.state.ministryInformation,
       contactInformation: this.$store.state.contactInformation,
       intakeRiskQuestions: this.$store.state.intakeRiskQuestions,
-      editall:false,
+      editall: false,
       valid: false,
       enabled: false,
       isEditPInnfo: false,
@@ -391,49 +391,48 @@ export default {
       this.contactData.push(new AdditionalContact());
     },
     moveToComponent(item) {
-     // this.e1 = item;
-      this.checkedit(item,true);
+      // this.e1 = item;
+      this.checkedit(item, true);
     },
-    checkedit(msg,flag=false) {
-
-      if(!this.editall) {
-      if (msg === 1 || msg==="1") {
-        this.e1 = 1;
-        this.isEditMBInfo = false;
-        this.isEditContactInfo = false;
-        this.isEditRiskInfo = false;
-      } else if (msg === 2 || msg==="2") {
-        this.e1 = 2;
-        this.isEditPInnfo = true;
-        this.isEditMBInfo = false;
-        this.isEditContactInfo = false;
-        this.isEditRiskInfo = false;
-      } else if (msg === 3 || msg==="3") {
-        this.e1 = 3;
-        this.isEditPInnfo = true;
-        this.isEditMBInfo = true;
-        this.isEditContactInfo = false;
-        this.isEditRiskInfo = false;
-      } else if (msg === 4 || msg==="4") {
-        this.e1 = 4;
-        this.isEditPInnfo = true;
-        this.isEditMBInfo = true;
-        this.isEditRiskInfo = true;
-      } else {
-        this.e1 = 5;
+    checkedit(msg, flag = false) {
+      if (!this.editall) {
+        if (msg === 1 || msg === '1') {
+          this.e1 = 1;
+          this.isEditMBInfo = false;
+          this.isEditContactInfo = false;
+          this.isEditRiskInfo = false;
+        } else if (msg === 2 || msg === '2') {
+          this.e1 = 2;
+          this.isEditPInnfo = true;
+          this.isEditMBInfo = false;
+          this.isEditContactInfo = false;
+          this.isEditRiskInfo = false;
+        } else if (msg === 3 || msg === '3') {
+          this.e1 = 3;
+          this.isEditPInnfo = true;
+          this.isEditMBInfo = true;
+          this.isEditContactInfo = false;
+          this.isEditRiskInfo = false;
+        } else if (msg === 4 || msg === '4') {
+          this.e1 = 4;
+          this.isEditPInnfo = true;
+          this.isEditMBInfo = true;
+          this.isEditRiskInfo = true;
+        } else {
+          this.e1 = 5;
         //   this.isEditPInnfo = false;
         // this.isEditMBInfo = false;
         // this.isEditContactInfo = false;
         // this.isEditRiskInfo = false;
-      }
+        }
       } else {
-          this.isEditMBInfo = true;
-          this.isEditPInnfo = true;
-          this.isEditRiskInfo = true;
-          this.isEditContactInfo = true;
+        this.isEditMBInfo = true;
+        this.isEditPInnfo = true;
+        this.isEditRiskInfo = true;
+        this.isEditContactInfo = true;
       }
-      if(flag) {
-        this.e1 =msg;
+      if (flag) {
+        this.e1 = msg;
       }
     },
     fetchData() {
@@ -496,17 +495,28 @@ export default {
       this.$refs.projectFinance.onNextClicked();
 
       const riskAnalysis = this.getRiskAnalysis();
-      const mappedScores = riskAnalysis.map(o => o.score);
-      let scoreSum = 0;
-      if (mappedScores.length != 0) {
-        scoreSum = mappedScores.reduce((a, c) => a + c);
-      }
+      // const mappedScores = riskAnalysis.map(o => o.score);
+      // let scoreSum = 0;
+      // if (mappedScores.length != 0) {
+      //   scoreSum = mappedScores.reduce((a, c) => a + c);
+      // }
+      debugger;
+      const riskResult = this.$refs.intakeRiskAssessment.calculateRiskScore();
+      let riskLevel = 0;
+      if (riskResult.level === 'High') { riskLevel = 1; } else if (riskResult.level === 'Medium') { riskLevel = 2; } else if (riskResult.level === 'Low') { riskLevel = 3; }
+
+
       const formData = assign({}, this.$refs.intakeBaseInfo.form, {
         client: this.$refs.intakeClientInfo.form,
         contacts: [],
         risk: riskAnalysis,
-        riskScore: scoreSum,
+        IntakeriskScore: riskResult.percentage,
+        riskScore: riskResult.percentage,
+        psbRiskScore: 0,
+        isSPOEngagement: false,
+        intakeRiskLevel: riskLevel,
       });
+      this.$refs.intakeClientInfo.form.intakeRiskLevel = riskResult.level;
       const projectLead = this.$refs.projectLead.form || undefined;
       const projectSponsor = this.$refs.projectSponsor.form || undefined;
       const projectFinance = this.$refs.projectFinance.form || undefined;
@@ -551,6 +561,7 @@ export default {
         && this.$store.state.intakeRisk
       ) {
         this.$refs.spinner.open();
+        debugger;
         console.log('contractValue', { contractValue: formData.estimatedContractValue });
         formData.estimatedContractValue = formData.estimatedContractValue;
         this.$store.dispatch('addIntakeRequest', formData).then(
@@ -619,10 +630,9 @@ export default {
     },
     nextButtonClick(step) {
       if (step === 5) {
-        
         for (let i = 0; i < this.contactCount; i++) {
-          const res = 'additionalcontactinfo' + i.toString();
-          this.$refs.additionalcontactinfo[i].form.contactType =            'clientcontact';
+          const res = `additionalcontactinfo${i.toString()}`;
+          this.$refs.additionalcontactinfo[i].form.contactType = 'clientcontact';
           this.allContacts.push(this.$refs.additionalcontactinfo[i].form);
         }
         const value1 = this.$refs.projectLead.onNextClicked();
@@ -633,7 +643,7 @@ export default {
           this.isEditPInnfo = true;
           this.isEditRiskInfo = true;
           this.isEditContactInfo = true;
-          this.editall=true;
+          this.editall = true;
           this.e1 = step;
         }
         const riskAnalysis = this.getRiskAnalysis();

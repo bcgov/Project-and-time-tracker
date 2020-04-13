@@ -57,7 +57,7 @@ export const updateIntakeByIdAction = async (ctx: Koa.Context) => {
 };
 
 export const deleteIntakeByIdAction = async (ctx: Koa.Context) => {
-  try { 
+  try {
     await deleteIntake(ctx.params.id);
     ctx.body = 'success';
   } catch (err) {
@@ -67,7 +67,6 @@ export const deleteIntakeByIdAction = async (ctx: Koa.Context) => {
 
 export const createIntakeAction = async (ctx: Koa.Context) => {
   try {
-    
     const projectIntake = ctx.request.body as IProjectIntake;
 
     if (!projectIntake) {
@@ -154,7 +153,7 @@ export const updateApproveStatus = async (ctx: Koa.Context) => {
       previousContractBackground: intake.previousContractBackground,
       projectFailImpact: intake.projectFailImpact,
       projectSuccess: intake.projectSuccess,
-      mou: intake.mou,
+      mou: intake.mou
     };
     const projectData = await createProject(newProject);
 
@@ -186,27 +185,30 @@ const validateIntakeForm = (intake: IProjectIntake) => {
 
     // Business validation: Start.
     if (!client.isNonMinistry) {
-    if (client.clientNo && client.clientNo.toString().length !== 3) {
-      validationErrors.push('Client No should be exactly 3 characters.');
+      if (client.clientNo && client.clientNo.toString().length !== 3) {
+        validationErrors.push('Client No should be exactly 3 characters.');
+      }
+      if (
+        client.responsibilityCenter &&
+        client.responsibilityCenter.toString().length !== 5
+      ) {
+        validationErrors.push(
+          'Responsibility Center should be exactly 5 characters.'
+        );
+      }
+      if (
+        client.serviceCenter &&
+        client.serviceCenter.toString().length !== 5
+      ) {
+        validationErrors.push('Service Center should be exactly 5 characters.');
+      }
+      if (client.stob && client.stob.toString().length !== 4) {
+        validationErrors.push('STOB should be exactly 4 characters.');
+      }
+      if (client.projectCode && client.projectCode.toString().length !== 7) {
+        validationErrors.push('Project Code should be exactly 7 characters.');
+      }
     }
-    if (
-      client.responsibilityCenter &&
-      client.responsibilityCenter.toString().length !== 5
-    ) {
-      validationErrors.push(
-        'Responsibility Center should be exactly 5 characters.'
-      );
-    }
-    if (client.serviceCenter && client.serviceCenter.toString().length !== 5) {
-      validationErrors.push('Service Center should be exactly 5 characters.');
-    }
-    if (client.stob && client.stob.toString().length !== 4) {
-      validationErrors.push('STOB should be exactly 4 characters.');
-    }
-    if (client.projectCode && client.projectCode.toString().length !== 7) {
-      validationErrors.push('Project Code should be exactly 7 characters.');
-    }
-  }
 
     // Business validation: End.
 
@@ -250,7 +252,9 @@ const validateIntakeForm = (intake: IProjectIntake) => {
     );
   }
   if (!intake.projectSuccess) {
-    validationErrors.push('Success look like for this procurement project is required.');
+    validationErrors.push(
+      'Success look like for this procurement project is required.'
+    );
   }
 
   if (!intake.dateOfReprocurement && intake.isReprocurement) {
@@ -285,9 +289,7 @@ const validateIntakeForm = (intake: IProjectIntake) => {
       }
 
       if (!contact.orgPosition) {
-        validationErrors.push(
-          contactTypeLabel + ' Position is required.'
-        );
+        validationErrors.push(contactTypeLabel + ' Position is required.');
       }
 
       if (!contact.email) {
@@ -321,6 +323,3 @@ router.post('/', authorize, createIntakeAction);
 router.post('/:id/approve', authorize, updateApproveStatus);
 
 export default router;
-
-
-
