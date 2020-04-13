@@ -42,6 +42,7 @@
                   max="24"
                   step="0.01"
                   min="0"
+                  :rules="hoursRule"
                   oninput="validity.valid||(value=0);"
                   v-model="props.item.entries[index - 1].hoursBillable"
                 ></v-text-field>
@@ -104,6 +105,7 @@
                   max="24"
                   step="0.01"
                   min="0"
+                  :rules="hoursRule"
                   oninput="validity.valid||(value=0);"
                   v-model="props.item.entries[index - 1].hoursUnBillable"
                 ></v-text-field>
