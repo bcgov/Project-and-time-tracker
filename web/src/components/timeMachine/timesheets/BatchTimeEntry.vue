@@ -249,11 +249,13 @@ export default {
       const date = this.$props.timesheet[sheetIndex].entries[index].entryDate;
       let dateVaue = '';
       let projectValue = '';
-      if (selProject) { 
-        dateVaue = `Date: ${date}`;       
-        projectValue=`Project: ${selProject.projectName}`; 
-        } else { dateVaue = `Date: ${date}`; }
-      this.$refs.addComment.open(value, index, sheetIndex, type, dateVaue,projectValue);
+      if (selProject) {
+        dateVaue = `Date: ${date}`;
+        projectValue = `Project: ${selProject.projectName}`;
+      } else {
+        dateVaue = `Date: ${date}`;
+      }
+      this.$refs.addComment.open(value, index, sheetIndex, type, dateVaue, projectValue);
     },
     savecomment(commentValue, index, sheetIndex, type) {
       if (type === 'billable') {
@@ -266,13 +268,13 @@ export default {
       this.previousSelection = undefined;
       if (project !== undefined) {
         const selProject = this.projectList.find(item => item.id === project);
-        if (selProject) { this.previousSelection = selProject; }
+        if (selProject) {
+          this.previousSelection = selProject;
+        }
       }
     },
     async onChangeProjectBatchEntry(index, selectedItem, project) {
-      if (
-        this.previousSelection !== undefined
-      ) {
+      if (this.previousSelection !== undefined) {
         if (!(await this.$refs.confirm.open('info', 'Are you sure to change project?'))) {
           selectedItem.project = this.previousSelection.id;
           this.previousSelection = undefined;
@@ -280,18 +282,26 @@ export default {
         }
       }
       const selectedProjects = this.timesheet.filter(
-        item => item.project && (item.project === project.id || item.project.id === project.id) && !item.deleted,
+        item => item.project
+          && (item.project === project.id || item.project.id === project.id)
+          && !item.deleted,
       );
       if (selectedProjects.length > 1) {
         this.$refs.snackbar.displaySnackbar('info', 'This project is already added');
 
-        if (this.previousSelection && this.previousSelection.id) { selectedItem.project = this.previousSelection.id; } else { selectedItem.project = this.previousSelection; }
+        if (this.previousSelection && this.previousSelection.id) {
+          selectedItem.project = this.previousSelection.id;
+        } else {
+          selectedItem.project = this.previousSelection;
+        }
 
-        const projectsNotDeleted = this.timesheet.filter(
-          item => !item.deleted,
-        );
+        const projectsNotDeleted = this.timesheet.filter(item => !item.deleted);
 
-        if (projectsNotDeleted.length > 1 && this.timesheet.length - 1 === index && this.previousSelection === undefined) {
+        if (
+          projectsNotDeleted.length > 1
+          && this.timesheet.length - 1 === index
+          && this.previousSelection === undefined
+        ) {
           selectedItem.deleted = true;
         }
         this.previousSelection = undefined;
