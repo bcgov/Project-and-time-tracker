@@ -6,13 +6,14 @@ server {
         port_in_redirect off;
         root   /usr/share/nginx/html/timemachine;
         index  index.html;
+        try_files $uri $uri/ /index.html;
     }
 
-    location /html {
-        port_in_redirect off;
-        root   /usr/share/nginx/html;
-        index  index.html;
-    }
+    # location /html {
+    #     port_in_redirect off;
+    #     root   /usr/share/nginx/html;
+    #     index  index.html;
+    # }
 
     # For status of ngnix service, OpenShift is configured to call this
     location /nginx_status {
