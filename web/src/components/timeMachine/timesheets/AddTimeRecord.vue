@@ -433,7 +433,6 @@ export default {
       };
       const vm = this;
       vm.$store.dispatch('fetchTimesheetEntries', formData).then(() => {
-        debugger;
         const obj = vm.$store.state.timesheetEntryData;
         if (obj && obj[0] && obj[0].timesheetEntries) {
           vm.timesheet = [];
@@ -458,7 +457,12 @@ export default {
           vm.editMode = false;
 
           if (vm.form.project && vm.form.mou && weekChange) {
-            vm.selectWeeklyProject(vm.form.project, vm.form.mou);
+            if (this.activeTab === 'weekly') {
+              vm.selectWeeklyProject(vm.form.project, vm.form.mou);
+            } else {
+              vm.form.project = undefined;
+              vm.form.mou = undefined;
+            }
             vm.blankTimesheet = [];
             vm.addTimeSheetRow(true);
           }
@@ -469,6 +473,16 @@ export default {
           //   vm.form.project = vm.timesheet[0].project;
           // }
           // vm.selectWeeklyProject(vm.form.project, vm.form.mou);
+        }
+        if (vm.form.project && vm.form.mou && weekChange) {
+          if (this.activeTab === 'weekly') {
+            vm.selectWeeklyProject(vm.form.project, vm.form.mou);
+          } else {
+            vm.form.project = undefined;
+            vm.form.mou = undefined;
+          }
+          vm.blankTimesheet = [];
+          vm.addTimeSheetRow(true);
         }
       });
     },
