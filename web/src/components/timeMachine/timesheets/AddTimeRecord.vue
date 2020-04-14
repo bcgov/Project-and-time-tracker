@@ -419,6 +419,11 @@ export default {
       if (this.$refs.spinner) {
         this.$refs.spinner.close();
       }
+      if (this.form.project && this.form.mou) {
+        this.selectWeeklyProject(this.form.project, this.form.mou);
+        this.blankTimesheet = [];
+        this.addTimeSheetRow(true);
+      }
     },
     async getTimeSheets(weekChange = false) {
       this.clearTimesheet(weekChange);
