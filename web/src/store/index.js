@@ -254,6 +254,10 @@ const store = new Vuex.Store({
       // throw new Error('Not implemented!');
 
     },
+    updateProctLog() {
+
+    }
+    ,
     approveIntakeRequest() {
       throw new Error('Not implemented!');
     },

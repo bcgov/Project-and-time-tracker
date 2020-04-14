@@ -560,7 +560,6 @@ export default {
         && this.$store.state.intakeRisk
       ) {
         this.$refs.spinner.open();
-        console.log('contractValue', { contractValue: formData.estimatedContractValue });
         formData.estimatedContractValue = formData.estimatedContractValue;
         this.$store.dispatch('addIntakeRequest', formData).then(
           () => {
@@ -699,7 +698,6 @@ export default {
           // && this.$store.state.intakeRisk
         ) {
           // this.$refs.spinner.open();
-          console.log('estimatedContractValue clickfn', { estimatedContractValue: formData.estimatedContractValue });
           formData.estimatedContractValue = formData.estimatedContractValue;
           this.reviewSubmit = formData;
         }

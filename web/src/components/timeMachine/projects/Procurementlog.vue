@@ -156,9 +156,12 @@
               </v-layout>
               <v-flex md12>
                 <v-flex d-flex class="buttondiv" justify-end>
-                  <v-btn class="add-log-button" color="btnPrimary" dark @click="saveProcurementLog"
-                    >ADD LOG</v-btn
-                  >
+                  <v-btn
+                    class="add-log-button"
+                    color="btnPrimary"
+                    dark
+                    @click="saveProcurementLog"
+                  >ADD LOG</v-btn>
                 </v-flex>
               </v-flex>
             </v-layout>
@@ -206,7 +209,6 @@ export default {
       this.dialog = false;
     },
     async saveProcurementLog() {
-      console.log(this.logType, this.notificationMethod, this.phaseImpactName);
       // const projectFinanceForm = this.$refs.ProcurementLogs || undefined;
       const referenceId = this.$store.state.activeUser.refId;
       const user = this.$store.state.users.find(value => value.referenceId === referenceId);
@@ -215,17 +217,16 @@ export default {
         logType: this.logType,
         riskOwner: this.riskOwnerName,
         descriptionOfIssue: this.issueDescription,
-        dateToClient: this.dateToClient,
+        dateToClient: this.dateToClient === '' ? undefined : this.dateToClient,
         notificationMethod: this.notificationMethod,
         phaseImpactName: this.phaseImpactName,
         clientDecision: this.clientDecision,
-        followUpDate: this.followUpDate,
+        followUpDate: this.followUpDate === '' ? undefined : this.followUpDate,
         projectId: this.$store.state.activeProject.id,
         isResolved: this.isResolved,
         userId: user.id,
       };
       if (this.id) {
-        console.log('suppose to update', this.id);
         formData.id = this.id;
         await this.$store
           .dispatch('updateProctLog', {
@@ -234,6 +235,9 @@ export default {
           .then(
             () => {
               this.$refs.snackbar.displaySnackbar('success', 'Updated');
+              const { params } = this.$router.currentRoute;
+              const id = params.id || undefined;
+              this.$store.dispatch('fetchAllProcurementLog', { id});
               this.closeDialog();
             },
             (err) => {
@@ -246,10 +250,8 @@ export default {
             },
           );
       } else {
-        console.log('suppose to add new');
         await this.$store
           .dispatch('updateProcurementLog', {
-            id: '34534-345345-45353',
             procurementlog: formData,
           })
           .then(
