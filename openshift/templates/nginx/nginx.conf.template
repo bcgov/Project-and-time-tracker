@@ -22,7 +22,7 @@ server {
       
       # try_files $uri /index.html =404; # FAILS -> everything loads index.html
       # try_files $uri $uri/ =404;        # Redirect loop
-      try_files $uri /index.html $uri/; # new order
+      # try_files $uri /index.html $uri/; # fails everything loads index.html
 
       
 
