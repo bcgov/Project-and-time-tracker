@@ -3,30 +3,13 @@ server {
     server_name  ${NGINX_SERVER_NAME};
     root   /usr/share/nginx/html/timemachine;
     absolute_redirect off;
-    # port_in_redirect off;
-
-    # absolute_redirect off;
-    # location / {
-    #     port_in_redirect off;
-    #     root   /usr/share/nginx/html/timemachine;
-    #     index  index.html;
-    #     # try_files $uri $uri/ /index.html;
-    # }
 
     location / {
-      # absolute_redirect off;
       index  index.html;
       add_header X-debug-one "location / $uri $document_root" always;
-      # try_files $uri $uri/ /index.html; # Redirect loops
-      
-      
-      # attempting again with below static content location in effect
-      try_files $uri /index.html =404; # FAILS -> everything loads index.html
-      # try_files $uri $uri/ =404;        # Redirect loop
-      # try_files $uri /index.html $uri/; # fails everything loads index.html
-
-      
-
+      # Redirect all SPA links and extra routes back to index.html unless we have exact match
+      # The "static content" location below is necessary in conjunction with this try_files
+      try_files $uri /index.html =404;
     }
 
     # Disable static content logging and set cache time to max
@@ -41,14 +24,6 @@ server {
     location = /50x.html {
       root   /usr/share/nginx/html;
     }
-
-    # location /html {
-    #     # port_in_redirect off;
-    #     root   /usr/share/nginx/html;
-    #     index  index.html;
-    #     # try_files $uri /
-
-    # }
 
     # For status of ngnix service, OpenShift is configured to call this
     location /nginx_status {
