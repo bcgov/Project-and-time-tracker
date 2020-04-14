@@ -4,6 +4,10 @@
 
 ## Initial Setup
 
+Deploy the "nginx" for the Vue app, and the "api" for the node app.
+
+The "build" configs should be deployed in tools, and the "deploy" configs in their respective environments.
+
 ### Enable cross-project pulling of ImageStreams (e.g. from tools -> dev)
 
 
