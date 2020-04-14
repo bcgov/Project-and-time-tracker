@@ -282,7 +282,7 @@ export default {
     ministry: Object,
   },
   computed: {
-    computedDateFormatted() {
+    dateFormatted() {
       return this.formatDate(this.date);
     },
     projectSectors() {
@@ -376,12 +376,10 @@ export default {
       this.amount = this.temp;
     },
     thousandSeprator(amount) {
-    if (amount !== '' || amount !== undefined || amount !== 0 || amount !== '0' || amount !== null)
-    {
-        return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    } 
-        return amount;
-    
+      if (amount !== '' || amount !== undefined || amount !== 0 || amount !== '0' || amount !== null) {
+        return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      }
+      return amount;
     },
     parseDate(date) {
       if (!date) return null;
