@@ -17,7 +17,8 @@
               :editable="isEditPInnfo"
               edit-icon="1"
               :complete="e1 > 1  || editall"
-              step="1"
+              :step="1"
+              :class="editall ? 'stepper-color' : ''"
             >
               Procurement Project
               <br />Information
@@ -29,7 +30,8 @@
               :editable="isEditMBInfo"
               edit-icon="2"
               :complete="e1 > 2 || editall"
-              step="2"
+              :step='2'
+              :class="editall ? 'stepper-color' : ''"
             >Ministry/Branch Information</v-stepper-step>
             <v-divider class="first-divider"></v-divider>
             <v-divider class="second-divider"></v-divider>
@@ -38,7 +40,8 @@
               :editable="isEditRiskInfo"
               edit-icon="3"
               :complete="e1 > 3 || editall"
-              step="3"
+               :step="3"
+               :class="editall ? 'stepper-color' : ''"
             >
               Risk
               <br />Assessment
@@ -50,14 +53,15 @@
               :editable="isEditContactInfo"
               edit-icon="4"
               :complete="e1 > 4 || editall"
-              step="4"
+              :step="4"
+              :class="editall ? 'stepper-color' : ''"
             >
               Contact
               <br />Information
             </v-stepper-step>
             <v-divider class="first-divider"></v-divider>
             <v-divider class="second-divider"></v-divider>
-            <v-stepper-step @click="checkedit(e1)" :editable="isEditContactInfo"  edit-icon="5" :complete="e1 > 4" step="5">
+            <v-stepper-step @click="checkedit(e1)" :editable="isEditContactInfo"  edit-icon="5" :complete="e1 > 4" step="5" :class="editall ? 'stepper-color' : ''">
               Review
               <br />& Submit
             </v-stepper-step>
