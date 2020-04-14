@@ -47,7 +47,11 @@
             <td class="text-xs-left">{{ props.item.phaseImpactName }}</td>
             <td class="text-xs-left">{{ props.item.clientDecision }}</td>
             <td class="text-xs-left">
-           {{props.item.followUpDate ? new Date(props.item.followUpDate).toString().slice(3, 15) : ''}}
+              {{
+                props.item.followUpDate
+                  ? new Date(props.item.followUpDate).toString().slice(3, 15)
+                  : ""
+              }}
             </td>
             <td width="10%" class="text-xs-left">
               <!-- <v-tooltip top>
@@ -161,10 +165,10 @@ export default {
   computed: {
     allProcLogs() {
       if (this.isResolved) {
-        const value = this.$store.state.allProcurementLog.filter((el) => el.isResolved == true);
+        const value = this.$store.state.allProcurementLog.filter(el => el.isResolved == true);
         return value;
       }
-      const value = this.$store.state.allProcurementLog.filter((el) => el.isResolved == false);
+      const value = this.$store.state.allProcurementLog.filter(el => el.isResolved == false);
       return value;
     },
   },
@@ -216,8 +220,7 @@ export default {
       const projRfxData = await this.$store.dispatch('fetchProjectRFxData', {
         id,
       });
-      if(this.$refs.spinner)
-      this.$refs.spinner.close();
+      if (this.$refs.spinner) this.$refs.spinner.close();
       return procLogs[0];
     },
   },

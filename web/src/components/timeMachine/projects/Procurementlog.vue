@@ -156,12 +156,9 @@
               </v-layout>
               <v-flex md12>
                 <v-flex d-flex class="buttondiv" justify-end>
-                  <v-btn
-                    class="add-log-button"
-                    color="btnPrimary"
-                    dark
-                    @click="saveProcurementLog"
-                  >ADD LOG</v-btn>
+                  <v-btn class="add-log-button" color="btnPrimary" dark @click="saveProcurementLog"
+                    >ADD LOG</v-btn
+                  >
                 </v-flex>
               </v-flex>
             </v-layout>
@@ -237,7 +234,7 @@ export default {
               this.$refs.snackbar.displaySnackbar('success', 'Updated');
               const { params } = this.$router.currentRoute;
               const id = params.id || undefined;
-              this.$store.dispatch('fetchAllProcurementLog', { id});
+              this.$store.dispatch('fetchAllProcurementLog', { id });
               this.closeDialog();
             },
             (err) => {
