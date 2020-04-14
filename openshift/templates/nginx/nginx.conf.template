@@ -15,10 +15,12 @@ server {
 
     location / {
       # absolute_redirect off;
-      # index  index.html;
+      index  index.html;
       add_header X-debug-one "location / $uri $document_root" always;
-      try_files $uri $uri/ /index.html;
-      # try_files $uri $uri/ =404;        # Static site
+      # try_files $uri $uri/ /index.html;
+      # try_files $uri $uri/ =404;        # Static site # UNATTEMPTED
+      try_files $uri /index.html =404;
+      
 
     }
 
