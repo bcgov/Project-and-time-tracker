@@ -16,7 +16,7 @@
               @click="checkedit(e1)"
               :editable="isEditPInnfo"
               edit-icon="1"
-              :complete="e1 > 1  || editall"
+              :complete="e1 > 1"
               :step="1"
               :class="editall ? 'stepper-color' : ''"
             >
@@ -29,7 +29,7 @@
               @click="checkedit(e1)"
               :editable="isEditMBInfo"
               edit-icon="2"
-              :complete="e1 > 2 || editall"
+              :complete="e1 > 2"
               :step='2'
               :class="editall ? 'stepper-color' : ''"
             >Ministry/Branch Information</v-stepper-step>
@@ -39,7 +39,7 @@
               @click="checkedit(e1)"
               :editable="isEditRiskInfo"
               edit-icon="3"
-              :complete="e1 > 3 || editall"
+              :complete="e1 > 3"
                :step="3"
                :class="editall ? 'stepper-color' : ''"
             >
@@ -52,7 +52,7 @@
               @click="checkedit(e1)"
               :editable="isEditContactInfo"
               edit-icon="4"
-              :complete="e1 > 4 || editall"
+              :complete="e1 > 4"
               :step="4"
               :class="editall ? 'stepper-color' : ''"
             >
