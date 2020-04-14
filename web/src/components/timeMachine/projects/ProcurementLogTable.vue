@@ -25,22 +25,30 @@
           class="elevation-0 tm-v-datatable"
           disable-initial-sort
           aria-multiline="true"
-         :search="search"
+          :search="search"
         >
           <template slot="items" slot-scope="props">
-            <td><procurement-log ref="ProcurementLog"></procurement-log>
-              <span class="clickable" @click="viewRequest(props.item.id)">{{ props.item.logType }}</span>
+            <td>
+              <procurement-log ref="ProcurementLog"></procurement-log>
+              <span class="clickable" @click="viewRequest(props.item.id)">{{
+                props.item.logType
+              }}</span>
             </td>
             <!-- <td class="text-xs-left">{{ props.item.riskOwner }}</td> -->
-            <td class="text-xs-left"><procurement-log ref="ProcurementLog"></procurement-log>
-            <span class="clickable" @click="viewRequest(props.item.id)">{{ props.item.descriptionOfIssue.toString().slice(0,30)+'...' }}
-            </span></td>
+            <td class="text-xs-left">
+              <procurement-log ref="ProcurementLog"></procurement-log>
+              <span class="clickable" @click="viewRequest(props.item.id)"
+                >{{ props.item.descriptionOfIssue.toString().slice(0, 30) + "..." }}
+              </span>
+            </td>
             <td class="text-xs-left">{{ props.item.dateToClient | formatDate }}</td>
             <td class="text-xs-left">{{ props.item.notificationMethod }}</td>
             <td class="text-xs-left">{{ props.item.riskOwner }}</td>
             <td class="text-xs-left">{{ props.item.phaseImpactName }}</td>
             <td class="text-xs-left">{{ props.item.clientDecision }}</td>
-            <td class="text-xs-left">{{ new Date(props.item.followUpDate).toString().slice(3,15)}}</td>
+            <td class="text-xs-left">
+              {{ new Date(props.item.followUpDate).toString().slice(3, 15) }}
+            </td>
             <td width="10%" class="text-xs-left">
               <!-- <v-tooltip top>
                 <template v-slot:activator="{ on }">
@@ -53,11 +61,12 @@
               </v-tooltip> -->
               <v-btn
                 small
-                v-if="!isResolved" 
+                v-if="!isResolved"
                 color="btnPrimary"
                 class="white--text intake-table-approve-btn ma-0"
                 @click="resolveLog(props.item.id)"
-              >RESOLVE</v-btn>
+                >RESOLVE</v-btn
+              >
             </td>
           </template>
         </v-data-table>
@@ -76,7 +85,7 @@ import Snackbar from '../common/Snackbar.vue';
 export default {
   props: {
     title: String,
-   search: String,
+    search: String,
   },
   components: {
     Snackbar,
@@ -152,16 +161,11 @@ export default {
   computed: {
     allProcLogs() {
       if (this.isResolved) {
-        const value = this.$store.state.allProcurementLog.filter(function(el) {
-          return el.isResolved == true;
-        });
+        const value = this.$store.state.allProcurementLog.filter((el) => el.isResolved == true);
         return value;
-      } 
-        const value = this.$store.state.allProcurementLog.filter(function(el) {
-          return el.isResolved == false;
-        });
-        return value;
-      
+      }
+      const value = this.$store.state.allProcurementLog.filter((el) => el.isResolved == false);
+      return value;
     },
   },
   created() {
@@ -169,15 +173,8 @@ export default {
   },
   methods: {
     async resolveLog(id) {
-      if (
-        await this.$refs.confirm.open(
-          'info',
-          'Are you sure you want to resolve this log?',
-        )
-      ) {
-        const found = this.$store.state.allProcurementLog.find(
-          element => element.id == id,
-        );
+      if (await this.$refs.confirm.open('info', 'Are you sure you want to resolve this log?')) {
+        const found = this.$store.state.allProcurementLog.find(element => element.id == id);
         console.log('result:', found);
         found.isResolved = true;
         console.log('new result', found);
@@ -194,10 +191,7 @@ export default {
                 const { message } = err.response.data.error;
                 this.$refs.snackbar.displaySnackbar('error', message);
               } catch (ex) {
-                this.$refs.snackbar.displaySnackbar(
-                  'error',
-                  'Failed to Resolve',
-                );
+                this.$refs.snackbar.displaySnackbar('error', 'Failed to Resolve');
               }
             },
           );
@@ -211,9 +205,7 @@ export default {
     viewRequest(procId) {
       console.log(procId);
       console.log('complete list:', this.$store.state.allProcurementLog);
-      const found = this.$store.state.allProcurementLog.find(
-        element => element.id == procId,
-      );
+      const found = this.$store.state.allProcurementLog.find(element => element.id == procId);
       console.log('result:', found);
       this.$refs.ProcurementLog.reset();
       this.$refs.ProcurementLog.openWithValues(found);

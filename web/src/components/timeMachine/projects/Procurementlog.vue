@@ -156,12 +156,9 @@
               </v-layout>
               <v-flex md12>
                 <v-flex d-flex class="buttondiv" justify-end>
-                  <v-btn
-                    class="add-log-button"
-                    color="btnPrimary"
-                    dark
-                    @click="saveProcurementLog"
-                  >ADD LOG</v-btn>
+                  <v-btn class="add-log-button" color="btnPrimary" dark @click="saveProcurementLog"
+                    >ADD LOG</v-btn
+                  >
                 </v-flex>
               </v-flex>
             </v-layout>
@@ -172,10 +169,10 @@
   </v-layout>
 </template>
 <script>
-import "./procurementlog.styl";
+import './procurementlog.styl';
 // import moment from 'moment';
-import Snackbar from "../common/Snackbar.vue";
-import Spinner from "../common/Spinner.vue";
+import Snackbar from '../common/Snackbar.vue';
+import Spinner from '../common/Spinner.vue';
 // import AddExpense from './AddExpense.vue';
 // import TimesheetEntry from './TimesheetEntry.vue';
 
@@ -189,32 +186,30 @@ export default {
     },
     rfxPhases() {
       return this.$store.state.rfxPhases;
-    }
+    },
   },
   components: {
     Snackbar,
-    Spinner
+    Spinner,
   },
   data() {
     return this.initData();
   },
   watch: {},
   props: {
-    timeEntry: Object
+    timeEntry: Object,
   },
   methods: {
     closelog() {
       this.initData();
-      this.$emit("close");
+      this.$emit('close');
       this.dialog = false;
     },
     async saveProcurementLog() {
       console.log(this.logType, this.notificationMethod, this.phaseImpactName);
       // const projectFinanceForm = this.$refs.ProcurementLogs || undefined;
       const referenceId = this.$store.state.activeUser.refId;
-      const user = this.$store.state.users.find(
-        value => value.referenceId === referenceId
-      );
+      const user = this.$store.state.users.find(value => value.referenceId === referenceId);
 
       const formData = {
         logType: this.logType,
@@ -227,69 +222,61 @@ export default {
         followUpDate: this.followUpDate,
         projectId: this.$store.state.activeProject.id,
         isResolved: this.isResolved,
-        userId: user.id
+        userId: user.id,
       };
       if (this.id) {
-        console.log("suppose to update", this.id);
+        console.log('suppose to update', this.id);
         formData.id = this.id;
         await this.$store
-          .dispatch("updateProctLog", {
-            procurementlog: formData
+          .dispatch('updateProctLog', {
+            procurementlog: formData,
           })
           .then(
             () => {
-              this.$refs.snackbar.displaySnackbar("success", "Updated");
+              this.$refs.snackbar.displaySnackbar('success', 'Updated');
               this.closeDialog();
             },
-            err => {
+            (err) => {
               try {
                 const { message } = err.response.data.error;
-                this.$refs.snackbar.displaySnackbar("error", message);
+                this.$refs.snackbar.displaySnackbar('error', message);
               } catch (ex) {
-                this.$refs.snackbar.displaySnackbar(
-                  "error",
-                  "Failed to update"
-                );
+                this.$refs.snackbar.displaySnackbar('error', 'Failed to update');
               }
-            }
+            },
           );
       } else {
-        console.log("suppose to add new");
+        console.log('suppose to add new');
         await this.$store
-          .dispatch("updateProcurementLog", {
-            id: "34534-345345-45353",
-            procurementlog: formData
+          .dispatch('updateProcurementLog', {
+            id: '34534-345345-45353',
+            procurementlog: formData,
           })
           .then(
             () => {
-              this.$refs.snackbar.displaySnackbar("success", "Updated");
+              this.$refs.snackbar.displaySnackbar('success', 'Updated');
               this.closeDialog();
             },
-            err => {
+            (err) => {
               try {
                 const { message } = err.response.data.error;
-                this.$refs.snackbar.displaySnackbar("error", message);
+                this.$refs.snackbar.displaySnackbar('error', message);
               } catch (ex) {
-                this.$refs.snackbar.displaySnackbar(
-                  "error",
-                  "Failed to update"
-                );
+                this.$refs.snackbar.displaySnackbar('error', 'Failed to update');
               }
-            }
+            },
           );
       }
     },
     parseDate(date) {
       if (!date) return null;
-      const [month, day, year] = date.split("/");
-      return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+      const [month, day, year] = date.split('/');
+      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
     },
     open() {
       this.dialog = true;
       setTimeout(() => {
-        document.getElementsByClassName(
-          "v-dialog v-dialog--active"
-        )[0].scrollTop = 0;
+        document.getElementsByClassName('v-dialog v-dialog--active')[0].scrollTop = 0;
       }, 400);
     },
     openWithValues(obj) {
@@ -306,25 +293,23 @@ export default {
 
       this.dialog = true;
       setTimeout(() => {
-        document.getElementsByClassName(
-          "v-dialog v-dialog--active"
-        )[0].scrollTop = 0;
+        document.getElementsByClassName('v-dialog v-dialog--active')[0].scrollTop = 0;
       }, 400);
     },
     closeDialog() {
-      this.issueDescription = "";
-      this.$emit("close");
+      this.issueDescription = '';
+      this.$emit('close');
       this.dialog = false;
     },
     reset() {
-      this.dateToClient = "";
-      this.followUpDate = "";
-      this.riskOwnerName = "";
-      this.issueDescription = "";
-      this.clientDecision = "";
-      this.notificationMethod = "";
-      this.phaseImpactName = "";
-      this.logType = "";
+      this.dateToClient = '';
+      this.followUpDate = '';
+      this.riskOwnerName = '';
+      this.issueDescription = '';
+      this.clientDecision = '';
+      this.notificationMethod = '';
+      this.phaseImpactName = '';
+      this.logType = '';
       // this.$refs.form.resetValidation();
     },
     initData() {
@@ -334,41 +319,39 @@ export default {
       const existingTimeEntries = [];
       return {
         id: undefined,
-        activeTab: "weekly",
+        activeTab: 'weekly',
         recordType: 1,
         valid: true,
-        requiredRule: [v => !!v || "This field required"],
-        requireRadioButtondRule: [
-          v => ((v || !v) && v != null) || "This field required"
-        ],
+        requiredRule: [v => !!v || 'This field required'],
+        requireRadioButtondRule: [v => ((v || !v) && v != null) || 'This field required'],
         dialog: false,
         menu1: false,
         menu2: false,
         form: { ...form },
         dateFormatted: undefined,
-        dateToClient: "",
-        followUpDate: "",
-        phaseImpactName: "",
-        riskOwnerName: "",
-        issueDescription: "",
+        dateToClient: '',
+        followUpDate: '',
+        phaseImpactName: '',
+        riskOwnerName: '',
+        issueDescription: '',
         isResolved: false,
-        logType: "",
+        logType: '',
         itemList: [
-          { id: "Contact Update", logType: "Contact Update" },
-          { id: "RFX Update", logType: "RFX Update" },
-          { id: "Project Lead", logType: "Project Lead" },
-          { id: "Risk Assessment", logType: "Risk Assessment" }
+          { id: 'Contact Update', logType: 'Contact Update' },
+          { id: 'RFX Update', logType: 'RFX Update' },
+          { id: 'Project Lead', logType: 'Project Lead' },
+          { id: 'Risk Assessment', logType: 'Risk Assessment' },
         ],
-        notificationMethod: "",
+        notificationMethod: '',
         notificationMethodList: [
-          { id: "Phone", notificationMethod: "Phone" },
-          { id: "Email", notificationMethod: "Email" },
-          { id: "In person", notificationMethod: "In person" }
+          { id: 'Phone', notificationMethod: 'Phone' },
+          { id: 'Email', notificationMethod: 'Email' },
+          { id: 'In person', notificationMethod: 'In person' },
         ],
-        clientDecision: ""
+        clientDecision: '',
       };
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>

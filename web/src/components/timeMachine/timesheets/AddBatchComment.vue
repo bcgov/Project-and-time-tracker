@@ -28,8 +28,8 @@
           <v-layout row wrap>
             <v-flex md1></v-flex>
             <v-flex md10 class="description-date">
-              <span class="datevalue">Date:{{ new Date(date).toString().slice(0,10)}}</span>
-              <span class="projectvalue">{{project}}</span>
+              <span class="datevalue">Date:{{ new Date(date).toString().slice(0, 10) }}</span>
+              <span class="projectvalue">{{ project }}</span>
             </v-flex>
             <v-flex md1></v-flex>
           </v-layout>
@@ -49,20 +49,17 @@
                 </div>
               </v-flex>
               <br />
-                  <br />
-                  <br />
-                  <br />
+              <br />
+              <br />
+              <br />
               <v-flex md12>
                 <v-flex>
                   <v-btn class="btn-discard" @click="closeDialog()" :ripple="false">DISCARD</v-btn>
                 </v-flex>
                 <v-flex d-flex justify-end>
-                  <v-btn
-                    class="add-log-button"
-                    color="btnPrimary"
-                    dark
-                    @click="saveComment()"
-                  >SUBMIT AND CLOSE</v-btn>
+                  <v-btn class="add-log-button" color="btnPrimary" dark @click="saveComment()"
+                    >SUBMIT AND CLOSE</v-btn
+                  >
                   <br />
                   <br />
                   <br />
@@ -85,17 +82,11 @@ export default {
   },
   watch: {},
   props: {
-    comment: String
+    comment: String,
   },
   methods: {
     async saveComment() {
-      this.$emit(
-        "savecomment",
-        this.batchComment,
-        this.index,
-        this.sheetIndex,
-        this.type
-      );
+      this.$emit('savecomment', this.batchComment, this.index, this.sheetIndex, this.type);
       this.closeDialog();
     },
     open(value, index, sheetIndex, type, date, project) {
@@ -106,32 +97,30 @@ export default {
       this.index = index;
       this.dialog = true;
       setTimeout(() => {
-        if (document.getElementsByClassName("v-dialog v-dialog--active")[0]) {
-          document.getElementsByClassName(
-            "v-dialog v-dialog--active"
-          )[0].scrollTop = 0;
+        if (document.getElementsByClassName('v-dialog v-dialog--active')[0]) {
+          document.getElementsByClassName('v-dialog v-dialog--active')[0].scrollTop = 0;
         }
       }, 400);
       this.batchComment = value;
     },
     closeDialog() {
-      this.batchComment = "";
+      this.batchComment = '';
       this.dialog = false;
     },
     initData() {
       return {
-        date: "",
-        project: "",
+        date: '',
+        project: '',
         flag: undefined,
         valid: true,
         dialog: false,
-        batchComment: "",
-        index: "",
-        type: "",
-        sheetIndex: ""
+        batchComment: '',
+        index: '',
+        type: '',
+        sheetIndex: '',
       };
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>
@@ -181,6 +170,5 @@ export default {
   box-shadow: none !important;
   float: left;
   margin-left: 6%;
-  
 }
 </style>

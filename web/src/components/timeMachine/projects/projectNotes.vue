@@ -8,7 +8,7 @@
           <v-card-text class="card-contents">
             <v-layout row wrap>
               <v-flex md12 v-if="replyNoteName" class="replyheaderdiv">
-                <div class="replytoheader">Reply to: {{replyNoteName}}</div>
+                <div class="replytoheader">Reply to: {{ replyNoteName }}</div>
               </v-flex>
               <v-flex md12>
                 <div class="v-form-container">
@@ -22,12 +22,9 @@
               </v-flex>
               <v-flex md12>
                 <v-flex d-flex justify-end>
-                  <v-btn
-                    class="add-log-button"
-                    color="btnPrimary"
-                    dark
-                    @click="savenote()"
-                  >Save Note</v-btn>
+                  <v-btn class="add-log-button" color="btnPrimary" dark @click="savenote()"
+                    >Save Note</v-btn
+                  >
                 </v-flex>
               </v-flex>
             </v-layout>
@@ -38,35 +35,33 @@
   </v-layout>
 </template>
 <script>
-import "./procurementlog.styl";
+import './procurementlog.styl';
 // import moment from 'moment';
-import Snackbar from "../common/Snackbar.vue";
-import Spinner from "../common/Spinner.vue";
+import Snackbar from '../common/Snackbar.vue';
+import Spinner from '../common/Spinner.vue';
 
 export default {
   computed: {
     projectRfx() {
       return this.$store.state.activeProjectRfxData;
-    }
+    },
   },
   components: {
     Snackbar,
-    Spinner
+    Spinner,
   },
   data() {
     return this.initData();
   },
   watch: {},
   props: {
-    timeEntry: Object
+    timeEntry: Object,
   },
   methods: {
     async savenote() {
-      console.log("flag value", this.flag);
+      console.log('flag value', this.flag);
       const referenceId = this.$store.state.activeUser.refId;
-      const user = this.$store.state.users.find(
-        value => value.referenceId === referenceId
-      );
+      const user = this.$store.state.users.find(value => value.referenceId === referenceId);
       if (this.flag != 1) {
         this.parentNoteId = this.flag;
       }
@@ -74,48 +69,46 @@ export default {
         note: this.userNote,
         projectId: this.$store.state.activeProject.id,
         userId: user.id,
-        parentId: this.parentNoteId
+        parentId: this.parentNoteId,
       };
       console.log(formData);
       await this.$store
-        .dispatch("addProjectNotes", {
-          projectNotes: formData
+        .dispatch('addProjectNotes', {
+          projectNotes: formData,
         })
         .then(
           () => {
             const { params } = this.$router.currentRoute;
             const id = params.id || undefined;
-            this.$store.dispatch("fetchAllProjectNotes", { id: id });
-            this.$refs.snackbar.displaySnackbar("success", "Updated");
+            this.$store.dispatch('fetchAllProjectNotes', { id });
+            this.$refs.snackbar.displaySnackbar('success', 'Updated');
             this.closeDialog();
           },
-          err => {
+          (err) => {
             try {
               const { message } = err.response.data.error;
-              this.$refs.snackbar.displaySnackbar("error", message);
+              this.$refs.snackbar.displaySnackbar('error', message);
             } catch (ex) {
-              this.$refs.snackbar.displaySnackbar("error", "Failed to update");
+              this.$refs.snackbar.displaySnackbar('error', 'Failed to update');
             }
-          }
+          },
         );
     },
     parseDate(date) {
       if (!date) return null;
-      const [month, day, year] = date.split("/");
-      return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+      const [month, day, year] = date.split('/');
+      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
     },
     open(value, name) {
       this.replyNoteName = name;
       this.flag = value;
       this.dialog = true;
       setTimeout(() => {
-        document.getElementsByClassName(
-          "v-dialog v-dialog--active"
-        )[0].scrollTop = 0;
+        document.getElementsByClassName('v-dialog v-dialog--active')[0].scrollTop = 0;
       }, 400);
     },
     closeDialog() {
-      this.$emit("closeNotes");
+      this.$emit('closeNotes');
       this.dialog = false;
     },
     reset() {
@@ -130,17 +123,15 @@ export default {
       return {
         flag: undefined,
         valid: true,
-        requiredRule: [v => !!v || "This field required"],
-        requireRadioButtondRule: [
-          v => ((v || !v) && v != null) || "This field required"
-        ],
+        requiredRule: [v => !!v || 'This field required'],
+        requireRadioButtondRule: [v => ((v || !v) && v != null) || 'This field required'],
         dialog: false,
-        userNote: "",
+        userNote: '',
         replyNoteName: undefined,
-        parentNoteId: undefined
+        parentNoteId: undefined,
       };
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>
