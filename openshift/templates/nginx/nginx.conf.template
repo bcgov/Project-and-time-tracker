@@ -30,7 +30,7 @@ server {
     }
 
     # Disable static content logging and set cache time to max
-    location ~* \.(jpg|jpeg|gif|png|css|js|ico|xml)$ {
+    location ~* \.(jpg|jpeg|gif|png|css|js|ico|xml|woff2|json|svg|ttf)$ {
         access_log off;
         log_not_found off;
         expires max;
