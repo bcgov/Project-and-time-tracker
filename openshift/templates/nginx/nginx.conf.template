@@ -2,6 +2,8 @@ server {
     listen       ${NGINX_SERVER_PORT};
     server_name  ${NGINX_SERVER_NAME};
     port_in_redirect off;
+
+    absolute_redirect off;
     # location / {
     #     port_in_redirect off;
     #     root   /usr/share/nginx/html/timemachine;
