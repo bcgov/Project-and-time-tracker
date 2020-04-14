@@ -46,7 +46,7 @@
           "output": {
             "to": {
               "kind": "ImageStreamTag",
-              "name": "${NAME}-${TAG_NAME}:latest"
+              "name": "${NAME}:latest"
             }
           }
         },
@@ -83,12 +83,6 @@
         "description": "Sub directory,  e.g. `api/` or `web/`",
         "required": true,
         "value": "api/"
-      },
-      {
-        "description": "The TAG name for this environment, e.g., dev, test, prod",
-        "displayName": "Env TAG name",
-        "name": "TAG_NAME",
-        "value": "dev"
       }
     ]
   }
