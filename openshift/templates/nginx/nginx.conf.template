@@ -1,12 +1,9 @@
 server {
     listen       ${NGINX_SERVER_PORT};
     server_name  ${NGINX_SERVER_NAME};
-    port_in_redirect off;
+    # port_in_redirect off;
 
     absolute_redirect off;
-    if ($http_x_forwarded_proto = "http") {
-        return 301 https://$host$request_uri;
-    }
     # location / {
     #     port_in_redirect off;
     #     root   /usr/share/nginx/html/timemachine;
@@ -15,6 +12,7 @@ server {
     # }
 
     location / {
+      absolute_redirect off;
       root   /usr/share/nginx/html/timemachine;
       index  index.html;
       try_files $uri $uri/ /index.html;
