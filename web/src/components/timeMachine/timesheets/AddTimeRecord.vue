@@ -419,11 +419,6 @@ export default {
       if (this.$refs.spinner) {
         this.$refs.spinner.close();
       }
-      if (this.form.project && this.form.mou) {
-        this.selectWeeklyProject(this.form.project, this.form.mou);
-        this.blankTimesheet = [];
-        this.addTimeSheetRow(true);
-      }
     },
     async getTimeSheets(weekChange = false) {
       this.clearTimesheet(weekChange);
@@ -438,6 +433,7 @@ export default {
       };
       const vm = this;
       vm.$store.dispatch('fetchTimesheetEntries', formData).then(() => {
+        debugger;
         const obj = vm.$store.state.timesheetEntryData;
         if (obj && obj[0] && obj[0].timesheetEntries) {
           vm.timesheet = [];
@@ -460,6 +456,13 @@ export default {
           vm.$refs.billableBatchEntry.editMode = false;
           vm.$refs.nonBillableBatchEntry.editMode = false;
           vm.editMode = false;
+
+          if (vm.form.project && vm.form.mou && weekChange) {
+            vm.selectWeeklyProject(vm.form.project, vm.form.mou);
+            vm.blankTimesheet = [];
+            vm.addTimeSheetRow(true);
+          }
+
           // if (!vm.form.project && vm.timesheet.length > 0) {
           //   vm.form.mou = vm.timesheet[0].mou;
           //   vm.onChangeMou();
