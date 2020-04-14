@@ -381,20 +381,15 @@ const store = new Vuex.Store({
       }
     },
     fetchAllTimesheets(state, data) {
-      console.log('fetchAllTimesheets', data);
       state.allTimesheets = data;
     },
     fetchUserTimesheets(state, data) {
-      console.log('fetchUserTimesheets', data);
       state.userTimesheets = data;
     },
     fetchAllProcurementLog(state, data) {
-      console.log('fetchAllProcurementLog', data);
       state.allProcurementLog = data;
     },
     fetchAllProjectNotes(state, data) {
-      console.log('fetchAllProjectNotes', data);
-      console.log('projectnotes:', data);
       state.allProjectNotes = data;
     },
     getTimeLogOfSelectedDate(state, data) {

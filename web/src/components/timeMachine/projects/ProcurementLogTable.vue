@@ -175,9 +175,7 @@ export default {
     async resolveLog(id) {
       if (await this.$refs.confirm.open('info', 'Are you sure you want to resolve this log?')) {
         const found = this.$store.state.allProcurementLog.find(element => element.id == id);
-        console.log('result:', found);
         found.isResolved = true;
-        console.log('new result', found);
         await this.$store
           .dispatch('updateProctLog', {
             procurementlog: found,
@@ -198,15 +196,11 @@ export default {
       }
     },
     async close() {
-      console.log('yeah close is calling');
       this.fetchData();
     },
 
     viewRequest(procId) {
-      console.log(procId);
-      console.log('complete list:', this.$store.state.allProcurementLog);
       const found = this.$store.state.allProcurementLog.find(element => element.id == procId);
-      console.log('result:', found);
       this.$refs.ProcurementLog.reset();
       this.$refs.ProcurementLog.openWithValues(found);
     },
@@ -216,7 +210,6 @@ export default {
       }
       const { params } = this.$router.currentRoute;
       const id = params.id || undefined;
-      console.log('projId', id);
       const procLogs = await this.$store.dispatch('fetchAllProcurementLog', {
         id,
       });

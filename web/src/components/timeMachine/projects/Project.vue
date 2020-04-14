@@ -520,7 +520,6 @@ export default {
       return true;
     },
     async saveProjectContacts() {
-      console.log(this.AllContactData);
       this.$refs.projectLead.Validate();
       this.$refs.projectSponsor.Validate();
       this.$refs.projectFinancier.Validate();
@@ -541,7 +540,6 @@ export default {
           this.allContacts.push(this.$refs.additionalcontactinfo[i].form);
         }
       }
-      console.log("allcontacts afet add:", this.allContacts);
       let contacts = [
         projectLeadForm,
         projectSponsorForm,
@@ -549,7 +547,6 @@ export default {
         projectFinancierForm
       ].filter(contact => contact !== undefined);
       contacts = contacts.concat(this.allContacts);
-      console.log("contacts before update", contacts);
       if (contacts instanceof Array && contacts.length > 0) {
         await this.$store.dispatch("updateProjectContacts", {
           id: this.projectId,
@@ -596,10 +593,8 @@ export default {
     // while (this.$store.state.activeProjectContacts.length > 0) {
     //   this.$store.state.activeProjectContacts.pop();
     // }
-    console.log("from created:", this.$store.state.activeProjectContacts);
     // if no rfx, add one
     if (this.projectRfxData.length === 0) {
-      console.log("addinging initial rfx");
       this.addNewRFx();
     }
     this.fetchData();

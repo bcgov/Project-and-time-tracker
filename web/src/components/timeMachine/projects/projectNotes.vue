@@ -59,7 +59,6 @@ export default {
   },
   methods: {
     async savenote() {
-      console.log('flag value', this.flag);
       const referenceId = this.$store.state.activeUser.refId;
       const user = this.$store.state.users.find(value => value.referenceId === referenceId);
       if (this.flag != 1) {
@@ -71,7 +70,6 @@ export default {
         userId: user.id,
         parentId: this.parentNoteId,
       };
-      console.log(formData);
       await this.$store
         .dispatch('addProjectNotes', {
           projectNotes: formData,
