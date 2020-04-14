@@ -2,18 +2,30 @@ server {
     listen       ${NGINX_SERVER_PORT};
     server_name  ${NGINX_SERVER_NAME};
     port_in_redirect off;
+    # location / {
+    #     port_in_redirect off;
+    #     root   /usr/share/nginx/html/timemachine;
+    #     index  index.html;
+    #     # try_files $uri $uri/ /index.html;
+    # }
+
     location / {
-        port_in_redirect off;
-        root   /usr/share/nginx/html/timemachine;
-        index  index.html;
-        try_files $uri /index.html;
-        # try_files $uri $uri/ /index.html;
+      root   /usr/share/nginx/html/timemachine;
+      index  index.html;
+      try_files $uri $uri/ /index.html;
+    }
+
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+      root   /usr/share/nginx/html;
     }
 
     # location /html {
-    #     port_in_redirect off;
+    #     # port_in_redirect off;
     #     root   /usr/share/nginx/html;
     #     index  index.html;
+    #     # try_files $uri /
+
     # }
 
     # For status of ngnix service, OpenShift is configured to call this
