@@ -8,16 +8,16 @@ metadata:
 objects:
 
 # Two image-streams.  "-vue" is intermediate stream used for chain build
-- kind: ImageStream
-  apiVersion: v1
-  metadata:
-    name: "${NAME}-vue"
-- kind: ImageStream
-  apiVersion: v1
-  metadata:
-    name: "${NAME}"
+# - kind: ImageStream
+#   apiVersion: v1
+#   metadata:
+#     name: "${NAME}-vue"
+# - kind: ImageStream
+#   apiVersion: v1
+#   metadata:
+#     name: "${NAME}"
 
-# Build-configs.  First is intermediate build
+# # Build-configs.  First is intermediate build
 - kind: BuildConfig
   apiVersion: v1
   metadata:
@@ -37,7 +37,12 @@ objects:
         ref: "${GIT_REFERENCE}"
       contextDir: "${CONTEXT_DIR}"
     strategy:
-      type: Docker
+      sourceStrategy:
+        from:
+          kind: ImageStreamTag
+          name: node:12.14.1
+    # strategy:
+    #   type: Docker
     output:
       to:
         kind: ImageStreamTag
@@ -58,20 +63,22 @@ objects:
         name: ${NAME}:latest
     source:
       type: Dockerfile
-      contextDir: openshift/templates/nginx
       images:
       - from: 
           kind: ImageStreamTag
           name: ${NAME}-vue:latest
         paths: 
-          # Is this path modified by contextDir above? If so, remove contextDir and replace
-          # with dockerFilePath
-        - sourcePath: /dist
+        - sourcePath: /web/dist/.
           destinationDir: "."
     strategy:
       type: Docker
+      dockerStrategy:
+        dockerfilePath: "openshift/templates/nginx/Dockerfile"
     triggers:
-    - imageChange: {}
+    - imageChange:
+      from:
+          kind: ImageStreamTag
+          name: ${NAME}-vue:latest
       type: ImageChange
 
 

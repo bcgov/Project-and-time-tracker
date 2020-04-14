@@ -5,12 +5,16 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "build:openshift": "vue-cli-service build --dest ../openshift/templates/nginx/dist",
+    "build:openshift": "vue-cli-service build --dest ../openshift/templates/nginx/dist ",
+    "build:openshift:dev": "vue-cli-service build --mode dev --dest ../openshift/templates/nginx/dist ",
+    "build:openshift:test": "vue-cli-service build --mode testing --dest ../openshift/templates/nginx/dist ",
+    "build:openshift:prod": "vue-cli-service build --mode prod --dest ../openshift/templates/nginx/dist ",
+    "build:add-artifacts" : "git add \"../openshift/templates/nginx/dist\"",
     "build:dev": "vue-cli-service build --mode development",
     "dev": "node build/dev-server.js",
     "lint": "vue-cli-service lint --no-fix",
     "test:e2e": "vue-cli-service test:e2e",
-    "test:unit": "vue-cli-service test:unit",
+    "test:unit": "vue-cli-s ervice test:unit",
     "unit": "jest --config tests/unit/jest.conf.js --silent"
   },
   "dependencies": {
