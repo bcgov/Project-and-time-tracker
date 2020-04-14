@@ -20,13 +20,22 @@ server {
       # try_files $uri $uri/ /index.html; # Redirect loops
       
       
-      # try_files $uri /index.html =404; # FAILS -> everything loads index.html
+      # attempting again with below static content location in effect
+      try_files $uri /index.html =404; # FAILS -> everything loads index.html
       # try_files $uri $uri/ =404;        # Redirect loop
       # try_files $uri /index.html $uri/; # fails everything loads index.html
 
       
 
     }
+
+    # Disable static content logging and set cache time to max
+    location ~* \.(jpg|jpeg|gif|png|css|js|ico|xml)$ {
+        access_log off;
+        log_not_found off;
+        expires max;
+    }
+
 
     error_page   500 502 503 504  /50x.html;
     location = /50x.html {
