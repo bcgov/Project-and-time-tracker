@@ -16,7 +16,7 @@ export const DB_CONFIG = process.env.environment ? {
     synchronize: process.env.db_synchronize
 } : ENVIRONMENT_CONFIG.database['postgresdb'];
 
-console.log('DB_Config - ', { DB_CONFIG });
+// console.log('DB_Config - ', { DB_CONFIG });
 
 
 // ARC TODO - Use process.env to store keycloak creds on server
@@ -29,4 +29,4 @@ export const keycloakConfig = {
     adminPassword: process.env.kc_adminPassword || ENVIRONMENT_CONFIG.keyCloak.adminPassword
 };
 
-console.log('Keycloak config', {keycloakConfig});
+// console.log('Keycloak config', {keycloakConfig});
