@@ -24,7 +24,7 @@
               <v-list-tile-title>
                 <a v-bind:href="AUTH_URL">Keycloak - IAM</a>
               </v-list-tile-title>
-              <v-list-tile-sub-title>Login to Keycloak - to manage users.</v-list-tile-sub-title>
+              <v-list-tile-sub-title>Login to Keycloak - to manage users</v-list-tile-sub-title>
             </v-list-tile-content>
           </v-list-tile>
 
@@ -35,7 +35,7 @@
               <v-list-tile-title>
                 <router-link to="admin/hourly-rates">Set hourly rates</router-link>
               </v-list-tile-title>
-              <v-list-tile-sub-title>Set hourly rates for users.</v-list-tile-sub-title>
+              <v-list-tile-sub-title>Set hourly rates for users</v-list-tile-sub-title>
             </v-list-tile-content>
           </v-list-tile>
         </v-list>
