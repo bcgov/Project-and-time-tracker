@@ -8,7 +8,7 @@
     "build:openshift": "vue-cli-service build --dest ../openshift/templates/nginx/dist ",
     "build:openshift:dev": "vue-cli-service build --mode dev --dest ../openshift/templates/nginx/dist && npm run build:add-artifacts && git commit -m \"Automated build: dev\"",
     "build:openshift:test": "vue-cli-service build --mode testing --dest ../openshift/templates/nginx/dist && npm run build:add-artifacts && git commit -m \"Automated build: test\"",
-    "build:openshift:prod": "vue-cli-service build --mode prod --dest ../openshift/templates/nginx/dist && npm run build:add-artifacts && git commit -m \"Automated build: prod\"",
+    "build:openshift:prod": "vue-cli-service build --mode production --dest ../openshift/templates/nginx/dist && npm run build:add-artifacts && git commit -m \"Automated build: prod\"",
     "build:add-artifacts" : "git add \"../openshift/templates/nginx/dist\"",
     "build:dev": "vue-cli-service build --mode development",
     "dev": "node build/dev-server.js",
