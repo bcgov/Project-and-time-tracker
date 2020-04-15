@@ -22,7 +22,7 @@
           <v-list-tile avatar>
             <v-list-tile-content>
               <v-list-tile-title>
-                <a v-bind:href="AUTH_URL">Keycloak - IAM</a>
+                <a v-bind:href="AUTH_URL" target="_blank">Keycloak - IAM</a>
               </v-list-tile-title>
               <v-list-tile-sub-title>Login to Keycloak - to manage users</v-list-tile-sub-title>
             </v-list-tile-content>
