@@ -70,4 +70,6 @@ export default (next, roles, isLoggedIn = false) => {
 };
 
 /** Returns link to Keycloak server, useful for admins to login */
-export function getAuthURL() { return keycloakAuth.authServerUrl}
+export function getAuthURL() {
+  return `${keycloakAuth.authServerUrl}/${keycloakAuth.realm}/console`;
+}

@@ -47,13 +47,13 @@
 <script>
 import Material from "vuetify/es5/util/colors";
 // web/src/modules/security/init.js
-import { AUTH_URL, getAuthURL } from "../../../modules/security/init";
+import { getAuthURL } from "../../../modules/security/init";
 
 export default {
   data: () => ({
     color: Material,
     selectedTab: "tab-1",
-    AUTH_URL: getAuthURL() + "/admin"
+    AUTH_URL: getAuthURL()
   }),
   beforeMount() {
     // this.$store.state.collapseNavigationBar = true;
