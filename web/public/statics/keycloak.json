@@ -1,6 +1,6 @@
 {
-  "realm": "Time_Tracker_dev",
-  "auth-server-url": "http://iam.aot-technologies.com/auth",
+  "realm": "b9xip88d",
+  "auth-server-url": "https://sso.pathfinder.gov.bc.ca/auth",
   "ssl-required": "none",
   "resource": "timeMachineApp",
   "clientId": "timeMachineApp",
