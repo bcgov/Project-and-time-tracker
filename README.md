@@ -44,16 +44,11 @@ Make sure you have docker and docker-compose installed (`docker-compose --versio
     
     # import sql - tip: use tab completion
     \i BC_Timesheet_MasterData.sql
-    # \i Risk_MasterData.sql  - Replaced with 'latest' below.
     \i Risk_MasterData_Latest.sql
 
     # log out of container
     exit
 ```
-
-  docker run --name timemachine-nginx -v /home/arc/prod/app:/app:ro -v /home/arc/prod/nginx.conf:/etc/nginx/nginx.conf:ro -d -p 80:80 nginx
-
-  docker container start timemachine-nginx
 
 Addenda
 March 4, 2019
