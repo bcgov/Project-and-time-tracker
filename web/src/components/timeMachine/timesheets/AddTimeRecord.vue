@@ -319,7 +319,7 @@ export default {
       this.form.userId = userId;
       this.userMouProjects = this.$store.state.allProjects.filter(
         item => item.mou
-          && (item.backupUserId === this.form.userId || item.leadUserId === this.form.userId),
+          && (item.backupUserId === this.form.userId || item.leadUserId === this.form.userId || item.teamWideProject===true),
       );
       if (!editMode) {
         this.getTimeSheets();
@@ -337,7 +337,7 @@ export default {
       ) {
         this.projectList = this.userMouProjects.filter(
           item => item.mou
-            && (item.backupUserId === this.form.userId || item.leadUserId === this.form.userId)
+            && (item.backupUserId === this.form.userId || item.leadUserId === this.form.userId || item.teamWideProject === true)
             && item.mou.id === this.form.mou,
         );
       } else {

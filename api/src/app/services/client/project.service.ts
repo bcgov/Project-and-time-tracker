@@ -42,6 +42,8 @@ export const updateProject = async (
   const updatedProject = await repo.merge(project, fields);
   updatedProject.dateModified = new Date();
 
+  if (fields.backupUserId === undefined) updatedProject.backupUserId = null;
+  if (fields.leadUserId === undefined) updatedProject.leadUserId = null;
   await repo.save(updatedProject);
   if (clientFilds) {
     const repoClient = clientRepo();
@@ -119,7 +121,8 @@ export const retrieveProjects = async () => {
       'p.projectSuccess',
       'p.otherProjectSectorName',
       'c.nonMinistryName',
-      'p.mouAmount'
+      'p.mouAmount',
+      'p.teamWideProject'
     ])
     .where('p.is_archived IS NULL OR p.is_archived = :is_archived', {
       is_archived: false
@@ -154,7 +157,8 @@ export const retrieveArchivedProjects = async () => {
       'p.projectFailImpact',
       'p.projectSuccess',
       'p.otherProjectSectorName',
-      'o.name'
+      'o.name',
+      'p.teamWideProject'
     ])
     .where('p.is_archived = :is_archived', { is_archived: true })
     .getMany();
@@ -189,7 +193,8 @@ export const retrieveAllProjects = async () => {
       'p.projectSuccess',
       'p.otherProjectSectorName',
       'c.nonMinistryName',
-      'p.mouAmount'
+      'p.mouAmount',
+      'p.teamWideProject'
     ])
     .where('(p.is_archived IS NULL OR p.is_archived = :is_archived)', {
       is_archived: false
@@ -224,10 +229,11 @@ export const retrieveProjectsByUserId = async (userId: string) => {
       'p.projectFailImpact',
       'p.projectSuccess',
       'p.otherProjectSectorName',
-      'c.nonMinistryName'
+      'c.nonMinistryName',
+      'p.teamWideProject'
     ])
     .where(
-      '(p.is_archived IS NULL OR p.is_archived = :is_archived) AND (p."leadUserId" = :userId OR p."backupUserId" = :userId)',
+      '(p.is_archived IS NULL OR p.is_archived = :is_archived) AND (p."leadUserId" = :userId OR p."backupUserId" = :userId OR p.teamWideProject=true)',
       {
         is_archived: false,
         userId
@@ -260,7 +266,8 @@ export const retrieveArchivedProjectsByUserId = async (userId: string) => {
       'p.previousContractBackground',
       'p.projectFailImpact',
       'p.projectSuccess',
-      'p.otherProjectSectorName'
+      'p.otherProjectSectorName',
+      'p.teamWideProject'
     ])
 
     //   From merge conflict, this line replaced below
@@ -268,7 +275,7 @@ export const retrieveArchivedProjectsByUserId = async (userId: string) => {
     //       userId: userId
     //     })
     .where(
-      'p."is_archived" = :is_archived, {is_archived : true}) AND p."leadUserId" = :userId OR p."backupUserId" = :userId',
+      'p."is_archived" = :is_archived, {is_archived : true}) AND p."leadUserId" = :userId OR p."backupUserId" = :userId OR p.teamWideProject=true',
       { userId: userId }
     )
     .getMany();

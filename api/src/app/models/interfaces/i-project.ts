@@ -13,7 +13,6 @@ export interface IProject {
   contractValue: number;
   mouAmount: number;
   description: string;
-
   leadUserId: string;
   backupUserId: string;
   createdUserId: string;
@@ -22,6 +21,6 @@ export interface IProject {
   previousContractBackground: string;
   projectFailImpact: string;
   projectSuccess: string;
-
+  teamWideProject: boolean;
   mou: IMOU;
 }
