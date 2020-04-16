@@ -384,6 +384,7 @@ export default {
         this.form.leadUserId = this.oldLeadUserID;
         this.form.backupUserId = this.oldBackupUserID;
       }
+      this.$refs.projectBaseInfo.resetValidation();
     },
     formatDate(date) {
       if (!date) return null;
