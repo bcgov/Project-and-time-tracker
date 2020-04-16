@@ -42,6 +42,8 @@ export const updateProject = async (
   const updatedProject = await repo.merge(project, fields);
   updatedProject.dateModified = new Date();
 
+  if (fields.backupUserId === undefined) updatedProject.backupUserId = null;
+  if (fields.leadUserId === undefined) updatedProject.leadUserId = null;
   await repo.save(updatedProject);
   if (clientFilds) {
     const repoClient = clientRepo();
