@@ -5,6 +5,7 @@
       <v-flex xs12>
         <div class="v-form-container">
           <div class="v-form-actions">
+
             <v-flex md-12>
               <v-btn
                 :disabled="!valid || saveProjectLoading"
@@ -19,6 +20,9 @@
       <v-flex xs12>
         <v-flex md6>
           <div class="v-form-container">
+
+               <v-checkbox v-model="form.teamWideProject" label="This is a Teamwide Project" class="team-wide-check" @change="onTeamWideProject()"></v-checkbox>
+
             <v-combobox
                 v-model="project.mou"
                 :items="mouList"
@@ -162,9 +166,10 @@
       <v-flex md6>
         <div class="v-form-container">
           <v-select
+            :disabled = form.teamWideProject
             :items="userList"
-            :rules="requiredRule"
-            class="required"
+            :rules="requiredTeamRule"
+            :class="form.teamWideProject ? '': 'required'"
             label="Project Lead"
             item-value="id"
             item-text="contact.fullName"
@@ -176,6 +181,7 @@
       <v-flex md6>
         <div class="v-form-container">
           <v-select
+            :disabled = form.teamWideProject
             :items="userList"
             label="Project Backup"
             item-value="id"
@@ -313,10 +319,18 @@ export default {
 
     return {
       valid: true,
+      requiredTeamRule: [
+        (value) => {
+          if (!!value && form && !form.teamWideProject) { return 'This field is required'; }
+          return true;
+        },
+      ],
       requiredRule: [v => !!v || 'This field is required'],
       // Initialize using props
       form: { ...form },
       selectedLeadUser: '',
+      oldLeadUserID: '',
+      oldBackupUserID: '',
       menu1: false,
       menu2: false,
       ministryname: form.client.ministry
@@ -360,6 +374,17 @@ export default {
     },
   },
   methods: {
+    onTeamWideProject() {
+      if (this.form.teamWideProject) {
+        this.oldLeadUserID = this.form.leadUserId;
+        this.oldBackupUserID = this.form.backupUserId;
+        this.form.leadUserId = undefined;
+        this.form.backupUserId = undefined;
+      } else {
+        this.form.leadUserId = this.oldLeadUserID;
+        this.form.backupUserId = this.oldBackupUserID;
+      }
+    },
     formatDate(date) {
       if (!date) return null;
 
