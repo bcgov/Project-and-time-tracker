@@ -23,8 +23,8 @@
             <td v-bind:class="{ 'archived': props.item.is_archived}">{{ props.item.projectName }}</td>
             <!-- <td class="text-xs-left">{{ props.item.projectName }}</td> -->
             <td class="text-xs-left">{{ [props.item.client.ministry.ministryName, props.item.orgDivision].join(" ") }}</td>
-            <td class="text-xs-left">{{ props.item.leadUserId }}</td>
-            <td class="text-xs-left">{{ props.item.backupUserId }}</td>
+            <td class="text-xs-left">{{ props.item.teamWideProject?'teamWideProject':props.item.leadUserId }}</td>
+            <td class="text-xs-left">{{ props.item.teamWideProject?'':props.item.backupUserId }}</td>
             <td class="text-xs-left">{{props.item.completionDate | formatDate }}</td>
             <td class="text-xs-left">{{ props.item.dateModified | formatDate }}</td>
              <td class="text-xs-right">

@@ -25,7 +25,9 @@
             <!-- <td class="text-xs-left">{{ props.item.projectName}} </td> -->
             <td class="text-xs-left">{{ [props.item.client.isNonMinistry?props.item.client.nonMinistryName:props.item.client.ministry.ministryName, props.item.orgDivision].join(" ") }}</td>
             <td class="text-xs-left table-dropdown">
+              <span v-if="props.item.teamWideProject">TeamWide Project</span>
               <v-select
+                v-if="!props.item.teamWideProject"
                 :items="userList"
                 label="Select Project Lead"
                 @click.native="getProjectLead(props.item.projectLeadUserId)"
@@ -40,6 +42,7 @@
             </td>
             <td class="text-xs-left table-dropdown">
               <v-select
+                v-if="!props.item.teamWideProject"
                 :items="userList"
                 @click.native="getProjectBackup(props.item.projectBackupUserId)"
                 @change="assignBackup(props.item.projectBackupUserId, props.item)"
