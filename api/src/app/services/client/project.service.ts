@@ -231,7 +231,7 @@ export const retrieveProjectsByUserId = async (userId: string) => {
       'p.teamWideProject'
     ])
     .where(
-      '(p.is_archived IS NULL OR p.is_archived = :is_archived) AND (p."leadUserId" = :userId OR p."backupUserId" = :userId)',
+      '(p.is_archived IS NULL OR p.is_archived = :is_archived) AND (p."leadUserId" = :userId OR p."backupUserId" = :userId OR p.teamWideProject=true)',
       {
         is_archived: false,
         userId
@@ -273,7 +273,7 @@ export const retrieveArchivedProjectsByUserId = async (userId: string) => {
     //       userId: userId
     //     })
     .where(
-      'p."is_archived" = :is_archived, {is_archived : true}) AND p."leadUserId" = :userId OR p."backupUserId" = :userId',
+      'p."is_archived" = :is_archived, {is_archived : true}) AND p."leadUserId" = :userId OR p."backupUserId" = :userId OR p.teamWideProject=true',
       { userId: userId }
     )
     .getMany();
