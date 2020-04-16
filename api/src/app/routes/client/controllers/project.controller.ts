@@ -80,11 +80,11 @@ export const updateProjectAction = async (ctx: Koa.Context) => {
       contractValue: project.contractValue,
       mouAmount: project.mouAmount || 0,
       description: project.description,
-      leadUserId: project.leadUserId,
+      leadUserId: project.leadUserId ? project.leadUserId : undefined,
       backupUserId: project.backupUserId,
       modifiedUserId: auth.userId,
       dateOfReprocurement: project.dateOfReprocurement,
-
+      teamWideProject: project.teamWideProject,
       isReprocurement: project.isReprocurement,
       previousContractBackground: project.previousContractBackground,
       projectFailImpact: project.projectFailImpact,

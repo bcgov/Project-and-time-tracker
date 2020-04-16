@@ -3,10 +3,8 @@ import { Client } from './client.entity';
 import { ProjectSector } from './projectSector.entity';
 import { MOU } from './mou.entity';
 
-
 @Entity()
 export class Project {
-
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -41,10 +39,10 @@ export class Project {
 
   @Column({ type: 'text', nullable: true })
   description: string;
-  
+
   @Column({ type: 'timestamp', nullable: true })
   dateCreated: Date;
-  
+
   @Column({ type: 'timestamp', nullable: true })
   dateModified: Date;
 

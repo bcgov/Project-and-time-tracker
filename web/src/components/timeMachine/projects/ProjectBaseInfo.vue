@@ -321,7 +321,7 @@ export default {
       valid: true,
       requiredTeamRule: [
         (value) => {
-          if (!!value && form && !form.teamWideProject) { return 'This field is required'; }
+          if ((value === undefined || value === '' || !value) && this.form && !(this.form.teamWideProject)) { return 'This field is required'; }
           return true;
         },
       ],
@@ -329,8 +329,8 @@ export default {
       // Initialize using props
       form: { ...form },
       selectedLeadUser: '',
-      oldLeadUserID: '',
-      oldBackupUserID: '',
+      oldLeadUserID: undefined,
+      oldBackupUserID: undefined,
       menu1: false,
       menu2: false,
       ministryname: form.client.ministry
