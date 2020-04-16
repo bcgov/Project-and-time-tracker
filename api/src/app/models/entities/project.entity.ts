@@ -75,6 +75,8 @@ export class Project {
   @Column({ type: 'text', nullable: true })
   projectSuccess: string;
 
+  @Column({ type: 'boolean', nullable: true })
+  teamWideProject: boolean;
 
   @Column({ type: 'text', nullable: true })
   otherProjectSectorName: string;
