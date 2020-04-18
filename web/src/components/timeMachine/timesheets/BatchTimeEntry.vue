@@ -37,7 +37,7 @@
             <td v-for="index in 5" :key="index">
               <v-flex style="float:left" v-if="selectedItem == 1">
                 <v-text-field
-                  style="float:left;width:50px"
+                  style="float:left;width:70px"
                   type="number"
                   max="24"
                   step="0.01"
@@ -100,7 +100,7 @@
               </v-flex>
               <v-flex style="float:left" v-else>
                 <v-text-field
-                  style="float:left;width:50px"
+                  style="float:left;width:70px"
                   type="number"
                   max="24"
                   step="0.01"
