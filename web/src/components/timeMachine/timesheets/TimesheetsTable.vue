@@ -152,6 +152,10 @@ export default {
           timeRecords = this.$store.state.allTimesheets;
         }
       }
+      if (this.$store.state.timesheetsWeek.startDate) {
+        timeRecords = timeRecords.filter(item => item.startDate === this.$store.state.timesheetsWeek.startDate);
+      }
+
       if (this.search) {
         timeRecords = timeRecords.filter(item => item.project.projectName.toLowerCase().includes(this.search.toLowerCase()));
       }
@@ -160,12 +164,13 @@ export default {
   },
   methods: {
     closeTimesheet(needRefresh) {
-      sessionStorage.setItem('selectedStartDate', this.startDateMain);
-      sessionStorage.setItem('selectedEndDate', this.endDateMain);
-      this.$store.state.timesheetsWeek.startDate = this.startDateMain;
-      this.$store.state.timesheetsWeek.endDate = this.endDateMain;
       if (needRefresh) {
         this.fetchData();
+      } else {
+        sessionStorage.setItem('selectedStartDate', this.startDateMain);
+        sessionStorage.setItem('selectedEndDate', this.endDateMain);
+        this.$store.state.timesheetsWeek.startDate = this.startDateMain;
+        this.$store.state.timesheetsWeek.endDate = this.endDateMain;
       }
     },
     editTimesheet(value) {
