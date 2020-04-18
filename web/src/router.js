@@ -5,6 +5,7 @@ import Authorize from './components/login/Authorize.vue';
 import Project from './components/timeMachine/projects/Project.vue';
 import TimeMachineIntakeForm from './components/timeMachine/projectIntake/IntakeForm.vue';
 import TimeMachineIntakeIntro from './components/timeMachine/projectIntake/IntakeIntroduction.vue';
+import TimeMachineFinanceExport from './components/timeMachine/projects/ProjectFinanceExport.vue';
 import TimeMachineIntakeRequests from './components/timeMachine/projectIntake/IntakeRequests.vue';
 import TimeMachineIntakeSuccess from './components/timeMachine/projectIntake/IntakeSuccess.vue';
 import TimeMachineProjects from './components/timeMachine/projects/Projects.vue';
@@ -49,6 +50,13 @@ const routes = [
     path: '/intake-intro',
     name: 'timemachineIntakeIntroduction',
     component: TimeMachineIntakeIntro,
+    meta: { requiresAuth: true, roles: ['User', 'PSB_Admin', 'PSB_User', 'PSB_Intake_User'] },
+  },
+  {
+    exact: true,
+    path: '/finance',
+    name: 'timemachineFinance',
+    component: TimeMachineFinanceExport,
     meta: { requiresAuth: true, roles: ['User', 'PSB_Admin', 'PSB_User', 'PSB_Intake_User'] },
   },
   {

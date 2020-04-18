@@ -69,6 +69,11 @@ const menuItems = [
     icon: 'timelapse',
   },
   {
+    href: '/finance',
+    title: 'Finance',
+    icon: 'attach_money',
+  },
+  {
     divider: true,
   },
   {
@@ -76,6 +81,7 @@ const menuItems = [
     title: 'Admin',
     icon: 'lock_open',
   },
+ 
   {
     header: 'System',
   },
