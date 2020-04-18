@@ -30,7 +30,7 @@
     </v-flex>
     <v-flex md-10 >
       <div class="start-button-div">
-      <v-btn color="primary" class="start-button-style" >Export Finance to PDF</v-btn></div>
+      <v-btn color="primary" class="start-button-style" @click="exportToPDF">Export Finance to PDF</v-btn></div>
     </v-flex></v-layout>
     <v-layout row wrap>
       <v-flex xs12>
@@ -42,23 +42,96 @@
 </template>
 
 <script>
-import Material from "vuetify/es5/util/colors";
-import ProjectsTable from "./ProjectTableExport.vue";
-
-import "./projects.styl";
+import Material from 'vuetify/es5/util/colors';
+import jsPDF from 'jspdf';
+import ProjectsTable from './ProjectTableExport.vue';
+import 'jspdf-autotable';
+import './projects.styl';
 
 export default {
   components: {
-    ProjectsTable
+    ProjectsTable,
   },
   data: () => ({
     color: Material,
-    selected: "My Projects",
+    selected: 'My Projects',
     date: new Date().toISOString().substr(0, 7),
     menu: false,
-    modal: false
+    modal: false,
+
   }),
-  computed: {}
+  computed: {},
+  methods: {
+    dataForPdfCreation() {
+      return {
+        heading: 'REPORTS',
+        projects: [
+          {
+            id: '1proj',
+            projectName: 'Canada BC project',
+            totalAmount: '$1230',
+          },
+          {
+            id: '2proj',
+            projectName: 'Canada AD project',
+            totalAmount: '$3000',
+          },
+          {
+            id: '3proj',
+            projectName: 'Canada USA project',
+            totalAmount: '$5043',
+          },
+        ],
+      };
+    },
+    exportToPDF() {
+      const vm = this;
+      const doc = new jsPDF({ putOnlyUsedFonts: true, orientation: 'landscape' });
+      const pdf = this.dataForPdfCreation();
+      const tableHeaders = ['id', 'Project Name', 'Total Amount'];
+
+      // Converting the json from array of objects to array of string.
+      const tableRowsFormatted = pdf.projects.map(proj => [proj.id, proj.projectName, proj.totalAmount]);
+      console.log(pdf.projects);
+      console.log(tableRowsFormatted);
+
+      const pdfSinglePageHeight = doc.internal.pageSize.height;
+      const firstPageInitialCoordinate = 0;
+      const secondPageInitialCoordinate = pdfSinglePageHeight + 100;
+      const leftStartCoordinate = 40;
+      const topStartCoordinate = 40;
+
+      console.log(tableHeaders);
+      doc.text(pdf.heading, leftStartCoordinate, topStartCoordinate);
+      doc.text('With border', leftStartCoordinate, 50);
+      doc.autoTable(tableHeaders, tableRowsFormatted, {
+        margin: { top: 60 },
+      });
+
+      doc.text('With style', leftStartCoordinate, 100);
+      doc.autoTable({
+        body: [
+          [{ content: 'col 1-4', colSpan: 4, styles: { halign: 'center' } },
+            { content: 'col 1-2', colSpan: 2, styles: { halign: 'center' } }],
+          [{ content: 'col 2-4', colSpan: 2, styles: { halign: 'center' } },
+            { content: 'col 2-2', colSpan: 4, styles: { halign: 'center' } }],
+          [{ content: 'col 3-3left', colSpan: 2, styles: { halign: 'left' } },
+            { content: 'col 3-right', colSpan: 4, styles: { halign: 'right' } }],
+        ],
+        theme: 'striped',
+        margin: { top: 100 },
+      });
+
+      // theme: 'striped'|'grid'|'plain'|'css'
+
+      doc.addPage();
+      // changes in 2nd page
+      doc.text('page 2', leftStartCoordinate, topStartCoordinate);
+
+      doc.save('sample.pdf');
+    },
+  },
+
 };
 </script>
 <style>
