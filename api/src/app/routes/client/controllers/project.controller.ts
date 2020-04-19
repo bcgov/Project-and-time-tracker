@@ -6,7 +6,8 @@ import {
   updateProject,
   retrieveProjectsByUserId,
   retrieveArchivedProjects,
-  retrieveAllProjects
+  retrieveAllProjects,
+  retrieveFinanceData
 } from '../../../services/client/project.service';
 import { IProject } from '../../../models/interfaces/i-project';
 import { retrieveClientByProjectId } from '../../../services/client/client.service';
@@ -37,6 +38,14 @@ export const getArchivedProjects = async (ctx: Koa.Context) => {
   try {
     const auth = ctx.state.auth as IAuth;
     ctx.body = await retrieveArchivedProjects();
+  } catch (err) {
+    ctx.throw(err.message);
+  }
+};
+export const getfinanceExport = async (ctx: Koa.Context) => {
+  try {
+    const obj = ctx.request.body as any;
+    ctx.body = await retrieveFinanceData(obj);
   } catch (err) {
     ctx.throw(err.message);
   }
@@ -207,6 +216,7 @@ const router: Router = new Router(routerOpts);
 router.get('/', authorize, getProjects);
 router.get('/all', authorize, getAllProjects);
 router.get('/archived', authorize, getArchivedProjects);
+router.post('/finance', authorize, getfinanceExport);
 router.get('/:id', authorize, getProjectById);
 router.patch('/:id', authorize, updateProjectAction);
 router.patch('/:id/archive', authorize, archiveProjectAction);

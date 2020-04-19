@@ -3,6 +3,17 @@ import { Project } from '../../models/entities';
 import { Client } from '../../models/entities';
 import { IProject } from '../../models/interfaces/i-project';
 import { IClient } from '../../models/interfaces/i-client';
+import { type } from 'os';
+import { ReplaceSource } from 'webpack-sources';
+
+import { FinanceExport } from '../../models/entities';
+import { FinanceExportDetail } from '../../models/entities';
+import { IFinanceExport } from '../../models/interfaces/i-finance-export';
+import { IFinanceExportDetail } from '../../models/interfaces/i-finance-export-detail';
+
+const financeRepo = (): Repository<FinanceExport> => {
+  return getRepository(FinanceExport);
+};
 
 const projectRepo = (): Repository<Project> => {
   return getRepository(Project);
@@ -130,6 +141,30 @@ export const retrieveProjects = async () => {
     .getMany();
 };
 
+export const retrieveFinanceData = async obj => {
+  const financeExport = obj as IFinanceExport[];
+
+  for (let index = 0; index < financeExport.length; index++) {
+    const model = financeExport[index];
+    if (!model) {
+      obj.throw('no data Found');
+      return;
+    }
+  }
+  // const repo = projectRepo();
+  // return await repo.createQueryBuilder('p').innerJoin('p.client', 'c');
+  //    .select([
+  //     'c.clientNo',
+  //     'c.responsibilityCenter',
+  //     'c.serviceCenter',
+  //     'c.stob',
+  //     'c.projectCode',
+  //     'p.id',
+  //     'p.projectName'
+  //   ])
+  //   .where('p.is_archived = :is_archived', { is_archived: true })
+  //   .getMany();
+};
 export const retrieveArchivedProjects = async () => {
   const repo = projectRepo();
   return await repo
