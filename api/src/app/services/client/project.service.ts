@@ -151,19 +151,11 @@ export const retrieveFinanceData = async obj => {
       return;
     }
   }
-  // const repo = projectRepo();
-  // return await repo.createQueryBuilder('p').innerJoin('p.client', 'c');
-  //    .select([
-  //     'c.clientNo',
-  //     'c.responsibilityCenter',
-  //     'c.serviceCenter',
-  //     'c.stob',
-  //     'c.projectCode',
-  //     'p.id',
-  //     'p.projectName'
-  //   ])
-  //   .where('p.is_archived = :is_archived', { is_archived: true })
-  //   .getMany();
+  const repo = financeRepo();
+  return await repo
+    .createQueryBuilder('f')
+    .leftJoinAndSelect('f.exportDetails', 'fd')
+    .getMany();
 };
 export const retrieveArchivedProjects = async () => {
   const repo = projectRepo();

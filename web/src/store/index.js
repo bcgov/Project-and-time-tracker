@@ -53,6 +53,7 @@ const store = new Vuex.Store({
     rfxTypes: [],
     timesheetEntryData: [],
     timesheetEntryDatabyUser: [],
+    financeExport: [],
     timesheetById: [],
     projectRiskAnswers: [],
     intakeRiskQuestions: [],
@@ -153,6 +154,9 @@ const store = new Vuex.Store({
     },
     fetchTimesheetEntriesByUser(state, data) {
       state.timesheetEntryDatabyUser = data;
+    },
+    fetchFinanceExport(state, data) {
+      state.financeExport = data;
     },
     fetchRFxPhases(state, data) {
       state.rfxPhases = data;
@@ -553,6 +557,19 @@ const store = new Vuex.Store({
         .then((res) => {
           const content = res.data;
           ctx.commit('fetchTimesheetById', content);
+          return Promise.resolve(content);
+        })
+        .catch(err => Promise.reject(err.response));
+      return Promise.resolve(api);
+    },
+    
+    async financeExport(ctx, req) {
+      const body = req;
+      const api = await $http
+        .post(`${API_URI}/project/finance`, body)
+        .then((res) => {
+          const content = res.data;
+          ctx.commit('fetchFinanceExport', content);
           return Promise.resolve(content);
         })
         .catch(err => Promise.reject(err.response));

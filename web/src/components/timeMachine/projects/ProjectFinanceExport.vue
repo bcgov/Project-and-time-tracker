@@ -31,6 +31,7 @@
     <v-flex md-10 >
       <div class="start-button-div">
       <v-btn color="primary" class="start-button-style" @click="demoFromHTML">Export Finance to PDF</v-btn></div>
+       <v-btn color="primary" class="start-button-style" @click="test">Test</v-btn></div>
     </v-flex></v-layout>
     <v-layout row wrap>
       <v-flex xs12>
@@ -130,7 +131,14 @@ export default {
 
       doc.save('sample.pdf');
     },
-
+    test() {
+      debugger;
+      const projects = [{ projectId: 'aacc3a8c-4e08-441b-8d83-c12ae095bd2c' }];
+      const vm = this;
+      vm.$store.dispatch('financeExport', projects).then(() => {
+        const obj = vm.$store.state.financeExport;
+      });
+    },
     demoFromHTML() {
       const pdf = new jsPDF('p', 'pt', 'letter');
       // source can be HTML-formatted string, or a reference
