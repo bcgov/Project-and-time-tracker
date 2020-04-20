@@ -9,18 +9,15 @@ import { type } from 'os';
 import { ReplaceSource } from 'webpack-sources';
 
 import { FinanceExport } from '../../models/entities';
-import { FinanceExportDetail } from '../../models/entities';
 import { IFinanceExport } from '../../models/interfaces/i-finance-export';
 import { IFinanceExportDetail } from '../../models/interfaces/i-finance-export-detail';
+import { IFinanceJSON } from '../../models/interfaces/i-finance-json';
 
 const financeRepo = (): Repository<FinanceExport> => {
   return getRepository(FinanceExport);
 };
 const timesheetRepo = (): Repository<Timesheet> => {
   return getRepository(Timesheet);
-};
-const financeDetailsRepo = (): Repository<FinanceExportDetail> => {
-  return getRepository(FinanceExportDetail);
 };
 const projectRepo = (): Repository<Project> => {
   return getRepository(Project);
@@ -164,6 +161,8 @@ export const retrieveFinanceData = async (obj, userId) => {
     if (!model) {
       return [];
     }
+    const exportData = {} as IFinanceJSON;
+    exportData.projectId = financeExport[index].projectId;
     const repo = projectRepo();
     const res = await repo
       .createQueryBuilder('p')
@@ -178,20 +177,21 @@ export const retrieveFinanceData = async (obj, userId) => {
         'c.serviceCenter'
       ])
       .where('p.id = :projectId', {
-        projectId: model.projectId
+        projectId: exportData.projectId
       })
       .getOne();
-    model.projectName = res.projectName;
+
+    exportData.projectName = res.projectName;
     if (res.client) {
-      model.responsibilityCenter = res.client.responsibilityCenter;
-      model.clientNo = res.client.clientNo;
-      model.stob = res.client.stob;
-      model.projectCode = res.client.projectCode;
-      model.serviceCenter = res.client.serviceCenter;
+      exportData.responsibilityCenter = res.client.responsibilityCenter;
+      exportData.clientNo = res.client.clientNo;
+      exportData.stob = res.client.stob;
+      exportData.projectCode = res.client.projectCode;
+      exportData.serviceCenter = res.client.serviceCenter;
     }
-    model.documentNo = documentNo;
-    model.lineDesc = documentNo;
-    model.createdUserId = userId;
+    exportData.documentNo = documentNo;
+    exportData.lineDesc = documentNo;
+    exportData.createdUserId = userId;
 
     const timeSheet = await timesheetRepo()
       .createQueryBuilder('t')
@@ -200,14 +200,13 @@ export const retrieveFinanceData = async (obj, userId) => {
       .innerJoinAndSelect('u.contact', 'c')
       .where(
         't."projectId" = :projectId and (t.is_locked = :is_locked or t.is_locked IS NULL)',
-        { projectId: model.projectId, is_locked: false }
+        { projectId: exportData.projectId, is_locked: false }
       )
       .getMany();
     if (timeSheet.length == 0) {
       continue;
     }
-    const finance = await createFinanceExport(financeExport[index]);
-    financeExport[index].id = finance.id;
+
     let details = [] as IFinanceExportDetail[];
     for (
       let timeSheetIndex = 0;
@@ -226,7 +225,6 @@ export const retrieveFinanceData = async (obj, userId) => {
           timesheetEntry[timeSheetEntryIndex].hoursBillable > 0
         ) {
           let financeDetailHour = {} as IFinanceExportDetail;
-          financeDetailHour.financeExport = model;
           financeDetailHour.entryDate =
             timesheetEntry[timeSheetEntryIndex].entryDate;
           financeDetailHour.description =
@@ -244,8 +242,6 @@ export const retrieveFinanceData = async (obj, userId) => {
           financeDetailHour.amount =
             financeDetailHour.rate * financeDetailHour.hours;
           details.push(financeDetailHour);
-
-          await createFinanceExportDetail(financeDetailHour);
         }
 
         if (
@@ -253,7 +249,6 @@ export const retrieveFinanceData = async (obj, userId) => {
           timesheetEntry[timeSheetEntryIndex].expenseAmount > 0
         ) {
           let financeDetailExpense = {} as IFinanceExportDetail;
-          financeDetailExpense.financeExport = model;
           financeDetailExpense.entryDate =
             timesheetEntry[timeSheetEntryIndex].entryDate;
           financeDetailExpense.description =
@@ -265,28 +260,31 @@ export const retrieveFinanceData = async (obj, userId) => {
           financeDetailExpense.resource =
             timeSheet[timeSheetIndex].user.contact.fullName;
           details.push(financeDetailExpense);
-
-          await createFinanceExportDetail(financeDetailExpense);
         }
       }
-      model.details = details;
+      exportData.details = details;
 
-      let fees = model.details
+      let fees = exportData.details
         .filter(item => item.type === 'Time')
         .reduce(function(prev, cur) {
           return prev + Number(cur.amount);
         }, 0);
 
-      let expenses = model.details
+      let expenses = exportData.details
         .filter(item => item.type === 'Expense')
         .reduce(function(prev, cur) {
           return prev + Number(cur.amount);
         }, 0);
 
-      model.fees = fees;
-      model.expenses = expenses;
-      model.totalAmount = fees + expenses;
-      await financeRepo().save(financeExport[index]);
+      exportData.fees = fees;
+      exportData.expenses = expenses;
+      exportData.totalAmount = fees + expenses;
+
+      model.createdUserId = userId;
+      model.documentNo = documentNo;
+      model.exportData = JSON.stringify(exportData);
+
+      await createFinanceExport(model);
 
       timeSheet[timeSheetIndex].is_locked = true;
       await timesheetRepo().save(timeSheet[timeSheetIndex]);
@@ -297,19 +295,11 @@ export const retrieveFinanceData = async (obj, userId) => {
   const repo = financeRepo();
   const result = await repo
     .createQueryBuilder('f')
-    .leftJoinAndSelect('f.exportDetails', 'fd')
     .where('f."documentNo" = :documentId ', { documentId: documentNo })
-
     .getMany();
 
   return result;
 };
-
-export const createFinanceExportDetail = async (obj: IFinanceExportDetail) => {
-  obj.dateCreated = new Date();
-  obj = await financeDetailsRepo().save(obj);
-};
-
 export const createFinanceExport = async (obj: IFinanceExport) => {
   obj.dateCreated = new Date();
   await financeRepo().save(obj);

@@ -1,24 +1,9 @@
-import { IFinanceExportDetail } from './i-finance-export-detail';
-
 export interface IFinanceExport {
   id: string;
   documentNo: string;
-  lineDesc: string;
-  sap: string;
-  reference: string;
-  contact: string;
-  organisation: string;
-  fees: number;
-  expenses: number;
-  totalAmount: number;
-  clientNo: string;
-  responsibilityCenter: string;
-  serviceCenter: string;
-  stob: string;
-  projectCode: string;
+  exportData: string;
   projectId: string;
-  projectName: string;
   dateCreated: Date;
-  details: IFinanceExportDetail[];
   createdUserId: string;
+  documentPath: string;
 }
