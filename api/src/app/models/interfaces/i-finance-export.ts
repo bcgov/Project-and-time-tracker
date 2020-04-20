@@ -18,5 +18,7 @@ export interface IFinanceExport {
   projectCode: string;
   projectId: string;
   projectName: string;
+  dateCreated: Date;
   details: IFinanceExportDetail[];
+  createdUserId: string;
 }

@@ -56,6 +56,9 @@ export class Timesheet {
   @Column({ type: 'text', nullable: true })
   batchEntryComments: string;
 
+  @Column({ type: 'boolean', nullable: true })
+  is_locked: boolean;
+
   @OneToMany(
     type => TimesheetEntry,
     type => type.timesheet

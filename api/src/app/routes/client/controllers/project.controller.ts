@@ -44,8 +44,9 @@ export const getArchivedProjects = async (ctx: Koa.Context) => {
 };
 export const getfinanceExport = async (ctx: Koa.Context) => {
   try {
+    const auth = ctx.state.auth as IAuth;
     const obj = ctx.request.body as any;
-    ctx.body = await retrieveFinanceData(obj);
+    ctx.body = await retrieveFinanceData(obj, auth.userId);
   } catch (err) {
     ctx.throw(err.message);
   }

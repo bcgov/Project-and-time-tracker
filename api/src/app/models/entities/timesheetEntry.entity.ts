@@ -39,6 +39,9 @@ export class TimesheetEntry {
   @Column({ type: 'date', nullable: true })
   entryDate: Date;
 
+  @Column({ type: 'uuid', nullable: true })
+  timeSheetEntryId: string;
+
   @Column({ type: 'timestamp', nullable: true })
   dateCreated: Date;
 

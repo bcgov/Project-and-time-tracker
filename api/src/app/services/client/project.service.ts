@@ -2,6 +2,8 @@ import { getRepository, Repository } from 'typeorm';
 import { Project } from '../../models/entities';
 import { Client } from '../../models/entities';
 import { IProject } from '../../models/interfaces/i-project';
+import { Timesheet } from './../../models/entities/timesheet.entity';
+import { TimesheetEntry } from './../../models/entities/timesheetEntry.entity';
 import { IClient } from '../../models/interfaces/i-client';
 import { type } from 'os';
 import { ReplaceSource } from 'webpack-sources';
@@ -14,7 +16,12 @@ import { IFinanceExportDetail } from '../../models/interfaces/i-finance-export-d
 const financeRepo = (): Repository<FinanceExport> => {
   return getRepository(FinanceExport);
 };
-
+const timesheetRepo = (): Repository<Timesheet> => {
+  return getRepository(Timesheet);
+};
+const financeDetailsRepo = (): Repository<FinanceExportDetail> => {
+  return getRepository(FinanceExportDetail);
+};
 const projectRepo = (): Repository<Project> => {
   return getRepository(Project);
 };
@@ -141,22 +148,174 @@ export const retrieveProjects = async () => {
     .getMany();
 };
 
-export const retrieveFinanceData = async obj => {
+function uuidv4() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var r = (Math.random() * 16) | 0,
+      v = c == 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
+export const retrieveFinanceData = async (obj, userId) => {
   const financeExport = obj as IFinanceExport[];
+  const documentNo: string = uuidv4();
 
   for (let index = 0; index < financeExport.length; index++) {
-    const model = financeExport[index];
+    let model = financeExport[index];
     if (!model) {
-      obj.throw('no data Found');
-      return;
+      return [];
+    }
+    const repo = projectRepo();
+    const res = await repo
+      .createQueryBuilder('p')
+      .innerJoin('p.client', 'c')
+      .select([
+        'p.id',
+        'p.projectName',
+        'c.responsibilityCenter',
+        'c.clientNo',
+        'c.stob',
+        'c.projectCode',
+        'c.serviceCenter'
+      ])
+      .where('p.id = :projectId', {
+        projectId: model.projectId
+      })
+      .getOne();
+    model.projectName = res.projectName;
+    if (res.client) {
+      model.responsibilityCenter = res.client.responsibilityCenter;
+      model.clientNo = res.client.clientNo;
+      model.stob = res.client.stob;
+      model.projectCode = res.client.projectCode;
+      model.serviceCenter = res.client.serviceCenter;
+    }
+    model.documentNo = documentNo;
+    model.lineDesc = documentNo;
+    model.createdUserId = userId;
+
+    const timeSheet = await timesheetRepo()
+      .createQueryBuilder('t')
+      .leftJoinAndSelect('t.timesheetEntries', 'te')
+      .innerJoinAndSelect('t.user', 'u')
+      .innerJoinAndSelect('u.contact', 'c')
+      .where(
+        't."projectId" = :projectId and (t.is_locked = :is_locked or t.is_locked IS NULL)',
+        { projectId: model.projectId, is_locked: false }
+      )
+      .getMany();
+    if (timeSheet.length == 0) {
+      continue;
+    }
+    const finance = await createFinanceExport(financeExport[index]);
+    financeExport[index].id = finance.id;
+    let details = [] as IFinanceExportDetail[];
+    for (
+      let timeSheetIndex = 0;
+      timeSheetIndex < timeSheet.length;
+      timeSheetIndex++
+    ) {
+      for (
+        let timeSheetEntryIndex = 0;
+        timeSheetEntryIndex < timeSheet[timeSheetIndex].timesheetEntries.length;
+        timeSheetEntryIndex++
+      ) {
+        const timesheetEntry: TimesheetEntry[] =
+          timeSheet[timeSheetIndex].timesheetEntries;
+        if (
+          timesheetEntry[timeSheetEntryIndex].hoursBillable &&
+          timesheetEntry[timeSheetEntryIndex].hoursBillable > 0
+        ) {
+          let financeDetailHour = {} as IFinanceExportDetail;
+          financeDetailHour.financeExport = model;
+          financeDetailHour.entryDate =
+            timesheetEntry[timeSheetEntryIndex].entryDate;
+          financeDetailHour.description =
+            timesheetEntry[timeSheetEntryIndex].commentsBillable;
+          financeDetailHour.hours =
+            timesheetEntry[timeSheetEntryIndex].hoursBillable;
+          financeDetailHour.type = 'Time';
+          financeDetailHour.user = timeSheet[timeSheetIndex].userId;
+          financeDetailHour.resource =
+            timeSheet[timeSheetIndex].user.contact.fullName;
+          financeDetailHour.rate = timeSheet[timeSheetIndex].user.contact
+            .hourlyRate
+            ? timeSheet[timeSheetIndex].user.contact.hourlyRate
+            : 0;
+          financeDetailHour.amount =
+            financeDetailHour.rate * financeDetailHour.hours;
+          details.push(financeDetailHour);
+
+          await createFinanceExportDetail(financeDetailHour);
+        }
+
+        if (
+          timesheetEntry[timeSheetEntryIndex].expenseAmount &&
+          timesheetEntry[timeSheetEntryIndex].expenseAmount > 0
+        ) {
+          let financeDetailExpense = {} as IFinanceExportDetail;
+          financeDetailExpense.financeExport = model;
+          financeDetailExpense.entryDate =
+            timesheetEntry[timeSheetEntryIndex].entryDate;
+          financeDetailExpense.description =
+            timesheetEntry[timeSheetEntryIndex].expenseComment;
+          financeDetailExpense.amount =
+            timesheetEntry[timeSheetEntryIndex].expenseAmount;
+          financeDetailExpense.type = 'Expense';
+          financeDetailExpense.user = timeSheet[timeSheetIndex].userId;
+          financeDetailExpense.resource =
+            timeSheet[timeSheetIndex].user.contact.fullName;
+          details.push(financeDetailExpense);
+
+          await createFinanceExportDetail(financeDetailExpense);
+        }
+      }
+      model.details = details;
+
+      let fees = model.details
+        .filter(item => item.type === 'Time')
+        .reduce(function(prev, cur) {
+          return prev + Number(cur.amount);
+        }, 0);
+
+      let expenses = model.details
+        .filter(item => item.type === 'Expense')
+        .reduce(function(prev, cur) {
+          return prev + Number(cur.amount);
+        }, 0);
+
+      model.fees = fees;
+      model.expenses = expenses;
+      model.totalAmount = fees + expenses;
+      await financeRepo().save(financeExport[index]);
+
+      timeSheet[timeSheetIndex].is_locked = true;
+      await timesheetRepo().save(timeSheet[timeSheetIndex]);
     }
   }
+
+  // await createFinanceExport(financeExport);
   const repo = financeRepo();
-  return await repo
+  const result = await repo
     .createQueryBuilder('f')
     .leftJoinAndSelect('f.exportDetails', 'fd')
+    .where('f."documentNo" = :documentId ', { documentId: documentNo })
+
     .getMany();
+
+  return result;
 };
+
+export const createFinanceExportDetail = async (obj: IFinanceExportDetail) => {
+  obj.dateCreated = new Date();
+  obj = await financeDetailsRepo().save(obj);
+};
+
+export const createFinanceExport = async (obj: IFinanceExport) => {
+  obj.dateCreated = new Date();
+  await financeRepo().save(obj);
+  return obj;
+};
+
 export const retrieveArchivedProjects = async () => {
   const repo = projectRepo();
   return await repo

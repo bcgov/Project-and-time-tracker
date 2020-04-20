@@ -24,13 +24,13 @@ export class FinanceExport {
   @Column({ type: 'text', nullable: true })
   organisation: string;
 
-  @Column({ type: 'double precision', nullable: false })
+  @Column({ type: 'double precision', nullable: true })
   fees: number;
 
-  @Column({ type: 'double precision', nullable: false })
+  @Column({ type: 'double precision', nullable: true })
   expenses: number;
 
-  @Column({ type: 'double precision', nullable: false })
+  @Column({ type: 'double precision', nullable: true })
   totalAmount: number;
 
   @Column({ type: 'text', nullable: true })

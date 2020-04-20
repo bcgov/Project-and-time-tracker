@@ -24,10 +24,10 @@ export class FinanceExportDetail {
   @Column({ type: 'uuid', nullable: false })
   user: string;
 
-  @Column({ type: 'double precision', nullable: false })
+  @Column({ type: 'double precision', nullable: true })
   hours: number;
 
-  @Column({ type: 'double precision', nullable: false })
+  @Column({ type: 'double precision', nullable: true })
   rate: number;
 
   @Column({ type: 'double precision', nullable: false })
