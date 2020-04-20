@@ -63,11 +63,13 @@ export default {
     selected: "My Projects",
     date: new Date().toISOString().substr(0, 7),
     menu: false,
-    modal: false
+    modal: false,
+    selectedDate:''
   }),
   computed: {},
   methods: {
     datefilter(date) {
+    this.selectedDate = date;
     this.$refs.menu.save(date);
     this.$refs.projectFinanceExport.getAllProjectList(date);
     },
@@ -96,14 +98,13 @@ export default {
           "Amount"
         ];
         const tableRowsFormatted = pdfValues.map(proj => [
-          proj.clientNo,
-          proj.responsibilityCenter,
-          proj.serviceCenter,
-          proj.stob,
-          proj.projectCode,
-          "$" +
-            proj.totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-        ]);
+          proj.clientNo?proj.clientNo:'',
+          proj.responsibilityCenter?proj.responsibilityCenter:'',
+          proj.serviceCenter?proj.serviceCenter:'',
+          proj.stob?proj.stob:'',
+          proj.projectCode?proj.projectCode:'',
+          proj.totalAmount?"$" +proj.totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","):''
+]);
         console.log(tableRowsFormatted);
         const pdfSinglePageHeight = doc.internal.pageSize.height;
         const firstPageInitialCoordinate = 0;
@@ -114,7 +115,7 @@ export default {
         console.log(tableHeaders);
         doc.setFontSize(12);
         doc.text(
-          "Document # " + pdfValues[0].documentNo,
+         pdfValues[0].documentNo?"Document # " + pdfValues[0].documentNo:'',
           leftStartCoordinate,
           20
         );
@@ -164,29 +165,29 @@ export default {
           doc.text("OCIO - Technology Soultions", 15, 61);
 
           doc.text(
-            pdfValues[i].dateCreated.toString().slice(0, 10),
+            pdfValues[i].dateCreated?pdfValues[i].dateCreated.toString().slice(0, 10):'',
             leftStartCoordinate + 125,
             55
           );
-          doc.text(pdfValues[i].documentNo, leftStartCoordinate + 125, 61);
-          doc.text(pdfValues[i].clientNo, leftStartCoordinate + 125, 70);
+          doc.text(pdfValues[i].documentNo?pdfValues[i].documentNo:'', leftStartCoordinate + 125, 61);
+          doc.text(pdfValues[i].clientNo?pdfValues[i].clientNo:'', leftStartCoordinate + 125, 70);
           doc.text(
-            pdfValues[i].responsibilityCenter,
+            pdfValues[i].responsibilityCenter?pdfValues[i].responsibilityCenter:'',
             leftStartCoordinate + 125,
             76
           );
-          doc.text(pdfValues[i].serviceCenter, leftStartCoordinate + 125, 82);
-          doc.text(pdfValues[i].stob, leftStartCoordinate + 125, 88);
-          doc.text(pdfValues[i].projectCode, leftStartCoordinate + 125, 94);
+          doc.text(pdfValues[i].serviceCenter?pdfValues[i].serviceCenter:'', leftStartCoordinate + 125, 82);
+          doc.text(pdfValues[i].stob?pdfValues[i].stob:'', leftStartCoordinate + 125, 88);
+          doc.text(pdfValues[i].projectCode?pdfValues[i].projectCode:'', leftStartCoordinate + 125, 94);
 
           doc.setFontSize(12);
           doc.setFontStyle("bold");
           doc.text("Notification of Charges", leftStartCoordinate + 50, 105);
           doc.setFontStyle("normal");
           doc.setFontSize(11);
-          doc.text(pdfValues[i].projectName, 40, 115);
-          doc.text(pdfValues[i].reference, 40, 122);
-          doc.text(pdfValues[i].contact, 40, 129);
+          doc.text(pdfValues[i].projectName?pdfValues[i].projectName:'', 40, 115);
+          doc.text(pdfValues[i].reference?pdfValues[i].reference:'', 40, 122);
+          doc.text(pdfValues[i].contact?pdfValues[i].contact:'', 40, 129);
 
           doc.setFontStyle("bold");
           doc.text("Date", leftStartCoordinate + 110, 55);
@@ -207,31 +208,31 @@ export default {
 
           doc.setFontStyle("normal");
           doc.text(
-            "$" +
+           pdfValues[i].fees? "$" +
               pdfValues[i].fees
                 .toString()
-                .replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                .replace(/\B(?=(\d{3})+(?!\d))/g, ","):'',
             leftStartCoordinate + 136,
             160
           );
           doc.text(
-            "$" +
+             pdfValues[i].expenses?"$" +
               pdfValues[i].expenses
                 .toString()
-                .replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                .replace(/\B(?=(\d{3})+(?!\d))/g, ","):'',
             leftStartCoordinate + 136,
             169
           );
           doc.text(
-            "$" +
+           pdfValues[i].totalAmount? "$" +
               pdfValues[i].totalAmount
                 .toString()
-                .replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                .replace(/\B(?=(\d{3})+(?!\d))/g, ","):'',
             leftStartCoordinate + 136,
             178
           );
 
-          doc.text(pdfValues[i].contact, leftStartCoordinate + 38, 200);
+          doc.text(pdfValues[i].contact?pdfValues[i].contact:'', leftStartCoordinate + 38, 200);
           doc.text(
             "Ministry of Citizens' Seevices",
             leftStartCoordinate + 38,
@@ -240,7 +241,7 @@ export default {
 
           doc.text(
             "Includes Time and Expenses up to " +
-              new Date(pdfValues[i].totalAmount).toString().slice(0, 15),
+              new Date(pdfValues[i].dateCreated).toString().slice(0, 15),
             leftStartCoordinate + 35,
             230
           );
@@ -272,10 +273,10 @@ export default {
           const tableRowsBillingFormatted = pdfValues[
             i
           ].exportDetails.map(proj => [
-            proj.entryDate,
-            proj.description,
-            proj.type,
-            proj.resource,
+            proj.entryDate?proj.entryDate:'',
+            proj.description?proj.description:'',
+            proj.type?proj.type:'',
+            proj.resource?proj.resource:'',
             proj.hours ? proj.hours : "",
             proj.rate ? proj.rate : "",
             proj.amount
@@ -296,7 +297,7 @@ export default {
 
           // theme: 'striped'|'grid'|'plain'|'css'
         }
-        doc.save("sample.pdf");
+        doc.save(this.selectedDate+" "+pdfValues.length+" projects" +".pdf");
       });
     }
   }
