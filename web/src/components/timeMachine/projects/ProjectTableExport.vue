@@ -13,7 +13,7 @@
         <v-data-table
           v-model="selected"
           :headers="headers"
-          :items="projects"
+          :items="projectsList"
           hide-actions
           :multiple-select="singleSelect"
           class="elevation-0 tm-v-datatable"
@@ -21,7 +21,11 @@
         >
           <template slot="items" slot-scope="props">
             <td class="text-xs-left">
-              <v-checkbox :input-value="props.selected"></v-checkbox>
+              <v-checkbox
+                v-model="selectedProjects"
+                :value="props.item.id"
+                :input-value="props.selected"
+              ></v-checkbox>
             </td>
             <td class="text-xs-left">{{ props.item.mou ? props.item.mou.name : 'n/a' }}</td>
             <td v-bind:class="{ 'archived': props.item.is_archived}">
@@ -36,7 +40,8 @@
             >{{ [props.item.client.isNonMinistry?props.item.client.nonMinistryName:props.item.client.ministry.ministryName, props.item.orgDivision].join(" ") }}</td>
             <td class="text-xs-left table-dropdown">
               <span v-if="props.item.teamWideProject">TeamWide Project</span>
-              <v-select :disabled="true"
+              <v-select
+                :disabled="true"
                 v-if="!props.item.teamWideProject"
                 :items="userList"
                 label="Select Project Lead"
@@ -52,7 +57,8 @@
             </td>
             <td class="text-xs-left table-dropdown">
               <v-select
-                v-if="!props.item.teamWideProject" :disabled="true"
+                v-if="!props.item.teamWideProject"
+                :disabled="true"
                 :items="userList"
                 @click.native="getProjectBackup(props.item.projectBackupUserId)"
                 @change="assignBackup(props.item.projectBackupUserId, props.item)"
@@ -99,6 +105,7 @@ export default {
     return {
       singleSelect: false,
       selected: [],
+      selectedProjects: [],
       headers: [
         { text: " ", value: " ", align: "left", sortable: true },
         { text: "MOU / Contract", value: "mou", align: "left", sortable: true },
@@ -120,21 +127,40 @@ export default {
         { text: "Last Updated", value: "dateModified", sortable: true }
       ],
       selectedLeadUser: "",
-      selectedProjectBackup: ""
+      selectedProjectBackup: "",
+      projectsList: this.getAllProjectList("")
     };
   },
   computed: {
-    projects() {
-      if (this.selectedItem === 1) {
-        return this.$store.state.allProjects;
-      }
-      return this.$store.state.projects;
-    },
+    // projects() {
+    //   // if (this.selectedItem === 1) {
+    //   //   return this.$store.state.allProjects;
+    //   // }
+    //   return this.$store.state.projects;
+    // },
     userList() {
       return this.$store.state.users;
     }
   },
   methods: {
+    getAllProjectList(date = "") {
+      if (date == "") {
+        var currentDate = new Date().toISOString().split("T")[0];
+        this.projectsList = this.$store.state.projects.filter(
+          el => el.completionDate.substring(0, 7) == currentDate.substring(0,7)
+        );
+        return this.projectsList;
+      } else {
+        this.projectsList = this.$store.state.projects.filter(
+          el => el.completionDate.substring(0, 7) == date
+        );
+        return this.projectsList;
+      }
+    },
+
+    getAllProjectIds() {
+      return this.selectedProjects;
+    },
     fetchData() {
       this.$store.dispatch("fetchAllProjects");
       this.$store.dispatch("fetchProjects");
