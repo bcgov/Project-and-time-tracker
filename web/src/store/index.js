@@ -1137,7 +1137,7 @@ const store = new Vuex.Store({
         .then((res) => {
           const content = res.data;
           ctx.commit('addTimesheet', content);
-          ctx.commit('setTimesheetsWeek', { startDate: content.startDate, endDate: content.endDate });
+          //ctx.commit('setTimesheetsWeek', { startDate: content.startDate, endDate: content.endDate });
           return Promise.resolve(content);
         })
         .catch(err => Promise.reject(err.response));
@@ -1151,7 +1151,7 @@ const store = new Vuex.Store({
         .then((res) => {
           const content = res.data;
           ctx.commit('addTimesheet', content);
-          ctx.commit('setTimesheetsWeek', { startDate: content.startDate, endDate: content.endDate });
+          //ctx.commit('setTimesheetsWeek', { startDate: content.startDate, endDate: content.endDate });
           return Promise.resolve(content);
         })
         .catch(err => Promise.reject(err.response));

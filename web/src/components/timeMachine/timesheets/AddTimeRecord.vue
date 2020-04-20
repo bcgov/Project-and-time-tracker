@@ -55,7 +55,7 @@
               <v-tab-item value="batch">
                 <v-flex>
                   <v-flex class="d-flex" cols="12" sm="6">
-                    <v-flex md6 v-show="!editMode">
+                    <v-flex md6 >
                       <timesheets-calendar
                         ref="TimeCalenderBatch"
                         @next="onChangeWeek"
@@ -133,7 +133,7 @@
                 </v-flex>
                 <v-flex>
                   <v-flex class="d-flex" cols="12" sm="6">
-                    <v-flex md6 v-show="!editMode">
+                    <v-flex md6 >
                       <timesheets-calendar
                         ref="TimeCalenderWeekly"
                         @next="onChangeWeek"
@@ -319,7 +319,7 @@ export default {
       this.form.userId = userId;
       this.userMouProjects = this.$store.state.allProjects.filter(
         item => item.mou
-          && (item.backupUserId === this.form.userId || item.leadUserId === this.form.userId || item.teamWideProject===true),
+          && (item.backupUserId === this.form.userId || item.leadUserId === this.form.userId || item.teamWideProject === true),
       );
       if (!editMode) {
         this.getTimeSheets();
@@ -536,6 +536,8 @@ export default {
       } else {
         this.clearTimesheet();
       }
+      this.$refs.TimeCalenderBatch.disableWeekPicker(editMode);
+      this.$refs.TimeCalenderWeekly.disableWeekPicker(editMode);
       this.dialog = true;
       setTimeout(() => {
         if (document.getElementsByClassName('v-dialog v-dialog--active')[0]) {
