@@ -279,7 +279,7 @@ export const retrieveFinanceData = async (obj, userId) => {
       exportData.fees = fees;
       exportData.expenses = expenses;
       exportData.totalAmount = fees + expenses;
-
+      exportData.dateCreated = new Date();
       model.createdUserId = userId;
       model.documentNo = documentNo;
       model.exportData = JSON.stringify(exportData);
