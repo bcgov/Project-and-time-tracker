@@ -16,13 +16,13 @@
         <v-flex my1 justify-center>
           <div class="date-picker-container">
             <v-btn-toggle class="v-btn-toggle--selected" style="flex: 0 0 auto !important;">
-              <v-btn @click="setPreviousTimesheetsWeek" flat>
+              <v-btn @click="setPreviousTimesheetsWeek" flat :disabled='disabledatepicker' >
                 <v-icon>arrow_left</v-icon>
               </v-btn>
-              <v-btn @click="toggleDatePicker" flat>
+              <v-btn @click="toggleDatePicker" flat :disabled='disabledatepicker' >
                 <span style="padding-left: 1rem; padding-right: 1rem;">{{ calendarText }}</span>
               </v-btn>
-              <v-btn @click="setNextTimesheetsWeek" flat>
+              <v-btn @click="setNextTimesheetsWeek" flat :disabled='disabledatepicker' >
                 <v-icon>arrow_right</v-icon>
               </v-btn>
             </v-btn-toggle>
@@ -55,6 +55,7 @@ export default {
       calendarText: this.getCalendarText(),
       selectedDate: moment().format('YYYY-MM-DD'),
       showDatePicker: false,
+      disabledatepicker: false,
     };
   },
   watch: {
@@ -68,6 +69,9 @@ export default {
     ...mapState(['timesheetsWeek']),
   },
   methods: {
+    disableWeekPicker(flag = false) {
+      this.disabledatepicker = flag;
+    },
     getCalendarText() {
       const months = [];
       months[0] = 'Jan';
