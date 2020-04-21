@@ -154,6 +154,7 @@ export default {
     },
 
     getAllProjectIds() {
+      debugger;
       return this.selectedProjects;
     },
 
@@ -191,7 +192,7 @@ export default {
       return {};
     },
     exportToPDF() {
-      let projects = this.$refs.projectFinanceExport.getAllProjectIds();
+      let projects = this.getAllProjectIds();
       const vm = this;
       projects = projects.map(str => ({ projectId: str }));
       const pdfValues = [];
