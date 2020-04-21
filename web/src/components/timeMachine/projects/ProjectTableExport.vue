@@ -385,15 +385,22 @@ export default {
 
           // theme: 'striped'|'grid'|'plain'|'css'
         }
+        
         const monthYear = this.getMonthAndYear(this.selectedDate);
         doc.save(`${monthYear}-${pdfValues.length} projects` + '.pdf');
       });
     },
     getMonthAndYear(date) {
+      if(date.length>0) {
       const Month = new Date(`${date.toString()}-01`).toString().slice(4, 7);
       const Year = new Date(`${date.toString()}-01`).toString().slice(11, 15);
       const newDate = `${Month} ${Year}`;
-      return newDate;
+       return newDate;
+      } else {
+      const newDate = new Date().toISOString().slice(0,7);
+       return newDate;
+      } 
+     
     },
 
   },
