@@ -746,7 +746,7 @@ export default {
       const formData = {
         userId: this.form.userId,
       };
-      const user = this.$store.state.users.find(item => item.referenceId === this.form.userId);
+      const user = this.$store.state.users.find(item => item.id === this.form.userId);
       let hourlyRate = 0;
       if (user && user.contact && user.contact.hourlyRate) { hourlyRate = user.contact.hourlyRate; }
       const vm = this;
