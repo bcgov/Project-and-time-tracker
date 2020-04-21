@@ -152,23 +152,46 @@ function uuidv4() {
     return v.toString(16);
   });
 }
-function getPDFName() {
+function getPDFName(count) {
+  var month = new Array();
+  month[0] = 'January';
+  month[1] = 'February';
+  month[2] = 'March';
+  month[3] = 'April';
+  month[4] = 'May';
+  month[5] = 'June';
+  month[6] = 'July';
+  month[7] = 'August';
+  month[8] = 'September';
+  month[9] = 'October';
+  month[10] = 'November';
+  month[11] = 'December';
+
   var newDate = new Date();
+  if (count === 1) {
+    return (
+      month[newDate.getMonth()] +
+      ' - ' +
+      newDate.getFullYear() +
+      ' - ' +
+      count.toString() +
+      ' Project.pdf'
+    );
+  }
   return (
-    'TimeMachine-' +
+    month[newDate.getMonth()] +
+    ' - ' +
     newDate.getFullYear() +
-    '-' +
-    (newDate.getMonth() + 1) +
-    '-' +
-    newDate.getDate() +
-    '.pdf'
+    ' - ' +
+    count.toString() +
+    ' Projects.pdf'
   );
 }
 
 export const retrieveFinanceData = async (obj, userId) => {
   const financeExport = obj as IFinanceExport[];
   const documentNo: string = uuidv4();
-  const documentPath: string = getPDFName();
+  const documentPath: string = getPDFName(financeExport.length);
 
   for (let index = 0; index < financeExport.length; index++) {
     let model = financeExport[index];
@@ -317,7 +340,7 @@ export const retrieveFinanceData = async (obj, userId) => {
   return result;
 };
 
-export const downloadpdf = async (obj) => {
+export const downloadpdf = async obj => {
   const repo = financeRepo();
   console.log('result:', obj);
   const result = await repo
@@ -392,13 +415,10 @@ export const retrieveExportedPdfs = async obj => {
   const res = await repo
     .createQueryBuilder('t')
     .select(['t.documentNo', 't.documentPath'])
-    .where(
-      '(t.dateCreated >= :start and t.dateCreated <= :end) ',
-      {
-        start: obj.startDate,
-        end: obj.endDate
-      }
-    )
+    .where('(t.dateCreated >= :start and t.dateCreated <= :end) ', {
+      start: obj.startDate,
+      end: obj.endDate
+    })
     .groupBy('t.documentNo')
     .addGroupBy('t.documentPath')
     .getRawMany();
