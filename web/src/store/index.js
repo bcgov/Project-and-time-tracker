@@ -62,6 +62,7 @@ const store = new Vuex.Store({
     activeIntakeRequestId: null,
     activeIntakeRequest: {},
     intakeRequests: [],
+    timesheetProjects: [],
     // Projects component
     activeProjectId: null,
     activeProject: {},
@@ -160,6 +161,9 @@ const store = new Vuex.Store({
     },
     fetchRFxPhases(state, data) {
       state.rfxPhases = data;
+    },
+    fetchTimesheetProjects(state, data) {
+      state.timesheetprojects = data;
     },
     fetchRFxTypes(state, data) {
       state.rfxTypes = data;
@@ -989,6 +993,17 @@ const store = new Vuex.Store({
         })
         .catch(err => Promise.reject(err));
       return Promise.resolve(api);
+    },
+   async fetchTimesheetProjects(ctx) {
+     const api = await $http
+        .get(`${API_URI}/project/timesheetprojects`)
+        .then((res) => {
+          let content = res.data;
+          content = res.data.map(project => project);
+          ctx.commit('fetchTimesheetProjects', content);
+          return Promise.resolve(content);
+        });
+        return Promise.resolve(api);
     },
     async assignProjectBackup(ctx, req) {
       const body = {
