@@ -360,21 +360,15 @@ export const retrieveTimesheetProjects = async obj => {
 };
 export const retrieveExportedPdfs = async obj => {
   const repo = financeRepo();
-  const result = await repo
-    .createQueryBuilder('f')
-    .select('DISTINCT f.documentNo', 'documentNo')
-    .addSelect('f.documentPath', 'documentPath')
-    .addSelect('f.dateCreated', 'dateCreated')
-    // .where(
-    //   '(f.dateCreated between :start and :end)',
-    //   {
-    //     start: obj.startDate,
-    //     end: obj.endDate,
-    //   }
-    // )
-    .getMany();
 
-  return result;
+  const res = await repo
+    .createQueryBuilder('t')
+    .select('DISTINCT t.documentNo', 'documentNo')
+    // .select('t.dateCreated', 'dateCreated')
+    // .select('t.documentPath', 'documentPath')
+    .getRawMany();
+
+  return res;
 };
 export const retrieveAllProjects = async () => {
   const repo = projectRepo();
