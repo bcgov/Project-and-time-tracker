@@ -24,7 +24,7 @@
                 v-model="props.item.project"
                 item-value="id"
                 item-text="projectName"
-                :disabled="editMode"
+                :disabled="editMode || props.item.is_locked"
                 label="Project Name"
                 return-object
               ></v-select>
@@ -42,6 +42,7 @@
                   max="24"
                   step="0.01"
                   min="0"
+                  :disabled="props.item.is_locked"
                   :rules="hoursRule"
                   oninput="validity.valid||(value=0);"
                   v-model="props.item.entries[index - 1].hoursBillable"
@@ -54,6 +55,7 @@
                 >
                   <template v-slot:activator="{ on }">
                     <v-btn
+                    :disabled="props.item.is_locked"
                       style="width:0px;margin-top: 13px;"
                       @click="
                         addcomment(
@@ -79,6 +81,7 @@
                 >
                   <template v-slot:activator="{ on }">
                     <v-btn
+                    :disabled="props.item.is_locked"
                       style="width:0px;margin-top: 13px;"
                       @click="
                         addcomment(
@@ -104,6 +107,7 @@
                   type="number"
                   max="24"
                   step="0.01"
+                  :disabled="props.item.is_locked"
                   min="0"
                   :rules="hoursRule"
                   oninput="validity.valid||(value=0);"
@@ -116,6 +120,7 @@
                 >
                   <template v-slot:activator="{ on }">
                     <v-btn
+                    :disabled="props.item.is_locked"
                       style="width:0px;margin-top: 13px;"
                       @click="
                         addcomment(
@@ -141,6 +146,7 @@
                 >
                   <template v-slot:activator="{ on }">
                     <v-btn
+                    :disabled="props.item.is_locked"
                       style="width:0px;margin-top: 13px;"
                       @click="
                         addcomment(

@@ -16,6 +16,7 @@
           <v-flex md1>{{ days[index] }}</v-flex>
           <v-flex md2>
             <v-text-field
+            :disabled="timesheet[projectIndex].is_locked"
               :rules="amountRule"
               prepend-inner-icon="attach_money"
               oninput="validity.valid||(value='');"
@@ -24,7 +25,7 @@
             ></v-text-field>
           </v-flex>
           <v-flex md7>
-            <v-text-field v-model="item.revenueComment"></v-text-field>
+            <v-text-field v-model="item.revenueComment" :disabled="timesheet[projectIndex].is_locked"></v-text-field>
           </v-flex>
           <v-flex md2>
             <v-tooltip top open-delay="500">
@@ -34,6 +35,7 @@
                   icon
                   @click="copyfunc(item.revenueAmount, item.revenueComment)"
                   v-on="on"
+                  :disabled="timesheet[projectIndex].is_locked"
                 >
                   <v-icon>file_copy</v-icon>
                 </v-btn>
@@ -43,7 +45,7 @@
 
             <v-tooltip top open-delay="500">
               <template v-slot:activator="{ on }">
-                <v-btn flat icon @click="pastefunc(index)" v-on="on">
+                <v-btn flat icon @click="pastefunc(index)" v-on="on" :disabled="timesheet[projectIndex].is_locked">
                   <v-icon>post_add</v-icon>
                 </v-btn>
               </template>
