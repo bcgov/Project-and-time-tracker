@@ -63,6 +63,7 @@ const store = new Vuex.Store({
     activeIntakeRequest: {},
     intakeRequests: [],
     timesheetProjects: [],
+    downloadedPdfs: [],
     // Projects component
     activeProjectId: null,
     activeProject: {},
@@ -164,6 +165,9 @@ const store = new Vuex.Store({
     },
     fetchTimesheetProjects(state, data) {
       state.timesheetprojects = data;
+    },
+    fetchExportedPdfs(state, data) {
+      state.downloadedPdfs = data;
     },
     fetchRFxTypes(state, data) {
       state.rfxTypes = data;
@@ -1146,7 +1150,19 @@ const store = new Vuex.Store({
         })
         .catch(err => Promise.reject(err.response));
       return Promise.resolve(api);
-    },   
+    }, 
+    async fetchExportedPdfs(ctx, req) {
+      const body = req;
+      const api = await $http
+        .post(`${API_URI}/project/exportedPdfs`, body)
+        .then((res) => {
+          const content = res.data;        
+          ctx.commit('fetchExportedPdfs', content);
+          return Promise.resolve(content);
+        })
+        .catch(err => Promise.reject(err.response));
+      return Promise.resolve(api);
+    },     
   async addBatchTimesheet(ctx, req) {
       const body = req;
 

@@ -7,6 +7,7 @@ import {
   retrieveProjectsByUserId,
   retrieveArchivedProjects,
   retrieveTimesheetProjects,
+  retrieveExportedPdfs,
   retrieveAllProjects,
   retrieveFinanceData
 } from '../../../services/client/project.service';
@@ -48,6 +49,15 @@ export const timesheetProjects = async (ctx: Koa.Context) => {
     const auth = ctx.state.auth as IAuth;
     const obj = ctx.request.body as any;
     ctx.body = await retrieveTimesheetProjects(obj);
+  } catch (err) {
+    ctx.throw(err.message);
+  }
+};
+export const exportedPdfs = async (ctx: Koa.Context) => {
+  try {
+    const auth = ctx.state.auth as IAuth;
+    const obj = ctx.request.body as any;
+    ctx.body = await retrieveExportedPdfs(obj);
   } catch (err) {
     ctx.throw(err.message);
   }
@@ -228,6 +238,7 @@ router.get('/', authorize, getProjects);
 router.get('/all', authorize, getAllProjects);
 router.get('/archived', authorize, getArchivedProjects);
 router.post('/timesheetprojects', authorize, timesheetProjects);
+router.post('/exportedPdfs', authorize, exportedPdfs);
 router.post('/finance', authorize, getfinanceExport);
 router.get('/:id', authorize, getProjectById);
 router.patch('/:id', authorize, updateProjectAction);

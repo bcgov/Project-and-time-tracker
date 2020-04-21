@@ -343,7 +343,7 @@ export const retrieveArchivedProjects = async () => {
 export const retrieveTimesheetProjects = async obj => {
   const repo = timesheetRepo();
 
-  let res = await repo
+  const res = await repo
     .createQueryBuilder('t')
     .select('DISTINCT t.project', 'id')
     .where(
@@ -357,6 +357,24 @@ export const retrieveTimesheetProjects = async obj => {
     .getRawMany();
 
   return res;
+};
+export const retrieveExportedPdfs = async obj => {
+  const repo = financeRepo();
+  const result = await repo
+    .createQueryBuilder('f')
+    .select('DISTINCT f.documentNo', 'documentNo')
+    .addSelect('f.documentPath', 'documentPath')
+    .addSelect('f.dateCreated', 'dateCreated')
+    // .where(
+    //   '(f.dateCreated between :start and :end)',
+    //   {
+    //     start: obj.startDate,
+    //     end: obj.endDate,
+    //   }
+    // )
+    .getMany();
+
+  return result;
 };
 export const retrieveAllProjects = async () => {
   const repo = projectRepo();

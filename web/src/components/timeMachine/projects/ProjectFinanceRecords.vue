@@ -36,11 +36,11 @@
         </v-menu>
       </v-flex>
       <v-flex md-10>
-        <div class="start-button-div">
+        <!-- <div class="start-button-div">
           <v-btn color="primary" class="start-button-style" @click="exportToPDF"
             >Export Finance to PDF</v-btn
           >
-        </div>
+        </div> -->
       </v-flex>
     </v-layout>
     <v-card-text class="pa-0">
@@ -55,19 +55,9 @@
           disable-initial-sort
         >
           <template slot="items" slot-scope="props">
-            <td class="text-xs-left">
-              <v-checkbox
-                v-model="selectedProjects"
-                :value="props.item.id"
-                :input-value="props.selected"
-              ></v-checkbox>
-            </td>
-
-
-            <td class="text-xs-left">{{ props.item.projectName  }}</td>
-             <td class="text-xs-left">{{ [props.item.client.isNonMinistry?props.item.client.nonMinistryName:props.item.client.ministry.ministryName, props.item.orgDivision].join(" ") }}</td>
-             <td class="text-xs-left">{{ props.item.completionDate | formatDate }}</td>
-            <td class="text-xs-left">{{ props.item.dateModified | formatDate }}</td>
+            <td class="text-xs-left">{{ props.item.documentNo}}</td>
+            <td class="text-xs-left">{{ props.item.recordName  }}</td>
+            <!-- <td class="text-xs-left">{{ props.item.dateModified | formatDate }}</td> -->
           </template>
         </v-data-table>
       </template>
@@ -107,20 +97,17 @@ export default {
       modal: false,
       selectedDate: '',
       headers: [
-        { text: ' ', value: ' ', align: 'left', sortable: true },
-        { text: 'Project Name', value: 'projectName', align: 'left', sortable: true },
-        { text: 'Client', value: 'client.ministry.ministryName', sortable: true },
-        { text: 'Project Deadline', value: 'completionDate', sortable: true },
-        { text: 'Last Updated', value: 'dateModified', sortable: true },
+        { text: 'Document No', value: 'documentNo', align: 'left', sortable: true },
+        { text: 'Record Name', value: 'recordName', sortable: true },
       ],
       projectsList: [],
     };
   },
   computed: {
     projects() {
-      // if (this.projectsList.length === 0) {
-      //   this.fetchData();
-      // }
+      if (this.projectsList.length === 0) {
+        this.fetchData();
+      }
       return this.projectsList;
     },
     userList() {
@@ -129,20 +116,21 @@ export default {
   },
   methods: {
     async getAllProjectList() {
-      const selectedDate = this.date.split('-');
+      const res = this.date.split('-');
 
-      const year = parseInt(selectedDate[0], 10);
-      const month = parseInt(selectedDate[1], 10);
+      const year = parseInt(res[0], 10);
+      const month = parseInt(res[1], 10);
 
       const monthStartDay = new Date(year, month - 1, 1);
       const monthEndDay = new Date(year, month, 0);
       const vm = this;
       const postData = { startDate: this.getDateInYYYYMMDD(monthStartDay), endDate: this.getDateInYYYYMMDD(monthEndDay) };
       await this.$store
-        .dispatch('fetchTimesheetProjects', postData)
+        .dispatch('fetchExportedPdfs', postData)
         .then(
           (res) => {
-            vm.projectsList = vm.$store.state.allProjects.filter(el => res.some(f => f.id === el.id));
+            console.log('res:::',res);
+            vm.projectsList = res;
           },
           (err) => {
             try {

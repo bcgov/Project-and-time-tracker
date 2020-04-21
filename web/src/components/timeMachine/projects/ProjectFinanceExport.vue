@@ -9,6 +9,7 @@
     <v-layout row wrap>
       <v-flex xs12>
         <projects-table v-if="selected === 'New Finance Report'" ref="projectFinanceExport"></projects-table>
+         <finance-records v-if="selected === 'Finance Records'" ref="projectFinanceRecords"></finance-records>
       </v-flex>
     </v-layout>
     <v-flex md12></v-flex>
@@ -17,13 +18,14 @@
 
 <script>
 import Material from 'vuetify/es5/util/colors';
-
+import FinanceRecords from './ProjectFinanceRecords.vue';
 import ProjectsTable from './ProjectTableExport.vue';
 import './projects.styl';
 
 export default {
   components: {
     ProjectsTable,
+    FinanceRecords
   },
   data: () => ({
     color: Material,
