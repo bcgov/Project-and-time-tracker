@@ -316,6 +316,18 @@ export const retrieveFinanceData = async (obj, userId) => {
 
   return result;
 };
+
+export const downloadpdf = async (obj) => {
+  const repo = financeRepo();
+  console.log('result:', obj);
+  const result = await repo
+    .createQueryBuilder('f')
+    .where('f."documentNo" = :documentId ', { documentId: obj.documentNo })
+    .getMany();
+  console.log('result:', result);
+  return result;
+};
+
 export const createFinanceExport = async (obj: IFinanceExport) => {
   obj.dateCreated = new Date();
   await financeRepo().save(obj);
@@ -380,6 +392,13 @@ export const retrieveExportedPdfs = async obj => {
   const res = await repo
     .createQueryBuilder('t')
     .select(['t.documentNo', 't.documentPath'])
+    .where(
+      '(t.dateCreated >= :start and t.dateCreated <= :end) ',
+      {
+        start: obj.startDate,
+        end: obj.endDate
+      }
+    )
     .groupBy('t.documentNo')
     .addGroupBy('t.documentPath')
     .getRawMany();

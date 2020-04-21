@@ -86,7 +86,9 @@ const PSB_Intake_User = [
   'POST/intake/:id/approve',
   'POST/project/finance',
   'POST/project/timesheetprojects',
-  'POST/project/exportedPdfs'
+  'POST/project/exportedPdfs',
+  'POST/project/downloadFinancePdf'
+  
 ];
 
 const permissions = {
