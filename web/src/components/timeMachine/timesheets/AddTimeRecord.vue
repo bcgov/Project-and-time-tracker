@@ -348,7 +348,7 @@ export default {
       this.form.project = undefined;
       this.$store.state.activeProjectRfxData = [];
       this.form.rfx = undefined;
-      if (!editMode) {this.selectWeeklyProject(undefined, this.form.mou);}
+      if (!editMode) { this.selectWeeklyProject(undefined, this.form.mou); }
       // this.selectWeeklyProject(undefined, this.form.mou);
       // if (this.projectList.length > 0) {
       //   this.selectWeeklyProject(this.projectList[0].id, this.form.mou);
@@ -710,8 +710,8 @@ export default {
     csvExport(arrData) {
       let csvContent = 'data:text/csv;charset=utf-8,';
       csvContent += [
-        Object.keys(arrData[0]).join(';'),
-        ...arrData.map(item => Object.values(item).join(';')),
+        Object.keys(arrData[0]).join(','),
+        ...arrData.map(item => Object.values(item).join(',')),
       ]
         .join('\n')
         .replace(/(^\[)|(\]$)/gm, '');
@@ -723,7 +723,14 @@ export default {
         window.navigator.msSaveOrOpenBlob(blob, 'export.csv');
       } else {
         link.setAttribute('href', data);
-        link.setAttribute('download', 'export.csv');
+        const date = new Date();
+        let userName = '';
+        const user = this.$store.state.users.find(
+          item => item.id === this.form.userId,
+        );
+        if (user) { userName = user.contact.fullName; }
+        const fileName = `TimeMachine-${this.getDateInYYYYMMDD(date).toString()}-${userName}.csv`;
+        link.setAttribute('download', fileName);
         link.click();
       }
     },
