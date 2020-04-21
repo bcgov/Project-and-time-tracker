@@ -746,6 +746,9 @@ export default {
       const formData = {
         userId: this.form.userId,
       };
+      const user = this.$store.state.users.find(item => item.referenceId === this.form.userId);
+      let hourlyRate = 0;
+      if (user && user.contact && user.contact.hourlyRate) { hourlyRate = user.contact.hourlyRate; }
       const vm = this;
       vm.$store.dispatch('fetchTimesheetEntriesByUser', formData).then(() => {
         const timeEntries = [];
@@ -766,6 +769,8 @@ export default {
               'Expense Description': entry.expenseComment,
               'Revenue Amount': entry.revenueAmount,
               'Revenue Description': entry.revenueComment,
+              'Hourly Rate': hourlyRate,
+              Total: (parseInt(entry.hoursBillable, 10) * parseInt(hourlyRate, 10)) + (parseInt(entry.hoursUnBillable, 10) * parseInt(hourlyRate, 10)) + parseInt(entry.expenseAmount, 10) + parseInt(entry.revenueAmount, 10),
             });
           }
         }
