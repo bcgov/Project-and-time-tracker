@@ -57,7 +57,7 @@
           <template slot="items" slot-scope="props">
             <td class="text-xs-left">{{ props.item.t_documentNo}}</td>
             <td class="text-xs-left">{{ props.item.t_documentPath }}</td>
-            <td class="text-xs-left">{{ props.item.t_documentPath.toString().slice(12,18) }}</td>
+            <td class="text-xs-left">{{ props.item.t_documentPath.toString().slice(0,10) }}</td>
             <td class="text-xs-left">
               <v-tooltip top v-if="!props.item.is_archived">
                 <template v-slot:activator="{ on }">
@@ -464,21 +464,20 @@ export default {
             // theme: 'striped'|'grid'|'plain'|'css'
           }
           const monthYear = this.getMonthAndYear(this.selectedDate);
-          doc.save(`${monthYear}-${pdfValues.length} projects` + ".pdf");
+          doc.save(pdfValues[0].documentPath);
         });
     },
-   getMonthAndYear(date) {
-      if(date.length>0) {
-      const Month = new Date(`${date.toString()}-01`).toString().slice(4, 7);
-      const Year = new Date(`${date.toString()}-01`).toString().slice(11, 15);
-      const newDate = `${Month} ${Year}`;
-       return newDate;
+    getMonthAndYear(date) {
+      if (date.length > 0) {
+        const Month = new Date(`${date.toString()}-01`).toString().slice(4, 7);
+        const Year = new Date(`${date.toString()}-01`).toString().slice(11, 15);
+        const newDate = `${Month} ${Year}`;
+        return newDate;
       } else {
-      const newDate = new Date().toISOString().slice(0,7);
-       return newDate;
-      } 
-     
-    },
+        const newDate = new Date().toISOString().slice(0, 7);
+        return newDate;
+      }
+    }
   },
   created() {
     this.fetchData();

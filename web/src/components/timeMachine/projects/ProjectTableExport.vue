@@ -387,7 +387,7 @@ export default {
         }
         
         const monthYear = this.getMonthAndYear(this.selectedDate);
-        doc.save(`${monthYear}-${pdfValues.length} projects` + '.pdf');
+        doc.save(pdfValues[0].documentPath);
       });
     },
     getMonthAndYear(date) {
