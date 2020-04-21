@@ -363,9 +363,10 @@ export const retrieveExportedPdfs = async obj => {
 
   const res = await repo
     .createQueryBuilder('t')
-    .select('DISTINCT t.documentNo', 'documentNo')
-    // .select('t.dateCreated', 'dateCreated')
-    // .select('t.documentPath', 'documentPath')
+    .select(['t.documentNo', 't.documentPath'])
+    .groupBy('t.documentNo')
+
+    .addGroupBy('t.documentPath')
     .getRawMany();
 
   return res;
