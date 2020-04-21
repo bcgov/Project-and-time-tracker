@@ -346,10 +346,14 @@ export const retrieveTimesheetProjects = async obj => {
   let res = await repo
     .createQueryBuilder('t')
     .select('DISTINCT t.project', 'id')
-    .where('(t.startDate >= :start and t.endDate <= :end)', {
-      start: obj.startDate,
-      end: obj.endDate
-    })
+    .where(
+      '(t.startDate >= :start and t.startDate <= :end)  and (t.is_locked = :is_locked or t.is_locked IS NULL)',
+      {
+        start: obj.startDate,
+        end: obj.endDate,
+        is_locked: false
+      }
+    )
     .getRawMany();
 
   return res;

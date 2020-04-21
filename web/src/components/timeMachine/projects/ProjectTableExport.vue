@@ -118,9 +118,9 @@ export default {
   },
   computed: {
     projects() {
-      if (this.projectsList.length === 0) {
-        this.fetchData();
-      }
+      // if (this.projectsList.length === 0) {
+      //   this.fetchData();
+      // }
       return this.projectsList;
     },
     userList() {
@@ -129,10 +129,10 @@ export default {
   },
   methods: {
     async getAllProjectList() {
-      const res = this.date.split('-');
+      const selectedDate = this.date.split('-');
 
-      const year = parseInt(res[0], 10);
-      const month = parseInt(res[1], 10);
+      const year = parseInt(selectedDate[0], 10);
+      const month = parseInt(selectedDate[1], 10);
 
       const monthStartDay = new Date(year, month - 1, 1);
       const monthEndDay = new Date(year, month, 0);
