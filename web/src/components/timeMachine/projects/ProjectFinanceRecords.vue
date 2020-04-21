@@ -490,4 +490,7 @@ export default {
   margin-right: 6%;
   float: right;
 }
+.v-picker {
+  width: 100%;
+}
 </style>

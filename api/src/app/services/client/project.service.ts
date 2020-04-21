@@ -392,6 +392,13 @@ export const retrieveExportedPdfs = async obj => {
   const res = await repo
     .createQueryBuilder('t')
     .select(['t.documentNo', 't.documentPath'])
+    .where(
+      '(t.dateCreated >= :start and t.dateCreated <= :end) ',
+      {
+        start: obj.startDate,
+        end: obj.endDate
+      }
+    )
     .groupBy('t.documentNo')
     .addGroupBy('t.documentPath')
     .getRawMany();
