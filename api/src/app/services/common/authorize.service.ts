@@ -85,7 +85,7 @@ const PSB_Intake_User = [
   'GET/intake/:id',
   'POST/intake/:id/approve',
   'POST/project/finance',
-  'GET/project/timesheetprojects'
+  'POST/project/timesheetprojects'
 ];
 
 const permissions = {

@@ -48,7 +48,7 @@
         <v-data-table
           v-model="selected"
           :headers="headers"
-          :items="projectsList"
+         :items="projects"
           hide-actions
           :multiple-select="singleSelect"
           class="elevation-0 tm-v-datatable"
@@ -58,16 +58,16 @@
             <td class="text-xs-left">
               <v-checkbox
                 v-model="selectedProjects"
-                :value="props.item.project.id"
+                :value="props.item.id"
                 :input-value="props.selected"
               ></v-checkbox>
             </td>
-          
-            <td class="text-xs-left">{{ props.item.startDate ? props.item.startDate : '' }}</td>
-             <td class="text-xs-left">{{ props.item.endDate ? props.item.endDate : '' }}</td>
-            <td class="text-xs-left">{{ props.item.project.completionDate | formatDate }}</td>
+
+
+            <td class="text-xs-left">{{ props.item.projectName  }}</td>
+             <td class="text-xs-left">{{ [props.item.client.isNonMinistry?props.item.client.nonMinistryName:props.item.client.ministry.ministryName, props.item.orgDivision].join(" ") }}</td>
+             <td class="text-xs-left">{{ props.item.completionDate | formatDate }}</td>
             <td class="text-xs-left">{{ props.item.dateModified | formatDate }}</td>
-            <td class="text-xs-left">{{ props.item.project.projectName ? props.item.project.projectName : '' }}</td>
           </template>
         </v-data-table>
       </template>
@@ -78,9 +78,9 @@
 
 <script>
 // import moment from 'moment';
-import Confirm from "../common/Confirm.vue";
-import Snackbar from "../common/Snackbar.vue";
 import jsPDF from 'jspdf';
+import Confirm from '../common/Confirm.vue';
+import Snackbar from '../common/Snackbar.vue';
 import 'jspdf-autotable';
 // Vue.filter('formatDate', function(value) {
 //       if (value) {
@@ -91,11 +91,11 @@ import 'jspdf-autotable';
 export default {
   props: {
     title: String,
-    selectedItem: Number
+    selectedItem: Number,
   },
   components: {
     Snackbar,
-    Confirm
+    Confirm,
   },
   data() {
     return {
@@ -105,89 +105,86 @@ export default {
       date: new Date().toISOString().substr(0, 7),
       menu: false,
       modal: false,
-      selectedDate:'',
+      selectedDate: '',
       headers: [
-        { text: " ", value: " ", align: "left", sortable: true },
-      
-        // {
-        //   text: "Project Name",
-        //   value: "project.projectName",
-        //   align: "left",
-        //   sortable: true
-        // },
-        { text: "startDate", value: "startDate", align: "left", sortable: true },
-        { text: "endDate", value: "endDate", sortable: false },
-        { text: "Project Deadline", value: "completionDate", sortable: true },
-        { text: "Last Updated", value: "dateModified", sortable: true },
-         { text: "Project Name", value: "projectName", sortable: true },
+        { text: ' ', value: ' ', align: 'left', sortable: true },
+        { text: 'Project Name', value: 'projectName', align: 'left', sortable: true },
+        { text: 'Client', value: 'client.ministry.ministryName', sortable: true },
+        { text: 'Project Deadline', value: 'completionDate', sortable: true },
+        { text: 'Last Updated', value: 'dateModified', sortable: true },
       ],
-      projectsList: this.getAllProjectList("")
+      projectsList: [],
     };
   },
   computed: {
-    // projects() {
-    //   // if (this.selectedItem === 1) {
-    //   //   return this.$store.state.allProjects;
-    //   // }
-    //   return this.$store.state.projects;
-    // },
+    projects() {
+      debugger;
+      return this.projectsList;
+    },
     userList() {
       return this.$store.state.users;
-    }
+    },
   },
   methods: {
-    getAllProjectList(date = "") {
-      if (date == "") {
-        var currentDate = new Date().toISOString().split("T")[0];
-        this.projectsList = this.$store.state.projects.filter(
-          el => el.completionDate.substring(0, 7) == currentDate.substring(0,7)
+    async getAllProjectList() {
+      const res = this.date.split('-');
+
+      const year = parseInt(res[0], 10);
+      const month = parseInt(res[1], 10);
+
+      const monthStartDay = new Date(year, month - 1, 1);
+      const monthEndDay = new Date(year, month, 0);
+      const vm = this;
+      const postData = { startDate: this.getDateInYYYYMMDD(monthStartDay), endDate: this.getDateInYYYYMMDD(monthEndDay) };
+      await this.$store
+        .dispatch('fetchTimesheetProjects', postData)
+        .then(
+          (res) => {
+            vm.projectsList = vm.$store.state.allProjects.filter(el => res.some(f => f.id === el.id));
+          },
+          (err) => {
+            try {
+              const { message } = err.response.data.error;
+              vm.$refs.snackbar.displaySnackbar('error', message);
+            } catch (ex) {
+              vm.$refs.snackbar.displaySnackbar('error', 'Failed to update');
+            }
+          },
         );
-        return this.projectsList;
-      } else {
-        this.projectsList = this.$store.state.projects.filter(
-          el => el.completionDate.substring(0, 7) == date
-        );
-        return this.projectsList;
-      }
     },
 
     getAllProjectIds() {
       return this.selectedProjects;
     },
-   async fetchData() {
-     // this.$store.dispatch("fetchProjects");
-     const value = await this.$store.dispatch("fetchTimesheetProjects");
-     await this.$store
-            .dispatch('fetchTimesheetProjects'
-            // , {id: this.project.client.id,financeCodes: projectFinanceForm,}
-            )
-            .then(
-              (res) => {
-                console.log(res);
-               this.projectsList =res;
-              },
-              (err) => {
-                try {
-                  const { message } = err.response.data.error;
-                  this.$refs.snackbar.displaySnackbar('error', message);
-                } catch (ex) {
-                  this.$refs.snackbar.displaySnackbar('error', 'Failed to update');
-                }
-              },
-            );
+
+    getDateInYYYYMMDD(date) {
+      // year
+      const yyyy = `${date.getFullYear()}`;
+      // month
+      let mm = `0${date.getMonth() + 1}`; // prepend 0 // +1 is because Jan is 0
+      mm = mm.substr(mm.length - 2); // take last 2 chars
+      // day
+      let dd = `0${date.getDate()}`; // prepend 0
+      dd = dd.substr(dd.length - 2); // take last 2 chars
+      return `${yyyy}-${mm}-${dd}`;
+    },
+
+    async fetchData() {
+      await this.$store.dispatch('fetchAllProjects');
+      this.getAllProjectList();
     },
 
     formatDate(dateStr) {
-      const split = dateStr.split("T");
+      const split = dateStr.split('T');
       if (split) {
         return split[0];
       }
       return dateStr;
     },
-  
+
     datefilter(date) {
       this.$refs.menu.save(date);
-      this.selectedDate =date;
+      this.selectedDate = date;
       this.getAllProjectList(date);
     },
     dataForPdfCreation() {
@@ -199,7 +196,6 @@ export default {
       projects = projects.map(str => ({ projectId: str }));
       const pdfValues = [];
       vm.$store.dispatch('financeExport', projects).then(() => {
-        debugger;
         vm.$store.state.financeExport.forEach((entry) => {
           const exportData = JSON.parse(entry.exportData);
           pdfValues.push(exportData);
@@ -387,21 +383,21 @@ export default {
 
           // theme: 'striped'|'grid'|'plain'|'css'
         }
-        let monthYear = this.getMonthAndYear(this.selectedDate);
-        doc.save(monthYear+"-"+pdfValues.length+" projects" +".pdf");
+        const monthYear = this.getMonthAndYear(this.selectedDate);
+        doc.save(`${monthYear}-${pdfValues.length} projects` + '.pdf');
       });
     },
     getMonthAndYear(date) {
-       let Month = new Date(date.toString()+"-01").toString().slice(4, 7);
-       let Year = new Date(date.toString()+"-01").toString().slice(11, 15);
-       let newDate = Month+" "+ Year;
-       return newDate;
-    }
-  
+      const Month = new Date(`${date.toString()}-01`).toString().slice(4, 7);
+      const Year = new Date(`${date.toString()}-01`).toString().slice(11, 15);
+      const newDate = `${Month} ${Year}`;
+      return newDate;
+    },
+
   },
   created() {
     this.fetchData();
-  }
+  },
 };
 </script>
 <style>

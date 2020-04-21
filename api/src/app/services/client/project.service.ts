@@ -340,23 +340,20 @@ export const retrieveArchivedProjects = async () => {
     .getMany();
 };
 
-export const retrieveTimesheetProjects = async () => {
+export const retrieveTimesheetProjects = async obj => {
   const repo = timesheetRepo();
-  return await repo
-    .createQueryBuilder('t')
-    .innerJoin('t.project', 'p')
-    .select([
-      'p.id',
-      'p.projectName',
-      'p.completionDate',
-      't.dateModified',
-      't.startDate',
-      't.endDate'
-    ])
-    // .where('p.is_archived = :is_archived', { is_archived: true })
-    .getMany();
-};
 
+  let res = await repo
+    .createQueryBuilder('t')
+    .select('DISTINCT t.project', 'id')
+    .where('(t.startDate >= :start and t.endDate <= :end)', {
+      start: obj.startDate,
+      end: obj.endDate
+    })
+    .getRawMany();
+
+  return res;
+};
 export const retrieveAllProjects = async () => {
   const repo = projectRepo();
   return await repo

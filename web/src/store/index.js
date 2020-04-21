@@ -994,17 +994,7 @@ const store = new Vuex.Store({
         .catch(err => Promise.reject(err));
       return Promise.resolve(api);
     },
-   async fetchTimesheetProjects(ctx) {
-     const api = await $http
-        .get(`${API_URI}/project/timesheetprojects`)
-        .then((res) => {
-          let content = res.data;
-          content = res.data.map(project => project);
-          ctx.commit('fetchTimesheetProjects', content);
-          return Promise.resolve(content);
-        });
-        return Promise.resolve(api);
-    },
+  
     async assignProjectBackup(ctx, req) {
       const body = {
         userId: req.userId,
@@ -1144,6 +1134,19 @@ const store = new Vuex.Store({
         .catch(err => Promise.reject(err.response));
       return Promise.resolve(api);
     },
+
+     async fetchTimesheetProjects(ctx, req) {
+      const body = req;
+      const api = await $http
+        .post(`${API_URI}/project/timesheetprojects`, body)
+        .then((res) => {
+          const content = res.data;        
+          ctx.commit('fetchTimesheetProjects', content);
+          return Promise.resolve(content);
+        })
+        .catch(err => Promise.reject(err.response));
+      return Promise.resolve(api);
+    },   
   async addBatchTimesheet(ctx, req) {
       const body = req;
 
