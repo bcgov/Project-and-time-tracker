@@ -62,11 +62,13 @@ export default {
     date: new Date().toISOString().substr(0, 7),
     menu: false,
     modal: false,
+    selectedDate:''
   }),
   computed: {},
   methods: {
     datefilter(date) {
       this.$refs.menu.save(date);
+      this.selectedDate =date;
       this.$refs.projectFinanceExport.getAllProjectList(date);
     },
     dataForPdfCreation() {
@@ -266,9 +268,16 @@ export default {
 
           // theme: 'striped'|'grid'|'plain'|'css'
         }
-        doc.save('sample.pdf');
+        let monthYear = this.getMonthAndYear(this.selectedDate);
+        doc.save(monthYear+"-"+pdfValues.length+" projects" +".pdf");
       });
     },
+    getMonthAndYear(date) {
+       let Month = new Date(date.toString()+"-01").toString().slice(4, 7);
+       let Year = new Date(date.toString()+"-01").toString().slice(11, 15);
+       let newDate = Month+" "+ Year;
+       return newDate;
+    }
   },
 };
 </script>
