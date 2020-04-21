@@ -348,7 +348,9 @@ export default {
       this.form.project = undefined;
       this.$store.state.activeProjectRfxData = [];
       this.form.rfx = undefined;
-      if (!editMode) { this.selectWeeklyProject(undefined, this.form.mou); }
+      if (!editMode) {
+        this.form.is_locked = false;
+      }
       // this.selectWeeklyProject(undefined, this.form.mou);
       // if (this.projectList.length > 0) {
       //   this.selectWeeklyProject(this.projectList[0].id, this.form.mou);
@@ -368,6 +370,7 @@ export default {
     onWeekEntry() {
       if (this.weeklyProjectIndex !== 0 && this.timesheet[this.weeklyProjectIndex].deleted) {
         this.weeklyProjectIndex = 0;
+        this.form.is_locked = false;
       }
     },
     selectWeeklyProject(projectId, mou) {
@@ -383,8 +386,10 @@ export default {
         );
         this.addTimeSheetRow();
         this.weeklyProjectIndex = this.timesheet.length - 1;
+        this.form.is_locked = false;
       } else {
         this.weeklyProjectIndex = projectIndex;
+        this.form.is_locked = this.timesheet[this.weeklyProjectIndex].is_locked;
       }
 
       this.timesheet[this.weeklyProjectIndex].project = projectId;
@@ -394,7 +399,6 @@ export default {
         this.$store.dispatch('fetchProjectRFxData', { id: projectId });
         this.form.rfx = this.timesheet[this.weeklyProjectIndex].projectRfx;
       }
-      this.form.is_locked = this.timesheet[this.weeklyProjectIndex].is_locked;
       // this.form.mou = mou;
       // this.form.project = projectId;
     },
