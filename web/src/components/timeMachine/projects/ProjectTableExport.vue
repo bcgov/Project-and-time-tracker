@@ -118,7 +118,9 @@ export default {
   },
   computed: {
     projects() {
-      debugger;
+      if (this.projectsList.length === 0) {
+        this.fetchData();
+      }
       return this.projectsList;
     },
     userList() {
@@ -154,7 +156,6 @@ export default {
     },
 
     getAllProjectIds() {
-      debugger;
       return this.selectedProjects;
     },
 
