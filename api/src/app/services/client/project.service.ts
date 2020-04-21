@@ -152,9 +152,23 @@ function uuidv4() {
     return v.toString(16);
   });
 }
+function getPDFName() {
+  var newDate = new Date();
+  return (
+    'TimeMachine-' +
+    newDate.getFullYear() +
+    '-' +
+    (newDate.getMonth() + 1) +
+    '-' +
+    newDate.getDate() +
+    '.pdf'
+  );
+}
+
 export const retrieveFinanceData = async (obj, userId) => {
   const financeExport = obj as IFinanceExport[];
   const documentNo: string = uuidv4();
+  const documentPath: string = getPDFName();
 
   for (let index = 0; index < financeExport.length; index++) {
     let model = financeExport[index];
@@ -189,6 +203,7 @@ export const retrieveFinanceData = async (obj, userId) => {
       exportData.projectCode = res.client.projectCode;
       exportData.serviceCenter = res.client.serviceCenter;
     }
+    exportData.documentPath = documentPath;
     exportData.documentNo = documentNo;
     exportData.lineDesc = documentNo;
     exportData.createdUserId = userId;
@@ -282,6 +297,7 @@ export const retrieveFinanceData = async (obj, userId) => {
       exportData.dateCreated = new Date();
       model.createdUserId = userId;
       model.documentNo = documentNo;
+      model.documentPath = documentPath;
       model.exportData = JSON.stringify(exportData);
 
       await createFinanceExport(model);
@@ -365,7 +381,6 @@ export const retrieveExportedPdfs = async obj => {
     .createQueryBuilder('t')
     .select(['t.documentNo', 't.documentPath'])
     .groupBy('t.documentNo')
-
     .addGroupBy('t.documentPath')
     .getRawMany();
 

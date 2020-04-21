@@ -14,7 +14,7 @@ export class FinanceExport {
   @Column({ type: 'uuid', nullable: true })
   projectId: string;
 
-  @Column({ type: 'uuid', nullable: true })
+  @Column({ type: 'text', nullable: true })
   documentPath: string;
 
   @Column({ type: 'timestamp', nullable: true })

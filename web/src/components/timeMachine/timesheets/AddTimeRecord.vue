@@ -756,7 +756,7 @@ export default {
             const entry = entries[j];
             timeEntries.push({
               Project: currentProject,
-              'Entry Date': entry.entryDate,
+              Date: entry.entryDate,
               'Billable Hours': entry.hoursBillable,
               'Billable Comments': entry.commentsBillable,
               'Unbillable Hours': entry.hoursUnBillable,

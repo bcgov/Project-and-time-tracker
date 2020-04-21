@@ -20,5 +20,6 @@ export interface IFinanceJSON {
   stob: string;
   projectCode: string;
   projectName: string;
+  documentPath: string;
   details: IFinanceExportDetail[];
 }
