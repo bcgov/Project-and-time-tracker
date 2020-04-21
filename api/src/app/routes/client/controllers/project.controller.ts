@@ -6,6 +6,7 @@ import {
   updateProject,
   retrieveProjectsByUserId,
   retrieveArchivedProjects,
+  retrieveTimesheetProjects,
   retrieveAllProjects,
   retrieveFinanceData
 } from '../../../services/client/project.service';
@@ -38,6 +39,14 @@ export const getArchivedProjects = async (ctx: Koa.Context) => {
   try {
     const auth = ctx.state.auth as IAuth;
     ctx.body = await retrieveArchivedProjects();
+  } catch (err) {
+    ctx.throw(err.message);
+  }
+};
+export const getTimesheetProjects = async (ctx: Koa.Context) => {
+  try {
+    const auth = ctx.state.auth as IAuth;
+    ctx.body = await retrieveTimesheetProjects();
   } catch (err) {
     ctx.throw(err.message);
   }
@@ -217,6 +226,7 @@ const router: Router = new Router(routerOpts);
 router.get('/', authorize, getProjects);
 router.get('/all', authorize, getAllProjects);
 router.get('/archived', authorize, getArchivedProjects);
+router.get('/timesheetprojects', authorize, getTimesheetProjects);
 router.post('/finance', authorize, getfinanceExport);
 router.get('/:id', authorize, getProjectById);
 router.patch('/:id', authorize, updateProjectAction);

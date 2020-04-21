@@ -340,6 +340,23 @@ export const retrieveArchivedProjects = async () => {
     .getMany();
 };
 
+export const retrieveTimesheetProjects = async () => {
+  const repo = timesheetRepo();
+  return await repo
+    .createQueryBuilder('t')
+    .innerJoin('t.project', 'p')
+    .select([
+      'p.id',
+      'p.projectName',
+      'p.completionDate',
+      't.dateModified',
+      't.startDate',
+      't.endDate'
+    ])
+    // .where('p.is_archived = :is_archived', { is_archived: true })
+    .getMany();
+};
+
 export const retrieveAllProjects = async () => {
   const repo = projectRepo();
   return await repo
