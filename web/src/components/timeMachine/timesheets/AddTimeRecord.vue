@@ -102,7 +102,7 @@
                       item-value="id"
                       label="MOU"
                       :disabled="editMode"
-                      @input="onChangeMou()"
+                      @input="onChangeMou(false)"
                       validate-on-blur
                     ></v-select>
                   </v-flex>
@@ -127,6 +127,7 @@
                       item-text="rfxName"
                       item-value="id"
                       label="Project Rfx"
+                      :disabled="form.is_locked"
                       @input="onChangeProjectRfx()"
                     ></v-select>
                   </v-flex>
@@ -193,7 +194,7 @@
             >
             <v-flex class="add-btns">
               <v-btn class="btn-normal" @click="expotTimesheet()">EXPORT TIMESHEET</v-btn>
-              <v-btn class="add-new-row" color="primary" @click="save()">SUBMIT</v-btn>
+              <v-btn class="add-new-row" color="primary" @click="save()"  :disabled="form.is_locked && editMode">SUBMIT</v-btn>
             </v-flex>
           </v-card-actions>
         </v-card>
@@ -328,7 +329,7 @@ export default {
         this.$refs.spinner.close();
       }
     },
-    onChangeMou() {
+    onChangeMou(editMode) {
       if (
         typeof this.form.mou !== 'undefined'
         && typeof this.form.userId !== 'undefined'
@@ -343,9 +344,12 @@ export default {
       } else {
         this.projectList = [];
       }
+      this.form.is_locked = false;
       this.form.project = undefined;
       this.$store.state.activeProjectRfxData = [];
       this.form.rfx = undefined;
+      if (!editMode) { this.selectWeeklyProject(undefined, this.form.mou); }
+      // this.selectWeeklyProject(undefined, this.form.mou);
       // if (this.projectList.length > 0) {
       //   this.selectWeeklyProject(this.projectList[0].id, this.form.mou);
       // } else { this.selectWeeklyProject(undefined, this.form.mou); }
@@ -390,6 +394,7 @@ export default {
         this.$store.dispatch('fetchProjectRFxData', { id: projectId });
         this.form.rfx = this.timesheet[this.weeklyProjectIndex].projectRfx;
       }
+      this.form.is_locked = this.timesheet[this.weeklyProjectIndex].is_locked;
       // this.form.mou = mou;
       // this.form.project = projectId;
     },
@@ -447,6 +452,7 @@ export default {
             timesheetItem.deleted = false;
             timesheetItem.id = obj[index].id;
             timesheetItem.entries = obj[index].timesheetEntries;
+            timesheetItem.is_locked = obj[index].is_locked;
             vm.timesheet.push(timesheetItem);
           }
           vm.$refs.TimeCalenderWeekly.setCalendarText();
@@ -462,6 +468,7 @@ export default {
             } else {
               vm.form.project = undefined;
               vm.form.mou = undefined;
+              this.form.is_locked = false;
             }
             vm.blankTimesheet = [];
             vm.addTimeSheetRow(true);
@@ -480,6 +487,7 @@ export default {
           } else {
             vm.form.project = undefined;
             vm.form.mou = undefined;
+            this.form.is_locked = false;
           }
           vm.blankTimesheet = [];
           vm.addTimeSheetRow(true);
@@ -500,6 +508,7 @@ export default {
         vm.timesheet[vm.weeklyProjectIndex].userId = obj.userId;
         vm.timesheet[vm.weeklyProjectIndex].mou = obj.mou.id;
         vm.timesheet[vm.weeklyProjectIndex].project = obj.project.id;
+        vm.timesheet[vm.weeklyProjectIndex].is_locked = obj.is_locked;
         vm.timesheet[vm.weeklyProjectIndex].projectRfx = obj.projectRfx
           ? obj.projectRfx.id
           : undefined;
@@ -510,8 +519,9 @@ export default {
         vm.$refs.TimeCalenderBatch.setCalendarText();
 
         vm.form.mou = vm.timesheet[vm.weeklyProjectIndex].mou;
-        this.onChangeMou();
+        this.onChangeMou(true);
 
+        this.form.is_locked = vm.timesheet[vm.weeklyProjectIndex].is_locked;
         vm.form.project = vm.timesheet[vm.weeklyProjectIndex].project;
         vm.$store.dispatch('fetchProjectRFxData', { id: vm.form.project });
         vm.form.rfx = vm.timesheet[vm.weeklyProjectIndex].projectRfx
@@ -625,6 +635,7 @@ export default {
         this.form.mou = undefined;
         this.form.project = undefined;
         this.form.rfx = undefined;
+        this.form.is_locked = false;
       }
       this.clearTimeEntries();
     },
@@ -672,6 +683,7 @@ export default {
       timesheetItem.project = undefined;
       timesheetItem.userId = this.form && this.form.userId ? this.form.userId : undefined;
       timesheetItem.mou = undefined;
+      timesheetItem.is_locked = false;
       // }
 
       timesheetItem.startDate = timesheetItem.entries[0].entryDate;
@@ -698,8 +710,8 @@ export default {
     csvExport(arrData) {
       let csvContent = 'data:text/csv;charset=utf-8,';
       csvContent += [
-        Object.keys(arrData[0]).join(';'),
-        ...arrData.map(item => Object.values(item).join(';')),
+        Object.keys(arrData[0]).join(','),
+        ...arrData.map(item => Object.values(item).join(',')),
       ]
         .join('\n')
         .replace(/(^\[)|(\]$)/gm, '');
@@ -711,7 +723,14 @@ export default {
         window.navigator.msSaveOrOpenBlob(blob, 'export.csv');
       } else {
         link.setAttribute('href', data);
-        link.setAttribute('download', 'export.csv');
+        const date = new Date();
+        let userName = '';
+        const user = this.$store.state.users.find(
+          item => item.id === this.form.userId,
+        );
+        if (user) { userName = user.contact.fullName; }
+        const fileName = `TimeMachine-${this.getDateInYYYYMMDD(date).toString()}-${userName}.csv`;
+        link.setAttribute('download', fileName);
         link.click();
       }
     },

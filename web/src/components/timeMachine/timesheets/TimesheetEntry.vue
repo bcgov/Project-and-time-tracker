@@ -17,6 +17,7 @@
 
           <v-flex md2 v-if="selectedItem == 1">
             <v-text-field
+            :disabled="timesheet[projectIndex].is_locked"
               type="number"
               max="24"
               step="0.01"
@@ -28,6 +29,7 @@
           </v-flex>
           <v-flex md2 v-else>
             <v-text-field
+            :disabled="timesheet[projectIndex].is_locked"
               type="number"
               max="24"
               step="0.01"
@@ -39,16 +41,16 @@
           </v-flex>
           <v-flex md8 v-if="selectedItem == 1">
 
-              <v-text-field v-model="item.commentsBillable"></v-text-field>
+              <v-text-field v-model="item.commentsBillable" :disabled="timesheet[projectIndex].is_locked"></v-text-field>
             </v-flex>
             <v-flex md8 v-else>
-              <v-text-field v-model="item.commentsUnBillable"></v-text-field>
+              <v-text-field v-model="item.commentsUnBillable" :disabled="timesheet[projectIndex].is_locked"></v-text-field>
             </v-flex>
 
           <v-flex md2>
             <v-tooltip top open-delay="500">
               <template v-slot:activator="{ on }">
-                <v-btn flat icon @click="copyfunc(item)" v-on="on">
+                <v-btn flat icon @click="copyfunc(item)" v-on="on" :disabled="timesheet[projectIndex].is_locked">
                   <v-icon>file_copy</v-icon>
                 </v-btn>
               </template>
@@ -57,7 +59,7 @@
 
             <v-tooltip top open-delay="500">
               <template v-slot:activator="{ on }">
-                <v-btn flat icon @click="pastefunc(index)" v-on="on">
+                <v-btn flat icon @click="pastefunc(index)" v-on="on" :disabled="timesheet[projectIndex].is_locked">
                   <v-icon>post_add</v-icon>
                 </v-btn>
               </template>
