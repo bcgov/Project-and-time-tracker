@@ -4,16 +4,51 @@
     <snackbar ref="snackbar"></snackbar>
     <v-toolbar v-if="title" card dense color="transparent">
       <v-toolbar-title>
-        <h4>{{ title }}</h4>
+        <h1 class="projects-header"></h1>
       </v-toolbar-title>
     </v-toolbar>
     <v-divider></v-divider>
+  <v-layout>
+      <v-flex md-2>
+        <v-menu
+          ref="menu"
+          v-model="menu"
+          :close-on-content-click="false"
+          :return-value.sync="date"
+          transition="scale-transition"
+          offset-y
+        >
+          <template v-slot:activator="{ on }">
+            <v-text-field
+              v-model="date"
+              label="Choose Month"
+              prepend-icon="event"
+              readonly
+              v-on="on"
+              style="width:50%;margin-left: 5%;"
+            ></v-text-field>
+          </template>
+          <v-date-picker v-model="date" :show-current="true" type="month">
+            <v-spacer></v-spacer>
+            <v-btn text color="primary" @click="menu = false">Cancel</v-btn>
+            <v-btn text color="primary" @click="datefilter(date)">OK</v-btn>
+          </v-date-picker>
+        </v-menu>
+      </v-flex>
+      <v-flex md-10>
+        <div class="start-button-div">
+          <v-btn color="primary" class="start-button-style" @click="exportToPDF"
+            >Export Finance to PDF</v-btn
+          >
+        </div>
+      </v-flex>
+    </v-layout>
     <v-card-text class="pa-0">
       <template>
         <v-data-table
           v-model="selected"
           :headers="headers"
-          :items="projectsList"
+         :items="projects"
           hide-actions
           :multiple-select="singleSelect"
           class="elevation-0 tm-v-datatable"
@@ -27,51 +62,11 @@
                 :input-value="props.selected"
               ></v-checkbox>
             </td>
-            <td class="text-xs-left">{{ props.item.mou ? props.item.mou.name : 'n/a' }}</td>
-            <td v-bind:class="{ 'archived': props.item.is_archived}">
-              <span
-                class="clickable"
-                @click="editProject(props.item.id)"
-              >{{ props.item.projectName }}</span>
-            </td>
-            <!-- <td class="text-xs-left">{{ props.item.projectName}} </td> -->
-            <td
-              class="text-xs-left"
-            >{{ [props.item.client.isNonMinistry?props.item.client.nonMinistryName:props.item.client.ministry.ministryName, props.item.orgDivision].join(" ") }}</td>
-            <td class="text-xs-left table-dropdown">
-              <span v-if="props.item.teamWideProject">TeamWide Project</span>
-              <v-select
-                :disabled="true"
-                v-if="!props.item.teamWideProject"
-                :items="userList"
-                label="Select Project Lead"
-                @click.native="getProjectLead(props.item.projectLeadUserId)"
-                @change="assignLead(props.item.projectLeadUserId, props.item)"
-                hide-details
-                single-line
-                v-model="props.item.projectLeadUserId"
-                return-object
-                item-value="id"
-                item-text="contact.fullName"
-              ></v-select>
-            </td>
-            <td class="text-xs-left table-dropdown">
-              <v-select
-                v-if="!props.item.teamWideProject"
-                :disabled="true"
-                :items="userList"
-                @click.native="getProjectBackup(props.item.projectBackupUserId)"
-                @change="assignBackup(props.item.projectBackupUserId, props.item)"
-                label="Select Project Backup"
-                hide-details
-                single-line
-                v-model="props.item.projectBackupUserId"
-                return-object
-                item-value="id"
-                item-text="contact.fullName"
-              ></v-select>
-            </td>
-            <td class="text-xs-left">{{ props.item.completionDate | formatDate }}</td>
+
+
+            <td class="text-xs-left">{{ props.item.projectName  }}</td>
+             <td class="text-xs-left">{{ [props.item.client.isNonMinistry?props.item.client.nonMinistryName:props.item.client.ministry.ministryName, props.item.orgDivision].join(" ") }}</td>
+             <td class="text-xs-left">{{ props.item.completionDate | formatDate }}</td>
             <td class="text-xs-left">{{ props.item.dateModified | formatDate }}</td>
           </template>
         </v-data-table>
@@ -83,9 +78,10 @@
 
 <script>
 // import moment from 'moment';
-import Confirm from "../common/Confirm.vue";
-import Snackbar from "../common/Snackbar.vue";
-
+import jsPDF from 'jspdf';
+import Confirm from '../common/Confirm.vue';
+import Snackbar from '../common/Snackbar.vue';
+import 'jspdf-autotable';
 // Vue.filter('formatDate', function(value) {
 //       if (value) {
 //         return moment(String(value)).format('MM/DD/YYYY hh:mm')
@@ -95,235 +91,327 @@ import Snackbar from "../common/Snackbar.vue";
 export default {
   props: {
     title: String,
-    selectedItem: Number
+    selectedItem: Number,
   },
   components: {
     Snackbar,
-    Confirm
+    Confirm,
   },
   data() {
     return {
       singleSelect: false,
       selected: [],
       selectedProjects: [],
+      date: new Date().toISOString().substr(0, 7),
+      menu: false,
+      modal: false,
+      selectedDate: '',
       headers: [
-        { text: " ", value: " ", align: "left", sortable: true },
-        { text: "MOU / Contract", value: "mou", align: "left", sortable: true },
-        {
-          text: "Project Name",
-          value: "projectName",
-          align: "left",
-          sortable: true
-        },
-        // { text: 'Phase', value: 'rfxPhaseName', align: 'left', sortable: true },
-        {
-          text: "Client",
-          value: "client.ministry.ministryName",
-          sortable: true
-        },
-        { text: "Project Lead", value: "projectLeadId", sortable: false },
-        { text: "Project Backup", value: "projectBackup", sortable: false },
-        { text: "Project Deadline", value: "completionDate", sortable: true },
-        { text: "Last Updated", value: "dateModified", sortable: true }
+        { text: ' ', value: ' ', align: 'left', sortable: true },
+        { text: 'Project Name', value: 'projectName', align: 'left', sortable: true },
+        { text: 'Client', value: 'client.ministry.ministryName', sortable: true },
+        { text: 'Project Deadline', value: 'completionDate', sortable: true },
+        { text: 'Last Updated', value: 'dateModified', sortable: true },
       ],
-      selectedLeadUser: "",
-      selectedProjectBackup: "",
-      projectsList: this.getAllProjectList("")
+      projectsList: [],
     };
   },
   computed: {
-    // projects() {
-    //   // if (this.selectedItem === 1) {
-    //   //   return this.$store.state.allProjects;
-    //   // }
-    //   return this.$store.state.projects;
-    // },
+    projects() {
+      // if (this.projectsList.length === 0) {
+      //   this.fetchData();
+      // }
+      return this.projectsList;
+    },
     userList() {
       return this.$store.state.users;
-    }
+    },
   },
   methods: {
-    getAllProjectList(date = "") {
-      if (date == "") {
-        var currentDate = new Date().toISOString().split("T")[0];
-        this.projectsList = this.$store.state.projects.filter(
-          el => el.completionDate.substring(0, 7) == currentDate.substring(0,7)
+    async getAllProjectList() {
+      const selectedDate = this.date.split('-');
+
+      const year = parseInt(selectedDate[0], 10);
+      const month = parseInt(selectedDate[1], 10);
+
+      const monthStartDay = new Date(year, month - 1, 1);
+      const monthEndDay = new Date(year, month, 0);
+      const vm = this;
+      const postData = { startDate: this.getDateInYYYYMMDD(monthStartDay), endDate: this.getDateInYYYYMMDD(monthEndDay) };
+      await this.$store
+        .dispatch('fetchTimesheetProjects', postData)
+        .then(
+          (res) => {
+            vm.projectsList = vm.$store.state.allProjects.filter(el => res.some(f => f.id === el.id));
+          },
+          (err) => {
+            try {
+              const { message } = err.response.data.error;
+              vm.$refs.snackbar.displaySnackbar('error', message);
+            } catch (ex) {
+             // vm.$refs.snackbar.displaySnackbar('error', 'Failed to update');
+            }
+          },
         );
-        return this.projectsList;
-      } else {
-        this.projectsList = this.$store.state.projects.filter(
-          el => el.completionDate.substring(0, 7) == date
-        );
-        return this.projectsList;
-      }
     },
 
     getAllProjectIds() {
       return this.selectedProjects;
     },
-    fetchData() {
-      this.$store.dispatch("fetchAllProjects");
-      this.$store.dispatch("fetchProjects");
+
+    getDateInYYYYMMDD(date) {
+      // year
+      const yyyy = `${date.getFullYear()}`;
+      // month
+      let mm = `0${date.getMonth() + 1}`; // prepend 0 // +1 is because Jan is 0
+      mm = mm.substr(mm.length - 2); // take last 2 chars
+      // day
+      let dd = `0${date.getDate()}`; // prepend 0
+      dd = dd.substr(dd.length - 2); // take last 2 chars
+      return `${yyyy}-${mm}-${dd}`;
     },
 
-    editProject(id) {
-      this.$store.state.activeProject.id = id;
-      this.$store.dispatch("fetchAllProjectNotes", {
-        id: this.$store.state.activeProject.id
-      });
-      this.$store
-        .dispatch("fetchProjectContacts", {
-          id: this.$store.state.activeProject.id
-        })
-        .then(res => {
-          this.$router.push({ path: `project/${id}` });
-        });
-    },
-    async archivePrompt(item, archiveVal) {
-      if (
-        await this.$refs.confirm.open(
-          "info",
-          `Are you sure to archive project: ${item.projectName}?`
-        )
-      ) {
-        item.is_archived = archiveVal;
-        await this.$store.dispatch("archiveProject", {
-          id: item.id,
-          is_archived: archiveVal
-        });
-        this.$store.dispatch("fetchProjects");
-      }
+    async fetchData() {
+      await this.$store.dispatch('fetchAllProjects');
+      this.getAllProjectList();
     },
 
-    viewProjectTimesheets() {
-      this.$router.push({ path: "timesheets" });
-    },
-    getProjectLead(projectLeadUserId) {
-      this.selectedLeadUser = projectLeadUserId;
-    },
-    async assignLead(projectLead, project) {
-      const projectId = project && project.id ? project.id : "";
-      const projectName =
-        project && project.projectName ? project.projectName : "";
-      const leadName =
-        projectLead && projectLead.contact && projectLead.contact.fullName
-          ? projectLead.contact.fullName
-          : "";
-      const leadId = projectLead && projectLead.id ? projectLead.id : "";
-      if (projectId && leadId) {
-        if (
-          await this.$refs.confirm.open(
-            "info",
-            `Are you sure to assign ${leadName} to ${projectName}?`
-          )
-        ) {
-          this.$store
-            .dispatch("assignProjectLead", { projectId, userId: leadId })
-            .then(() => {
-              this.$refs.snackbar.displaySnackbar(
-                "success",
-                "Project lead succesfully assigned."
-              );
-              this.fetchData();
-            })
-            .catch(err => {
-              if (
-                err &&
-                err.response &&
-                err.response.data &&
-                err.response.data.error &&
-                err.response.data.error.message
-              ) {
-                const { message } = err.response.data.error;
-                this.$refs.snackbar.displaySnackbar("error", message);
-                project.projectLeadUserId = this.selectedLeadUser;
-              } else {
-                this.$refs.snackbar.displaySnackbar(
-                  "error",
-                  "Unable to assign Project lead"
-                );
-                project.projectLeadUserId = this.selectedLeadUser;
-              }
-            });
-        } else {
-          project.projectLeadUserId = this.selectedLeadUser;
-        }
-      } else {
-        this.$refs.snackbar.displaySnackbar("error", "Error.");
-      }
-    },
-    getProjectBackup(projectBackupId) {
-      this.selectedProjectBackup = projectBackupId;
-    },
-    async assignBackup(projectBackup, project) {
-      const projectId = project && project.id ? project.id : "";
-      const projectName =
-        project && project.projectName ? project.projectName : "";
-      const backupName =
-        projectBackup && projectBackup.contact && projectBackup.contact.fullName
-          ? projectBackup.contact.fullName
-          : "";
-      const backupId =
-        projectBackup && projectBackup.id ? projectBackup.id : "";
-      if (projectId && backupId) {
-        if (
-          await this.$refs.confirm.open(
-            "info",
-            `Are you sure to assign ${backupName} to ${projectName}?`
-          )
-        ) {
-          this.$store
-            .dispatch("assignProjectBackup", { projectId, userId: backupId })
-            .then(() => {
-              this.$refs.snackbar.displaySnackbar(
-                "success",
-                "Project backup succesfully assigned."
-              );
-            })
-            .catch(err => {
-              if (
-                err &&
-                err.response &&
-                err.response.data &&
-                err.response.data.error &&
-                err.response.data.error.message
-              ) {
-                const { message } = err.response.data.error;
-                this.$refs.snackbar.displaySnackbar("error", message);
-                project.projectBackupUserId = this.selectedProjectBackup;
-              } else {
-                this.$refs.snackbar.displaySnackbar(
-                  "error",
-                  "Unable to assign Project Backup"
-                );
-                project.projectBackupUserId = this.selectedProjectBackup;
-              }
-            });
-        } else {
-          // cancel
-          project.projectBackupUserId = this.selectedProjectBackup;
-        }
-      } else {
-        this.$refs.snackbar.displaySnackbar("error", "Error.");
-      }
-    },
-    async deleteProject() {
-      if (await this.$refs.confirm.open("danger", "")) {
-        // yes
-        this.$store.dispatch("fetchProjects");
-        this.$refs.snackbar.displaySnackbar("success", "Deleted.");
-      }
-    },
     formatDate(dateStr) {
-      const split = dateStr.split("T");
+      const split = dateStr.split('T');
       if (split) {
         return split[0];
       }
       return dateStr;
-    }
+    },
+
+    datefilter(date) {
+      this.$refs.menu.save(date);
+      this.selectedDate = date;
+      this.getAllProjectList();
+    },
+    dataForPdfCreation() {
+      return {};
+    },
+    exportToPDF() {
+      let projects = this.getAllProjectIds();
+      const vm = this;
+      projects = projects.map(str => ({ projectId: str }));
+      const pdfValues = [];
+      vm.$store.dispatch('financeExport', projects).then(() => {
+        vm.$store.state.financeExport.forEach((entry) => {
+          const exportData = JSON.parse(entry.exportData);
+          pdfValues.push(exportData);
+        });
+        if (pdfValues.length === 0) {
+          return;
+        }
+
+        // ///////////// PDF FIRST PAGE START /////////////////////////////////////////////
+        const doc = new jsPDF({
+          putOnlyUsedFonts: true,
+          orientation: 'portrait',
+        });
+        const tableHeaders = [
+          'Client',
+          'Responsibility',
+          'Service Line',
+          'STOB',
+          'Project',
+          'Amount',
+        ];
+        const tableRowsFormatted = pdfValues.map(proj => [
+          proj.clientNo ? proj.clientNo : '',
+          proj.responsibilityCenter ? proj.responsibilityCenter : '',
+          proj.serviceCenter ? proj.serviceCenter : '',
+          proj.stob ? proj.stob : '',
+          proj.projectCode ? proj.projectCode : '',
+          `$${proj.totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`,
+        ]);
+        console.log(tableRowsFormatted);
+        const pdfSinglePageHeight = doc.internal.pageSize.height;
+        const firstPageInitialCoordinate = 0;
+        const secondPageInitialCoordinate = pdfSinglePageHeight + 100;
+        const leftStartCoordinate = 20;
+        const topStartCoordinate = 20;
+
+        console.log(tableHeaders);
+        doc.setFontSize(12);
+        doc.text(`Document # ${pdfValues[0].documentNo}`, leftStartCoordinate, 20);
+        doc.text('SAP', leftStartCoordinate + 150, 20);
+        doc.text('Line Description:', leftStartCoordinate, 30);
+        doc.setFontSize(18);
+        doc.autoTable(tableHeaders, tableRowsFormatted, {
+          theme: 'plain',
+          tableWidth: 'auto',
+          margin: { top: 60 },
+          styles: {
+            overflow: 'linebreak',
+            fontSize: 12,
+            overflowColumns: 'linebreak',
+          },
+        });
+        doc.setFontSize(11);
+        doc.setFontStyle('bold');
+        doc.text('Amount Check', leftStartCoordinate + 110, 100);
+        doc.setFontSize(12);
+        doc.text('$0.00', leftStartCoordinate + 150, 100);
+
+        // ///////////// PDF First PAGE END /////////////////////////////////////////////
+
+        for (let i = 0; i < pdfValues.length; i++) {
+          doc.addPage();
+          doc.setFontStyle('normal');
+          doc.setFontSize(11);
+
+          // /// PDF SECOND PAGE HEADER //////
+          doc.text("Ministry of Citizens' Services", leftStartCoordinate + 50, 15);
+          doc.text(
+            'Procurement and Supply, Procurement Services Branch(Stategic and Advisory Services)',
+            30,
+            21,
+          );
+          doc.text('PO Box 9476 Stn Prov Govt', leftStartCoordinate + 50, 27);
+          doc.text('Victoria BC V8W 9W6', leftStartCoordinate + 55, 33);
+
+          // /// PDF SECOND PAGE HEADER END//////
+
+          doc.text("Ministry of Citizens' Services", 15, 55);
+          doc.text('OCIO - Technology Soultions', 15, 61);
+
+          doc.text(pdfValues[i].dateCreated.toString().slice(0, 10), leftStartCoordinate + 125, 55);
+          doc.text(pdfValues[i].documentNo, leftStartCoordinate + 125, 61);
+          doc.text(pdfValues[i].clientNo ? pdfValues[i].clientNo : '', leftStartCoordinate + 125, 70);
+          doc.text(pdfValues[i].responsibilityCenter ? pdfValues[i].responsibilityCenter : '', leftStartCoordinate + 125, 76);
+          doc.text(pdfValues[i].serviceCenter ? pdfValues[i].serviceCenter : '', leftStartCoordinate + 125, 82);
+          doc.text(pdfValues[i].stob ? pdfValues[i].stob : '', leftStartCoordinate + 125, 88);
+          doc.text(pdfValues[i].projectCode ? pdfValues[i].projectCode : '', leftStartCoordinate + 125, 94);
+
+          doc.setFontSize(12);
+          doc.setFontStyle('bold');
+          doc.text('Notification of Charges', leftStartCoordinate + 50, 105);
+          doc.setFontStyle('normal');
+          doc.setFontSize(11);
+          doc.text(pdfValues[i].projectName, 40, 115);
+          doc.text(pdfValues[i].reference ? pdfValues[i].reference : '', 40, 122);
+          doc.text(pdfValues[i].contact ? pdfValues[i].contact : '', 40, 129);
+
+          doc.setFontStyle('bold');
+          doc.text('Date', leftStartCoordinate + 110, 55);
+          doc.text('Document #', leftStartCoordinate + 97, 61);
+          doc.text('Client  ', leftStartCoordinate + 108, 70);
+          doc.text('Responsibility', leftStartCoordinate + 93, 76);
+          doc.text('ServiceLine', leftStartCoordinate + 97, 82);
+          doc.text('STOB', leftStartCoordinate + 107, 88);
+          doc.text('ProjectsCode', leftStartCoordinate + 93, 94);
+          doc.text('Program', 15, 115);
+          doc.text('Reference', 15, 122);
+          doc.text('Contact', 15, 129);
+          doc.text('Fees', leftStartCoordinate + 106, 160);
+          doc.text('Expenses', leftStartCoordinate + 106, 169);
+          doc.text('Total', leftStartCoordinate + 106, 178);
+          doc.text('Contact', 15, 200);
+          doc.text('Number of Pages', 15, 220);
+
+          doc.setFontStyle('normal');
+          doc.text(
+            `$${pdfValues[i].fees.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`,
+            leftStartCoordinate + 136,
+            160,
+          );
+          doc.text(
+            `$${pdfValues[i].expenses.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`,
+            leftStartCoordinate + 136,
+            169,
+          );
+          doc.text(
+            `$${pdfValues[i].totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`,
+            leftStartCoordinate + 136,
+            178,
+          );
+
+          doc.text(pdfValues[i].contact ? pdfValues[i].contact : '', leftStartCoordinate + 38, 200);
+          doc.text("Ministry of Citizens' Seevices", leftStartCoordinate + 38, 205);
+
+          doc.text(
+            `Includes Time and Expenses up to ${
+              new Date(pdfValues[i].totalAmount).toString().slice(0, 15)}`,
+            leftStartCoordinate + 35,
+            230,
+          );
+          doc.setFontStyle('italic');
+          doc.text(
+            'Processed by Inter-Ministry Electronic Chargeback System. Charges have already been made to ',
+            15,
+            260,
+          );
+          doc.text(
+            'your account and, unless you disagree with the charges no further action required by you',
+            15,
+            265,
+          );
+          doc.addPage();
+          doc.setFontStyle('normal');
+          doc.setFontStyle('bold');
+          doc.text('Billing Details', 15, 15);
+          doc.setFontStyle('normal');
+          const tableBillingDetailsHeaders = [
+            'Date',
+            'Description',
+            'Type',
+            'Resource',
+            'Hours',
+            'Rate',
+            'Amount',
+          ];
+          const tableRowsBillingFormatted = pdfValues[i].details.map(proj => [
+            proj.entryDate,
+            proj.description ? proj.description : '',
+            proj.type,
+            proj.resource ? proj.resource : '',
+            proj.hours ? proj.hours : '',
+            proj.rate ? proj.rate : '',
+            proj.amount ? `$${proj.amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : '$0',
+          ]);
+          doc.autoTable(tableBillingDetailsHeaders, tableRowsBillingFormatted, {
+            theme: 'plain',
+            tableWidth: 'auto',
+            margin: { top: 30 },
+            styles: {
+              overflow: 'linebreak',
+              fontSize: 12,
+              overflowColumns: 'linebreak',
+            },
+          });
+
+          // theme: 'striped'|'grid'|'plain'|'css'
+        }
+        
+        const monthYear = this.getMonthAndYear(this.selectedDate);
+        doc.save(pdfValues[0].documentPath);
+      });
+    },
+    getMonthAndYear(date) {
+      if(date.length>0) {
+      const Month = new Date(`${date.toString()}-01`).toString().slice(4, 7);
+      const Year = new Date(`${date.toString()}-01`).toString().slice(11, 15);
+      const newDate = `${Month} ${Year}`;
+       return newDate;
+      } else {
+      const newDate = new Date().toISOString().slice(0,7);
+       return newDate;
+      } 
+     
+    },
+
   },
   created() {
     this.fetchData();
-  }
+  },
 };
 </script>
+<style>
+.start-button-style {
+  margin-right: 6%;
+  float: right;
+}
+</style>

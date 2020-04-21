@@ -16,4 +16,5 @@ export interface ITimesheet {
   hoursAccured: number;
   batchEntryComments: string;
   deleted: boolean;
+  is_locked: boolean;
 }

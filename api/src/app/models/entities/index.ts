@@ -19,5 +19,4 @@ export * from './user.entity';
 export * from './riskQuestions.entity';
 export * from './riskAnswers.entity';
 export * from './projectRiskAnalysis.entity';
-export * from './financeExportDetail.entity';
 export * from './financeExport.entity';

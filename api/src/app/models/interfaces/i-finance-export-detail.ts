@@ -2,7 +2,6 @@ import { IFinanceExport } from './i-finance-export';
 
 export interface IFinanceExportDetail {
   id: string;
-  FinanceExport: IFinanceExport;
   entryDate: Date;
   description: string;
   type: string;

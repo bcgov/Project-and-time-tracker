@@ -130,7 +130,7 @@ const routes = [
     path: '/export',
     name: 'export',
     component: null,
-    meta: { requiresAuth: true, roles: ['PSB_User', 'PSB_Admin', 'PSB_Intake_User'] },
+    meta: { requiresAuth: true, roles: ['PSB_Intake_User'] },
   },
   {
     exact: true,
