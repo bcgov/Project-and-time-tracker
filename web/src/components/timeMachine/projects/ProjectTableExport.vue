@@ -153,7 +153,6 @@ export default {
   },
   methods: {
     async getAllProjectList() {
-      debugger;
       const vm = this;
       const postData = { selectedDate: this.date };
       if (vm.$refs.spinner) { vm.$refs.spinner.open(); }
