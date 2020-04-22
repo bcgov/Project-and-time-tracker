@@ -85,10 +85,10 @@
 
 <script>
 // import moment from 'moment';
-import jsPDF from "jspdf";
-import Confirm from "../common/Confirm.vue";
-import Snackbar from "../common/Snackbar.vue";
-import "jspdf-autotable";
+import jsPDF from 'jspdf';
+import Confirm from '../common/Confirm.vue';
+import Snackbar from '../common/Snackbar.vue';
+import 'jspdf-autotable';
 // Vue.filter('formatDate', function(value) {
 //       if (value) {
 //         return moment(String(value)).format('MM/DD/YYYY hh:mm')
@@ -98,11 +98,11 @@ import "jspdf-autotable";
 export default {
   props: {
     title: String,
-    selectedItem: Number
+    selectedItem: Number,
   },
   components: {
     Snackbar,
-    Confirm
+    Confirm,
   },
   data() {
     return {
@@ -112,19 +112,19 @@ export default {
       date: new Date().toISOString().substr(0, 7),
       menu: false,
       modal: false,
-      selectedDate: "",
+      selectedDate: '',
       headers: [
         {
-          text: "Document No",
-          value: "documentNo",
-          align: "left",
-          sortable: true
+          text: 'Document No',
+          value: 'documentNo',
+          align: 'left',
+          sortable: true,
         },
-        { text: "PDF Name", value: "recordName", sortable: true },
-        { text: "Export Month", value: "pdfdate", sortable: true },
-        { text: "Download File", value: "download", sortable: true }
+        { text: 'PDF Name', value: 'recordName', sortable: true },
+        { text: 'Export Month', value: 'pdfdate', sortable: true },
+        { text: 'Download File', value: 'download', sortable: true },
       ],
-      projectsList: []
+      projectsList: [],
     };
   },
   computed: {
@@ -136,35 +136,27 @@ export default {
     },
     userList() {
       return this.$store.state.users;
-    }
+    },
   },
   methods: {
     async getAllProjectList() {
-      const res = this.date.split("-");
-
-      const year = parseInt(res[0], 10);
-      const month = parseInt(res[1], 10);
-
-      const monthStartDay = new Date(year, month - 1, 1);
-      const monthEndDay = new Date(year, month, 0);
       const vm = this;
       const postData = {
-        startDate: this.getDateInYYYYMMDD(monthStartDay),
-        endDate: this.getDateInYYYYMMDD(monthEndDay)
+        selectedDate: this.date,
       };
-      await this.$store.dispatch("fetchExportedPdfs", postData).then(
-        res => {
-          console.log("res:::", res);
+      await this.$store.dispatch('fetchExportedPdfs', postData).then(
+        (res) => {
+          console.log('res:::', res);
           vm.projectsList = res;
         },
-        err => {
+        (err) => {
           try {
             const { message } = err.response.data.error;
-            vm.$refs.snackbar.displaySnackbar("error", message);
+            vm.$refs.snackbar.displaySnackbar('error', message);
           } catch (ex) {
             // vm.$refs.snackbar.displaySnackbar('error', 'Failed to update');
           }
-        }
+        },
       );
     },
 
@@ -185,12 +177,12 @@ export default {
     },
 
     async fetchData() {
-      await this.$store.dispatch("fetchAllProjects");
+      await this.$store.dispatch('fetchAllProjects');
       this.getAllProjectList();
     },
 
     formatDate(dateStr) {
-      const split = dateStr.split("T");
+      const split = dateStr.split('T');
       if (split) {
         return split[0];
       }
@@ -209,9 +201,9 @@ export default {
       const vm = this;
       const pdfValues = [];
       vm.$store
-        .dispatch("downloadFinancePdf", { documentNo: docNo })
+        .dispatch('downloadFinancePdf', { documentNo: docNo })
         .then(() => {
-          vm.$store.state.downloadFinancePdf.forEach(entry => {
+          vm.$store.state.downloadFinancePdf.forEach((entry) => {
             const exportData = JSON.parse(entry.exportData);
             pdfValues.push(exportData);
           });
@@ -222,25 +214,25 @@ export default {
           // ///////////// PDF FIRST PAGE START /////////////////////////////////////////////
           const doc = new jsPDF({
             putOnlyUsedFonts: true,
-            orientation: "portrait"
+            orientation: 'portrait',
           });
           const tableHeaders = [
-            "Client",
-            "Responsibility",
-            "Service Line",
-            "STOB",
-            "Project",
-            "Amount"
+            'Client',
+            'Responsibility',
+            'Service Line',
+            'STOB',
+            'Project',
+            'Amount',
           ];
           const tableRowsFormatted = pdfValues.map(proj => [
-            proj.clientNo ? proj.clientNo : "",
-            proj.responsibilityCenter ? proj.responsibilityCenter : "",
-            proj.serviceCenter ? proj.serviceCenter : "",
-            proj.stob ? proj.stob : "",
-            proj.projectCode ? proj.projectCode : "",
+            proj.clientNo ? proj.clientNo : '',
+            proj.responsibilityCenter ? proj.responsibilityCenter : '',
+            proj.serviceCenter ? proj.serviceCenter : '',
+            proj.stob ? proj.stob : '',
+            proj.projectCode ? proj.projectCode : '',
             `$${proj.totalAmount
               .toString()
-              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`
+              .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`,
           ]);
           console.log(tableRowsFormatted);
           const pdfSinglePageHeight = doc.internal.pageSize.height;
@@ -254,211 +246,211 @@ export default {
           doc.text(
             `Document # ${pdfValues[0].documentNo}`,
             leftStartCoordinate,
-            20
+            20,
           );
-          doc.text("SAP", leftStartCoordinate + 150, 20);
-          doc.text("Line Description:", leftStartCoordinate, 30);
+          doc.text('SAP', leftStartCoordinate + 150, 20);
+          doc.text('Line Description:', leftStartCoordinate, 30);
           doc.setFontSize(18);
           doc.autoTable(tableHeaders, tableRowsFormatted, {
-            theme: "plain",
-            tableWidth: "auto",
+            theme: 'plain',
+            tableWidth: 'auto',
             margin: { top: 60 },
             styles: {
-              overflow: "linebreak",
+              overflow: 'linebreak',
               fontSize: 12,
-              overflowColumns: "linebreak"
-            }
+              overflowColumns: 'linebreak',
+            },
           });
           doc.setFontSize(11);
-          doc.setFontStyle("bold");
-          doc.text("Amount Check", leftStartCoordinate + 110, 100);
+          doc.setFontStyle('bold');
+          doc.text('Amount Check', leftStartCoordinate + 110, 100);
           doc.setFontSize(12);
-          doc.text("$0.00", leftStartCoordinate + 150, 100);
+          doc.text('$0.00', leftStartCoordinate + 150, 100);
 
           // ///////////// PDF First PAGE END /////////////////////////////////////////////
 
           for (let i = 0; i < pdfValues.length; i++) {
             doc.addPage();
-            doc.setFontStyle("normal");
+            doc.setFontStyle('normal');
             doc.setFontSize(11);
 
             // /// PDF SECOND PAGE HEADER //////
             doc.text(
               "Ministry of Citizens' Services",
               leftStartCoordinate + 50,
-              15
+              15,
             );
             doc.text(
-              "Procurement and Supply, Procurement Services Branch(Stategic and Advisory Services)",
+              'Procurement and Supply, Procurement Services Branch(Stategic and Advisory Services)',
               30,
-              21
+              21,
             );
-            doc.text("PO Box 9476 Stn Prov Govt", leftStartCoordinate + 50, 27);
-            doc.text("Victoria BC V8W 9W6", leftStartCoordinate + 55, 33);
+            doc.text('PO Box 9476 Stn Prov Govt', leftStartCoordinate + 50, 27);
+            doc.text('Victoria BC V8W 9W6', leftStartCoordinate + 55, 33);
 
             // /// PDF SECOND PAGE HEADER END//////
 
             doc.text("Ministry of Citizens' Services", 15, 55);
-            doc.text("OCIO - Technology Soultions", 15, 61);
+            doc.text('OCIO - Technology Soultions', 15, 61);
 
             doc.text(
               pdfValues[i].dateCreated.toString().slice(0, 10),
               leftStartCoordinate + 125,
-              55
+              55,
             );
             doc.text(pdfValues[i].documentNo, leftStartCoordinate + 125, 61);
             doc.text(
-              pdfValues[i].clientNo ? pdfValues[i].clientNo : "",
+              pdfValues[i].clientNo ? pdfValues[i].clientNo : '',
               leftStartCoordinate + 125,
-              70
+              70,
             );
             doc.text(
               pdfValues[i].responsibilityCenter
                 ? pdfValues[i].responsibilityCenter
-                : "",
+                : '',
               leftStartCoordinate + 125,
-              76
+              76,
             );
             doc.text(
-              pdfValues[i].serviceCenter ? pdfValues[i].serviceCenter : "",
+              pdfValues[i].serviceCenter ? pdfValues[i].serviceCenter : '',
               leftStartCoordinate + 125,
-              82
+              82,
             );
             doc.text(
-              pdfValues[i].stob ? pdfValues[i].stob : "",
+              pdfValues[i].stob ? pdfValues[i].stob : '',
               leftStartCoordinate + 125,
-              88
+              88,
             );
             doc.text(
-              pdfValues[i].projectCode ? pdfValues[i].projectCode : "",
+              pdfValues[i].projectCode ? pdfValues[i].projectCode : '',
               leftStartCoordinate + 125,
-              94
+              94,
             );
 
             doc.setFontSize(12);
-            doc.setFontStyle("bold");
-            doc.text("Notification of Charges", leftStartCoordinate + 50, 105);
-            doc.setFontStyle("normal");
+            doc.setFontStyle('bold');
+            doc.text('Notification of Charges', leftStartCoordinate + 50, 105);
+            doc.setFontStyle('normal');
             doc.setFontSize(11);
             doc.text(pdfValues[i].projectName, 40, 115);
             doc.text(
-              pdfValues[i].reference ? pdfValues[i].reference : "",
+              pdfValues[i].reference ? pdfValues[i].reference : '',
               40,
-              122
+              122,
             );
-            doc.text(pdfValues[i].contact ? pdfValues[i].contact : "", 40, 129);
+            doc.text(pdfValues[i].contact ? pdfValues[i].contact : '', 40, 129);
 
-            doc.setFontStyle("bold");
-            doc.text("Date", leftStartCoordinate + 110, 55);
-            doc.text("Document #", leftStartCoordinate + 97, 61);
-            doc.text("Client  ", leftStartCoordinate + 108, 70);
-            doc.text("Responsibility", leftStartCoordinate + 93, 76);
-            doc.text("ServiceLine", leftStartCoordinate + 97, 82);
-            doc.text("STOB", leftStartCoordinate + 107, 88);
-            doc.text("ProjectsCode", leftStartCoordinate + 93, 94);
-            doc.text("Program", 15, 115);
-            doc.text("Reference", 15, 122);
-            doc.text("Contact", 15, 129);
-            doc.text("Fees", leftStartCoordinate + 106, 160);
-            doc.text("Expenses", leftStartCoordinate + 106, 169);
-            doc.text("Total", leftStartCoordinate + 106, 178);
-            doc.text("Contact", 15, 200);
-            doc.text("Number of Pages", 15, 220);
+            doc.setFontStyle('bold');
+            doc.text('Date', leftStartCoordinate + 110, 55);
+            doc.text('Document #', leftStartCoordinate + 97, 61);
+            doc.text('Client  ', leftStartCoordinate + 108, 70);
+            doc.text('Responsibility', leftStartCoordinate + 93, 76);
+            doc.text('ServiceLine', leftStartCoordinate + 97, 82);
+            doc.text('STOB', leftStartCoordinate + 107, 88);
+            doc.text('ProjectsCode', leftStartCoordinate + 93, 94);
+            doc.text('Program', 15, 115);
+            doc.text('Reference', 15, 122);
+            doc.text('Contact', 15, 129);
+            doc.text('Fees', leftStartCoordinate + 106, 160);
+            doc.text('Expenses', leftStartCoordinate + 106, 169);
+            doc.text('Total', leftStartCoordinate + 106, 178);
+            doc.text('Contact', 15, 200);
+            doc.text('Number of Pages', 15, 220);
 
-            doc.setFontStyle("normal");
+            doc.setFontStyle('normal');
             doc.text(
               `$${pdfValues[i].fees
                 .toString()
-                .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`,
+                .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`,
               leftStartCoordinate + 136,
-              160
+              160,
             );
             doc.text(
               `$${pdfValues[i].expenses
                 .toString()
-                .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`,
+                .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`,
               leftStartCoordinate + 136,
-              169
+              169,
             );
             doc.text(
               `$${pdfValues[i].totalAmount
                 .toString()
-                .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`,
+                .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`,
               leftStartCoordinate + 136,
-              178
+              178,
             );
 
             doc.text(
-              pdfValues[i].contact ? pdfValues[i].contact : "",
+              pdfValues[i].contact ? pdfValues[i].contact : '',
               leftStartCoordinate + 38,
-              200
+              200,
             );
             doc.text(
               "Ministry of Citizens' Seevices",
               leftStartCoordinate + 38,
-              205
+              205,
             );
 
             doc.text(
               `Includes Time and Expenses up to ${new Date(
-                pdfValues[i].totalAmount
+                pdfValues[i].totalAmount,
               )
                 .toString()
                 .slice(0, 15)}`,
               leftStartCoordinate + 35,
-              230
+              230,
             );
-            doc.setFontStyle("italic");
+            doc.setFontStyle('italic');
             doc.text(
-              "Processed by Inter-Ministry Electronic Chargeback System. Charges have already been made to ",
+              'Processed by Inter-Ministry Electronic Chargeback System. Charges have already been made to ',
               15,
-              260
+              260,
             );
             doc.text(
-              "your account and, unless you disagree with the charges no further action required by you",
+              'your account and, unless you disagree with the charges no further action required by you',
               15,
-              265
+              265,
             );
             doc.addPage();
-            doc.setFontStyle("normal");
-            doc.setFontStyle("bold");
-            doc.text("Billing Details", 15, 15);
-            doc.setFontStyle("normal");
+            doc.setFontStyle('normal');
+            doc.setFontStyle('bold');
+            doc.text('Billing Details', 15, 15);
+            doc.setFontStyle('normal');
             const tableBillingDetailsHeaders = [
-              "Date",
-              "Description",
-              "Type",
-              "Resource",
-              "Hours",
-              "Rate",
-              "Amount"
+              'Date',
+              'Description',
+              'Type',
+              'Resource',
+              'Hours',
+              'Rate',
+              'Amount',
             ];
             const tableRowsBillingFormatted = pdfValues[i].details.map(proj => [
               proj.entryDate,
-              proj.description ? proj.description : "",
+              proj.description ? proj.description : '',
               proj.type,
-              proj.resource ? proj.resource : "",
-              proj.hours ? proj.hours : "",
-              proj.rate ? proj.rate : "",
+              proj.resource ? proj.resource : '',
+              proj.hours ? proj.hours : '',
+              proj.rate ? proj.rate : '',
               proj.amount
                 ? `$${proj.amount
-                    .toString()
-                    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`
-                : "$0"
+                  .toString()
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`
+                : '$0',
             ]);
             doc.autoTable(
               tableBillingDetailsHeaders,
               tableRowsBillingFormatted,
               {
-                theme: "plain",
-                tableWidth: "auto",
+                theme: 'plain',
+                tableWidth: 'auto',
                 margin: { top: 30 },
                 styles: {
-                  overflow: "linebreak",
+                  overflow: 'linebreak',
                   fontSize: 12,
-                  overflowColumns: "linebreak"
-                }
-              }
+                  overflowColumns: 'linebreak',
+                },
+              },
             );
 
             // theme: 'striped'|'grid'|'plain'|'css'
@@ -473,15 +465,15 @@ export default {
         const Year = new Date(`${date.toString()}-01`).toString().slice(11, 15);
         const newDate = `${Month} ${Year}`;
         return newDate;
-      } else {
+      } 
         const newDate = new Date().toISOString().slice(0, 7);
         return newDate;
-      }
-    }
+      
+    },
   },
   created() {
     this.fetchData();
-  }
+  },
 };
 </script>
 <style>

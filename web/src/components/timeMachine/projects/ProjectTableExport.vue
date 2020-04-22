@@ -129,15 +129,8 @@ export default {
   },
   methods: {
     async getAllProjectList() {
-      const selectedDate = this.date.split('-');
-
-      const year = parseInt(selectedDate[0], 10);
-      const month = parseInt(selectedDate[1], 10);
-
-      const monthStartDay = new Date(year, month - 1, 1);
-      const monthEndDay = new Date(year, month, 0);
       const vm = this;
-      const postData = { startDate: this.getDateInYYYYMMDD(monthStartDay), endDate: this.getDateInYYYYMMDD(monthEndDay) };
+      const postData = { selectedDate: this.date };
       await this.$store
         .dispatch('fetchTimesheetProjects', postData)
         .then(
@@ -149,7 +142,7 @@ export default {
               const { message } = err.response.data.error;
               vm.$refs.snackbar.displaySnackbar('error', message);
             } catch (ex) {
-             // vm.$refs.snackbar.displaySnackbar('error', 'Failed to update');
+              // vm.$refs.snackbar.displaySnackbar('error', 'Failed to update');
             }
           },
         );
@@ -197,7 +190,8 @@ export default {
       const vm = this;
       projects = projects.map(str => ({ projectId: str }));
       const pdfValues = [];
-      vm.$store.dispatch('financeExport', projects).then(() => {
+
+      vm.$store.dispatch('financeExport', { selectedProjects: projects, selectedDate: this.date }).then(() => {
         vm.$store.state.financeExport.forEach((entry) => {
           const exportData = JSON.parse(entry.exportData);
           pdfValues.push(exportData);
@@ -385,22 +379,20 @@ export default {
 
           // theme: 'striped'|'grid'|'plain'|'css'
         }
-        
+
         const monthYear = this.getMonthAndYear(this.selectedDate);
         doc.save(pdfValues[0].documentPath);
       });
     },
     getMonthAndYear(date) {
-      if(date.length>0) {
-      const Month = new Date(`${date.toString()}-01`).toString().slice(4, 7);
-      const Year = new Date(`${date.toString()}-01`).toString().slice(11, 15);
-      const newDate = `${Month} ${Year}`;
-       return newDate;
-      } else {
-      const newDate = new Date().toISOString().slice(0,7);
-       return newDate;
-      } 
-     
+      if (date.length > 0) {
+        const Month = new Date(`${date.toString()}-01`).toString().slice(4, 7);
+        const Year = new Date(`${date.toString()}-01`).toString().slice(11, 15);
+        const newDate = `${Month} ${Year}`;
+        return newDate;
+      }
+      const newDate = new Date().toISOString().slice(0, 7);
+      return newDate;
     },
 
   },
