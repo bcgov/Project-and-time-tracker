@@ -60,7 +60,7 @@ const routes = [
     path: "/finance",
     name: "timemachineFinance",
     component: TimeMachineFinanceExport,
-    meta: { requiresAuth: true, roles: ["PSB_Admin", "manage_finances"] }
+    meta: { requiresAuth: true, roles: ["manage_finances"] }
   },
   {
     exact: true,

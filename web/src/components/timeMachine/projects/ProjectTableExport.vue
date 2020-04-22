@@ -43,7 +43,7 @@
             class="start-button-style"
             @click="exportToPDF"
             :disabled="this.selectedProjects && this.selectedProjects.length === 0"
-            >Export Finance to PDF</v-btn
+            >Export Finances (PDF)</v-btn
           >
         </div>
       </v-flex>
@@ -153,7 +153,9 @@ export default {
   },
   methods: {
     async getAllProjectList() {
-      if (this.$store.state.allProjects.length === 0) { await this.$store.dispatch('fetchAllProjects'); }
+      if (this.$store.state.allProjects.length === 0) {
+        await this.$store.dispatch('fetchAllProjects');
+      }
       const vm = this;
       const postData = { selectedDate: this.date };
       if (vm.$refs.spinner) { vm.$refs.spinner.open(); }
@@ -191,7 +193,14 @@ export default {
     },
 
     async fetchData() {
-      this.getAllProjectList();
+      await this.$store.dispatch('fetchAllProjects').then(
+        () => {
+          this.getAllProjectList();
+        },
+        () => {
+
+        },
+      );
     },
 
     formatDate(dateStr) {
