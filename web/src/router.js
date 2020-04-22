@@ -36,7 +36,10 @@ const routes = [
     path: "/authorize",
     name: "authorize",
     component: Authorize,
-    meta: { requiresAuth: true, roles: ["PSB_User", "PSB_Admin", "User", "PSB_Intake_User"] }
+    meta: {
+      requiresAuth: true,
+      roles: ["PSB_User", "PSB_Admin", "User", "PSB_Intake_User", "manage_finances"]
+    }
   },
   // {
   //   exact: true,

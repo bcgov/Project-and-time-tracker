@@ -9,7 +9,6 @@ const keycloakFileName = process.env.VUE_APP_KEYCLOAK_JSON_FILENAME
 const keycloakAuth = new Keycloak(`/${keycloakFileName}.json`);
 
 const pageBasedOnRole = role => {
-  debugger;
   let page = "Unauthorized";
   switch (role) {
     case "User":

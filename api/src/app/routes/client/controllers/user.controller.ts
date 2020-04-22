@@ -5,8 +5,13 @@ import { Role } from '../../roles';
 import { authorize } from '../../../services/common/authorize.service';
 
 export const getUsersByRole = async (ctx: Koa.Context) => {
-  try { 
-    const users = await retrieveUsersNameAndIdByRole([Role.PSB_Admin, Role.PSB_User, Role.PSB_Intake_User]);
+  try {
+    const users = await retrieveUsersNameAndIdByRole([
+      Role.PSB_Admin,
+      Role.PSB_User,
+      Role.PSB_Intake_User,
+      Role.manage_finances
+    ]);
     ctx.body = users;
   } catch (err) {
     ctx.throw(err.message);
