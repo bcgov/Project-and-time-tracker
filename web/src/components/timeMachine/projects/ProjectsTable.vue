@@ -18,12 +18,23 @@
           disable-initial-sort
         >
           <template slot="items" slot-scope="props">
-            <td class="text-xs-left">{{ props.item.mou ? props.item.mou.name : 'n/a' }} </td>
-            <td v-bind:class="{ 'archived': props.item.is_archived}"  >
-              <span class="clickable" @click="editProject(props.item.id)">{{ props.item.projectName }}</span>
+            <td class="text-xs-left">{{ props.item.mou ? props.item.mou.name : "n/a" }}</td>
+            <td v-bind:class="{ archived: props.item.is_archived }">
+              <span class="clickable" @click="editProject(props.item.id)">{{
+                props.item.projectName
+              }}</span>
             </td>
             <!-- <td class="text-xs-left">{{ props.item.projectName}} </td> -->
-            <td class="text-xs-left">{{ [props.item.client.isNonMinistry?props.item.client.nonMinistryName:props.item.client.ministry.ministryName, props.item.orgDivision].join(" ") }}</td>
+            <td class="text-xs-left">
+              {{
+                [
+                  props.item.client.isNonMinistry
+                    ? props.item.client.nonMinistryName
+                    : props.item.client.ministry.ministryName,
+                  props.item.orgDivision
+                ].join(" ")
+              }}
+            </td>
             <td class="text-xs-left table-dropdown">
               <span v-if="props.item.teamWideProject">TeamWide Project</span>
               <v-select
@@ -70,17 +81,16 @@
               <v-tooltip top v-if="!props.item.is_archived">
                 <template v-slot:activator="{ on }">
                   <v-btn flat icon color="grey" v-on="on" @click="archivePrompt(props.item, true)">
-                    <v-icon >archive</v-icon>
+                    <v-icon>archive</v-icon>
                   </v-btn>
                 </template>
                 <span>Archive</span>
               </v-tooltip>
               <v-btn flat v-else @click="archivePrompt(props.item, false)">
-              Archived
+                Archived
               </v-btn>
             </td>
-
-            </template>
+          </template>
         </v-data-table>
       </template>
       <v-divider></v-divider>
@@ -89,7 +99,6 @@
 </template>
 
 <script>
-
 // import moment from 'moment';
 import Confirm from '../common/Confirm.vue';
 import Snackbar from '../common/Snackbar.vue';
@@ -120,8 +129,7 @@ export default {
         { text: 'Project Backup', value: 'projectBackup', sortable: false },
         { text: 'Project Deadline', value: 'completionDate', sortable: true },
         { text: 'Last Updated', value: 'dateModified', sortable: true },
-        { text: 'Actions', value: 'is_archived', align: 'center', width: '145px', sortable: false,
-        },
+        { text: 'Actions', value: 'is_archived', align: 'center', width: '145px', sortable: false },
       ],
       selectedLeadUser: '',
       selectedProjectBackup: '',
@@ -129,7 +137,9 @@ export default {
   },
   computed: {
     projects() {
-      if (this.selectedItem === 1) { return this.$store.state.allProjects; }
+      if (this.selectedItem === 1) {
+        return this.$store.state.allProjects;
+      }
       return this.$store.state.projects;
     },
     userList() {
@@ -142,16 +152,14 @@ export default {
       this.$store.dispatch('fetchProjects');
     },
 
-
     editProject(id) {
       this.$store.state.activeProject.id = id;
-      this.$store.dispatch("fetchAllProjectNotes", { id: this.$store.state.activeProject.id });
-      ;
-      this.$store.dispatch("fetchProjectContacts", { id: this.$store.state.activeProject.id })
-            .then( (res) =>{
-               this.$router.push({ path: `project/${id}` })
-            }
-               );
+      this.$store.dispatch('fetchAllProjectNotes', { id: this.$store.state.activeProject.id });
+      this.$store
+        .dispatch('fetchProjectContacts', { id: this.$store.state.activeProject.id })
+        .then((res) => {
+          this.$router.push({ path: `project/${id}` });
+        });
     },
     async archivePrompt(item, archiveVal) {
       if (
@@ -187,22 +195,18 @@ export default {
           )
         ) {
           this.$store
-            .dispatch('assignProjectLead', { projectId,
-              userId: leadId })
+            .dispatch('assignProjectLead', { projectId, userId: leadId })
             .then(() => {
-              this.$refs.snackbar.displaySnackbar(
-                'success',
-                'Project lead succesfully assigned.',
-              );
+              this.$refs.snackbar.displaySnackbar('success', 'Project lead succesfully assigned.');
               this.fetchData();
             })
             .catch((err) => {
               if (
                 err
-                  && err.response
-                  && err.response.data
-                  && err.response.data.error
-                  && err.response.data.error.message
+                && err.response
+                && err.response.data
+                && err.response.data.error
+                && err.response.data.error.message
               ) {
                 const { message } = err.response.data.error;
                 this.$refs.snackbar.displaySnackbar('error', message);
@@ -237,8 +241,7 @@ export default {
           )
         ) {
           this.$store
-            .dispatch('assignProjectBackup', { projectId,
-              userId: backupId })
+            .dispatch('assignProjectBackup', { projectId, userId: backupId })
             .then(() => {
               this.$refs.snackbar.displaySnackbar(
                 'success',
@@ -248,10 +251,10 @@ export default {
             .catch((err) => {
               if (
                 err
-                  && err.response
-                  && err.response.data
-                  && err.response.data.error
-                  && err.response.data.error.message
+                && err.response
+                && err.response.data
+                && err.response.data.error
+                && err.response.data.error.message
               ) {
                 const { message } = err.response.data.error;
                 this.$refs.snackbar.displaySnackbar('error', message);
