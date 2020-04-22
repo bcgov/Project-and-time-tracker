@@ -761,6 +761,7 @@ export default {
               Project: currentProject,
               Date: entry.entryDate,
               'Billable Hours': entry.hoursBillable,
+              'Hourly Rate': hourlyRate,
               'Billable Comments': entry.commentsBillable,
               'Unbillable Hours': entry.hoursUnBillable,
               'Unbillable Comments': entry.commentsUnBillable,
@@ -769,8 +770,7 @@ export default {
               'Expense Description': entry.expenseComment,
               'Revenue Amount': entry.revenueAmount,
               'Revenue Description': entry.revenueComment,
-              'Hourly Rate': hourlyRate,
-              Total: (parseInt(entry.hoursBillable, 10) * parseInt(hourlyRate, 10)) + (parseInt(entry.hoursUnBillable, 10) * parseInt(hourlyRate, 10)) + parseInt(entry.expenseAmount, 10) + parseInt(entry.revenueAmount, 10),
+              Total: (parseFloat(entry.hoursBillable, 10) * parseFloat(hourlyRate, 10)) + (parseFloat(entry.hoursUnBillable, 10) * parseFloat(hourlyRate, 10)) + parseFloat(entry.expenseAmount, 10) + parseFloat(entry.revenueAmount, 10),
             });
           }
         }
