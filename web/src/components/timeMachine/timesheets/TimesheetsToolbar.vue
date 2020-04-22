@@ -46,7 +46,6 @@ export default {
   },
   methods: {
     closeTimesheet(needRefresh) {
-      debugger;
       if (needRefresh) {
         sessionStorage.setItem('selectedStartDate', this.$store.state.timesheetsWeek.startDate);
         sessionStorage.setItem('selectedEndDate', this.$store.state.timesheetsWeek.endDate);
