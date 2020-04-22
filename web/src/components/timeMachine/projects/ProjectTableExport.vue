@@ -153,9 +153,7 @@ export default {
   },
   methods: {
     async getAllProjectList() {
-      if (this.$store.state.allProjects.length === 0) {
-        await this.$store.dispatch('fetchAllProjects');
-      }
+      debugger;
       const vm = this;
       const postData = { selectedDate: this.date };
       if (vm.$refs.spinner) { vm.$refs.spinner.open(); }
@@ -193,14 +191,7 @@ export default {
     },
 
     async fetchData() {
-      await this.$store.dispatch('fetchAllProjects').then(
-        () => {
-          this.getAllProjectList();
-        },
-        () => {
-
-        },
-      );
+      this.datefilter(this.date);
     },
 
     formatDate(dateStr) {
@@ -211,11 +202,17 @@ export default {
       return dateStr;
     },
 
-    datefilter(date) {
+    async datefilter(date) {
       this.selectedProjects = [];
-      this.$refs.menu.save(date);
+      if (this.$refs.menu) { this.$refs.menu.save(date); }
       this.selectedDate = date;
-      this.getAllProjectList();
+      if (this.$store.state.allProjects.length === 0) {
+        await this.$store.dispatch('fetchAllProjects').then(
+          () => {
+            this.getAllProjectList();
+          },
+        );
+      } else { this.getAllProjectList(); }
     },
     dataForPdfCreation() {
       return {};
