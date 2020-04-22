@@ -214,6 +214,7 @@ export default {
     exportToPDF(docNo) {
       const vm = this;
       const pdfValues = [];
+      if(docNo.length) {
       vm.$refs.spinner.open();
       vm.$store
         .dispatch("downloadFinancePdf", { documentNo: docNo })
@@ -469,6 +470,7 @@ export default {
           const monthYear = this.getMonthAndYear(this.selectedDate);
           doc.save(pdfValues[0].documentPath);
         });
+      }
     },
     getMonthAndYear(date) {
       if (date.length > 0) {

@@ -208,6 +208,7 @@ export default {
       const vm = this;
       projects = projects.map(str => ({ projectId: str }));
       const pdfValues = [];
+      if(projects.length) {
       vm.$refs.spinner.open();
       vm.$store
         .dispatch("financeExport", {
@@ -470,6 +471,7 @@ export default {
           doc.save(pdfValues[0].documentPath);
           this.getAllProjectList();
         });
+      }
     }
   },
   created() {
