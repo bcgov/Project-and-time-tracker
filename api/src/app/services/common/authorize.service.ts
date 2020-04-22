@@ -77,18 +77,21 @@ const PSB_User = [
   'POST/project/:id/assign-lead' // should be removed on 2nd phase based on the new requirement.
 ];
 
+const manage_finances = [
+  ...PSB_User,
+  'POST/project/finance',
+  'POST/project/timesheetprojects',
+  'POST/project/exportedPdfs',
+  'POST/project/downloadFinancePdf'
+];
+
 const PSB_Intake_User = [
   ...PSB_User,
   'POST/project/:id/assign-lead',
   'POST/project/:id/assign-backup',
   'GET/intake/',
   'GET/intake/:id',
-  'POST/intake/:id/approve',
-  'POST/project/finance',
-  'POST/project/timesheetprojects',
-  'POST/project/exportedPdfs',
-  'POST/project/downloadFinancePdf'
-  
+  'POST/intake/:id/approve'
 ];
 
 const permissions = {
@@ -108,9 +111,14 @@ const permissions = {
     'PATCH/project-risk/:id/update',
     'PATCH/project-risk/:id',
     'PATCH/contact/:id/partial',
+    'POST/project/finance',
+    'POST/project/timesheetprojects',
+    'POST/project/exportedPdfs',
+    'POST/project/downloadFinancePdf',
     ...commonForPSBAdminAndUser
   ],
   PSB_User,
   User,
-  PSB_Intake_User
+  PSB_Intake_User,
+  manage_finances
 };

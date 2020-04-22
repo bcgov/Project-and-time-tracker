@@ -1,35 +1,50 @@
 /* eslint-disable */
-import Keycloak from 'keycloak-js';
-import store from '@/store';
+import Keycloak from "keycloak-js";
+import store from "@/store";
 
-const keycloakFileName = (process.env.VUE_APP_KEYCLOAK_JSON_FILENAME) ? process.env.VUE_APP_KEYCLOAK_JSON_FILENAME : 'keycloak-local';
+const keycloakFileName = process.env.VUE_APP_KEYCLOAK_JSON_FILENAME
+  ? process.env.VUE_APP_KEYCLOAK_JSON_FILENAME
+  : "keycloak-local";
 // const keycloakAuth = new Keycloak(`/statics/${keycloakFileName}.json`);
 const keycloakAuth = new Keycloak(`/${keycloakFileName}.json`);
 
-const pageBasedOnRole = (role) => {
-  let page = 'Unauthorized';
+const pageBasedOnRole = role => {
+  debugger;
+  let page = "Unauthorized";
   switch (role) {
-    case 'User': page = 'timemachineIntakeIntroduction'; break;
-    case 'PSB_User': page = 'projects'; break;
-    case 'PSB_Intake_User': page = 'projects'; break;
-    case 'PSB_Admin': page = 'projects'; break;
-    default: break;
+    case "User":
+      page = "timemachineIntakeIntroduction";
+      break;
+    case "PSB_User":
+      page = "projects";
+      break;
+    case "PSB_Intake_User":
+      page = "projects";
+      break;
+    case "PSB_Admin":
+      page = "projects";
+      break;
+    case "manage_finances":
+      page = "timemachineFinance";
+      break;
+    default:
+      break;
   }
   return page;
 };
 
 export default (next, roles, isLoggedIn = false) => {
   keycloakAuth
-    .init({ onLoad: 'login-required', responseMode: 'query',"checkLoginIframe" : false })
+    .init({ onLoad: "login-required", responseMode: "query", checkLoginIframe: false })
     .success(() => {
-      keycloakAuth.logoutUrl = `${keycloakAuth.authServerUrl}/realms/${keycloakAuth.realm}`
-        + `/protocol/openid-connect/logout?redirect_uri=${document.baseURI}`;
-      store.dispatch('authLogin', keycloakAuth);
-
+      keycloakAuth.logoutUrl =
+        `${keycloakAuth.authServerUrl}/realms/${keycloakAuth.realm}` +
+        `/protocol/openid-connect/logout?redirect_uri=${document.baseURI}`;
+      store.dispatch("authLogin", keycloakAuth);
       if (roles) {
         let hasAccess = false;
         let keycloakRole;
-        roles.forEach((role) => {
+        roles.forEach(role => {
           if (keycloakAuth.hasRealmRole(role)) {
             hasAccess = true;
             keycloakRole = role;
@@ -45,7 +60,7 @@ export default (next, roles, isLoggedIn = false) => {
             next();
           }
         } else {
-          next({ name: 'Unauthorized' });
+          next({ name: "Unauthorized" });
         }
       } else {
         next();
@@ -54,18 +69,18 @@ export default (next, roles, isLoggedIn = false) => {
       setInterval(() => {
         keycloakAuth
           .updateToken(70)
-          .success((refreshed) => {
+          .success(refreshed => {
             if (refreshed) {
-              store.dispatch('authLogin', keycloakAuth);
+              store.dispatch("authLogin", keycloakAuth);
             }
           })
           .error(() => {
-            console.error('Failed to refresh token');
+            console.error("Failed to refresh token");
           });
       }, 60000);
     })
     .error(() => {
-      console.log('failed to login');
+      console.log("failed to login");
     });
 };
 
