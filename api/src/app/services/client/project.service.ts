@@ -57,8 +57,15 @@ export const updateProject = async (
   const updatedProject = await repo.merge(project, fields);
   updatedProject.dateModified = new Date();
 
-  if (fields.backupUserId === undefined) updatedProject.backupUserId = null;
-  if (fields.leadUserId === undefined) updatedProject.leadUserId = null;
+  if (fields.teamWideProject) {
+    if (fields.backupUserId === undefined) {
+    updatedProject.backupUserId = null;
+    }
+    if (fields.leadUserId === undefined) {
+    updatedProject.leadUserId = null;
+    }
+  }
+
   await repo.save(updatedProject);
   if (clientFilds) {
     const repoClient = clientRepo();
@@ -146,7 +153,7 @@ export const retrieveProjects = async () => {
 };
 
 function uuidv4() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
     var r = (Math.random() * 16) | 0,
       v = c == 'x' ? r : (r & 0x3) | 0x8;
     return v.toString(16);
@@ -304,13 +311,13 @@ export const retrieveFinanceData = async (obj, userId) => {
 
       let fees = exportData.details
         .filter(item => item.type === 'Time')
-        .reduce(function(prev, cur) {
+        .reduce(function (prev, cur) {
           return prev + Number(cur.amount);
         }, 0);
 
       let expenses = exportData.details
         .filter(item => item.type === 'Expense')
-        .reduce(function(prev, cur) {
+        .reduce(function (prev, cur) {
           return prev + Number(cur.amount);
         }, 0);
 
