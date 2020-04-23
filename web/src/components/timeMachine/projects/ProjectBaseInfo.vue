@@ -153,13 +153,12 @@
       <v-flex md6>
         <div class="v-form-container">
           <v-text-field
+            :rules="mouRule"
             prepend-inner-icon="attach_money"
             label="MOU Amount"
-            type="number"
-            :min="0"
-            step="any"
             oninput="validity.valid||(value='');"
-            v-model="form.mouAmount"
+            :value='form.mouAmount | withCommas'
+            @blur='v => form.mouAmount = parseFloat(v.target.value)'
           ></v-text-field>
         </div>
       </v-flex>
@@ -341,6 +340,14 @@ export default {
       mouSearch: null,
       amountRule: [(v) => {
         if (!v) return 'This field is required';
+        const anyNonNumbers = v.toString().match(/[^\d,]+/g, '');
+        if (anyNonNumbers) {
+          return 'Field must just be a number.';
+        }
+        return true;
+      }],
+      mouRule: [(v) => {
+        if (!v) return true;
         const anyNonNumbers = v.toString().match(/[^\d,]+/g, '');
         if (anyNonNumbers) {
           return 'Field must just be a number.';
