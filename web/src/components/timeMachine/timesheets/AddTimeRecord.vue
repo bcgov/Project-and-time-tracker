@@ -43,7 +43,7 @@
                       ${{ mouAmount }}
                     </v-flex>
                   </v-flex>
-                  <v-flex md4 v-if="timesheet && timesheet[weeklyProjectIndex]&&timesheet[weeklyProjectIndex].amountBilled && activeTab=='batch'" > <b>Currently Billed:</b>${{getBilledAmount()}}</v-flex>
+                  <v-flex md4 v-if="timesheet && activeTab=='batch'" > <b>Currently Billed:</b>${{getBilledAmount()}}</v-flex>
                   <v-flex md4 v-else-if="form.project && timesheet && timesheet[weeklyProjectIndex]&&timesheet[weeklyProjectIndex].amountBilled" > <b>Currently Billed:</b>${{timesheet[weeklyProjectIndex].amountBilled}}</v-flex>
                   <v-flex md4 v-else> <b>Currently Billed:</b> $0 </v-flex>
                   <v-flex md4> <b>Legal Billed Amount:</b> $0 </v-flex>
