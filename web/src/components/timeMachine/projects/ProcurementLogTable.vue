@@ -115,14 +115,14 @@ export default {
           value: 'logType',
           align: 'left',
           sortable: false,
-          width: '7%',
+          width: '10%',
         },
         // { text: 'Risk Owner', value: 'riskOwner', sortable: false },
         {
           text: 'Description of Issue',
           value: 'issueDescription',
           sortable: false,
-          width: '25%',
+          width: '20%',
         },
         {
           text: 'Date To Client',
@@ -158,19 +158,13 @@ export default {
           text: 'Resolution or Follow Up Date',
           value: 'followUpDate',
           sortable: false,
-          width: '14%',
+          width: '12%',
         }
       ];
 
       if (!this.isResolved) {
-        headers[0].width = '5%';
         headers[1].width = '15%';
-        headers[2].width = '10%';
-         headers[3].width = '10%';
-          headers[4].width = '10%';
-           headers[5].width = '10%';
-            headers[6].width = '10%';
-             headers[7].width = '11.3%';
+        headers[7].width = '12%';
              
         headers.push({text: 'Action',width: '15%',})
       }
