@@ -13,4 +13,5 @@ export interface ITimesheetEntry {
   revenueAmount: number;
   revenueComment: string;
   expenseCategory: string;
+  amountBilled: number;
 }

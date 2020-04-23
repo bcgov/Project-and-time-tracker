@@ -232,14 +232,17 @@ export const retrieveFinanceData = async (obj, userId) => {
         'c.projectCode',
         'c.serviceCenter'
       ])
-      .where('p.id = :projectId', {projectId: exportData.projectId})
+      .where('p.id = :projectId', { projectId: exportData.projectId })
       .getOne();
-      const contactproRepo = projectContactRepo();
-      const contactRes = await contactproRepo
+    const contactproRepo = projectContactRepo();
+    const contactRes = await contactproRepo
       .createQueryBuilder('pc')
       .leftJoinAndSelect('pc.project', 'p')
       .leftJoinAndSelect('pc.contact', 'c')
-      .where('c."contactType" = :contactType and pc."projectId" = :projectId', {contactType: 'clientfinance', projectId: exportData.projectId})
+      .where('c."contactType" = :contactType and pc."projectId" = :projectId', {
+        contactType: 'clientfinance',
+        projectId: exportData.projectId
+      })
       .getOne();
     exportData.contact = contactRes.contact.fullName;
     exportData.projectName = res.projectName;
@@ -357,6 +360,7 @@ export const retrieveFinanceData = async (obj, userId) => {
 
       await createFinanceExport(model);
 
+      timeSheet[timeSheetIndex].amountBilled = fees + expenses;
       timeSheet[timeSheetIndex].is_locked = true;
       await timesheetRepo().save(timeSheet[timeSheetIndex]);
     }
