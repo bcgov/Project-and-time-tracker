@@ -100,20 +100,29 @@ export default {
   data() {
     return {
       isResolved: false,
-      headers: [
+      
+      logList: this.fetchData(),
+      selectedLeadUser: '',
+      selectedProjectBackup: '',
+      unResolved: [],
+    };
+  },
+  computed: {
+    headers() {
+      let headers= [
         {
           text: 'Log Type',
           value: 'logType',
           align: 'left',
           sortable: false,
-          width: '5%',
+          width: '7%',
         },
         // { text: 'Risk Owner', value: 'riskOwner', sortable: false },
         {
           text: 'Description of Issue',
           value: 'issueDescription',
           sortable: false,
-          width: '15%',
+          width: '25%',
         },
         {
           text: 'Date To Client',
@@ -149,20 +158,24 @@ export default {
           text: 'Resolution or Follow Up Date',
           value: 'followUpDate',
           sortable: false,
-          width: '11.3%',
-        },
-        {
-          text: 'Action',
-          width: '15%',
-        },
-      ],
-      logList: this.fetchData(),
-      selectedLeadUser: '',
-      selectedProjectBackup: '',
-      unResolved: [],
-    };
-  },
-  computed: {
+          width: '14%',
+        }
+      ];
+
+      if (!this.isResolved) {
+        headers[0].width = '5%';
+        headers[1].width = '15%';
+        headers[2].width = '10%';
+         headers[3].width = '10%';
+          headers[4].width = '10%';
+           headers[5].width = '10%';
+            headers[6].width = '10%';
+             headers[7].width = '11.3%';
+             
+        headers.push({text: 'Action',width: '15%',})
+      }
+      return headers
+    },
     allProcLogs() {
       if (this.isResolved) {
         const value = this.$store.state.allProcurementLog.filter(el => el.isResolved == true);
