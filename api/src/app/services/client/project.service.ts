@@ -1,5 +1,5 @@
 import { getRepository, Repository } from 'typeorm';
-import { Project } from '../../models/entities';
+import { Project, ProjectContacts, Contact } from '../../models/entities';
 import { Client } from '../../models/entities';
 import { IProject } from '../../models/interfaces/i-project';
 import { Timesheet } from './../../models/entities/timesheet.entity';
@@ -21,6 +21,9 @@ const timesheetRepo = (): Repository<Timesheet> => {
 };
 const projectRepo = (): Repository<Project> => {
   return getRepository(Project);
+};
+const projectContactRepo = (): Repository<ProjectContacts> => {
+  return getRepository(ProjectContacts);
 };
 
 const clientRepo = (): Repository<Client> => {
@@ -57,8 +60,15 @@ export const updateProject = async (
   const updatedProject = await repo.merge(project, fields);
   updatedProject.dateModified = new Date();
 
-  if (fields.backupUserId === undefined) updatedProject.backupUserId = null;
-  if (fields.leadUserId === undefined) updatedProject.leadUserId = null;
+  if (fields.teamWideProject) {
+    if (fields.backupUserId === undefined) {
+      updatedProject.backupUserId = null;
+    }
+    if (fields.leadUserId === undefined) {
+      updatedProject.leadUserId = null;
+    }
+  }
+
   await repo.save(updatedProject);
   if (clientFilds) {
     const repoClient = clientRepo();
@@ -152,7 +162,7 @@ function uuidv4() {
     return v.toString(16);
   });
 }
-function getPDFName(count) {
+function getPDFName(date, count) {
   var month = new Array();
   month[0] = 'Janu';
   month[1] = 'Feb';
@@ -167,7 +177,7 @@ function getPDFName(count) {
   month[10] = 'Nov';
   month[11] = 'Dec';
 
-  var newDate = new Date();
+  var newDate = new Date(date);
   if (count === 1) {
     return (
       month[newDate.getMonth()] +
@@ -189,9 +199,18 @@ function getPDFName(count) {
 }
 
 export const retrieveFinanceData = async (obj, userId) => {
-  const financeExport = obj as IFinanceExport[];
+  const financeExport = obj.selectedProjects as IFinanceExport[];
   const documentNo: string = uuidv4();
-  const documentPath: string = getPDFName(financeExport.length);
+
+  const selectedDate = obj.selectedDate.split('-');
+
+  const year = parseInt(selectedDate[0], 10);
+  const month = parseInt(selectedDate[1], 10);
+
+  const startDate = new Date(year, month - 1, 1);
+  const endDate = new Date(year, month, 0);
+
+  const documentPath: string = getPDFName(startDate, financeExport.length);
 
   for (let index = 0; index < financeExport.length; index++) {
     let model = financeExport[index];
@@ -213,11 +232,19 @@ export const retrieveFinanceData = async (obj, userId) => {
         'c.projectCode',
         'c.serviceCenter'
       ])
-      .where('p.id = :projectId', {
+      .where('p.id = :projectId', { projectId: exportData.projectId })
+      .getOne();
+    const contactproRepo = projectContactRepo();
+    const contactRes = await contactproRepo
+      .createQueryBuilder('pc')
+      .leftJoinAndSelect('pc.project', 'p')
+      .leftJoinAndSelect('pc.contact', 'c')
+      .where('c."contactType" = :contactType and pc."projectId" = :projectId', {
+        contactType: 'clientfinance',
         projectId: exportData.projectId
       })
       .getOne();
-
+    exportData.contact = contactRes.contact.fullName;
     exportData.projectName = res.projectName;
     if (res.client) {
       exportData.responsibilityCenter = res.client.responsibilityCenter;
@@ -237,8 +264,13 @@ export const retrieveFinanceData = async (obj, userId) => {
       .innerJoinAndSelect('t.user', 'u')
       .innerJoinAndSelect('u.contact', 'c')
       .where(
-        't."projectId" = :projectId and (t.is_locked = :is_locked or t.is_locked IS NULL)',
-        { projectId: exportData.projectId, is_locked: false }
+        't."projectId" = :projectId and (t.is_locked = :is_locked or t.is_locked IS NULL) and (t.startDate >= :start and t.startDate <= :end)',
+        {
+          projectId: exportData.projectId,
+          is_locked: false,
+          start: startDate,
+          end: endDate
+        }
       )
       .getMany();
     if (timeSheet.length == 0) {
@@ -321,10 +353,14 @@ export const retrieveFinanceData = async (obj, userId) => {
       model.createdUserId = userId;
       model.documentNo = documentNo;
       model.documentPath = documentPath;
+      model.totalAmount = exportData.totalAmount;
+      model.monthStartDate = startDate;
+
       model.exportData = JSON.stringify(exportData);
 
       await createFinanceExport(model);
 
+      timeSheet[timeSheetIndex].amountBilled = fees + expenses;
       timeSheet[timeSheetIndex].is_locked = true;
       await timesheetRepo().save(timeSheet[timeSheetIndex]);
     }
@@ -394,14 +430,22 @@ export const retrieveArchivedProjects = async () => {
 export const retrieveTimesheetProjects = async obj => {
   const repo = timesheetRepo();
 
+  const selectedDate = obj.selectedDate.split('-');
+
+  const year = parseInt(selectedDate[0], 10);
+  const month = parseInt(selectedDate[1], 10);
+
+  const startDate = new Date(year, month - 1, 1);
+  const endDate = new Date(year, month, 0);
+
   const res = await repo
     .createQueryBuilder('t')
     .select('DISTINCT t.project', 'id')
     .where(
       '(t.startDate >= :start and t.startDate <= :end)  and (t.is_locked = :is_locked or t.is_locked IS NULL)',
       {
-        start: obj.startDate,
-        end: obj.endDate,
+        start: startDate,
+        end: endDate,
         is_locked: false
       }
     )
@@ -412,12 +456,21 @@ export const retrieveTimesheetProjects = async obj => {
 export const retrieveExportedPdfs = async obj => {
   const repo = financeRepo();
 
+  const selectedDate = obj.selectedDate.split('-');
+
+  const year = parseInt(selectedDate[0], 10);
+  const month = parseInt(selectedDate[1], 10);
+
+  const startDate = new Date(year, month - 1, 1);
+  const endDate = new Date(year, month, 0);
+
   const res = await repo
     .createQueryBuilder('t')
     .select(['t.documentNo', 't.documentPath'])
-    .where('(t.dateCreated >= :start and t.dateCreated <= :end) ', {
-      start: obj.startDate,
-      end: obj.endDate
+    .addSelect('SUM(t.totalAmount)', 'sum')
+    .where('(t.monthStartDate >= :start and t.monthStartDate <= :end) ', {
+      start: startDate,
+      end: endDate
     })
     .groupBy('t.documentNo')
     .addGroupBy('t.documentPath')

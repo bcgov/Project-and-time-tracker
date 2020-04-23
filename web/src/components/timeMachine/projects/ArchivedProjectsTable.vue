@@ -27,7 +27,7 @@
             <td class="text-xs-left">{{ props.item.teamWideProject?'':props.item.backupUserId }}</td>
             <td class="text-xs-left">{{props.item.completionDate | formatDate }}</td>
             <td class="text-xs-left">{{ props.item.dateModified | formatDate }}</td>
-             <td class="text-xs-right">
+             <td class="text-xs-center">
 
               <v-tooltip top>
                 <template v-slot:activator="{ on }">

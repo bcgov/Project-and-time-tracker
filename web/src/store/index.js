@@ -926,8 +926,8 @@ const store = new Vuex.Store({
           ctx.commit('fetchArchivedProjects', content);
         });
     },
-    fetchAllProjects(ctx) {
-      $http
+    async fetchAllProjects(ctx) {
+      await $http
         .get(`${API_URI}/project/all`)
         .then((res) => {
           let content = res.data;

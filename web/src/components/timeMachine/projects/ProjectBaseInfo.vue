@@ -153,13 +153,12 @@
       <v-flex md6>
         <div class="v-form-container">
           <v-text-field
+            :rules="mouRule"
             prepend-inner-icon="attach_money"
             label="MOU Amount"
-            type="number"
-            :min="0"
-            step="any"
             oninput="validity.valid||(value='');"
-            v-model="form.mouAmount"
+            :value='form.mouAmount | withCommas'
+            @blur='v => form.mouAmount = parseFloat(v.target.value)'
           ></v-text-field>
         </div>
       </v-flex>
@@ -347,6 +346,14 @@ export default {
         }
         return true;
       }],
+      mouRule: [(v) => {
+        if (!v) return true;
+        const anyNonNumbers = v.toString().match(/[^\d,]+/g, '');
+        if (anyNonNumbers) {
+          return 'Field must just be a number.';
+        }
+        return true;
+      }],
     };
   },
   watch: {
@@ -468,8 +475,13 @@ export default {
     },
     async createMOU() {
       // TODO - Check that pre-existing MOU doesn't already exist
+      if (this.project.mou === '' || this.project.mou === ' ') { return; }
       if (this.project.mou) {
-        const newMouID = await this.$store.dispatch('createMOU', { name: this.project.mou });
+        let mouItem = this.$store.state.mouList.find(item => item.name === this.project.mou);
+        if (typeof mouItem === 'undefined') {
+          mouItem = this.$store.state.mouList.find(item => item.name === this.project.mou.name);
+          if (typeof mouItem === 'undefined') { await this.$store.dispatch('createMOU', { name: this.project.mou }); }
+        }
       }
     },
     fetchData() {

@@ -59,6 +59,9 @@ export class Timesheet {
   @Column({ type: 'boolean', nullable: true })
   is_locked: boolean;
 
+  @Column({ type: 'double precision', nullable: true })
+  amountBilled: number;
+
   @OneToMany(
     type => TimesheetEntry,
     type => type.timesheet

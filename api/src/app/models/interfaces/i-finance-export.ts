@@ -6,4 +6,6 @@ export interface IFinanceExport {
   dateCreated: Date;
   createdUserId: string;
   documentPath: string;
+  totalAmount: number;
+  monthStartDate: Date;
 }

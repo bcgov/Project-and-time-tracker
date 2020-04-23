@@ -22,4 +22,10 @@ export class FinanceExport {
 
   @Column({ type: 'uuid', nullable: true })
   createdUserId: string;
+
+  @Column({ type: 'double precision', nullable: true })
+  totalAmount: number;
+
+  @Column({ type: 'date', nullable: true })
+  monthStartDate: Date;
 }

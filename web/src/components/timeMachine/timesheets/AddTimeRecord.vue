@@ -43,7 +43,9 @@
                       ${{ mouAmount }}
                     </v-flex>
                   </v-flex>
-                  <v-flex md4> <b>Currently Billed:</b> $0 </v-flex>
+                  <v-flex md4 v-if="timesheet && activeTab=='batch'" > <b>Currently Billed:</b>${{getBilledAmount()}}</v-flex>
+                  <v-flex md4 v-else-if="form.project && timesheet && timesheet[weeklyProjectIndex]&&timesheet[weeklyProjectIndex].amountBilled" > <b>Currently Billed:</b>${{timesheet[weeklyProjectIndex].amountBilled}}</v-flex>
+                  <v-flex md4 v-else> <b>Currently Billed:</b> $0 </v-flex>
                   <v-flex md4> <b>Legal Billed Amount:</b> $0 </v-flex>
                 </v-flex>
               </v-flex>
@@ -282,6 +284,12 @@ export default {
     this.clearTimesheet();
   },
   methods: {
+    getBilledAmount() {
+      const sum = this.timesheet
+        .filter(item => item.amountBilled && item.amountBilled > 0)
+        .reduce((prev, cur) => prev + Number(cur.amountBilled), 0);
+      return sum;
+    },
     fetchUser() {
       const referenceId = this.$store.state.activeUser.refId;
       const user = this.$store.state.users.find(value => value.referenceId === referenceId);
@@ -457,6 +465,7 @@ export default {
             timesheetItem.id = obj[index].id;
             timesheetItem.entries = obj[index].timesheetEntries;
             timesheetItem.is_locked = obj[index].is_locked;
+            timesheetItem.amountBilled = obj[index].amountBilled ? obj[index].amountBilled : 0;
             vm.timesheet.push(timesheetItem);
           }
           vm.$refs.TimeCalenderWeekly.setCalendarText();
@@ -513,6 +522,7 @@ export default {
         vm.timesheet[vm.weeklyProjectIndex].mou = obj.mou.id;
         vm.timesheet[vm.weeklyProjectIndex].project = obj.project.id;
         vm.timesheet[vm.weeklyProjectIndex].is_locked = obj.is_locked;
+        vm.timesheet[vm.weeklyProjectIndex].amountBilled = obj.amountBilled ? obj.amountBilled : 0;
         vm.timesheet[vm.weeklyProjectIndex].projectRfx = obj.projectRfx
           ? obj.projectRfx.id
           : undefined;
@@ -688,6 +698,7 @@ export default {
       timesheetItem.userId = this.form && this.form.userId ? this.form.userId : undefined;
       timesheetItem.mou = undefined;
       timesheetItem.is_locked = false;
+      timesheetItem.amountBilled = 0;
       // }
 
       timesheetItem.startDate = timesheetItem.entries[0].entryDate;
@@ -761,6 +772,7 @@ export default {
               Project: currentProject,
               Date: entry.entryDate,
               'Billable Hours': entry.hoursBillable,
+              'Hourly Rate': hourlyRate,
               'Billable Comments': entry.commentsBillable,
               'Unbillable Hours': entry.hoursUnBillable,
               'Unbillable Comments': entry.commentsUnBillable,
@@ -769,8 +781,7 @@ export default {
               'Expense Description': entry.expenseComment,
               'Revenue Amount': entry.revenueAmount,
               'Revenue Description': entry.revenueComment,
-              'Hourly Rate': hourlyRate,
-              Total: (parseInt(entry.hoursBillable, 10) * parseInt(hourlyRate, 10)) + (parseInt(entry.hoursUnBillable, 10) * parseInt(hourlyRate, 10)) + parseInt(entry.expenseAmount, 10) + parseInt(entry.revenueAmount, 10),
+              Total: (parseFloat(entry.hoursBillable, 10) * parseFloat(hourlyRate, 10)) + (parseFloat(entry.hoursUnBillable, 10) * parseFloat(hourlyRate, 10)) + parseFloat(entry.expenseAmount, 10) + parseFloat(entry.revenueAmount, 10),
             });
           }
         }

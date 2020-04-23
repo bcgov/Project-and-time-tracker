@@ -17,7 +17,7 @@ export class RiskQuestions {
   @Column({ type: 'int', nullable: false })
   questionNo: number;
 
-  @Column({ type: 'boolean', nullable: false })
+  @Column({ type: 'boolean', nullable: true })
   is_PSB: boolean;
 
   @Column({ type: 'boolean', nullable: true })
