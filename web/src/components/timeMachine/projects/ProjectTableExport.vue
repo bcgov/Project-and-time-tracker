@@ -286,9 +286,9 @@ export default {
             });
             doc.setFontSize(11);
             doc.setFontStyle('bold');
-            doc.text('Amount Check', leftStartCoordinate + 110, 100);
-            doc.setFontSize(12);
-            doc.text('$0.00', leftStartCoordinate + 150, 100);
+            // doc.text('Amount Check', leftStartCoordinate + 110, 100);
+            // doc.setFontSize(12);
+            // doc.text('$0.00', leftStartCoordinate + 150, 100);
 
             // ///////////// PDF First PAGE END /////////////////////////////////////////////
 
