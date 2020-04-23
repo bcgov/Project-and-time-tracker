@@ -475,6 +475,7 @@ export default {
     },
     async createMOU() {
       // TODO - Check that pre-existing MOU doesn't already exist
+      if (this.project.mou === '' || this.project.mou === ' ') { return; }
       if (this.project.mou) {
         let mouItem = this.$store.state.mouList.find(item => item.name === this.project.mou);
         if (typeof mouItem === 'undefined') {
