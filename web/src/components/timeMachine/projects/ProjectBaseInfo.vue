@@ -470,7 +470,10 @@ export default {
       // TODO - Check that pre-existing MOU doesn't already exist
       if (this.project.mou) {
         const mouItem = this.$store.state.mouList.find(item => item.name === this.project.mou);
-        if (typeof mouItem === 'undefined') { await this.$store.dispatch('createMOU', { name: this.project.mou }); }
+        if (typeof mouItem === 'undefined') {
+          mouItem = this.$store.state.mouList.find(item => item.name === this.project.mou.name);
+          if (typeof mouItem === 'undefined') { await this.$store.dispatch('createMOU', { name: this.project.mou }); }
+        }
       }
     },
     fetchData() {

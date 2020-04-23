@@ -20,12 +20,14 @@ export const retrieveMOUs = async () => {
 //
 export const createMOU = async (obj: { name: string }) => {
   const repo = mouRepo();
+  if (obj && obj.name == '') return null;
   const existingMou = await repo
     .createQueryBuilder('m')
     .where('m.name = :name', { name: obj.name })
     .getOne();
 
   if (existingMou) return existingMou;
+
   const mou = repo.create(obj);
   const ret = await repo.save(mou);
   if (!ret) {
