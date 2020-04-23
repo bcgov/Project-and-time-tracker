@@ -1,5 +1,5 @@
 import { getRepository, Repository } from 'typeorm';
-import { Project } from '../../models/entities';
+import { Project, ProjectContacts, Contact } from '../../models/entities';
 import { Client } from '../../models/entities';
 import { IProject } from '../../models/interfaces/i-project';
 import { Timesheet } from './../../models/entities/timesheet.entity';
@@ -21,6 +21,9 @@ const timesheetRepo = (): Repository<Timesheet> => {
 };
 const projectRepo = (): Repository<Project> => {
   return getRepository(Project);
+};
+const projectContactRepo = (): Repository<ProjectContacts> => {
+  return getRepository(ProjectContacts);
 };
 
 const clientRepo = (): Repository<Client> => {
@@ -229,11 +232,16 @@ export const retrieveFinanceData = async (obj, userId) => {
         'c.projectCode',
         'c.serviceCenter'
       ])
-      .where('p.id = :projectId', {
-        projectId: exportData.projectId
-      })
+      .where('p.id = :projectId', {projectId: exportData.projectId})
       .getOne();
-
+      const contactproRepo = projectContactRepo();
+      const contactRes = await contactproRepo
+      .createQueryBuilder('pc')
+      .leftJoinAndSelect('pc.project', 'p')
+      .leftJoinAndSelect('pc.contact', 'c')
+      .where('c."contactType" = :contactType and pc."projectId" = :projectId', {contactType: 'clientfinance', projectId: exportData.projectId})
+      .getOne();
+    exportData.contact = contactRes.contact.fullName;
     exportData.projectName = res.projectName;
     if (res.client) {
       exportData.responsibilityCenter = res.client.responsibilityCenter;
