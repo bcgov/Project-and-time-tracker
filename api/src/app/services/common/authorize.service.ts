@@ -65,7 +65,8 @@ const commonForPSBAdminAndUser = [
   'DELETE/timesheet/:id',
   'POST/MOU/',
   'PATCH/intake/:id',
-  'DELETE/intake/:id'
+  'DELETE/intake/:id',
+  'DELETE/MOU/:id'
 ];
 
 const User = [...commonForAllUsers];

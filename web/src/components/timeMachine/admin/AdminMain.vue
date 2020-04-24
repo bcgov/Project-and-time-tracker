@@ -38,6 +38,16 @@
               <v-list-tile-sub-title>Set hourly rates for users</v-list-tile-sub-title>
             </v-list-tile-content>
           </v-list-tile>
+
+
+          <v-list-tile avatar>
+            <v-list-tile-content>
+              <v-list-tile-title>
+                <router-link to="admin/remove-mou">Remove MOU</router-link>
+              </v-list-tile-title>
+              <v-list-tile-sub-title>Remove MOU's not connected with projects</v-list-tile-sub-title>
+            </v-list-tile-content>
+          </v-list-tile>
         </v-list>
       </v-flex>
     </v-layout>
