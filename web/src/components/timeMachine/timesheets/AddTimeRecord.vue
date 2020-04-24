@@ -552,7 +552,12 @@ export default {
     },
 
     async open(editMode = false) {
-      if (this.$store.state.users.length === 0) { await this.$store.dispatch('fetchUsers'); }
+      this.dialog = true;
+      if (this.$store.state.users.length === 0) {
+        this.$refs.spinner.open();
+        await this.$store.dispatch('fetchUsers');
+        this.$refs.spinner.close();
+      }
       this.initData();
       this.$refs.AddimeRecords.resetValidation();
       this.form.userId = this.fetchUser();
@@ -563,7 +568,7 @@ export default {
       }
       this.$refs.TimeCalenderBatch.disableWeekPicker(editMode);
       this.$refs.TimeCalenderWeekly.disableWeekPicker(editMode);
-      this.dialog = true;
+
       setTimeout(() => {
         if (document.getElementsByClassName('v-dialog v-dialog--active')[0]) {
           document.getElementsByClassName('v-dialog v-dialog--active')[0].scrollTop = 0;
