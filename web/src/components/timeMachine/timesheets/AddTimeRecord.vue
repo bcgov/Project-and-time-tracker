@@ -19,10 +19,10 @@
               </v-flex>
               <v-flex md8>
                 <v-flex class="d-flex cardheadlabel1">
-                  <v-flex md7 class="haederinfo">Information being entered by:</v-flex>
-                  <v-flex md4>
-                    <v-select
-                      class="currentuser"
+                  <v-flex md5 class="haederinfo">Information being entered by:
+                  </v-flex>
+                    <v-flex md7> <v-select
+                    class="currentuser"
                       v-model="form.userId"
                       :rules="requiredRule"
                       @input="onChangeUser(form.userId)"
@@ -32,8 +32,7 @@
                       :disabled="editMode"
                       label="User"
                       validate-on-blur
-                    ></v-select>
-                  </v-flex>
+                    ></v-select></v-flex>
                 </v-flex>
 
                 <v-flex class="d-flex cardheadlabel2">
