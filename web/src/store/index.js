@@ -761,8 +761,8 @@ const store = new Vuex.Store({
         });
     },
     // User profiles
-    fetchUsers(ctx) {
-      $http
+    async fetchUsers(ctx) {
+      await $http
         .get(`${API_URI}/user`)
         .then((res) => {
           const content = res.data;

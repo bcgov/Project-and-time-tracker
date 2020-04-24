@@ -551,7 +551,8 @@ export default {
       });
     },
 
-    open(editMode = false) {
+    async open(editMode = false) {
+      if (this.$store.state.users.length === 0) { await this.$store.dispatch('fetchUsers'); }
       this.initData();
       this.$refs.AddimeRecords.resetValidation();
       this.form.userId = this.fetchUser();

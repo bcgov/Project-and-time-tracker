@@ -81,6 +81,7 @@
     <v-content>
       <v-container pa-0 fluid fill-height>
         <v-layout justify-center align-top>
+           <spinner ref="spinner"></spinner>
           <router-view />
         </v-layout>
       </v-container>
@@ -92,12 +93,15 @@
 <script>
 import { mapState } from 'vuex';
 import { shouldDisplayItem } from './menu';
-
+import Spinner from './components/timeMachine/common/Spinner.vue';
 
 import './App.styl';
 
 export default {
   name: 'App',
+  components: {
+    Spinner,
+  },
   methods: {
     changeLocale(to) {
       global.helper.ls.set('locale', to);
@@ -113,7 +117,10 @@ export default {
     shouldDisplayMenuItem(item) {
       return shouldDisplayItem(item, this.$router, this.$store.getters.SECURITY_AUTH);
     },
-    fetchInitialData() {
+    async fetchInitialData() {
+      if (this.$refs.spinner) {
+        this.$refs.spinner.open();
+      }
       this.$store.dispatch('fetchintakeRiskQuestions');
       this.$store.dispatch('fetchMinistries');
       this.$store.dispatch('fetchRFxPhases');
@@ -121,11 +128,14 @@ export default {
       this.$store.dispatch('fetchProjectSectors');
       this.$store.dispatch('fetchProjectIntakeCategory');
       this.$store.dispatch('fetchProjectIntakeServices');
-      this.$store.dispatch('fetchUsers');
+      await this.$store.dispatch('fetchUsers');
       this.$store.dispatch('fetchMOUs');
       this.initialLoadDone = true;
       this.userName = JSON.parse(localStorage.getItem('keycloak_user')).name;
       this.$store.state.activeUser.refId = JSON.parse(localStorage.getItem('keycloak_user')).sub;
+      if (this.$refs.spinner) {
+        this.$refs.spinner.close();
+      }
     },
   },
   created() {
@@ -157,7 +167,7 @@ export default {
       this.$store.state.collapseNavigationBar = false;
     },
     fetchToken(newValue, oldValue) {
-      console.log('fetchToken', {newValue, oldValue})
+      console.log('fetchToken', { newValue, oldValue });
       if (newValue !== oldValue) {
         this.$store.dispatch('verifyTokenServer')
           .then(() => {
