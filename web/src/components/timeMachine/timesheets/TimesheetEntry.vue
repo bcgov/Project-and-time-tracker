@@ -4,7 +4,16 @@
       <v-container grid-list-xl>
         <v-layout row wrap class="list-header">
           <v-flex md1>Day</v-flex>
-          <v-flex md2>Hours</v-flex>
+          <v-flex md2>  <v-tooltip bottom >
+            <span slot="activator">
+              Hours
+              <v-icon size="20" >info</v-icon>
+
+            </span>
+            <span>
+              Hours (15min = 0.25)
+            </span>
+          </v-tooltip></v-flex>
           <v-flex md8>Description</v-flex>
           <v-flex md1></v-flex>
         </v-layout>
@@ -22,7 +31,6 @@
               max="24"
               step="0.01"
               min="0"
-              :rules="hoursRule"
               oninput="validity.valid||(value=0);"
               v-model="item.hoursBillable"
             ></v-text-field>
@@ -34,7 +42,6 @@
               max="24"
               step="0.01"
               min="0"
-              :rules="hoursRule"
               oninput="validity.valid||(value=0);"
               v-model="item.hoursUnBillable"
             ></v-text-field>
@@ -80,7 +87,6 @@ export default {
   data() {
     return {
       valid: true,
-      hoursRule: [v => v % 0.25 === 0 || 'Please enter in quarter hours (0.25 = 15min)'],
     };
   },
   watch: {},
