@@ -16,7 +16,7 @@
                         <div class="body-1">Project Name:</div>
                       </v-flex>
                       <v-flex md6 justify-center>
-                        <div class="body-2">qqqqqqqqq</div>
+                        <div class="body-2">{{$store.state.timesheetById.project.projectName}}</div>
                       </v-flex>
                     </v-layout>
                     <v-layout>
@@ -24,7 +24,7 @@
                         <div class="body-1">MOU Amount:</div>
                       </v-flex>
                       <v-flex md6 justify-center>
-                        <div class="body-2">$23423.32</div>
+                        <div class="body-2">{{$store.state.timesheetById.project.mouAmount}}</div>
                       </v-flex>
                     </v-layout>
 
@@ -33,7 +33,7 @@
                         <div class="body-1">Currently Billed:</div>
                       </v-flex>
                       <v-flex md6 justify-center>
-                        <div class="body-2">$36534.34</div>
+                        <div class="body-2">{{$store.state.timesheetById.amountBilled}}</div>
                       </v-flex>
                     </v-layout>
 
@@ -101,18 +101,18 @@
                 </v-layout>
               
                 <v-layout
-                  v-for="(item, index) in $store.state.timesheetById.timesheetEntries"
-                  :key="item.id"
+                  v-for="(billableitem, billindex) in $store.state.timesheetById.timesheetEntries"
+                  :key="`A-${billindex}`"
                 >
                   <v-flex d-flex justify-end>
                     <v-flex md3>
-                      <div class="body-1">{{dayValues[index]}}</div>
+                      <div class="body-1">{{dayValues[billindex]}}</div>
                     </v-flex>
                     <v-flex md6 justify-center>
-                      <div class="body-1">{{item.hoursBillable}}</div>
+                      <div class="body-1">{{billableitem.hoursBillable}}</div>
                     </v-flex>
                     <v-flex md6 justify-center>
-                      <div class="body-1">{{item.commentsBillable}}</div>
+                      <div class="body-1">{{billableitem.commentsBillable}}</div>
                     </v-flex>
                   </v-flex>
                 </v-layout>
@@ -136,21 +136,21 @@
                   </v-flex>
                 </v-layout>
                 <v-layout
-                  v-for="(item, index) in $store.state.timesheetById.timesheetEntries"
-                  :key="item.id"
+                  v-for="(expenseitem, expenseindex) in $store.state.timesheetById.timesheetEntries"
+                  :key="`B-${expenseindex}`"
                 >
                   <v-flex d-flex justify-end>
                     <v-flex md3>
-                      <div class="body-1">{{dayValues[index]}}</div>
+                      <div class="body-1">{{dayValues[expenseindex]}}</div>
                     </v-flex>
                     <v-flex md3 justify-center>
-                      <div class="body-1">{{item.expenseAmount}}</div>
+                      <div class="body-1">{{expenseitem.expenseAmount}}</div>
                     </v-flex>
                     <v-flex md3 justify-center>
-                      <div class="body-1">{{item.expenseCategory}}</div>
+                      <div class="body-1">{{expenseitem.expenseCategory}}</div>
                     </v-flex>
                      <v-flex md3 justify-center>
-                      <div class="body-1">{{item.expenseComment}}</div>
+                      <div class="body-1">{{expenseitem.expenseComment}}</div>
                     </v-flex>
                   </v-flex>
                 </v-layout>
@@ -172,18 +172,18 @@
                 </v-layout>
                
                 <v-layout
-                  v-for="(item, index) in $store.state.timesheetById.timesheetEntries"
-                  :key="item.id"
+                  v-for="(revenueitem, revenueindex) in $store.state.timesheetById.timesheetEntries"
+                  :key="`C-${revenueindex}`"
                 >
                   <v-flex d-flex justify-end>
                     <v-flex md3>
-                      <div class="body-1">{{dayValues[index]}}</div>
+                      <div class="body-1">{{dayValues[revenueindex]}}</div>
                     </v-flex>
                     <v-flex md6 justify-center>
-                      <div class="body-1">{{item.revenueAmount}}</div>
+                      <div class="body-1">{{revenueitem.revenueAmount}}</div>
                     </v-flex>
                     <v-flex md6 justify-center>
-                      <div class="body-1">{{item.revenueComment}}</div>
+                      <div class="body-1">{{revenueitem.revenueComment}}</div>
                     </v-flex>
                   </v-flex>
                 </v-layout>
@@ -204,18 +204,18 @@
                   </v-flex>
                 </v-layout>
                 <v-layout
-                  v-for="(item, index) in $store.state.timesheetById.timesheetEntries"
-                  :key="item.id"
+                  v-for="(unbilalbleitem, unbillindex) in $store.state.timesheetById.timesheetEntries"
+                  :key="`D-${unbillindex}`"
                 >
                   <v-flex d-flex justify-end>
                     <v-flex md3>
-                      <div class="body-1">{{dayValues[index]}}</div>
+                      <div class="body-1">{{dayValues[unbillindex]}}</div>
                     </v-flex>
                     <v-flex md6 justify-center>
-                      <div class="body-1">{{item.hoursUnBillable}}</div>
+                      <div class="body-1">{{unbilalbleitem.hoursUnBillable}}</div>
                     </v-flex>
                     <v-flex md6 justify-center>
-                      <div class="body-1">{{item.commentsUnBillable}}</div>
+                      <div class="body-1">{{unbilalbleitem.commentsUnBillable}}</div>
                     </v-flex>
                   </v-flex>
                 </v-layout>
