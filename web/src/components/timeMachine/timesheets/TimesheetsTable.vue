@@ -168,7 +168,7 @@ export default {
   },
   computed: {
     closeDialog() {
-      this.dialog =false;
+      this.dialog = false;
     },
     projectsRfx() {
       return this.$store.state.projectsRfx;
@@ -191,9 +191,17 @@ export default {
     },
   },
   methods: {
-     viewRequest(timesheetId) {
-      this.id = timesheetId;
-      this.dialog = true;
+    async viewRequest(timesheetId) {
+      const vm = this;
+       await vm.$store.dispatch("fetchTimesheetById", { id: timesheetId }).then((res) => {
+      vm.$store.state.timesheetById = res;
+      console.log(res);
+      vm.startDateMain = vm.$store.state.timesheetsWeek.startDate;
+      vm.endDateMain = vm.$store.state.timesheetsWeek.endDate;
+      const found = vm.timesheetsList.find(element => element.id === timesheetId);
+      vm.id = timesheetId;
+      vm.dialog = true;
+      });
     },
     closeTimesheet(needRefresh) {
       if (needRefresh) {
