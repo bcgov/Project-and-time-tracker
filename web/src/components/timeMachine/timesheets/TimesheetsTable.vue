@@ -42,13 +42,23 @@
             <td class="text-xs-left">{{ props.item.dateModified.toString().slice(0,10) }}</td>
             <td class="text-xs-left">{{ props.item.user.contact.fullName }}</td>
             <!-- <td class="text-xs-left">{{ props.item.projectName}} </td> -->
-            <td class="text-xs-left">{{ props.item.project.projectName }}</td>
+            <td>
+              <span class="clickable" @click="viewRequest(props.item.id)">{{ props.item.project.projectName }}</span>
+            </td>
             <!-- <td class="text-xs-left">
               $$$
             </td>-->
             <!-- <td class="text-xs-left"> legal $$$ </td> -->
             <td class="text-xs-left">{{ props.item.hoursAccured }}</td>
             <td class="text-xs-center">
+              <v-tooltip top>
+                <template v-slot:activator="{ on }">
+                  <v-btn flat icon color="grey" v-on="on" @click="viewRequest(props.item.id)">
+                    <v-icon >visibility</v-icon>
+                  </v-btn>
+                </template>
+                <span>View Timesheet</span>
+              </v-tooltip>
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
                   <v-btn flat icon color="grey" @click="editTimesheet(props.item.id)" v-on="on">
@@ -69,6 +79,19 @@
             </td>
           </template>
         </v-data-table>
+          <v-dialog v-if="dialog" v-model="dialog"  @input="closeDialog(false)"  width="800" margin-top="91px">
+          <v-card>
+            <v-card-text>
+              <v-icon
+                class="v-model-close-icon"
+                color="blue darken-1"
+                flat
+                @click="dialog = false"
+              >close</v-icon>
+              <timesheet-info-view :id="id"></timesheet-info-view>
+            </v-card-text>
+          </v-card>
+        </v-dialog>
       </template>
       <v-divider></v-divider>
     </v-card-text>
@@ -82,6 +105,7 @@ import Spinner from '../common/Spinner.vue';
 import Snackbar from '../common/Snackbar.vue';
 import Confirm from '../common/Confirm.vue';
 import AddTimeRecord from './AddTimeRecord.vue';
+import TimesheetInfoView from './TimesheetInfoView.vue';
 
 export default {
   components: {
@@ -91,6 +115,7 @@ export default {
     AddTimeRecord,
     Snackbar,
     Confirm,
+    TimesheetInfoView
   },
   props: {
     title: String,
@@ -142,6 +167,9 @@ export default {
     };
   },
   computed: {
+    closeDialog() {
+      this.dialog =false;
+    },
     projectsRfx() {
       return this.$store.state.projectsRfx;
     },
@@ -163,6 +191,10 @@ export default {
     },
   },
   methods: {
+     viewRequest(timesheetId) {
+      this.id = timesheetId;
+      this.dialog = true;
+    },
     closeTimesheet(needRefresh) {
       if (needRefresh) {
         this.fetchData();
