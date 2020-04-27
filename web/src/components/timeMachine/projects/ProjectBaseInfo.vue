@@ -450,6 +450,7 @@ export default {
             // scope.$store.dispatch('updateProject', projectData);
             scope.$refs.snackbar.displaySnackbar('success', 'Updated');
             scope.$store.dispatch('fetchProjects');
+            scope.$store.dispatch("fetchAllProjects");
           },
           (err) => {
             this.saveProjectLoading = false;
