@@ -57,7 +57,7 @@
               <span>Copy</span>
             </v-tooltip>
 
-            <v-tooltip top open-delay="500">
+            <v-tooltip v-if="isCopy" top open-delay="500">
               <template v-slot:activator="{ on }">
                 <v-btn flat icon @click="pastefunc(index)" v-on="on" :disabled="timesheet[projectIndex].is_locked">
                   <v-icon>post_add</v-icon>
@@ -80,6 +80,7 @@ export default {
   data() {
     return {
       valid: true,
+      isCopy:false,
       hoursRule: [v => v % 0.25 === 0 || 'Please enter in quarter hours (0.25 = 15min)'],
     };
   },
@@ -100,6 +101,7 @@ export default {
       return new Date(parts[0], parts[1] - 1, parts[2]);
     },
     copyfunc(item) {
+      this.isCopy = true;
       this.itemHours = this.selectedItem === 1 ? item.hoursBillable : item.hoursUnBillable;
       this.itemDescription = this.selectedItem === 1 ? item.commentsBillable : item.commentsUnBillable;
     },
