@@ -148,6 +148,8 @@ export const retrieveKeycloakUsersByRole = async (
       }
     });
 
+    console.log('ARC C.1 - retrieveKeycloakUsersByRole', {role, url, response})
+
     if (response.status !== 200) {
       throw Error(response.statusText);
     }
