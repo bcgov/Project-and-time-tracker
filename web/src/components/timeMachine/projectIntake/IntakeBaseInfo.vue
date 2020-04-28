@@ -116,7 +116,7 @@
             label="Contract Amount"
             oninput="validity.valid||(value='');"
             :value='form.estimatedContractValue | withCommas'
-            @blur="v => (item.estimatedContractValue = thousandSeprator(v.target.value))"
+            @blur="v => (form.estimatedContractValue = thousandSeprator(v.target.value))"
           ></v-text-field>
         </div>
       </v-flex>
