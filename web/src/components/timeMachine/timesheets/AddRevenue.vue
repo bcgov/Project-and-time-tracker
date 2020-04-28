@@ -27,7 +27,7 @@
           <v-flex md7>
             <v-text-field v-model="item.revenueComment" :disabled="timesheet[projectIndex].is_locked"></v-text-field>
           </v-flex>
-          <v-flex md2>
+          <v-flex md2 style=" text-align: right;">
             <v-tooltip top open-delay="500">
               <template v-slot:activator="{ on }">
                 <v-btn
