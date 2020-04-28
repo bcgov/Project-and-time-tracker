@@ -106,7 +106,7 @@ export const retrieveKeycloakAdminToken = async () => {
 
     // ARC TODO - PROBLEM IS IN THIS FUNCTION. PARAMS ARE WRONG MAYBE?
 
-    // console.log('retrieveKeycloakAdminToken keycloak config', { keycloakConfig})
+    console.log('retrieveKeycloakAdminToken keycloak config', { keycloakConfig})
 
     const tokenParams = new URLSearchParams();
     tokenParams.append('username', keycloakConfig.adminUserName);
@@ -122,7 +122,7 @@ export const retrieveKeycloakAdminToken = async () => {
       body: tokenParams
     });
 
-    // console.log('retrieveKeycloakAdminToken RESPONSE', { response })
+    console.log('retrieveKeycloakAdminToken RESPONSE', { response })
 
     if (response.status !== 200) {
       throw Error(response.statusText);
