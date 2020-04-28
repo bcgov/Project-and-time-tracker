@@ -43,13 +43,21 @@
               <span>Copy</span>
             </v-tooltip>
 
-            <v-tooltip top open-delay="500">
+            <v-tooltip top open-delay="500"  v-if="isCopy">
               <template v-slot:activator="{ on }">
                 <v-btn flat icon @click="pastefunc(index)" v-on="on" :disabled="timesheet[projectIndex].is_locked">
                   <v-icon>post_add</v-icon>
                 </v-btn>
               </template>
               <span>Paste</span>
+            </v-tooltip>
+            <v-tooltip v-else>
+              <template v-slot:activator="{ on }">
+                <v-btn flat icon v-on="on" :disabled="!isCopy">
+
+                </v-btn>
+              </template>
+              <span></span>
             </v-tooltip>
           </v-flex>
         </v-layout>
@@ -65,6 +73,7 @@ export default {
   components: {},
   data() {
     return {
+      isCopy: false,
       valid: true,
       amountRule: [
         (v) => {
@@ -72,8 +81,8 @@ export default {
           if (!v) {
             return true;
           }
-          const anyNonNumbers = v.toString().match(/[^\d,]+/g, '');
-          if (anyNonNumbers) {
+          const anyNonNumbers = v.toString().match(/[1-9]\d*(?:\.\d{0,2})?/, '');
+          if (!anyNonNumbers) {
             return 'Field must just be a number.';
           }
           return true;
@@ -93,6 +102,7 @@ export default {
       return this.$refs.form.validate();
     },
     copyfunc(revenueAmount, revenueComment) {
+      this.isCopy = true;
       this.revenueAmount = revenueAmount;
       this.revenueComment = revenueComment;
     },

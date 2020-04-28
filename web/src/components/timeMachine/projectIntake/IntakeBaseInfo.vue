@@ -116,7 +116,7 @@
             label="Contract Amount"
             oninput="validity.valid||(value='');"
             :value='form.estimatedContractValue | withCommas'
-            @blur='v => form.estimatedContractValue = parseFloat(v.target.value)'
+            @blur="v => (item.estimatedContractValue = thousandSeprator(v.target.value))"
           ></v-text-field>
         </div>
       </v-flex>
@@ -297,15 +297,17 @@ export default {
     return {
       valid: true,
       requiredRule: [v => !!v || 'This field required'],
-      amountRule: [(v) => {
-        if (!v) return 'This field is required';
-        if(v==0) return 'Field cannot be zero';
-        const anyNonNumbers = v.toString().match(/[^\d,]+/g, '');
-        if (anyNonNumbers){
-          return 'Field must just be a number.'
-        }
-        return true;
-      }],
+      amountRule: [
+        (v) => {
+          if (!v) return 'This field is required';
+          if (v === 0) return 'Field cannot be zero';
+          const anyNonNumbers = v.toString().match(/^[0-9,_.-]*$/g, '');
+          if (!anyNonNumbers) {
+            return 'Field must just be an amount.';
+          }
+          return true;
+        },
+      ],
       // Initialize using props
       form: { ...form },
       // isReprocurement: false,
@@ -333,6 +335,18 @@ export default {
     },
   },
   methods: {
+    thousandSeprator(amount) {
+      if (
+        amount !== ''
+        || amount !== undefined
+        || amount !== 0
+        || amount !== '0'
+        || amount !== null
+      ) {
+        return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      }
+      return amount;
+    },
     checksectorid() {
       const sector = this.$store.state.projectSectors.filter(
         item => item.projectSectorName === 'Other',
@@ -351,7 +365,7 @@ export default {
       return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
     },
     onNextClicked() {
-      if (this.$refs.intakeBaseInfo.validate() && this.form.estimatedContractValue!='CA$0.00') {
+      if (this.$refs.intakeBaseInfo.validate() && this.form.estimatedContractValue != 'CA$0.00') {
         // this.nextPanel(this.panelName);
         if (!this.form.isReprocurement) {
           this.form.dateOfReprocurement = undefined;
@@ -372,9 +386,9 @@ export default {
       const formData = this.form;
       this.$store.dispatch('addIntakeRequest', formData);
     },
-    sectorFocus(x){
+    sectorFocus(x) {
       x.target.click();
-    }
+    },
   },
 };
 </script>

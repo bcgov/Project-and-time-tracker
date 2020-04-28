@@ -146,7 +146,7 @@
             label="Contract Amount"
             oninput="validity.valid||(value='');"
             :value='form.contractValue | withCommas'
-            @blur='v => form.contractValue = parseFloat(v.target.value)'
+            @blur="v => (item.contractValue = thousandSeprator(v.target.value))"
           ></v-text-field>
         </div>
       </v-flex>
@@ -158,7 +158,7 @@
             label="MOU Amount"
             oninput="validity.valid||(value='');"
             :value='form.mouAmount | withCommas'
-            @blur='v => form.mouAmount = parseFloat(v.target.value)'
+            @blur="v => (item.mouAmount = thousandSeprator(v.target.value))"
           ></v-text-field>
         </div>
       </v-flex>
@@ -338,22 +338,26 @@ export default {
       saveProjectLoading: false,
       ministryInformation: this.$store.state.ministryInformation,
       mouSearch: null,
-      amountRule: [(v) => {
-        if (!v) return 'This field is required';
-        const anyNonNumbers = v.toString().match(/[^\d,]+/g, '');
-        if (anyNonNumbers) {
-          return 'Field must just be a number.';
-        }
-        return true;
-      }],
-      mouRule: [(v) => {
-        if (!v) return true;
-        const anyNonNumbers = v.toString().match(/[^\d,]+/g, '');
-        if (anyNonNumbers) {
-          return 'Field must just be a number.';
-        }
-        return true;
-      }],
+      amountRule: [
+        (v) => {
+          if (!v) return true;
+          const anyNonNumbers = v.toString().match(/^[0-9,_.-]*$/g, '');
+          if (!anyNonNumbers) {
+            return 'Field must just be an amount.';
+          }
+          return true;
+        },
+      ],
+      mouRule: [
+        (v) => {
+          if (!v) return true;
+          const anyNonNumbers = v.toString().match(/^[0-9,_.-]*$/g, '');
+          if (!anyNonNumbers) {
+            return 'Field must just be an amount.';
+          }
+          return true;
+        },
+      ],
     };
   },
   watch: {
@@ -381,6 +385,18 @@ export default {
     },
   },
   methods: {
+    thousandSeprator(amount) {
+      if (
+        amount !== ''
+        || amount !== undefined
+        || amount !== 0
+        || amount !== '0'
+        || amount !== null
+      ) {
+        return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      }
+      return amount;
+    },
     onTeamWideProject() {
       if (this.form.teamWideProject) {
         this.oldLeadUserID = this.form.leadUserId;

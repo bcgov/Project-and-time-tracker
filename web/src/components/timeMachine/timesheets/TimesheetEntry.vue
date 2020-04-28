@@ -65,6 +65,14 @@
               </template>
               <span>Paste</span>
             </v-tooltip>
+            <v-tooltip v-else>
+              <template v-slot:activator="{ on }">
+                <v-btn flat icon v-on="on" :disabled="!isCopy">
+
+                </v-btn>
+              </template>
+              <span></span>
+            </v-tooltip>
           </v-flex>
         </v-layout>
       </v-container>
@@ -80,7 +88,7 @@ export default {
   data() {
     return {
       valid: true,
-      isCopy:false,
+      isCopy: false,
       hoursRule: [v => v % 0.25 === 0 || 'Please enter in quarter hours (0.25 = 15min)'],
     };
   },

@@ -7,20 +7,20 @@
       v-model="dialog"
       @input="closeDialog(false)"
     >
-      <v-form ref="AddimeRecords" v-model="valid" lazy-validation>
+      <v-form ref="AddimeRecords" v-model="valid" lazy-validation >
         <spinner ref="spinner"></spinner>
-        <v-card>
+        <v-card >
           <v-card-text class="card-contents">
             <v-layout wrap>
-              <v-flex md6>
+              <v-flex md4>
                 <v-card-title>
                   <span class="headline">Add Time Record</span>
                 </v-card-title>
               </v-flex>
-              <v-flex md6 >
+              <v-flex md8 >
                 <v-flex class="d-flex cardheadlabel1">
-                  <v-flex md6 class="headerinfo">Information being entered by:</v-flex>
-                  <v-flex md6>
+                  <v-flex md5 class="headerinfo">Information being entered by:</v-flex>
+                  <v-flex md7>
                     <v-select
                       class="currentuser"
                       v-model="form.userId"
@@ -103,7 +103,7 @@
                   </v-flex>
                 </v-flex>
               </v-tab-item>
-              <v-tab-item value="weekly">
+              <v-tab-item value="weekly" >
                 <v-flex class="d-flex" cols="12" sm="4" v-if="activeTab === 'weekly'">
                   <v-flex xs12>
                     <v-select
@@ -197,6 +197,7 @@
               </v-tab-item>
             </v-tabs>
           </v-card-text>
+          <br/><br/>
           <v-divider class="header-divider"></v-divider>
           <v-card-actions>
             <v-btn class="btn-discard" @click="closeDialog(false)" :ripple="false">DISCARD TIMESHEET</v-btn>
