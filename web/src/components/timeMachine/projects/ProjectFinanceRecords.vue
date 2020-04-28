@@ -158,7 +158,6 @@ export default {
       if (vm.$refs.spinner) { vm.$refs.spinner.open(); }
       await this.$store.dispatch('fetchExportedPdfs', postData).then(
         (res) => {
-          console.log('111');
           if (vm.$refs.spinner) { vm.$refs.spinner.close(); }
           vm.projectsList = res;
         },

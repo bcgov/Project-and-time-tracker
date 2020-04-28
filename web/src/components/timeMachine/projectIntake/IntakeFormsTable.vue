@@ -221,7 +221,6 @@ export default {
       return this.$store.state.intakeRequests;
     },
     userList() {
-      console.log('userList called', this.$store.state.users);
       // ARC - UserList doesn't seem to come back with names? What?
       // potentially issue is 'contact' is null. How to get it non-null?
       return this.$store.state.users;
@@ -386,7 +385,6 @@ export default {
       this.mouProject = item;
 
       if (item.mouName) {
-        console.log('has mou!', item);
         this.mou = { id: item.mouId, name: item.mouName };
       }
 
@@ -398,12 +396,10 @@ export default {
       this.$refs.mouCombobox.blur();
       this.$nextTick(async () => {
         if (!this.mou || this.mou === '') return;
-        console.log('assignMOU', { project: this.mouProject, mou: this.mou });
         let mouID = this.mou.id;
 
         // Create MOU if does not exist.
         if (!mouID && this.mou) {
-          console.log('creating mou', { mouID, mou: this.mou });
           mouID = await this.$store.dispatch('createMOU', { name: this.mou });
         }
 
@@ -419,7 +415,6 @@ export default {
       });
     },
     toggleNewMou(event) {
-      console.log('toggle called');
       // this.isNewMOU = !this.isNewMOU;
       this.mou = undefined;
     },
