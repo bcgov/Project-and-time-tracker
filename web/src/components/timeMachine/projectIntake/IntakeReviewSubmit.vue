@@ -207,8 +207,8 @@
           <v-card>
             <v-card-text class="pl-4" v-if="$props.intakeValues.contacts">
               <v-flex
-                v-for="contactItem in $props.intakeValues.contacts"
-                :key="contactItem.contactType"
+                v-for="(contactItem, index ) in $props.intakeValues.contacts"
+                :key="index"
                 class="contacts"
               >
                 <h3 v-if="contactItem.fullName">{{ getContactType(contactItem.contactType) }}</h3>

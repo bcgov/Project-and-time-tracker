@@ -195,7 +195,6 @@ export default {
       const vm = this;
        await vm.$store.dispatch("fetchTimesheetById", { id: timesheetId }).then((res) => {
       vm.$store.state.timesheetById = res;
-      console.log(res);
       vm.startDateMain = vm.$store.state.timesheetsWeek.startDate;
       vm.endDateMain = vm.$store.state.timesheetsWeek.endDate;
       const found = vm.timesheetsList.find(element => element.id === timesheetId);

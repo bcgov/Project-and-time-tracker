@@ -157,7 +157,6 @@ export default {
       this.$store.state.collapseNavigationBar = false;
     },
     fetchToken(newValue, oldValue) {
-      console.log('fetchToken', {newValue, oldValue})
       if (newValue !== oldValue) {
         this.$store.dispatch('verifyTokenServer')
           .then(() => {
