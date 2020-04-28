@@ -124,6 +124,7 @@
                     </v-flex>
                   </v-flex>
                 </v-layout>
+                <br/>
                 <v-card-text>
                   <label class="sub-header-large">Expense Information</label>
                 </v-card-text>
@@ -162,6 +163,7 @@
                     </v-flex>
                   </v-flex>
                 </v-layout>
+                  <br/>
                 <v-card-text>
                   <label class="sub-header-large">Revenue Information</label>
                 </v-card-text>
@@ -195,6 +197,7 @@
                     </v-flex>
                   </v-flex>
                 </v-layout>
+                  <br/>
                 <v-card-text>
                   <label class="sub-header-large">UnBillable Information</label>
                 </v-card-text>
