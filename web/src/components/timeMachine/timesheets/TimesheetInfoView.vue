@@ -107,7 +107,7 @@
                     </v-flex>
                   </v-flex>
                 </v-layout>
-              
+
                 <v-layout
                   v-for="(billableitem, billindex) in $store.state.timesheetById.timesheetEntries"
                   :key="`A-${billindex}`"
@@ -178,7 +178,7 @@
                     </v-flex>
                   </v-flex>
                 </v-layout>
-               
+
                 <v-layout
                   v-for="(revenueitem, revenueindex) in $store.state.timesheetById.timesheetEntries"
                   :key="`C-${revenueindex}`"
@@ -237,7 +237,7 @@
 </template>
 
 <script>
-import Spinner from "../common/Spinner.vue";
+import Spinner from '../common/Spinner.vue';
 // import IntakeBaseInfoView from './IntakeBaseInfoView.vue';
 // import MinistryBranchInfoView from '../common/MinistryBranchInfoView.vue';
 // import './intakeformview.styl';
@@ -246,26 +246,26 @@ import Spinner from "../common/Spinner.vue";
 
 export default {
   components: {
-    Spinner
+    Spinner,
     // IntakeBaseInfoView,
     // MinistryBranchInfoView,
     // ProjectContactInfoView,
     // ProjectAdditionalContactInfoView,
   },
   props: {
-    id: String
+    id: String,
   },
   data() {
     return {
       dayValues: [
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday",
-        "Sundat"
-      ]
+        'Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thursday',
+        'Friday',
+        'Saturday',
+        'Sunday',
+      ],
     };
   },
   computed: {},
@@ -273,7 +273,7 @@ export default {
     fetchUser() {
       const referenceId = this.$store.state.activeUser.refId;
       const user = this.$store.state.users.find(
-        value => value.referenceId === referenceId
+        value => value.referenceId === referenceId,
       );
       return user.id;
     },
@@ -285,7 +285,7 @@ export default {
     isEnabled(infoType) {
       const contacts = this.$store.state.activeIntakeRequest.contacts || [];
       const clientInfo = contacts.find(
-        contact => contact.contactType === infoType
+        contact => contact.contactType === infoType,
       );
       if (clientInfo) return true;
       return false;
@@ -293,16 +293,16 @@ export default {
     getClientInfo(infoType) {
       const contacts = this.$store.state.activeIntakeRequest.contacts || [];
       const clientInfo = contacts.find(
-        contact => contact.contactType === infoType
+        contact => contact.contactType === infoType,
       );
       // if (contacts.length > 2) this.enabled = true;
       // else this.enabled = false;
       return clientInfo;
-    }
+    },
   },
   created() {
     // this.fetchData();
-  }
+  },
 };
 </script>
 
