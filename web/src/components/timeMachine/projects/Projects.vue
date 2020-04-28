@@ -1,13 +1,16 @@
 <template>
-  <v-container grid-list-xl fluid class="custom-manage-projects-container">
-      <v-flex md12>
-        <v-radio-group v-model="selected" row>
+    <v-container grid-list-xl fluid class="custom-manage-projects-container">
+    <v-layout row wrap>
+      <v-flex d-flex justify-center align-start style="width: 100%;">
+      <v-flex md4>
+        <h1 class="projects-header">View {{ selected }}</h1>
+      </v-flex>
+       <v-flex md8><v-radio-group class="right-position" row v-model="selected">
         <v-radio label="My Projects" value="My Projects"></v-radio>
         <v-radio label="All Projects" value="All Projects"></v-radio>
         <v-radio label="Archived Projects" value="Archived Projects"></v-radio>
-      </v-radio-group>
-      </v-flex>
-      <h1 class="projects-header">View {{ selected }}</h1>
+      </v-radio-group></v-flex></v-flex>
+    </v-layout>
       <v-layout row wrap>
       <v-flex xs12>
         <projects-table v-if="selected === 'My Projects'" :selectedItem="2"></projects-table>
@@ -36,7 +39,15 @@ export default {
     selected: 'My Projects',
 
   }),
-  computed: {},
+  computed: {
+  },
 };
 </script>
-<style></style>
+<style>
+.v-input--radio-group--row .v-radio{
+     display: flex;
+ }
+ .right-position {
+   float: right;
+ }
+ </style>
