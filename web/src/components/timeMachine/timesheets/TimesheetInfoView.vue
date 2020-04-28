@@ -8,49 +8,49 @@
               <spinner ref="spinner"></spinner>
               <v-card>
                 <v-card-text>
-                  <label class="sub-header-large">Timesheet Basic Info</label>
+                  <label class="sub-header-large">Timesheet Details</label>
 
                   <v-layout column py-2>
                     <v-layout>
                       <v-flex md6>
-                        <div class="body-1">Project Name:</div>
+                        <div class="body-2">Project Name:</div>
                       </v-flex>
                       <v-flex md6 justify-center>
-                        <div class="body-2">{{$store.state.timesheetById.project.projectName}}</div>
+                        <div class="body-1">{{$store.state.timesheetById.project.projectName}}</div>
                       </v-flex>
                     </v-layout>
                     <v-layout>
                       <v-flex md6>
-                        <div class="body-1">MOU Amount:</div>
+                        <div class="body-2">MOU Amount:</div>
                       </v-flex>
                       <v-flex md6 justify-center>
-                        <div class="body-2">{{$store.state.timesheetById.project.mouAmount}}</div>
-                      </v-flex>
-                    </v-layout>
-
-                    <v-layout>
-                      <v-flex md6>
-                        <div class="body-1">Currently Billed:</div>
-                      </v-flex>
-                      <v-flex md6 justify-center>
-                        <div class="body-2">{{$store.state.timesheetById.amountBilled}}</div>
+                        <div class="body-1">{{`$`+$store.state.timesheetById.project.mouAmount}}</div>
                       </v-flex>
                     </v-layout>
 
                     <v-layout>
                       <v-flex md6>
-                        <div class="body-1">MOU:</div>
+                        <div class="body-2">Currently Billed:</div>
                       </v-flex>
                       <v-flex md6 justify-center>
-                        <div class="body-2">her is mou name</div>
+                        <div class="body-1">{{`$`+$store.state.timesheetById.amountBilled}}</div>
+                      </v-flex>
+                    </v-layout>
+
+                    <v-layout>
+                      <v-flex md6>
+                        <div class="body-2">MOU:</div>
+                      </v-flex>
+                      <v-flex md6 justify-center>
+                        <div class="body-1">{{$store.state.timesheetById.mou.name}}</div>
                       </v-flex>
                     </v-layout>
                     <v-layout>
                       <v-flex md6>
-                        <div class="body-1">Project RFX:</div>
+                        <div class="body-2">Project RFX:</div>
                       </v-flex>
                       <v-flex md6 justify-center>
-                        <div class="body-2">her is RFX name</div>
+                        <div class="body-1">{{$store.state.timesheetById.projectRFX}}</div>
                       </v-flex>
                     </v-layout>
                     <!-- <v-layout>
@@ -64,19 +64,27 @@
 
                     <v-layout>
                       <v-flex md6>
-                        <div class="body-1">Date From:</div>
+                        <div class="body-2">Date From:</div>
                       </v-flex>
                       <v-flex md6 justify-center>
-                        <div class="body-2">to date value</div>
+                        <div class="body-1">{{new Date($store.state.timesheetById.startDate).toString().slice(0, 15)}}</div>
                       </v-flex>
                     </v-layout>
 
                     <v-layout>
                       <v-flex md6>
-                        <div class="body-1">Date To:</div>
+                        <div class="body-2">Date To:</div>
                       </v-flex>
                       <v-flex md6 justify-center>
-                        <div class="body-2">to date value</div>
+                        <div class="body-1">{{new Date($store.state.timesheetById.endDate).toString().slice(0, 15)}}</div>
+                      </v-flex>
+                    </v-layout>
+                    <v-layout>
+                      <v-flex md6>
+                        <div class="body-2">Last Modified:</div>
+                      </v-flex>
+                      <v-flex md6 justify-center>
+                        <div class="body-1">{{new Date($store.state.timesheetById.dateModified).toString().slice(0, 15)}}</div>
                       </v-flex>
                     </v-layout>
                   </v-layout>
@@ -108,7 +116,7 @@
                     <v-flex md3>
                       <div class="body-1">{{dayValues[billindex]}}</div>
                     </v-flex>
-                    <v-flex md6 justify-center>
+                    <v-flex md3 justify-center>
                       <div class="body-1">{{billableitem.hoursBillable}}</div>
                     </v-flex>
                     <v-flex md6 justify-center>
@@ -179,7 +187,7 @@
                     <v-flex md3>
                       <div class="body-1">{{dayValues[revenueindex]}}</div>
                     </v-flex>
-                    <v-flex md6 justify-center>
+                    <v-flex md3 justify-center>
                       <div class="body-1">{{revenueitem.revenueAmount}}</div>
                     </v-flex>
                     <v-flex md6 justify-center>
@@ -211,7 +219,7 @@
                     <v-flex md3>
                       <div class="body-1">{{dayValues[unbillindex]}}</div>
                     </v-flex>
-                    <v-flex md6 justify-center>
+                    <v-flex md3 justify-center>
                       <div class="body-1">{{unbilalbleitem.hoursUnBillable}}</div>
                     </v-flex>
                     <v-flex md6 justify-center>
@@ -301,5 +309,8 @@ export default {
 <style>
 legend {
   margin-left: 1em;
+}
+.v-dialog .v-card .v-model-close-icon {
+    margin-left: 97%;
 }
 </style>
