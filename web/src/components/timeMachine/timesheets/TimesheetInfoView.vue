@@ -190,7 +190,7 @@
                       <div class="body-1">{{dayValues[revenueindex]}}</div>
                     </v-flex>
                     <v-flex md3 justify-center>
-                      <div class="body-1">{{revenueitem.revenueAmount}}</div>
+                      <div class="body-1">{{revenueitem.revenueHours}}</div>
                     </v-flex>
                     <v-flex md6 justify-center>
                       <div class="body-1">{{revenueitem.revenueComment}}</div>

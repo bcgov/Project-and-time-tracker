@@ -209,6 +209,7 @@ export const createBatchTimesheet = async (ctx: Koa.Context) => {
             expenseComment: entry.expenseComment,
             expenseCategory: entry.expenseCategory,
             revenueAmount: entry.revenueAmount,
+            revenueHours: entry.revenueHours,
             revenueComment: entry.revenueComment
           });
         } else {
@@ -305,6 +306,7 @@ export const createLightTimesheet = async (ctx: Koa.Context) => {
           expenseComment: entry.expenseComment,
           expenseCategory: entry.expenseCategory,
           revenueAmount: entry.revenueAmount,
+          revenueHours: entry.revenueHours,
           revenueComment: entry.revenueComment
         });
       } else {

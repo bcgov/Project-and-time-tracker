@@ -4,7 +4,16 @@
       <v-container grid-list-xl>
         <v-layout row wrap class="list-header">
           <v-flex md1>Day</v-flex>
-          <v-flex md2>Amount</v-flex>
+          <v-flex md2>  <v-tooltip bottom >
+            <span slot="activator">
+              Hours
+              <v-icon size="20" >info</v-icon>
+
+            </span>
+            <span>
+              Hours (15min = 0.25)
+            </span>
+          </v-tooltip></v-flex>
           <v-flex md7>Description</v-flex>
           <v-flex md2></v-flex>
         </v-layout>
@@ -17,11 +26,12 @@
           <v-flex md2>
             <v-text-field
             :disabled="timesheet[projectIndex].is_locked"
-              :rules="amountRule"
-              prepend-inner-icon="attach_money"
-              oninput="validity.valid||(value='');"
-              :value="item.revenueAmount | withCommas"
-              @blur="v => (item.revenueAmount = parseFloat(v.target.value))"
+               type="number"
+              max="24"
+              step="0.01"
+              min="0"
+              oninput="validity.valid||(value=0);"
+              v-model="item.revenueHours"
             ></v-text-field>
           </v-flex>
           <v-flex md7>
@@ -33,7 +43,7 @@
                 <v-btn
                   flat
                   icon
-                  @click="copyfunc(item.revenueAmount, item.revenueComment)"
+                  @click="copyfunc(item.revenueHours, item.revenueComment)"
                   v-on="on"
                   :disabled="timesheet[projectIndex].is_locked"
                 >
@@ -101,13 +111,13 @@ export default {
     validate() {
       return this.$refs.form.validate();
     },
-    copyfunc(revenueAmount, revenueComment) {
+    copyfunc(revenueHours, revenueComment) {
       this.isCopy = true;
-      this.revenueAmount = revenueAmount;
+      this.revenueHours = revenueHours;
       this.revenueComment = revenueComment;
     },
     pastefunc(index) {
-      this.timesheet[this.projectIndex].entries[index].revenueAmount = this.revenueAmount;
+      this.timesheet[this.projectIndex].entries[index].revenueHours = this.revenueHours;
       this.timesheet[this.projectIndex].entries[index].revenueComment = this.revenueComment;
     },
   },

@@ -33,6 +33,9 @@ export class TimesheetEntry {
   @Column({ type: 'double precision', nullable: true })
   revenueAmount: number;
 
+  @Column({ type: 'double precision', nullable: true })
+  revenueHours: number;
+
   @Column({ type: 'text', nullable: true })
   revenueComment: string;
 

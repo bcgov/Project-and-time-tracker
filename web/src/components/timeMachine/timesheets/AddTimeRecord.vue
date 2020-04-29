@@ -742,7 +742,7 @@ export default {
           expenseAmount: 0,
           expenseComment: '',
           expenseCategory: '',
-          revenueAmount: 0,
+          revenueHours: 0,
           revenueComment: '',
         };
         timesheetEntries.push(entry);
@@ -832,6 +832,10 @@ export default {
       if (user && user.contact && user.contact.hourlyRate) {
         hourlyRate = user.contact.hourlyRate;
       }
+      let revenueRate = 0;
+      if (user && user.contact && user.contact.revenueRate) {
+        revenueRate = user.contact.revenueRate;
+      }
       const vm = this;
       vm.$store.dispatch('fetchTimesheetEntriesByUser', formData).then(() => {
         const timeEntries = [];
@@ -847,23 +851,24 @@ export default {
             timeEntries.push({
               Project: currentProject,
               Date: entry.entryDate,
-              'Billable Hours': entry.hoursBillable,
+              'Billable Hours': entry.hoursBillable ? entry.hoursBillable : 0,
               'Hourly Rate': hourlyRate,
               'Billable Comments': entry.commentsBillable,
-              'Unbillable Hours': entry.hoursUnBillable,
+              'Unbillable Hours': entry.hoursUnBillable ? entry.hoursUnBillable : 0,
               'Unbillable Comments': entry.commentsUnBillable,
-              'Expense Amount': entry.expenseAmount,
+              'Expense Amount': entry.expenseAmount ? entry.expenseAmount : 0,
               'Expense Category': entry.expenseCategory,
               'Expense Description': entry.expenseComment,
-              'Revenue Amount': entry.revenueAmount,
+              'Revenue Hours': entry.revenueHours ? entry.revenueHours : 0,
+              'Revenue Rate': revenueRate,
               'Revenue Description': entry.revenueComment,
               Total:
-                parseFloat(entry.hoursBillable, 10)
+                parseFloat(entry.hoursBillable ? entry.hoursBillable : 0, 10)
                   * parseFloat(hourlyRate, 10)
-                + parseFloat(entry.hoursUnBillable, 10)
+                + parseFloat(entry.hoursUnBillable ? entry.hoursUnBillable : 0, 10)
                   * parseFloat(hourlyRate, 10)
-                + parseFloat(entry.expenseAmount, 10)
-                + parseFloat(entry.revenueAmount, 10),
+                + parseFloat(entry.expenseAmount ? entry.expenseAmount : 0, 10)
+                + parseFloat(entry.revenueHours ? entry.revenueHours : 0, 10) * parseFloat(revenueRate, 10),
             });
           }
         }

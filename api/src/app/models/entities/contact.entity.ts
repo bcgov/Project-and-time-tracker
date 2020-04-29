@@ -54,6 +54,13 @@ export class Contact {
   // Client contacts will not have a rate.
   @Column({ type: 'int', nullable: true })
   hourlyRate: number;
+
+  @Column({ type: 'int', nullable: true })
+  revenueRate: number;
 }
 
-export type ContactType = 'clientlead' | 'clientsponsor' | 'clientcontact' | 'user';
+export type ContactType =
+  | 'clientlead'
+  | 'clientsponsor'
+  | 'clientcontact'
+  | 'user';
