@@ -96,13 +96,13 @@
                 </v-card-text>
                 <v-layout>
                  <v-flex d-flex justify-end>
-                    <v-flex md3>
+                    <v-flex md4>
                       <div class="body-2">Day</div>
                     </v-flex>
-                    <v-flex md3 justify-center>
+                    <v-flex md4 justify-center>
                       <div class="body-2">Hours</div>
                     </v-flex>
-                    <v-flex md6 justify-center>
+                    <v-flex md4 justify-center>
                       <div class="body-2">Description</div>
                     </v-flex>
                   </v-flex>
@@ -113,13 +113,13 @@
                   :key="`A-${billindex}`"
                 >
                   <v-flex d-flex justify-end>
-                    <v-flex md3>
+                    <v-flex md4>
                       <div class="body-1">{{dayValues[billindex]}}</div>
                     </v-flex>
-                    <v-flex md3 justify-center>
+                    <v-flex md4 justify-center>
                       <div class="body-1">{{billableitem.hoursBillable}}</div>
                     </v-flex>
-                    <v-flex md6 justify-center>
+                    <v-flex md4 justify-center>
                       <div class="body-1">{{billableitem.commentsBillable}}</div>
                     </v-flex>
                   </v-flex>
@@ -169,13 +169,13 @@
                 </v-card-text>
                  <v-layout>
                  <v-flex d-flex justify-end>
-                    <v-flex md3>
+                    <v-flex md4>
                       <div class="body-2">Day</div>
                     </v-flex>
-                    <v-flex md3 justify-center>
+                    <v-flex md4 justify-center>
                       <div class="body-2">Amount</div>
                     </v-flex>
-                    <v-flex md6 justify-center>
+                    <v-flex md4 justify-center>
                       <div class="body-2">Description</div>
                     </v-flex>
                   </v-flex>
@@ -186,13 +186,13 @@
                   :key="`C-${revenueindex}`"
                 >
                   <v-flex d-flex justify-end>
-                    <v-flex md3>
+                    <v-flex md4>
                       <div class="body-1">{{dayValues[revenueindex]}}</div>
                     </v-flex>
-                    <v-flex md3 justify-center>
-                      <div class="body-1">{{revenueitem.revenueHours}}</div>
+                    <v-flex md4 justify-center>
+                    <div class="body-1">{{revenueitem.revenueHours}}</div>
                     </v-flex>
-                    <v-flex md6 justify-center>
+                    <v-flex md4 justify-center>
                       <div class="body-1">{{revenueitem.revenueComment}}</div>
                     </v-flex>
                   </v-flex>
@@ -203,13 +203,13 @@
                 </v-card-text>
                 <v-layout>
                  <v-flex d-flex justify-end>
-                    <v-flex md3>
+                    <v-flex md4>
                       <div class="body-2">Day</div>
                     </v-flex>
-                    <v-flex md3 justify-center>
+                    <v-flex md4 justify-center>
                       <div class="body-2">Hours</div>
                     </v-flex>
-                    <v-flex md6 justify-center>
+                    <v-flex md4 justify-center>
                       <div class="body-2">Description</div>
                     </v-flex>
                   </v-flex>
@@ -219,13 +219,13 @@
                   :key="`D-${unbillindex}`"
                 >
                   <v-flex d-flex justify-end>
-                    <v-flex md3>
+                    <v-flex md4>
                       <div class="body-1">{{dayValues[unbillindex]}}</div>
                     </v-flex>
-                    <v-flex md3 justify-center>
+                    <v-flex md4 justify-center>
                       <div class="body-1">{{unbilalbleitem.hoursUnBillable}}</div>
                     </v-flex>
-                    <v-flex md6 justify-center>
+                    <v-flex md4 justify-center>
                       <div class="body-1">{{unbilalbleitem.commentsUnBillable}}</div>
                     </v-flex>
                   </v-flex>
