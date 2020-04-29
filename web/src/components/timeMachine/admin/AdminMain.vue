@@ -29,13 +29,21 @@
           </v-list-tile>
 
 
-
           <v-list-tile avatar>
             <v-list-tile-content>
               <v-list-tile-title>
                 <router-link to="admin/hourly-rates">Set hourly rates</router-link>
               </v-list-tile-title>
               <v-list-tile-sub-title>Set hourly rates for users</v-list-tile-sub-title>
+            </v-list-tile-content>
+          </v-list-tile>
+
+           <v-list-tile avatar>
+            <v-list-tile-content>
+              <v-list-tile-title>
+                <router-link to="admin/revenue-rates">Set revenue rates</router-link>
+              </v-list-tile-title>
+              <v-list-tile-sub-title>Set revenue rates for users</v-list-tile-sub-title>
             </v-list-tile-content>
           </v-list-tile>
 
@@ -55,19 +63,19 @@
 </template>
 
 <script>
-import Material from "vuetify/es5/util/colors";
+import Material from 'vuetify/es5/util/colors';
 // web/src/modules/security/init.js
-import { getAuthURL } from "../../../modules/security/init";
+import { getAuthURL } from '../../../modules/security/init';
 
 export default {
   data: () => ({
     color: Material,
-    selectedTab: "tab-1",
-    AUTH_URL: getAuthURL()
+    selectedTab: 'tab-1',
+    AUTH_URL: getAuthURL(),
   }),
   beforeMount() {
     // this.$store.state.collapseNavigationBar = true;
-  }
+  },
 };
 </script>
 

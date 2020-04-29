@@ -3,7 +3,7 @@
     <snackbar ref="snackbar"></snackbar>
     <v-layout>
       <v-flex md12>
-        <h1 class="projects-header">Admin &mdash; Hourly Rates</h1>
+        <h1 class="projects-header">Admin &mdash; Revenue Rates</h1>
       </v-flex>
     </v-layout>
     <v-layout row>
@@ -30,19 +30,19 @@
             <td>{{ props.item.contact.fullName }}</td>
             <td>
               <v-edit-dialog
-                :return-value.sync="props.item.contact.hourlyRate"
+                :return-value.sync="props.item.contact.revenueRate"
                 lazy
                 @save="save(props.item.contact)"
                 @cancel="cancel"
                 @open="open"
                 @close="close"
               >
-                {{ props.item.contact.hourlyRate ? `$${props.item.contact.hourlyRate}/hr` : 'n/a - click to set' }}
+                {{ props.item.contact.revenueRate ? `$${props.item.contact.revenueRate}/hr` : 'n/a - click to set' }}
                 <template
                   v-slot:input
                 >
                   <v-text-field
-                    v-model="props.item.contact.hourlyRate"
+                    v-model="props.item.contact.revenueRate"
                     label="Rate"
                     single-line
                     type="number"
@@ -61,7 +61,7 @@
 import Snackbar from '../common/Snackbar.vue';
 
 export default {
-  name: 'admin-hourly-rates',
+  name: 'admin-revenue-rates',
   components: {
     Snackbar,
   },
@@ -69,7 +69,7 @@ export default {
     return {
       headers: [
         { text: 'Name', value: 'contact.fullName' },
-        { text: 'Rate', value: 'contact.hourlyRate' },
+        { text: 'Rate', value: 'contact.revenueRate' },
       ],
       search: '',
     };
@@ -77,9 +77,9 @@ export default {
   computed: {
     users() {
       if (this.search) {
-        return this.$store.state.users.filter((item) => item.contact.fullName
-            .toLowerCase()
-            .includes(this.search.toLowerCase()));
+        return this.$store.state.users.filter(item => item.contact.fullName
+          .toLowerCase()
+          .includes(this.search.toLowerCase()));
       }
       return this.$store.state.users;
     },
@@ -89,11 +89,11 @@ export default {
       this.$store.dispatch('fetchUsers');
     },
     async save(contact) {
-      let hourlyRate = parseInt(contact.hourlyRate, 10);
-      hourlyRate = !isNaN(hourlyRate) ? hourlyRate : null;
+      let revenueRate = parseInt(contact.revenueRate, 10);
+      revenueRate = !isNaN(revenueRate) ? revenueRate : null;
       await this.$store.dispatch('updateContactPartial', {
         id: contact.id,
-        hourlyRate,
+        revenueRate,
       });
       this.$refs.snackbar.displaySnackbar('success', 'Data saved');
     },
