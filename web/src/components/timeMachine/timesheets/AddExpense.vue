@@ -22,7 +22,7 @@
               prepend-inner-icon="attach_money"
               oninput="validity.valid||(value='');"
               :value="item.expenseAmount | withCommas"
-              @blur="v => (item.expenseAmount = parseFloat(v.target.value))"
+              @blur="v => (item.expenseAmount =parseFloat(v.target.value.toString().replace(/,/g, '')))"
             ></v-text-field>
           </v-flex>
           <v-flex md3>
@@ -99,7 +99,7 @@ export default {
           if (!v) return true;
           const anyNonNumbers = v.toString().match(/^[0-9,_.-]*$/g, '');
           if (!anyNonNumbers) {
-            return 'Field must just be an amount.';
+            return 'Field must just be a number.';
           }
           return true;
         },

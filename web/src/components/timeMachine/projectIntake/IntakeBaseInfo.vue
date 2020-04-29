@@ -116,7 +116,7 @@
             label="Contract Amount"
             oninput="validity.valid||(value='');"
             :value='form.estimatedContractValue | withCommas'
-            @blur="v => (form.estimatedContractValue = parseFloat(v.target.value))"
+            @blur="v => (form.estimatedContractValue = parseFloat(v.target.value.toString().replace(/,/g, '')))"
           ></v-text-field>
         </div>
       </v-flex>
@@ -300,10 +300,10 @@ export default {
       amountRule: [
         (v) => {
           if (!v) return 'This field is required';
-          if (v === 0) return 'Field cannot be zero';
+          if (v === 0 || v === '0') return 'Field cannot be zero';
           const anyNonNumbers = v.toString().match(/^[0-9,_.-]*$/g, '');
           if (!anyNonNumbers) {
-            return 'Field must just be an amount.';
+            return 'Field must just be a number.';
           }
           return true;
         },

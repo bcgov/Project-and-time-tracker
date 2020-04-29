@@ -397,7 +397,7 @@ export default {
           item => item.project !== '' && item.project !== undefined,
         );
         if (this.timesheet.length === 0) {
-          this.AddimeRecords();
+          this.addTimeSheetRow();
         }
         // this.selectWeeklyProject(this.form.project, this.form.mou);
       }
