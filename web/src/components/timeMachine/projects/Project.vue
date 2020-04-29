@@ -123,7 +123,7 @@
                 </v-expansion-panel-content>
               </v-expansion-panel>
               <div>
-                <v-tabs class="mt-4">
+                <v-tabs v-model="activeTab" class="mt-4">
                   <v-tab ripple href="#rfx">RFx Type and Phase</v-tab>
                   <v-tab ripple href="#contacts">Contacts</v-tab>
                   <v-tab
@@ -133,8 +133,8 @@
                     >Finance Codes</v-tab
                   >
                   <v-tab ripple href="#risk" @click="initializeRisk()">Risk</v-tab>
-                  <v-tab ripple href="#procurement">Procurement Log</v-tab>
-                  <v-flex justify-end align-end>
+                  <v-tab ripple id="procId" href="#procurement">Procurement Log</v-tab>
+                  <v-flex v-if="activeTab === 'procurement'"  justify-end align-end>
                     <v-text-field
                       class="search-bar"
                       prepend-inner-icon="search"
@@ -408,6 +408,7 @@ export default {
     return {
       additionalContact: [new AdditionalContact()],
       search: '',
+      activeTab:undefined,
       rfxData: [new RFxDto()],
       projectId: '',
       enabled: true,
