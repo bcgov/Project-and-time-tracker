@@ -13,6 +13,7 @@ import TimeMachineTimesheets from "./components/timeMachine/timesheets/Timesheet
 import AdminMain from "./components/timeMachine/admin/AdminMain.vue";
 import AdminMinistries from "./components/timeMachine/admin/AdminMinistries.vue";
 import AdminHourlyRates from "./components/timeMachine/admin/HourlyRates.vue";
+import AdminRemoveMOU from "./components/timeMachine/admin/RemoveMOU.vue";
 import Unauthorized from "./components/error/Unauthorized.vue";
 import security from "@/modules/security";
 import store from "@/store";
@@ -158,7 +159,13 @@ const routes = [
     component: AdminHourlyRates,
     meta: { requiresAuth: true, roles: ["PSB_Admin"] }
   },
-
+  {
+    exact: true,
+    path: "/admin/remove-mou",
+    name: "admin-remove-mou",
+    component: AdminRemoveMOU,
+    meta: { requiresAuth: true, roles: ["PSB_Admin"] }
+  },
   // Error routes
   {
     path: "/unauthorized",

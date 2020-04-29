@@ -271,6 +271,10 @@ const store = new Vuex.Store({
       // throw new Error('Not implemented!');
 
     },
+    deleteMOUs() {
+      // throw new Error('Not implemented!');
+
+    },
     updateProctLog() {
 
     }
@@ -761,8 +765,8 @@ const store = new Vuex.Store({
         });
     },
     // User profiles
-    fetchUsers(ctx) {
-      $http
+    async fetchUsers(ctx) {
+      await $http
         .get(`${API_URI}/user`)
         .then((res) => {
           const content = res.data;
@@ -885,6 +889,15 @@ const store = new Vuex.Store({
         const res = await $http.delete(`${API_URI}/intake/${req.id}`);
         const content = res.data;
         ctx.commit('deleteIntakeRequest', content);
+      } catch (err) {
+        throw err;
+      }
+    },
+    async deleteMOUs(ctx, req) {
+      try {
+        const res = await $http.delete(`${API_URI}/MOU/${req.id}`);
+        const content = res.data;
+        ctx.commit('deleteMOUs', content);
       } catch (err) {
         throw err;
       }

@@ -92,8 +92,6 @@
 <script>
 import { mapState } from 'vuex';
 import { shouldDisplayItem } from './menu';
-
-
 import './App.styl';
 
 export default {
@@ -113,7 +111,7 @@ export default {
     shouldDisplayMenuItem(item) {
       return shouldDisplayItem(item, this.$router, this.$store.getters.SECURITY_AUTH);
     },
-    fetchInitialData() {
+    async fetchInitialData() {
       this.$store.dispatch('fetchintakeRiskQuestions');
       this.$store.dispatch('fetchMinistries');
       this.$store.dispatch('fetchRFxPhases');
@@ -157,6 +155,7 @@ export default {
       this.$store.state.collapseNavigationBar = false;
     },
     fetchToken(newValue, oldValue) {
+      console.log('fetchToken', { newValue, oldValue });
       if (newValue !== oldValue) {
         this.$store.dispatch('verifyTokenServer')
           .then(() => {

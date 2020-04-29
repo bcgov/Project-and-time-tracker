@@ -14,6 +14,19 @@
         hide-actions
         class="elevation-0 tm-v-datatable batch-entry"
       >
+       <template slot="headerCell" scope="props">
+          <v-tooltip bottom v-if="props.header.text!= 'Project'">
+            <span slot="activator">
+              {{ props.header.text }}
+              <v-icon size="20" >info</v-icon>
+
+            </span>
+            <span>
+              Hours (15min = 0.25)
+            </span>
+          </v-tooltip>
+          <span v-else>{{ props.header.text }}</span>
+        </template>
         <template v-slot:items="props">
           <template v-if="!props.item.deleted">
             <td>
@@ -43,7 +56,6 @@
                   step="0.01"
                   min="0"
                   :disabled="props.item.is_locked"
-                  :rules="hoursRule"
                   oninput="validity.valid||(value=0);"
                   v-model="props.item.entries[index - 1].hoursBillable"
                 ></v-text-field>
@@ -109,7 +121,6 @@
                   step="0.01"
                   :disabled="props.item.is_locked"
                   min="0"
-                  :rules="hoursRule"
                   oninput="validity.valid||(value=0);"
                   v-model="props.item.entries[index - 1].hoursUnBillable"
                 ></v-text-field>
@@ -191,7 +202,6 @@ export default {
   data() {
     return {
       previousSelection: undefined,
-      hoursRule: [v => v % 0.25 === 0 || 'Please enter in quarter hours (0.25 = 15min)'],
       valid: true,
       editMode: false,
       itemComment: '',

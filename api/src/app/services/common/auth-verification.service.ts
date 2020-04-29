@@ -148,6 +148,7 @@ export const retrieveKeycloakUsersByRole = async (
       }
     });
 
+
     if (response.status !== 200) {
       throw Error(response.statusText);
     }
