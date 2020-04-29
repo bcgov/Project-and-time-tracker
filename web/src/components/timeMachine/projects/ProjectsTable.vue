@@ -170,7 +170,7 @@ export default {
       ) {
         item.is_archived = archiveVal;
         await this.$store.dispatch('archiveProject', { id: item.id, is_archived: archiveVal });
-        this.$store.dispatch('fetchProjects');
+        this.fetchData();
       }
     },
 
