@@ -7,13 +7,13 @@
       :comment="itemComment"
       @savecomment="savecomment"
     ></add-batch-comment>
-    <v-flex>
+    <v-flex class='batch-entry-container'>
       <v-data-table
         :headers="headers"
         :items="timesheet"
         hide-actions
         class="elevation-0 tm-v-datatable batch-entry"
-      >
+        >
        <template slot="headerCell" scope="props">
           <v-tooltip bottom v-if="props.header.text!= 'Project'">
             <span slot="activator">

@@ -17,7 +17,10 @@
             padding-left:3px;
     .v-input--radio-group--row .v-radio:last-child
         margin-right:0px;
-    .batch-entry       
+    .batch-entry-container
+        overflow: auto;
+    .batch-entry
+        max-height:420px;       
         thead 
             border-color:transparent;
             border:none;
@@ -48,8 +51,7 @@
         padding-right: 20px;  
     .v-card
         height:100%;
-        .card-contents
-            overflow: auto;
+        .card-contents           
             margin-top: 20px;
             min-height: 681px;
             padding: 0px 0px !important;
