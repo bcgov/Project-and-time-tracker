@@ -26,7 +26,7 @@
               prepend-icon="event"
               readonly
               v-on="on"
-              style="width:50%;margin-left: 5%;"
+              style="width:242px;"
             ></v-text-field>
           </template>
           <v-date-picker v-model="date" :show-current="true" type="month">
