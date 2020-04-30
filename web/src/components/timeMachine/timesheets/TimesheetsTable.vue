@@ -99,7 +99,7 @@
 </template>
 
 <script>
-import ProjectExpansionRow from './ProjectExpansionRow.vue';
+
 import TimesheetsToolbar from './TimesheetsToolbar.vue';
 import Spinner from '../common/Spinner.vue';
 import Snackbar from '../common/Snackbar.vue';
@@ -109,13 +109,12 @@ import TimesheetInfoView from './TimesheetInfoView.vue';
 
 export default {
   components: {
-    ProjectExpansionRow,
     TimesheetsToolbar,
     Spinner,
     AddTimeRecord,
     Snackbar,
     Confirm,
-    TimesheetInfoView
+    TimesheetInfoView,
   },
   props: {
     title: String,
@@ -193,13 +192,13 @@ export default {
   methods: {
     async viewRequest(timesheetId) {
       const vm = this;
-       await vm.$store.dispatch("fetchTimesheetById", { id: timesheetId }).then((res) => {
-      vm.$store.state.timesheetById = res;
-      vm.startDateMain = vm.$store.state.timesheetsWeek.startDate;
-      vm.endDateMain = vm.$store.state.timesheetsWeek.endDate;
-      const found = vm.timesheetsList.find(element => element.id === timesheetId);
-      vm.id = timesheetId;
-      vm.dialog = true;
+      await vm.$store.dispatch('fetchTimesheetById', { id: timesheetId }).then((res) => {
+        vm.$store.state.timesheetById = res;
+        vm.startDateMain = vm.$store.state.timesheetsWeek.startDate;
+        vm.endDateMain = vm.$store.state.timesheetsWeek.endDate;
+        const found = vm.timesheetsList.find(element => element.id === timesheetId);
+        vm.id = timesheetId;
+        vm.dialog = true;
       });
     },
     closeTimesheet(needRefresh) {
