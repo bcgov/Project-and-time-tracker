@@ -7,19 +7,18 @@
       :comment="itemComment"
       @savecomment="savecomment"
     ></add-batch-comment>
-    <v-flex class='batch-entry-container'>
+    <v-flex class="batch-entry-container">
       <v-data-table
         :headers="headers"
         :items="timesheet"
         hide-actions
         class="elevation-0 tm-v-datatable batch-entry"
-        >
-       <template slot="headerCell" scope="props">
-          <v-tooltip bottom v-if="props.header.text!= 'Project'">
+      >
+        <template slot="headerCell" scope="props">
+          <v-tooltip bottom v-if="props.header.text != 'Project'">
             <span slot="activator">
               {{ props.header.text }}
-              <v-icon size="20" >info</v-icon>
-
+              <v-icon size="20">info</v-icon>
             </span>
             <span>
               Hours (15min = 0.25)
@@ -67,7 +66,7 @@
                 >
                   <template v-slot:activator="{ on }">
                     <v-btn
-                    :disabled="props.item.is_locked"
+                      :disabled="props.item.is_locked"
                       style="width:0px;margin-top: 13px;"
                       @click="
                         addcomment(
@@ -93,7 +92,7 @@
                 >
                   <template v-slot:activator="{ on }">
                     <v-btn
-                    :disabled="props.item.is_locked"
+                      :disabled="props.item.is_locked"
                       style="width:0px;margin-top: 13px;"
                       @click="
                         addcomment(
@@ -131,7 +130,7 @@
                 >
                   <template v-slot:activator="{ on }">
                     <v-btn
-                    :disabled="props.item.is_locked"
+                      :disabled="props.item.is_locked"
                       style="width:0px;margin-top: 13px;"
                       @click="
                         addcomment(
@@ -157,7 +156,7 @@
                 >
                   <template v-slot:activator="{ on }">
                     <v-btn
-                    :disabled="props.item.is_locked"
+                      :disabled="props.item.is_locked"
                       style="width:0px;margin-top: 13px;"
                       @click="
                         addcomment(

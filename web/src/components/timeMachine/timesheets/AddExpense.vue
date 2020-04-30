@@ -22,7 +22,9 @@
               prepend-inner-icon="attach_money"
               oninput="validity.valid||(value='');"
               :value="item.expenseAmount | withCommas"
-              @blur="v => (item.expenseAmount =parseFloat(v.target.value.toString().replace(/,/g, '')))"
+              @blur="
+                v => (item.expenseAmount = parseFloat(v.target.value.toString().replace(/,/g, '')))
+              "
             ></v-text-field>
           </v-flex>
           <v-flex md3>

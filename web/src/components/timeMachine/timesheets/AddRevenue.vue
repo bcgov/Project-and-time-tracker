@@ -4,16 +4,17 @@
       <v-container grid-list-xl>
         <v-layout row wrap class="list-header">
           <v-flex md1>Day</v-flex>
-          <v-flex md2>  <v-tooltip bottom >
-            <span slot="activator">
-              Hours
-              <v-icon size="20" >info</v-icon>
-
-            </span>
-            <span>
-              Hours (15min = 0.25)
-            </span>
-          </v-tooltip></v-flex>
+          <v-flex md2>
+            <v-tooltip bottom>
+              <span slot="activator">
+                Hours
+                <v-icon size="20">info</v-icon>
+              </span>
+              <span>
+                Hours (15min = 0.25)
+              </span>
+            </v-tooltip></v-flex
+          >
           <v-flex md7>Description</v-flex>
           <v-flex md2></v-flex>
         </v-layout>
@@ -25,8 +26,8 @@
           <v-flex md1>{{ days[index] }}</v-flex>
           <v-flex md2>
             <v-text-field
-            :disabled="timesheet[projectIndex].is_locked"
-               type="number"
+              :disabled="timesheet[projectIndex].is_locked"
+              type="number"
               max="24"
               step="0.01"
               min="0"
@@ -35,7 +36,10 @@
             ></v-text-field>
           </v-flex>
           <v-flex md7>
-            <v-text-field v-model="item.revenueComment" :disabled="timesheet[projectIndex].is_locked"></v-text-field>
+            <v-text-field
+              v-model="item.revenueComment"
+              :disabled="timesheet[projectIndex].is_locked"
+            ></v-text-field>
           </v-flex>
           <v-flex md2 style=" text-align: right;">
             <v-tooltip top open-delay="500">
@@ -53,9 +57,15 @@
               <span>Copy</span>
             </v-tooltip>
 
-            <v-tooltip top open-delay="500"  v-if="isCopy">
+            <v-tooltip top open-delay="500" v-if="isCopy">
               <template v-slot:activator="{ on }">
-                <v-btn flat icon @click="pastefunc(index)" v-on="on" :disabled="timesheet[projectIndex].is_locked">
+                <v-btn
+                  flat
+                  icon
+                  @click="pastefunc(index)"
+                  v-on="on"
+                  :disabled="timesheet[projectIndex].is_locked"
+                >
                   <v-icon>post_add</v-icon>
                 </v-btn>
               </template>
@@ -63,9 +73,7 @@
             </v-tooltip>
             <v-tooltip v-else>
               <template v-slot:activator="{ on }">
-                <v-btn flat icon v-on="on" :disabled="!isCopy">
-
-                </v-btn>
+                <v-btn flat icon v-on="on" :disabled="!isCopy"> </v-btn>
               </template>
               <span></span>
             </v-tooltip>

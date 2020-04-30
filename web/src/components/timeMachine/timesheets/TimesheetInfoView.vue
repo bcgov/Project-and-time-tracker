@@ -15,8 +15,10 @@
                       <v-flex md3>
                         <div class="body-2">Project Name:</div>
                       </v-flex>
-                      <v-flex md9 >
-                        <div class="body-1">{{$store.state.timesheetById.project.projectName}}</div>
+                      <v-flex md9>
+                        <div class="body-1">
+                          {{ $store.state.timesheetById.project.projectName }}
+                        </div>
                       </v-flex>
                     </v-layout>
                     <v-layout>
@@ -24,7 +26,9 @@
                         <div class="body-2">MOU Amount:</div>
                       </v-flex>
                       <v-flex md9>
-                        <div class="body-1">{{`$`+$store.state.timesheetById.project.mouAmount}}</div>
+                        <div class="body-1">
+                          {{ `$` + $store.state.timesheetById.project.mouAmount }}
+                        </div>
                       </v-flex>
                     </v-layout>
 
@@ -33,7 +37,9 @@
                         <div class="body-2">Currently Billed:</div>
                       </v-flex>
                       <v-flex md9>
-                        <div class="body-1">{{`$`+$store.state.timesheetById.amountBilled}}</div>
+                        <div class="body-1">
+                          {{ `$` + $store.state.timesheetById.amountBilled }}
+                        </div>
                       </v-flex>
                     </v-layout>
 
@@ -42,7 +48,7 @@
                         <div class="body-2">MOU:</div>
                       </v-flex>
                       <v-flex md9>
-                        <div class="body-1">{{$store.state.timesheetById.mou.name}}</div>
+                        <div class="body-1">{{ $store.state.timesheetById.mou.name }}</div>
                       </v-flex>
                     </v-layout>
                     <v-layout>
@@ -50,7 +56,7 @@
                         <div class="body-2">Project RFX:</div>
                       </v-flex>
                       <v-flex md9>
-                        <div class="body-1">{{$store.state.timesheetById.projectRFX}}</div>
+                        <div class="body-1">{{ $store.state.timesheetById.projectRFX }}</div>
                       </v-flex>
                     </v-layout>
                     <!-- <v-layout>
@@ -67,7 +73,11 @@
                         <div class="body-2">Date From:</div>
                       </v-flex>
                       <v-flex md9>
-                        <div class="body-1">{{new Date($store.state.timesheetById.startDate).toString().slice(0, 15)}}</div>
+                        <div class="body-1">
+                          {{
+                            new Date($store.state.timesheetById.startDate).toString().slice(0, 15)
+                          }}
+                        </div>
                       </v-flex>
                     </v-layout>
 
@@ -76,7 +86,9 @@
                         <div class="body-2">Date To:</div>
                       </v-flex>
                       <v-flex md9>
-                        <div class="body-1">{{new Date($store.state.timesheetById.endDate).toString().slice(0, 15)}}</div>
+                        <div class="body-1">
+                          {{ new Date($store.state.timesheetById.endDate).toString().slice(0, 15) }}
+                        </div>
                       </v-flex>
                     </v-layout>
                     <v-layout>
@@ -84,7 +96,13 @@
                         <div class="body-2">Last Modified:</div>
                       </v-flex>
                       <v-flex md9>
-                        <div class="body-1">{{new Date($store.state.timesheetById.dateModified).toString().slice(0, 15)}}</div>
+                        <div class="body-1">
+                          {{
+                            new Date($store.state.timesheetById.dateModified)
+                              .toString()
+                              .slice(0, 15)
+                          }}
+                        </div>
                       </v-flex>
                     </v-layout>
                   </v-layout>
@@ -95,14 +113,14 @@
                   <label class="sub-header-large">Billable Information</label>
                 </v-card-text>
                 <v-layout>
-                 <v-flex d-flex justify-end>
+                  <v-flex d-flex justify-end>
                     <v-flex md2>
                       <div class="body-2">Day</div>
                     </v-flex>
-                    <v-flex md2 >
+                    <v-flex md2>
                       <div class="body-2">Hours</div>
                     </v-flex>
-                    <v-flex md8 >
+                    <v-flex md8>
                       <div class="body-2">Description</div>
                     </v-flex>
                   </v-flex>
@@ -114,32 +132,32 @@
                 >
                   <v-flex d-flex justify-end>
                     <v-flex md2>
-                      <div class="body-1">{{dayValues[billindex]}}</div>
+                      <div class="body-1">{{ dayValues[billindex] }}</div>
                     </v-flex>
                     <v-flex md2>
-                      <div class="body-1">{{billableitem.hoursBillable}}</div>
+                      <div class="body-1">{{ billableitem.hoursBillable }}</div>
                     </v-flex>
                     <v-flex md8>
-                      <div class="body-1">{{billableitem.commentsBillable}}</div>
+                      <div class="body-1">{{ billableitem.commentsBillable }}</div>
                     </v-flex>
                   </v-flex>
                 </v-layout>
-                <br/>
+                <br />
                 <v-card-text>
                   <label class="sub-header-large">Expense Information</label>
                 </v-card-text>
-                  <v-layout>
-                 <v-flex d-flex justify-end>
+                <v-layout>
+                  <v-flex d-flex justify-end>
                     <v-flex md2>
                       <div class="body-2">Day</div>
                     </v-flex>
-                    <v-flex md2 >
+                    <v-flex md2>
                       <div class="body-2">Amount</div>
                     </v-flex>
-                    <v-flex md3 >
+                    <v-flex md3>
                       <div class="body-2">Category</div>
                     </v-flex>
-                    <v-flex md5 >
+                    <v-flex md5>
                       <div class="body-2">Description</div>
                     </v-flex>
                   </v-flex>
@@ -150,25 +168,25 @@
                 >
                   <v-flex d-flex justify-end>
                     <v-flex md2>
-                      <div class="body-1">{{dayValues[expenseindex]}}</div>
+                      <div class="body-1">{{ dayValues[expenseindex] }}</div>
                     </v-flex>
                     <v-flex md2 justify-center>
-                      <div class="body-1">{{expenseitem.expenseAmount}}</div>
+                      <div class="body-1">{{ expenseitem.expenseAmount }}</div>
                     </v-flex>
                     <v-flex md3 justify-center>
-                      <div class="body-1">{{expenseitem.expenseCategory}}</div>
+                      <div class="body-1">{{ expenseitem.expenseCategory }}</div>
                     </v-flex>
-                     <v-flex md5 justify-center>
-                      <div class="body-1">{{expenseitem.expenseComment}}</div>
+                    <v-flex md5 justify-center>
+                      <div class="body-1">{{ expenseitem.expenseComment }}</div>
                     </v-flex>
                   </v-flex>
                 </v-layout>
-                  <br/>
+                <br />
                 <v-card-text>
                   <label class="sub-header-large">Revenue Information</label>
                 </v-card-text>
-                 <v-layout>
-                 <v-flex d-flex justify-end>
+                <v-layout>
+                  <v-flex d-flex justify-end>
                     <v-flex md2>
                       <div class="body-2">Day</div>
                     </v-flex>
@@ -187,22 +205,22 @@
                 >
                   <v-flex d-flex justify-end>
                     <v-flex md2>
-                      <div class="body-1">{{dayValues[revenueindex]}}</div>
+                      <div class="body-1">{{ dayValues[revenueindex] }}</div>
                     </v-flex>
                     <v-flex md2>
-                    <div class="body-1">{{revenueitem.revenueHours}}</div>
+                      <div class="body-1">{{ revenueitem.revenueHours }}</div>
                     </v-flex>
                     <v-flex md8>
-                      <div class="body-1">{{revenueitem.revenueComment}}</div>
+                      <div class="body-1">{{ revenueitem.revenueComment }}</div>
                     </v-flex>
                   </v-flex>
                 </v-layout>
-                  <br/>
+                <br />
                 <v-card-text>
                   <label class="sub-header-large">UnBillable Information</label>
                 </v-card-text>
                 <v-layout>
-                 <v-flex d-flex justify-end>
+                  <v-flex d-flex justify-end>
                     <v-flex md2>
                       <div class="body-2">Day</div>
                     </v-flex>
@@ -215,18 +233,19 @@
                   </v-flex>
                 </v-layout>
                 <v-layout
-                  v-for="(unbilalbleitem, unbillindex) in $store.state.timesheetById.timesheetEntries"
+                  v-for="(unbilalbleitem, unbillindex) in $store.state.timesheetById
+                    .timesheetEntries"
                   :key="`D-${unbillindex}`"
                 >
                   <v-flex d-flex justify-end>
                     <v-flex md2>
-                      <div class="body-1">{{dayValues[unbillindex]}}</div>
+                      <div class="body-1">{{ dayValues[unbillindex] }}</div>
                     </v-flex>
                     <v-flex md2>
-                      <div class="body-1">{{unbilalbleitem.hoursUnBillable}}</div>
+                      <div class="body-1">{{ unbilalbleitem.hoursUnBillable }}</div>
                     </v-flex>
                     <v-flex md8>
-                      <div class="body-1">{{unbilalbleitem.commentsUnBillable}}</div>
+                      <div class="body-1">{{ unbilalbleitem.commentsUnBillable }}</div>
                     </v-flex>
                   </v-flex>
                 </v-layout>
@@ -260,51 +279,29 @@ export default {
   },
   data() {
     return {
-      dayValues: [
-        'Monday',
-        'Tuesday',
-        'Wednesday',
-        'Thursday',
-        'Friday',
-        'Saturday',
-        'Sunday',
-      ],
+      dayValues: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
     };
   },
   computed: {},
   methods: {
     fetchUser() {
       const referenceId = this.$store.state.activeUser.refId;
-      const user = this.$store.state.users.find(
-        value => value.referenceId === referenceId,
-      );
+      const user = this.$store.state.users.find(value => value.referenceId === referenceId);
       return user.id;
-    },
-    async fetchData() {
-      const { params } = this.$router.currentRoute;
-      const id = params.id || this.$props.id;
-      // const userid = this.fetchUser();
     },
     isEnabled(infoType) {
       const contacts = this.$store.state.activeIntakeRequest.contacts || [];
-      const clientInfo = contacts.find(
-        contact => contact.contactType === infoType,
-      );
+      const clientInfo = contacts.find(contact => contact.contactType === infoType);
       if (clientInfo) return true;
       return false;
     },
     getClientInfo(infoType) {
       const contacts = this.$store.state.activeIntakeRequest.contacts || [];
-      const clientInfo = contacts.find(
-        contact => contact.contactType === infoType,
-      );
-      // if (contacts.length > 2) this.enabled = true;
-      // else this.enabled = false;
+      const clientInfo = contacts.find(contact => contact.contactType === infoType);
       return clientInfo;
     },
   },
   created() {
-    // this.fetchData();
   },
 };
 </script>
@@ -314,6 +311,6 @@ legend {
   margin-left: 1em;
 }
 .v-dialog .v-card .v-model-close-icon {
-    margin-left: 97%;
+  margin-left: 97%;
 }
 </style>

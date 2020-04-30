@@ -7,9 +7,9 @@
       v-model="dialog"
       @input="closeDialog(false)"
     >
-      <v-form ref="AddimeRecords" v-model="valid" lazy-validation >
+      <v-form ref="AddimeRecords" v-model="valid" lazy-validation>
         <spinner ref="spinner"></spinner>
-        <v-card >
+        <v-card>
           <v-card-text class="card-contents">
             <v-layout wrap>
               <v-flex md4>
@@ -17,7 +17,7 @@
                   <span class="headline">Add Time Record</span>
                 </v-card-title>
               </v-flex>
-              <v-flex md8 >
+              <v-flex md8>
                 <v-flex class="d-flex cardheadlabel1">
                   <v-flex md5 class="headerinfo">Information being entered by:</v-flex>
                   <v-flex md7>
@@ -43,23 +43,24 @@
                       ${{ mouAmount }}
                     </v-flex>
                   </v-flex>
-                  <v-flex md4 v-if="timesheet && activeTab=='batch'">
+                  <v-flex md4 v-if="timesheet && activeTab == 'batch'">
                     <b>Currently Billed:</b>
-                    ${{getBilledAmount()}}
+                    ${{ getBilledAmount() }}
                   </v-flex>
                   <v-flex
                     md4
-                    v-else-if="form.project && timesheet && timesheet[weeklyProjectIndex]&&timesheet[weeklyProjectIndex].amountBilled"
+                    v-else-if="
+                      form.project &&
+                        timesheet &&
+                        timesheet[weeklyProjectIndex] &&
+                        timesheet[weeklyProjectIndex].amountBilled
+                    "
                   >
                     <b>Currently Billed:</b>
-                    ${{timesheet[weeklyProjectIndex].amountBilled}}
+                    ${{ timesheet[weeklyProjectIndex].amountBilled }}
                   </v-flex>
-                  <v-flex md4 v-else>
-                    <b>Currently Billed:</b> $0
-                  </v-flex>
-                  <v-flex md4>
-                    <b>Legal Billed Amount:</b> $0
-                  </v-flex>
+                  <v-flex md4 v-else> <b>Currently Billed:</b> $0 </v-flex>
+                  <v-flex md4> <b>Legal Billed Amount:</b> $0 </v-flex>
                 </v-flex>
               </v-flex>
             </v-layout>
@@ -71,10 +72,13 @@
                 <v-flex>
                   <v-flex class="d-flex" cols="12" sm="6">
                     <v-flex md6 class="week-change-control">
-                      <timesheets-calendar ref="TimeCalenderBatch" @next="onChangeWeek"></timesheets-calendar>
+                      <timesheets-calendar
+                        ref="TimeCalenderBatch"
+                        @next="onChangeWeek"
+                      ></timesheets-calendar>
                     </v-flex>
                     <v-flex md6>
-                      <v-radio-group row v-model="recordType"   class="justify-end">
+                      <v-radio-group row v-model="recordType" class="justify-end">
                         <v-radio label="Hours" :value="1"></v-radio>
                         <v-radio label="Unbillable Hours" :value="2"></v-radio>
                       </v-radio-group>
@@ -103,7 +107,7 @@
                   </v-flex>
                 </v-flex>
               </v-tab-item>
-              <v-tab-item value="weekly" >
+              <v-tab-item value="weekly">
                 <v-flex class="d-flex" cols="12" sm="4" v-if="activeTab === 'weekly'">
                   <v-flex xs12>
                     <v-select
@@ -147,11 +151,13 @@
                 <v-flex>
                   <v-flex class="d-flex" cols="12" sm="6">
                     <v-flex md6 class="week-change-control">
-                      <timesheets-calendar ref="TimeCalenderWeekly" @next="onChangeWeek"></timesheets-calendar>
+                      <timesheets-calendar
+                        ref="TimeCalenderWeekly"
+                        @next="onChangeWeek"
+                      ></timesheets-calendar>
                     </v-flex>
                     <v-flex md6>
-
-                      <v-radio-group row v-model="recordTypeWeekly"  class="justify-end">
+                      <v-radio-group row v-model="recordTypeWeekly" class="justify-end">
                         <v-radio label="Hours" :value="1"></v-radio>
                         <v-radio label="Expenses" :value="2"></v-radio>
                         <v-radio label="Revenue" :value="3"></v-radio>
@@ -197,10 +203,12 @@
               </v-tab-item>
             </v-tabs>
           </v-card-text>
-          <br/><br/>
+          <br /><br />
           <v-divider class="header-divider"></v-divider>
           <v-card-actions>
-            <v-btn class="btn-discard" @click="closeDialog(false)" :ripple="false">DISCARD TIMESHEET</v-btn>
+            <v-btn class="btn-discard" @click="closeDialog(false)" :ripple="false"
+              >DISCARD TIMESHEET</v-btn
+            >
             <v-flex class="add-btns">
               <v-btn class="btn-normal" @click="expotTimesheet()">EXPORT TIMESHEET</v-btn>
               <v-btn
@@ -208,7 +216,8 @@
                 color="primary"
                 @click="save()"
                 :disabled="form.is_locked && editMode"
-              >{{getSubmitButtonVal()}}</v-btn>
+                >{{ getSubmitButtonVal() }}</v-btn
+              >
             </v-flex>
           </v-card-actions>
         </v-card>
@@ -222,7 +231,6 @@
 </template>
 <script>
 import './addtimerecord.styl';
-import moment from 'moment';
 import Snackbar from '../common/Snackbar.vue';
 import Spinner from '../common/Spinner.vue';
 import TimesheetsCalendar from './TimesheetsCalendar.vue';
@@ -271,13 +279,9 @@ export default {
       if (!this.form || !this.form.mou || !this.form.project) {
         return '';
       }
-      const selectedProject = this.userMouProjects.filter(
-        item => item.id === this.form.project,
-      );
+      const selectedProject = this.userMouProjects.filter(item => item.id === this.form.project);
       if (selectedProject[0]) {
-        return selectedProject[0].mouAmount
-          .toString()
-          .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        return selectedProject[0].mouAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
       }
       return '';
     },
@@ -312,13 +316,10 @@ export default {
     },
     fetchUser() {
       const referenceId = this.$store.state.activeUser.refId;
-      const user = this.$store.state.users.find(
-        value => value.referenceId === referenceId,
-      );
+      const user = this.$store.state.users.find(value => value.referenceId === referenceId);
       if (user && user.id) {
         this.userMouProjects = this.$store.state.allProjects.filter(
-          item => item.mou
-            && (item.backupUserId === user.id || item.leadUserId === user.id),
+          item => item.mou && (item.backupUserId === user.id || item.leadUserId === user.id),
         );
         return user.id;
       }
@@ -403,10 +404,7 @@ export default {
       }
     },
     onWeekEntry() {
-      if (
-        this.weeklyProjectIndex !== 0
-        && this.timesheet[this.weeklyProjectIndex].deleted
-      ) {
+      if (this.weeklyProjectIndex !== 0 && this.timesheet[this.weeklyProjectIndex].deleted) {
         this.weeklyProjectIndex = 0;
         this.form.is_locked = false;
       }
@@ -414,10 +412,7 @@ export default {
     selectWeeklyProject(projectId, mou) {
       let projectIndex = -1;
       for (let index = 0; index < this.timesheet.length; index++) {
-        if (
-          this.timesheet[index].project === projectId
-          && !this.timesheet[index].deleted
-        ) {
+        if (this.timesheet[index].project === projectId && !this.timesheet[index].deleted) {
           projectIndex = index;
         }
       }
@@ -490,9 +485,7 @@ export default {
             const timesheetItem = {};
             timesheetItem.project = obj[index].project.id;
             timesheetItem.mou = obj[index].mou.id;
-            timesheetItem.projectRfx = obj[index].projectRfx
-              ? obj[index].projectRfx.id
-              : undefined;
+            timesheetItem.projectRfx = obj[index].projectRfx ? obj[index].projectRfx.id : undefined;
             timesheetItem.userId = obj[index].userId;
             timesheetItem.startDate = obj[index].startDate;
             timesheetItem.endDate = obj[index].endDate;
@@ -500,9 +493,7 @@ export default {
             timesheetItem.id = obj[index].id;
             timesheetItem.entries = obj[index].timesheetEntries;
             timesheetItem.is_locked = obj[index].is_locked;
-            timesheetItem.amountBilled = obj[index].amountBilled
-              ? obj[index].amountBilled
-              : 0;
+            timesheetItem.amountBilled = obj[index].amountBilled ? obj[index].amountBilled : 0;
             vm.timesheet.push(timesheetItem);
           }
           vm.$refs.TimeCalenderWeekly.setCalendarText();
@@ -559,9 +550,7 @@ export default {
         vm.timesheet[vm.weeklyProjectIndex].mou = obj.mou.id;
         vm.timesheet[vm.weeklyProjectIndex].project = obj.project.id;
         vm.timesheet[vm.weeklyProjectIndex].is_locked = obj.is_locked;
-        vm.timesheet[vm.weeklyProjectIndex].amountBilled = obj.amountBilled
-          ? obj.amountBilled
-          : 0;
+        vm.timesheet[vm.weeklyProjectIndex].amountBilled = obj.amountBilled ? obj.amountBilled : 0;
         vm.timesheet[vm.weeklyProjectIndex].projectRfx = obj.projectRfx
           ? obj.projectRfx.id
           : undefined;
@@ -610,9 +599,7 @@ export default {
 
       setTimeout(() => {
         if (document.getElementsByClassName('v-dialog v-dialog--active')[0]) {
-          document.getElementsByClassName(
-            'v-dialog v-dialog--active',
-          )[0].scrollTop = 0;
+          document.getElementsByClassName('v-dialog v-dialog--active')[0].scrollTop = 0;
         }
       }, 400);
     },
@@ -628,10 +615,7 @@ export default {
           || !this.$refs.AddRevenue.validate()
           || !this.$refs.AddExpense.validate()
         ) {
-          this.$refs.snackbar.displaySnackbarTop(
-            'error',
-            'Please correct validation errors.',
-          );
+          this.$refs.snackbar.displaySnackbarTop('error', 'Please correct validation errors.');
           return;
         }
         if (this.activeTab === 'batch') {
@@ -645,10 +629,7 @@ export default {
         }
         this.saveTimesheets();
       } else {
-        this.$refs.snackbar.displaySnackbarTop(
-          'error',
-          'Please correct validation errors.',
-        );
+        this.$refs.snackbar.displaySnackbarTop('error', 'Please correct validation errors.');
       }
     },
 
@@ -659,10 +640,7 @@ export default {
       this.$refs.spinner.open();
       this.$store.dispatch('addBatchTimesheet', submitItems).then(
         () => {
-          this.$refs.snackbar.displaySnackbar(
-            'success',
-            'Successfully saved time entries.',
-          );
+          this.$refs.snackbar.displaySnackbar('success', 'Successfully saved time entries.');
           this.$refs.spinner.close();
           this.closeDialog(true);
         },
@@ -672,10 +650,7 @@ export default {
             const { message } = err.response.data.error;
             this.$refs.snackbar.displaySnackbarTop('error', message);
           } else {
-            this.$refs.snackbar.displaySnackbarTop(
-              'error',
-              'Timesheet entry Error',
-            );
+            this.$refs.snackbar.displaySnackbarTop('error', 'Timesheet entry Error');
           }
         },
       );
@@ -721,13 +696,8 @@ export default {
     },
     addTimeSheetRow(blankRow = false) {
       let entryDate = new Date();
-      if (
-        this.$store.state.timesheetsWeek
-        && this.$store.state.timesheetsWeek.startDate
-      ) {
-        const startDate = this.stringToDate(
-          this.$store.state.timesheetsWeek.startDate,
-        );
+      if (this.$store.state.timesheetsWeek && this.$store.state.timesheetsWeek.startDate) {
+        const startDate = this.stringToDate(this.$store.state.timesheetsWeek.startDate);
         entryDate = new Date(startDate);
       }
       const timesheetEntries = [];
@@ -775,7 +745,7 @@ export default {
     },
     ConvertToCSV(objArray) {
       const array = typeof objArray !== 'object' ? JSON.parse(objArray) : objArray;
-      const str = '';
+      let str = '';
       for (let i = 0; i < array.length; i++) {
         let line = '';
         for (const index in array[i]) {
@@ -804,15 +774,11 @@ export default {
         link.setAttribute('href', data);
         const date = new Date();
         let userName = '';
-        const user = this.$store.state.users.find(
-          item => item.id === this.form.userId,
-        );
+        const user = this.$store.state.users.find(item => item.id === this.form.userId);
         if (user) {
           userName = user.contact.fullName;
         }
-        const fileName = `TimeMachine-${this.getDateInYYYYMMDD(
-          date,
-        ).toString()}-${userName}.csv`;
+        const fileName = `TimeMachine-${this.getDateInYYYYMMDD(date).toString()}-${userName}.csv`;
         link.setAttribute('download', fileName);
         link.click();
       }
@@ -825,25 +791,21 @@ export default {
       const formData = {
         userId: this.form.userId,
       };
-      const user = this.$store.state.users.find(
-        item => item.id === this.form.userId,
-      );
+      const user = this.$store.state.users.find(item => item.id === this.form.userId);
       let hourlyRate = 0;
       if (user && user.contact && user.contact.hourlyRate) {
+        // eslint-disable-next-line prefer-destructuring
         hourlyRate = user.contact.hourlyRate;
       }
       let revenueRate = 0;
       if (user && user.contact && user.contact.revenueRate) {
+        // eslint-disable-next-line prefer-destructuring
         revenueRate = user.contact.revenueRate;
       }
       const vm = this;
       vm.$store.dispatch('fetchTimesheetEntriesByUser', formData).then(() => {
         const timeEntries = [];
-        for (
-          let i = 0;
-          i < vm.$store.state.timesheetEntryDatabyUser.length;
-          i++
-        ) {
+        for (let i = 0; i < vm.$store.state.timesheetEntryDatabyUser.length; i++) {
           const entries = vm.$store.state.timesheetEntryDatabyUser[i].timesheetEntries;
           const currentProject = vm.$store.state.timesheetEntryDatabyUser[i].project.projectName;
           for (let j = 0; j < entries.length; j++) {
@@ -868,7 +830,8 @@ export default {
                 + parseFloat(entry.hoursUnBillable ? entry.hoursUnBillable : 0, 10)
                   * parseFloat(hourlyRate, 10)
                 + parseFloat(entry.expenseAmount ? entry.expenseAmount : 0, 10)
-                + parseFloat(entry.revenueHours ? entry.revenueHours : 0, 10) * parseFloat(revenueRate, 10),
+                + parseFloat(entry.revenueHours ? entry.revenueHours : 0, 10)
+                  * parseFloat(revenueRate, 10),
             });
           }
         }
