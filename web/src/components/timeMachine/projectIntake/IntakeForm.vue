@@ -13,7 +13,7 @@
         <v-stepper v-model="e1" alt-labels>
           <v-stepper-header>
             <v-stepper-step
-              @click="checkedit(e1)"
+              @click="checkedit(1)"
               :editable="isEditPInnfo"
               edit-icon="1"
               :complete="e1 > 1"
@@ -26,7 +26,7 @@
             <v-divider class="first-divider"></v-divider>
             <v-divider class="second-divider"></v-divider>
             <v-stepper-step
-              @click="checkedit(e1)"
+              @click="checkedit(2)"
               :editable="isEditMBInfo"
               edit-icon="2"
               :complete="e1 > 2"
@@ -37,7 +37,7 @@
             <v-divider class="first-divider"></v-divider>
             <v-divider class="second-divider"></v-divider>
             <v-stepper-step
-              @click="checkedit(e1)"
+              @click="checkedit(3)"
               :editable="isEditRiskInfo"
               edit-icon="3"
               :complete="e1 > 3"
@@ -50,7 +50,7 @@
             <v-divider class="first-divider"></v-divider>
             <v-divider class="second-divider"></v-divider>
             <v-stepper-step
-              @click="checkedit(e1)"
+              @click="checkedit(4)"
               :editable="isEditContactInfo"
               edit-icon="4"
               :complete="e1 > 4"
@@ -63,7 +63,7 @@
             <v-divider class="first-divider"></v-divider>
             <v-divider class="second-divider"></v-divider>
             <v-stepper-step
-              @click="checkedit(e1)"
+              @click="checkedit(5)"
               :editable="isEditContactInfo"
               edit-icon="5"
               :complete="e1 > 4"
@@ -387,6 +387,9 @@ export default {
       this.checkedit(item, true);
     },
     checkedit(msg, flag = false) {
+      if (!flag && this.e1 < msg && !this.editall) {
+        msg = this.e1;
+      }
       if (!this.editall) {
         if (msg === 1 || msg === '1') {
           this.e1 = 1;
