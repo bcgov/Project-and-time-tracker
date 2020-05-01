@@ -100,7 +100,7 @@ export default {
   data() {
     return {
       isResolved: false,
-      
+
       logList: this.fetchData(),
       selectedLeadUser: '',
       selectedProjectBackup: '',
@@ -109,7 +109,7 @@ export default {
   },
   computed: {
     headers() {
-      let headers= [
+      const headers = [
         {
           text: 'Log Type',
           value: 'logType',
@@ -159,16 +159,16 @@ export default {
           value: 'followUpDate',
           sortable: false,
           width: '12%',
-        }
+        },
       ];
 
       if (!this.isResolved) {
         headers[1].width = '15%';
         headers[7].width = '12%';
-             
-        headers.push({text: 'Action',width: '15%',})
+
+        headers.push({ text: 'Action', width: '15%' });
       }
-      return headers
+      return headers;
     },
     allProcLogs() {
       if (this.isResolved) {

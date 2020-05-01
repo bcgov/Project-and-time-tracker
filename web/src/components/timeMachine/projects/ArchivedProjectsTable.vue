@@ -4,7 +4,7 @@
     <snackbar ref="snackbar"></snackbar>
     <v-toolbar v-if="title" card dense color="transparent">
       <v-toolbar-title>
-        <h4>{{title}}</h4>
+        <h4>{{ title }}</h4>
       </v-toolbar-title>
     </v-toolbar>
     <v-divider></v-divider>
@@ -18,26 +18,33 @@
           disable-initial-sort
         >
           <template slot="items" slot-scope="props">
-            <td class="text-xs-left">{{ props.item.mou ? props.item.mou.name : 'n/a' }} </td>
+            <td class="text-xs-left">{{ props.item.mou ? props.item.mou.name : "n/a" }}</td>
             <!-- <td class="text-xs-left">{{ props.item.mouAmount }} </td> -->
-            <td v-bind:class="{ 'archived': props.item.is_archived}">{{ props.item.projectName }}</td>
+            <td v-bind:class="{ archived: props.item.is_archived }">
+              {{ props.item.projectName }}
+            </td>
             <!-- <td class="text-xs-left">{{ props.item.projectName }}</td> -->
-            <td class="text-xs-left">{{ [props.item.client.ministry.ministryName, props.item.orgDivision].join(" ") }}</td>
-            <td class="text-xs-left">{{ props.item.teamWideProject?'teamWideProject':props.item.leadUserId }}</td>
-            <td class="text-xs-left">{{ props.item.teamWideProject?'':props.item.backupUserId }}</td>
-            <td class="text-xs-left">{{props.item.completionDate | formatDate }}</td>
+            <td class="text-xs-left">
+              {{ [props.item.client.ministry.ministryName, props.item.orgDivision].join(" ") }}
+            </td>
+            <td class="text-xs-left">
+              {{ props.item.teamWideProject ? "teamWideProject" : props.item.leadUserId }}
+            </td>
+            <td class="text-xs-left">
+              {{ props.item.teamWideProject ? "" : props.item.backupUserId }}
+            </td>
+            <td class="text-xs-left">{{ props.item.completionDate | formatDate }}</td>
             <td class="text-xs-left">{{ props.item.dateModified | formatDate }}</td>
-             <td class="text-xs-center">
-
+            <td class="text-xs-center">
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
                   <v-btn flat icon color="grey" v-on="on" @click="archivePrompt(props.item, false)">
-                    <v-icon >unarchive</v-icon>
+                    <v-icon>unarchive</v-icon>
                   </v-btn>
                 </template>
                 <span>Un-archive</span>
               </v-tooltip>
-<!--
+              <!--
                 <v-tooltip top>
                 <template v-slot:activator="{ on }">
                   <v-btn flat icon color="grey" v-on="on" @click="deleteProject(props.item.id)">
@@ -46,7 +53,6 @@
                 </template>
                 <span>Delete</span>
               </v-tooltip> -->
-
             </td>
           </template>
         </v-data-table>
@@ -57,7 +63,6 @@
 </template>
 
 <script>
-
 import Confirm from '../common/Confirm.vue';
 import Snackbar from '../common/Snackbar.vue';
 
@@ -80,8 +85,7 @@ export default {
         { text: 'Project Backup', value: 'projectBackup', sortable: false },
         { text: 'Project Deadline', value: 'completionDate', sortable: true },
         { text: 'Last Updated', value: 'dateModified', sortable: true },
-        { text: 'Actions', value: 'is_archived', align: 'center', width: '145px', sortable: false,
-        },
+        { text: 'Actions', value: 'is_archived', align: 'center', width: '145px', sortable: false },
       ],
       archivedprojects: [],
       selectedLeadUser: '',
@@ -89,7 +93,7 @@ export default {
     };
   },
   computed: {
-  projects() {
+    projects() {
       return this.$store.state.archivedProjects;
     },
     userList() {
@@ -126,22 +130,21 @@ export default {
         this.$refs.snackbar.displaySnackbar('success', 'Deleted.');
       }
     },
-    async archivePrompt(item, archiveVal){
+    async archivePrompt(item, archiveVal) {
       if (
         await this.$refs.confirm.open(
-          "info",
-          `Are you sure to un-archive project: ${item.projectName}?`)
-      )
-      {
+          'info',
+          `Are you sure to un-archive project: ${item.projectName}?`,
+        )
+      ) {
         item.is_archived = archiveVal;
-        await this.$store.dispatch("archiveProject", {id: item.id, is_archived: archiveVal});
+        await this.$store.dispatch('archiveProject', { id: item.id, is_archived: archiveVal });
         this.fetchArchivedData();
       }
     },
   },
   created() {
     this.fetchArchivedData();
-    },
+  },
 };
-
 </script>

@@ -58,66 +58,56 @@
   </v-container>
 </template>
 <script>
-import Snackbar from "../common/Snackbar.vue";
-import Confirm from "../common/Confirm.vue";
+import Snackbar from '../common/Snackbar.vue';
+import Confirm from '../common/Confirm.vue';
 
 export default {
-  name: "admin-remove-mou",
+  name: 'admin-remove-mou',
   components: {
     Snackbar,
-    Confirm
+    Confirm,
   },
   data() {
     return {
       headers: [
-        { text: "MOU", value: "fullName" },
-        { text: "Action", value: "" }
-      ]
+        { text: 'MOU', value: 'fullName' },
+        { text: 'Action', value: '' },
+      ],
     };
   },
   computed: {
     mouList() {
       return this.$store.state.mouList;
-    }
+    },
   },
   methods: {
     checkdelete(id) {
-      const projectMOU = this.$store.state.allProjects.find(
-        item => item.mou && item.mou.id === id
-      );
+      const projectMOU = this.$store.state.allProjects.find(item => item.mou && item.mou.id === id);
 
       if (projectMOU) {
         return false;
-      } else {
-        return true;
       }
+      return true;
     },
     async fetchData() {
-      if (this.$store.state.allProjects.length == 0)
-        await this.$store.dispatch("fetchAllProjects");
-      if (this.$store.state.mouList.length == 0)
-        await this.$store.dispatch("fetchMOUs");
+      if (this.$store.state.allProjects.length == 0) await this.$store.dispatch('fetchAllProjects');
+      if (this.$store.state.mouList.length == 0) await this.$store.dispatch('fetchMOUs');
     },
     async deleteRequest(id) {
-      if (
-        await this.$refs.confirm.open(
-          "danger",
-          "Are you sure you wish to delete this MOU?"
-        )
-      ) {
-        await this.$store.dispatch("deleteMOUs", { id });
-        await this.$store.dispatch("fetchMOUs");
-        this.$refs.snackbar.displaySnackbar("success", "Deleted.");
+      if (await this.$refs.confirm.open('danger', 'Are you sure you wish to delete this MOU?')) {
+        await this.$store.dispatch('deleteMOUs', { id });
+        await this.$store.dispatch('fetchMOUs');
+        this.$refs.snackbar.displaySnackbar('success', 'Deleted.');
       }
     },
     cancel() {
-      this.$refs.snackbar.displaySnackbar("info", "Cancelled");
+      this.$refs.snackbar.displaySnackbar('info', 'Cancelled');
     },
     open() {},
-    close() {}
+    close() {},
   },
   created() {
     this.fetchData();
-  }
+  },
 };
 </script>

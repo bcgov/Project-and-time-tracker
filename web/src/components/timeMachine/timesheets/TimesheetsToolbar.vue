@@ -1,16 +1,15 @@
 <template>
   <v-layout class="timesheets-toolbar" d-flex style="width: 100%;">
     <v-flex d-flex justify-center align-start style="width: 100%;">
-        <v-flex md6>
-      <timesheets-calendar ref="WeekSelection"></timesheets-calendar>
-       </v-flex>
+      <v-flex md6>
+        <timesheets-calendar ref="WeekSelection"></timesheets-calendar>
+      </v-flex>
       <v-flex md6>
         <v-radio-group v-model="selectedFilter" row>
           <v-radio label="My Timesheets" value="Mine"></v-radio>
           <v-radio label="Everyone's Timesheets" value="All"></v-radio>
         </v-radio-group>
       </v-flex>
-
     </v-flex>
     <v-flex d-flex justify-end>
       <add-time-record ref="AddTimeRecord" @close-timesheet="closeTimesheet"></add-time-record>
@@ -96,9 +95,8 @@ export default {
   padding-top: 0 !important;
   padding-bottom: 0 !important;
 }
-.date-picker-container
-{
-   margin-top: 0px ;
+.date-picker-container {
+  margin-top: 0px;
 }
 
 .week-switcher-cal {
@@ -107,7 +105,7 @@ export default {
 }
 
 .add-timesheet-button {
-      margin-top: 12px;
+  margin-top: 12px;
   width: 200px;
   flex: 0 0 200px !important;
 }

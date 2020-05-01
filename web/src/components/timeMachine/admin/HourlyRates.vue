@@ -37,10 +37,12 @@
                 @open="open"
                 @close="close"
               >
-                {{ props.item.contact.hourlyRate ? `$${props.item.contact.hourlyRate}/hr` : 'n/a - click to set' }}
-                <template
-                  v-slot:input
-                >
+                {{
+                  props.item.contact.hourlyRate
+                    ? `$${props.item.contact.hourlyRate}/hr`
+                    : "n/a - click to set"
+                }}
+                <template v-slot:input>
                   <v-text-field
                     v-model="props.item.contact.hourlyRate"
                     label="Rate"
@@ -77,9 +79,7 @@ export default {
   computed: {
     users() {
       if (this.search) {
-        return this.$store.state.users.filter((item) => item.contact.fullName
-            .toLowerCase()
-            .includes(this.search.toLowerCase()));
+        return this.$store.state.users.filter(item => item.contact.fullName.toLowerCase().includes(this.search.toLowerCase()));
       }
       return this.$store.state.users;
     },

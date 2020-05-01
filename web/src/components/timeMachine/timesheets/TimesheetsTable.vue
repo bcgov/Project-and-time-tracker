@@ -26,10 +26,7 @@
     </v-card-title>
     <v-divider></v-divider>
     <v-card-text class="pa-0">
-       <add-time-record
-                    ref="AddTimeRecord"
-                    @close-timesheet="closeTimesheet"
-                  ></add-time-record>
+      <add-time-record ref="AddTimeRecord" @close-timesheet="closeTimesheet"></add-time-record>
       <template>
         <v-data-table
           :headers="headers"
@@ -39,11 +36,13 @@
           item-key="id"
         >
           <template slot="items" slot-scope="props">
-            <td class="text-xs-left">{{ props.item.dateModified.toString().slice(0,10) }}</td>
+            <td class="text-xs-left">{{ props.item.dateModified.toString().slice(0, 10) }}</td>
             <td class="text-xs-left">{{ props.item.user.contact.fullName }}</td>
             <!-- <td class="text-xs-left">{{ props.item.projectName}} </td> -->
             <td>
-              <span class="clickable" @click="viewRequest(props.item.id)">{{ props.item.project.projectName }}</span>
+              <span class="clickable" @click="viewRequest(props.item.id)">{{
+                props.item.project.projectName
+              }}</span>
             </td>
             <!-- <td class="text-xs-left">
               $$$
@@ -54,7 +53,7 @@
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
                   <v-btn flat icon color="grey" v-on="on" @click="viewRequest(props.item.id)">
-                    <v-icon >visibility</v-icon>
+                    <v-icon>visibility</v-icon>
                   </v-btn>
                 </template>
                 <span>View Timesheet</span>
@@ -79,15 +78,18 @@
             </td>
           </template>
         </v-data-table>
-          <v-dialog v-if="dialog" v-model="dialog"  @input="closeDialog(false)"  width="800" margin-top="91px">
+        <v-dialog
+          v-if="dialog"
+          v-model="dialog"
+          @input="closeDialog(false)"
+          width="800"
+          margin-top="91px"
+        >
           <v-card>
             <v-card-text>
-              <v-icon
-                class="v-model-close-icon"
-                color="blue darken-1"
-                flat
-                @click="dialog = false"
-              >close</v-icon>
+              <v-icon class="v-model-close-icon" color="blue darken-1" flat @click="dialog = false"
+                >close</v-icon
+              >
               <timesheet-info-view :id="id"></timesheet-info-view>
             </v-card-text>
           </v-card>
@@ -99,7 +101,6 @@
 </template>
 
 <script>
-import ProjectExpansionRow from './ProjectExpansionRow.vue';
 import TimesheetsToolbar from './TimesheetsToolbar.vue';
 import Spinner from '../common/Spinner.vue';
 import Snackbar from '../common/Snackbar.vue';
@@ -109,13 +110,12 @@ import TimesheetInfoView from './TimesheetInfoView.vue';
 
 export default {
   components: {
-    ProjectExpansionRow,
     TimesheetsToolbar,
     Spinner,
     AddTimeRecord,
     Snackbar,
     Confirm,
-    TimesheetInfoView
+    TimesheetInfoView,
   },
   props: {
     title: String,
@@ -167,9 +167,6 @@ export default {
     };
   },
   computed: {
-    closeDialog() {
-      this.dialog = false;
-    },
     projectsRfx() {
       return this.$store.state.projectsRfx;
     },
@@ -181,7 +178,9 @@ export default {
         }
       }
       if (this.$store.state.timesheetsWeek.startDate) {
-        timeRecords = timeRecords.filter(item => item.startDate === this.$store.state.timesheetsWeek.startDate);
+        timeRecords = timeRecords.filter(
+          item => item.startDate === this.$store.state.timesheetsWeek.startDate,
+        );
       }
 
       if (this.search) {
@@ -191,15 +190,18 @@ export default {
     },
   },
   methods: {
+    closeDialog() {
+      this.dialog = false;
+    },
     async viewRequest(timesheetId) {
       const vm = this;
-       await vm.$store.dispatch("fetchTimesheetById", { id: timesheetId }).then((res) => {
-      vm.$store.state.timesheetById = res;
-      vm.startDateMain = vm.$store.state.timesheetsWeek.startDate;
-      vm.endDateMain = vm.$store.state.timesheetsWeek.endDate;
-      const found = vm.timesheetsList.find(element => element.id === timesheetId);
-      vm.id = timesheetId;
-      vm.dialog = true;
+      await vm.$store.dispatch('fetchTimesheetById', { id: timesheetId }).then((res) => {
+        vm.$store.state.timesheetById = res;
+        vm.startDateMain = vm.$store.state.timesheetsWeek.startDate;
+        vm.endDateMain = vm.$store.state.timesheetsWeek.endDate;
+        // const found = vm.timesheetsList.find(element => element.id === timesheetId);
+        vm.id = timesheetId;
+        vm.dialog = true;
       });
     },
     closeTimesheet(needRefresh) {
