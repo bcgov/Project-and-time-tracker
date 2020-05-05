@@ -68,7 +68,7 @@
               ></v-checkbox>
             </td>
 
-            <td class="text-xs-left">{{ props.item.projectName }}</td>
+            <td class="text-xs-left">{{ props.item.mou.name }}</td>
             <td class="text-xs-left">
               {{
                 [
@@ -124,8 +124,8 @@ export default {
       headers: [
         { text: ' ', value: ' ', align: 'left', sortable: true },
         {
-          text: 'Project Name',
-          value: 'projectName',
+          text: 'MOU Name',
+          value: 'mou.name',
           align: 'left',
           sortable: true,
         },
