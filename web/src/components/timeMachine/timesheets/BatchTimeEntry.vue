@@ -51,12 +51,12 @@
                 v-model="props.item.projectRfx"
                 item-value="id"
                 item-text="rfxName"
-                :rules="requiredRule"
+                :rules="validateRfx(props.item.project,props.item.projectRfx)"
                 :disabled="editMode || props.item.is_locked"
                 label="Project Rfx"
                 return-object
+                 validate-on-blur
               ></v-select>
-
               <!-- TODO - Truncate name if Proj name too long -->
               <!-- <template v-slot:selection='{item}'>
                         {{ item.projectName }}
@@ -220,7 +220,6 @@ export default {
       valid: true,
       editMode: false,
       itemComment: '',
-      requiredRule: [v => !!v || 'This field required'],
       headers: [
         { text: 'Project' },
         { text: 'Project Rfx', sortable: false },
@@ -274,6 +273,11 @@ export default {
   },
   watch: {},
   methods: {
+    validateRfx(project, rfx) {
+      if (project === undefined || project === '') { return [true]; }
+      if (rfx === undefined || rfx === '') { return ['This field is required.']; }
+      return [true];
+    },
     addcomment(value, index, sheetIndex, type) {
       this.itemComment = value;
       const selProject = this.projectList.find(
@@ -319,11 +323,11 @@ export default {
         if (!(await this.$refs.confirm.open('info', 'Are you sure to change Rfx?'))) {
           selectedItem.projectRfx = this.previousSelection.id;
           this.previousSelection = undefined;
+          return;
         }
       }
       const selectedProjects = this.timesheet.filter(
-        item => item.project
-          && (item.project === project.id || item.project.id === project.id) && (item.projectRfx === projectRfx.id || item.projectRfx.id === projectRfx.id)
+        item => (item.project && (item.project === project.id || item.project.id === project.id)) && (item.projectRfx && (item.projectRfx === projectRfx.id || item.projectRfx.id === projectRfx.id))
           && !item.deleted,
       );
       if (selectedProjects.length > 1) {
