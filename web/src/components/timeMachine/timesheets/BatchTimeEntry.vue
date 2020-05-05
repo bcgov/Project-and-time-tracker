@@ -303,7 +303,6 @@ export default {
       return [];
     },
     getRfx(rfx, project) {
-      debugger;
       this.previousSelection = undefined;
       if (project !== undefined) {
         const selProject = this.projectList.find(item => item.id === project);
@@ -316,12 +315,10 @@ export default {
       }
     },
     async onChangeProjectRfxBatchEntry(index, selectedItem, project, projectRfx) {
-      debugger;
       if (this.previousSelection !== undefined) {
         if (!(await this.$refs.confirm.open('info', 'Are you sure to change Rfx?'))) {
           selectedItem.projectRfx = this.previousSelection.id;
           this.previousSelection = undefined;
-          return;
         }
       }
       const selectedProjects = this.timesheet.filter(
@@ -353,13 +350,13 @@ export default {
       const selProject = this.projectList.find(item => item.id === project);
       if (selProject) {
         selectedItem.projectRfx = undefined;
-        const selRfx = selProject.rfxList.find(item => item.id === projectRfx);
+        const selRfx = selProject.rfxList.find(item => item.id === projectRfx.id);
         if (selRfx) {
           selectedItem.projectRfx = selRfx.id;
         }
 
         selectedItem.project = selProject.id;
-        selectedItem.mou = selProject.mou.id;
+        selectedItem.mou = selProject.mouId;
       }
       this.previousSelection = undefined;
     },
