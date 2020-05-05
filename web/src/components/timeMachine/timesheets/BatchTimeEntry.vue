@@ -15,7 +15,7 @@
         class="elevation-0 tm-v-datatable batch-entry"
       >
         <template slot="headerCell" scope="props">
-          <v-tooltip bottom v-if="props.header.text != 'Project'">
+          <v-tooltip bottom v-if="props.header.text != 'Project' && props.header.text != 'Project Rfx'">
             <span slot="activator">
               {{ props.header.text }}
               <v-icon size="20">info</v-icon>
@@ -31,13 +31,29 @@
             <td>
               <v-select
                 :items="userProjects"
-                @click.native="getProject(props.item.project)"
-                @change="onChangeProjectBatchEntry(props.index, props.item, props.item.project)"
                 v-model="props.item.project"
                 item-value="id"
                 item-text="projectName"
                 :disabled="editMode || props.item.is_locked"
                 label="Project Name"
+              ></v-select>
+
+              <!-- TODO - Truncate name if Proj name too long -->
+              <!-- <template v-slot:selection='{item}'>
+                        {{ item.projectName }}
+              </template>-->
+            </td>
+             <td>
+              <v-select
+                :items="getRfxList(props.item.project)"
+                @click.native="getRfx(props.item.projectRfx,props.item.project)"
+                @change="onChangeProjectRfxBatchEntry(props.index, props.item, props.item.project,props.item.projectRfx)"
+                v-model="props.item.projectRfx"
+                item-value="id"
+                item-text="rfxName"
+                :rules="requiredRule"
+                :disabled="editMode || props.item.is_locked"
+                label="Project Rfx"
                 return-object
               ></v-select>
 
@@ -204,8 +220,10 @@ export default {
       valid: true,
       editMode: false,
       itemComment: '',
+      requiredRule: [v => !!v || 'This field required'],
       headers: [
         { text: 'Project' },
+        { text: 'Project Rfx', sortable: false },
         {
           text: 'Mon',
           sortable: false,
@@ -279,35 +297,45 @@ export default {
         this.$props.timesheet[sheetIndex].entries[index].commentsUnBillable = commentValue;
       }
     },
-    getProject(project) {
+    getRfxList(project) {
+      const selProject = this.projectList.find(item => item.id === project);
+      if (selProject) { return selProject.rfxList; }
+      return [];
+    },
+    getRfx(rfx, project) {
+      debugger;
       this.previousSelection = undefined;
       if (project !== undefined) {
         const selProject = this.projectList.find(item => item.id === project);
         if (selProject) {
-          this.previousSelection = selProject;
+          const selRfx = selProject.rfxList.find(item => item.id === rfx);
+          if (selRfx) {
+            this.previousSelection = selRfx;
+          }
         }
       }
     },
-    async onChangeProjectBatchEntry(index, selectedItem, project) {
+    async onChangeProjectRfxBatchEntry(index, selectedItem, project, projectRfx) {
+      debugger;
       if (this.previousSelection !== undefined) {
-        if (!(await this.$refs.confirm.open('info', 'Are you sure to change project?'))) {
-          selectedItem.project = this.previousSelection.id;
+        if (!(await this.$refs.confirm.open('info', 'Are you sure to change Rfx?'))) {
+          selectedItem.projectRfx = this.previousSelection.id;
           this.previousSelection = undefined;
           return;
         }
       }
       const selectedProjects = this.timesheet.filter(
         item => item.project
-          && (item.project === project.id || item.project.id === project.id)
+          && (item.project === project.id || item.project.id === project.id) && (item.projectRfx === projectRfx.id || item.projectRfx.id === projectRfx.id)
           && !item.deleted,
       );
       if (selectedProjects.length > 1) {
-        this.$refs.snackbar.displaySnackbar('info', 'This project is already added');
+        this.$refs.snackbar.displaySnackbar('info', 'This Rfx is already added');
 
         if (this.previousSelection && this.previousSelection.id) {
-          selectedItem.project = this.previousSelection.id;
+          selectedItem.projectRfx = this.previousSelection.id;
         } else {
-          selectedItem.project = this.previousSelection;
+          selectedItem.projectRfx = this.previousSelection;
         }
 
         const projectsNotDeleted = this.timesheet.filter(item => !item.deleted);
@@ -322,11 +350,16 @@ export default {
         this.previousSelection = undefined;
         return;
       }
-      const selProject = this.projectList.find(item => item.id === project.id);
+      const selProject = this.projectList.find(item => item.id === project);
       if (selProject) {
+        selectedItem.projectRfx = undefined;
+        const selRfx = selProject.rfxList.find(item => item.id === projectRfx);
+        if (selRfx) {
+          selectedItem.projectRfx = selRfx.id;
+        }
+
         selectedItem.project = selProject.id;
         selectedItem.mou = selProject.mou.id;
-        selectedItem.projectRfx = undefined;
       }
       this.previousSelection = undefined;
     },

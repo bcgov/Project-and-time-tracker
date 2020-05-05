@@ -604,6 +604,18 @@ const store = new Vuex.Store({
         .catch(err => Promise.reject(err.response));
       return Promise.resolve(api);
     },
+    async fetchMouProjects(ctx, req) {
+      const body = req;
+      const api = await $http     
+      .get(`${API_URI}/project/${req.id}/by-user-id`)      
+        .then((res) => {
+          const content = res.data;        
+          return Promise.resolve(content);
+        })
+        .catch(err => Promise.reject(err));
+      return Promise.resolve(api);
+    },
+    
     async fetchTimesheetEntriesByUser(ctx, req) {
       const body = req;
       const api = await $http
