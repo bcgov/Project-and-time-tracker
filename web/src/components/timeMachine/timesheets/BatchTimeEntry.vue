@@ -37,7 +37,7 @@
                 v-model="props.item.project"
                 item-value="id"
                 item-text="projectName"
-                :disabled="editMode || props.item.is_locked"
+                :disabled="editMode || props.item.is_locked || props.item.id !=undefined"
                 label="Project Name"
               ></v-select>
 
@@ -62,7 +62,7 @@
                 item-value="id"
                 item-text="rfxName"
                 :rules="validateRfx(props.item.project, props.item.projectRfx)"
-                :disabled="editMode || props.item.is_locked"
+                :disabled="editMode || props.item.is_locked || props.item.id !=undefined"
                 label="Project Rfx"
                 return-object
                 validate-on-blur
