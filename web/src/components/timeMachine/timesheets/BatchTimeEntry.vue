@@ -15,7 +15,10 @@
         class="elevation-0 tm-v-datatable batch-entry"
       >
         <template slot="headerCell" scope="props">
-          <v-tooltip bottom v-if="props.header.text != 'Project' && props.header.text != 'Project Rfx'">
+          <v-tooltip
+            bottom
+            v-if="props.header.text != 'Project' && props.header.text != 'Project Rfx'"
+          >
             <span slot="activator">
               {{ props.header.text }}
               <v-icon size="20">info</v-icon>
@@ -43,19 +46,26 @@
                         {{ item.projectName }}
               </template>-->
             </td>
-             <td>
+            <td>
               <v-select
                 :items="getRfxList(props.item.project)"
-                @click.native="getRfx(props.item.projectRfx,props.item.project)"
-                @change="onChangeProjectRfxBatchEntry(props.index, props.item, props.item.project,props.item.projectRfx)"
+                @click.native="getRfx(props.item.projectRfx, props.item.project)"
+                @change="
+                  onChangeProjectRfxBatchEntry(
+                    props.index,
+                    props.item,
+                    props.item.project,
+                    props.item.projectRfx
+                  )
+                "
                 v-model="props.item.projectRfx"
                 item-value="id"
                 item-text="rfxName"
-                :rules="validateRfx(props.item.project,props.item.projectRfx)"
+                :rules="validateRfx(props.item.project, props.item.projectRfx)"
                 :disabled="editMode || props.item.is_locked"
                 label="Project Rfx"
                 return-object
-                 validate-on-blur
+                validate-on-blur
               ></v-select>
               <!-- TODO - Truncate name if Proj name too long -->
               <!-- <template v-slot:selection='{item}'>
@@ -274,8 +284,12 @@ export default {
   watch: {},
   methods: {
     validateRfx(project, rfx) {
-      if (project === undefined || project === '') { return [true]; }
-      if (rfx === undefined || rfx === '') { return ['This field is required.']; }
+      if (project === undefined || project === '') {
+        return [true];
+      }
+      if (rfx === undefined || rfx === '') {
+        return ['This field is required.'];
+      }
       return [true];
     },
     addcomment(value, index, sheetIndex, type) {
@@ -303,7 +317,9 @@ export default {
     },
     getRfxList(project) {
       const selProject = this.projectList.find(item => item.id === project);
-      if (selProject) { return selProject.rfxList; }
+      if (selProject) {
+        return selProject.rfxList;
+      }
       return [];
     },
     getRfx(rfx, project) {
@@ -327,7 +343,10 @@ export default {
         }
       }
       const selectedProjects = this.timesheet.filter(
-        item => (item.project && (item.project === project.id || item.project.id === project.id)) && (item.projectRfx && (item.projectRfx === projectRfx.id || item.projectRfx.id === projectRfx.id))
+        item => item.project
+          && (item.project === project.id || item.project.id === project.id)
+          && item.projectRfx
+            && (item.projectRfx === projectRfx.id || item.projectRfx.id === projectRfx.id)
           && !item.deleted,
       );
       if (selectedProjects.length > 1) {
