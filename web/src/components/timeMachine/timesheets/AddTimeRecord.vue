@@ -353,6 +353,9 @@ export default {
       //       || item.teamWideProject === true),
       // );
       const vm = this;
+      vm.mouList = [];
+      vm.projectList = [];
+      vm.rfxList = [];
       vm.userMouProjects = [];
       await vm.$store.dispatch('fetchMouProjects', { id: userId }).then((res) => {
         vm.userMouProjects = res;
