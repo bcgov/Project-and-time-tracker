@@ -366,6 +366,8 @@ const store = new Vuex.Store({
     },
     updateProcurementLog() {
     },
+    addFinanceCodes() {
+    },
     addProjectNotes() {
     },
     // Project RFx
@@ -884,6 +886,7 @@ const store = new Vuex.Store({
         .catch(err => Promise.reject(err));
       return Promise.resolve(api);
     },
+    
     async deleteIntakeRequest(ctx, req) {
       try {
         const res = await $http.delete(`${API_URI}/intake/${req.id}`);
@@ -1079,6 +1082,18 @@ const store = new Vuex.Store({
         .then((res) => {
           const content = res.data;
           ctx.commit('updateProcurementLog', content);
+          return Promise.resolve(content);
+        })
+        .catch(err => Promise.reject(err));
+      return Promise.resolve(api);
+    },
+    async addFinanceCodes(ctx, req) {
+      const body = req.FinanceCodes;
+      const api = await $http
+        .post(`${API_URI}/financecodes`, body)
+        .then((res) => {
+          const content = res.data;
+          ctx.commit('addFinanceCodes', content);
           return Promise.resolve(content);
         })
         .catch(err => Promise.reject(err));
