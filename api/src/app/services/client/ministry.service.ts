@@ -8,9 +8,11 @@ const ministryRepo = (): Repository<Ministry> => {
 // Excludes archived
 export const retrieveMinistries = async () => {
   const repo = ministryRepo();
-  return await repo.createQueryBuilder('m')
-                    .where("m.is_archived IS NULL OR m.is_archived = :val", { val: false })
-                    .getMany();
+  return await repo
+    .createQueryBuilder('m')
+    .orderBy('m.ministryName', 'ASC')
+    .where('m.is_archived IS NULL OR m.is_archived = :val', { val: false })
+    .getMany();
 };
 
 // Both archived and unarchived
@@ -28,7 +30,7 @@ export const retrieveMinistryById = async (id: string) => {
   return res;
 };
 
-export const createMinistry = async obj => {
+export const createMinistry = async (obj) => {
   const repo = ministryRepo();
   const ministry = repo.create(obj);
   const ret = await repo.save(ministry);
@@ -40,12 +42,12 @@ export const createMinistry = async obj => {
 
 export const updateMinistry = async (input: Ministry) => {
   const repo = ministryRepo();
-  const ministry: Ministry = await repo.findOne(input.id)
+  const ministry: Ministry = await repo.findOne(input.id);
 
-  if (!ministry){
+  if (!ministry) {
     throw Error('Ministry not found');
   }
 
   const updatedMinistry = await repo.save(input);
   return updatedMinistry;
-}
+};

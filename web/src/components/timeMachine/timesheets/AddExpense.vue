@@ -93,7 +93,7 @@ export default {
   data() {
     return {
       isCopy: false,
-      categoryOptions: [{ category: 'Fees' }, { category: 'Transporation' }, { category: 'Other' }],
+      categoryOptions: [{ category: 'Fees' }, { category: 'Other' }, { category: 'Transporation' }],
       valid: true,
       dialog: false,
       amountRule: [

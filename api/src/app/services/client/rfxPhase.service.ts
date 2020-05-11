@@ -4,10 +4,13 @@ import { getRepository, Repository } from 'typeorm';
 const rfxPhaseRepo = (): Repository<RfxPhase> => {
   return getRepository(RfxPhase);
 };
-  
-export const  retrieveRfxPhases = async () => {
+
+export const retrieveRfxPhases = async () => {
   const repo = rfxPhaseRepo();
-  return await repo.find();
+  return await repo
+    .createQueryBuilder('r')
+    .orderBy('r.rfxPhaseName', 'ASC')
+    .getMany();
 };
 
 export const retrieveRfxPhaseById = async (id: string) => {

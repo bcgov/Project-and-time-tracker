@@ -4,7 +4,7 @@ import { IUser } from '../../models/interfaces/i-user';
 import { IKeycloakUserByRole } from '../../models/interfaces/i-keycloak-user-fetch-by-role';
 import {
   retrieveKeycloakAdminToken,
-  retrieveKeycloakUsersByRole
+  retrieveKeycloakUsersByRole,
 } from '../common/auth-verification.service';
 
 const userRepo = (): Repository<User> => {
@@ -48,8 +48,9 @@ export const retrieveUsersNameAndIdByRole = async (roles: string[]) => {
       'c.fullName',
       'c.hourlyRate',
       'c.revenueRate',
-      'c.id'
+      'c.id',
     ])
+    .orderBy('c.fullName', 'ASC')
     .getMany();
 
   // console.log('retrieveUsersNameAndIdByRole B -', { repo, users })
