@@ -40,6 +40,7 @@ const commonForPSBAdminAndUser = [
   'PATCH/client/:id/finance-code',
   'GET/project/',
   'GET/project/all',
+  'GET/project/:id/by-user-id',
   'GET/project/:id',
   'PATCH/project/:id',
   'PATCH/project/:id/archive',

@@ -214,13 +214,13 @@ export default {
         this.$store.state.timesheetsWeek.endDate = this.endDateMain;
       }
     },
-    editTimesheet(value) {
+    async editTimesheet(value) {
       this.startDateMain = this.$store.state.timesheetsWeek.startDate;
       this.endDateMain = this.$store.state.timesheetsWeek.endDate;
       const found = this.timesheetsList.find(element => element.id === value);
       sessionStorage.setItem('selectedStartDate', found.startDate);
       sessionStorage.setItem('selectedEndDate', found.endDate);
-      this.$refs.AddTimeRecord.open(true); // specifies edit mode
+      await this.$refs.AddTimeRecord.open(true); // specifies edit mode
       this.$refs.AddTimeRecord.editTimeEntries(value);
     },
     getFullname(projectLeadId) {

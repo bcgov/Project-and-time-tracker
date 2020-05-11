@@ -26,7 +26,7 @@
               prepend-icon="event"
               readonly
               v-on="on"
-              style="width:242px;"
+              class="calender-box"
             ></v-text-field>
           </template>
           <v-date-picker v-model="date" :show-current="true" type="month">
@@ -459,6 +459,10 @@ export default {
 .start-button-style {
   margin-right: 6%;
   float: right;
+}
+.calender-box {
+  width:242px;
+  margin-left: 15px;
 }
 /* .v-picker {
   width: 100%;

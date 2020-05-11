@@ -56,7 +56,9 @@
                         <div class="body-2">Project RFX:</div>
                       </v-flex>
                       <v-flex md9>
-                        <div class="body-1">{{ $store.state.timesheetById.projectRFX }}</div>
+                        <div class="body-1">
+                          {{ $store.state.timesheetById.projectRfx.rfxName }}
+                        </div>
                       </v-flex>
                     </v-layout>
                     <!-- <v-layout>
@@ -301,8 +303,7 @@ export default {
       return clientInfo;
     },
   },
-  created() {
-  },
+  created() {},
 };
 </script>
 

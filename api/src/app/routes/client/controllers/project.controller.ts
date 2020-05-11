@@ -10,6 +10,7 @@ import {
   retrieveExportedPdfs,
   downloadpdf,
   retrieveAllProjects,
+  retrieveMouProjectsByUserId,
   retrieveFinanceData
 } from '../../../services/client/project.service';
 import { IProject } from '../../../models/interfaces/i-project';
@@ -31,6 +32,14 @@ export const getAllProjects = async (ctx: Koa.Context) => {
   try {
     const auth = ctx.state.auth as IAuth;
     ctx.body = await retrieveAllProjects();
+  } catch (err) {
+    ctx.throw(err.message);
+  }
+};
+
+export const getmouProjects = async (ctx: Koa.Context) => {
+  try {
+    ctx.body = await retrieveMouProjectsByUserId(ctx.params.id);
   } catch (err) {
     ctx.throw(err.message);
   }
@@ -246,6 +255,7 @@ const router: Router = new Router(routerOpts);
 
 router.get('/', authorize, getProjects);
 router.get('/all', authorize, getAllProjects);
+router.get('/:id/by-user-id', authorize, getmouProjects);
 router.get('/archived', authorize, getArchivedProjects);
 router.post('/timesheetprojects', authorize, timesheetProjects);
 router.post('/exportedPdfs', authorize, exportedPdfs);

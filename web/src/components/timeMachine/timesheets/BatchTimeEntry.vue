@@ -15,7 +15,10 @@
         class="elevation-0 tm-v-datatable batch-entry"
       >
         <template slot="headerCell" scope="props">
-          <v-tooltip bottom v-if="props.header.text != 'Project'">
+          <v-tooltip
+            bottom
+            v-if="props.header.text != 'Project' && props.header.text != 'Project Rfx'"
+          >
             <span slot="activator">
               {{ props.header.text }}
               <v-icon size="20">info</v-icon>
@@ -31,16 +34,39 @@
             <td>
               <v-select
                 :items="userProjects"
-                @click.native="getProject(props.item.project)"
-                @change="onChangeProjectBatchEntry(props.index, props.item, props.item.project)"
                 v-model="props.item.project"
                 item-value="id"
                 item-text="projectName"
-                :disabled="editMode || props.item.is_locked"
+                :disabled="editMode || props.item.is_locked || props.item.id !=undefined"
                 label="Project Name"
-                return-object
               ></v-select>
 
+              <!-- TODO - Truncate name if Proj name too long -->
+              <!-- <template v-slot:selection='{item}'>
+                        {{ item.projectName }}
+              </template>-->
+            </td>
+            <td>
+              <v-select
+                :items="getRfxList(props.item.project)"
+                @click.native="getRfx(props.item.projectRfx, props.item.project)"
+                @change="
+                  onChangeProjectRfxBatchEntry(
+                    props.index,
+                    props.item,
+                    props.item.project,
+                    props.item.projectRfx
+                  )
+                "
+                v-model="props.item.projectRfx"
+                item-value="id"
+                item-text="rfxName"
+                :rules="validateRfx(props.item.project, props.item.projectRfx)"
+                :disabled="editMode || props.item.is_locked || props.item.id !=undefined"
+                label="Project Rfx"
+                return-object
+                validate-on-blur
+              ></v-select>
               <!-- TODO - Truncate name if Proj name too long -->
               <!-- <template v-slot:selection='{item}'>
                         {{ item.projectName }}
@@ -206,6 +232,7 @@ export default {
       itemComment: '',
       headers: [
         { text: 'Project' },
+        { text: 'Project Rfx', sortable: false },
         {
           text: 'Mon',
           sortable: false,
@@ -256,6 +283,15 @@ export default {
   },
   watch: {},
   methods: {
+    validateRfx(project, rfx) {
+      if (project === undefined || project === '') {
+        return [true];
+      }
+      if (rfx === undefined || rfx === '') {
+        return ['This field is required.'];
+      }
+      return [true];
+    },
     addcomment(value, index, sheetIndex, type) {
       this.itemComment = value;
       const selProject = this.projectList.find(
@@ -279,19 +315,29 @@ export default {
         this.$props.timesheet[sheetIndex].entries[index].commentsUnBillable = commentValue;
       }
     },
-    getProject(project) {
+    getRfxList(project) {
+      const selProject = this.projectList.find(item => item.id === project);
+      if (selProject) {
+        return selProject.rfxList;
+      }
+      return [];
+    },
+    getRfx(rfx, project) {
       this.previousSelection = undefined;
       if (project !== undefined) {
         const selProject = this.projectList.find(item => item.id === project);
         if (selProject) {
-          this.previousSelection = selProject;
+          const selRfx = selProject.rfxList.find(item => item.id === rfx);
+          if (selRfx) {
+            this.previousSelection = selRfx;
+          }
         }
       }
     },
-    async onChangeProjectBatchEntry(index, selectedItem, project) {
+    async onChangeProjectRfxBatchEntry(index, selectedItem, project, projectRfx) {
       if (this.previousSelection !== undefined) {
-        if (!(await this.$refs.confirm.open('info', 'Are you sure to change project?'))) {
-          selectedItem.project = this.previousSelection.id;
+        if (!(await this.$refs.confirm.open('info', 'Are you sure to change Rfx?'))) {
+          selectedItem.projectRfx = this.previousSelection.id;
           this.previousSelection = undefined;
           return;
         }
@@ -299,15 +345,17 @@ export default {
       const selectedProjects = this.timesheet.filter(
         item => item.project
           && (item.project === project.id || item.project.id === project.id)
+          && item.projectRfx
+            && (item.projectRfx === projectRfx.id || item.projectRfx.id === projectRfx.id)
           && !item.deleted,
       );
       if (selectedProjects.length > 1) {
-        this.$refs.snackbar.displaySnackbar('info', 'This project is already added');
+        this.$refs.snackbar.displaySnackbar('info', 'This Rfx is already added');
 
         if (this.previousSelection && this.previousSelection.id) {
-          selectedItem.project = this.previousSelection.id;
+          selectedItem.projectRfx = this.previousSelection.id;
         } else {
-          selectedItem.project = this.previousSelection;
+          selectedItem.projectRfx = this.previousSelection;
         }
 
         const projectsNotDeleted = this.timesheet.filter(item => !item.deleted);
@@ -322,11 +370,16 @@ export default {
         this.previousSelection = undefined;
         return;
       }
-      const selProject = this.projectList.find(item => item.id === project.id);
+      const selProject = this.projectList.find(item => item.id === project);
       if (selProject) {
-        selectedItem.project = selProject.id;
-        selectedItem.mou = selProject.mou.id;
         selectedItem.projectRfx = undefined;
+        const selRfx = selProject.rfxList.find(item => item.id === projectRfx.id);
+        if (selRfx) {
+          selectedItem.projectRfx = selRfx.id;
+        }
+
+        selectedItem.project = selProject.id;
+        selectedItem.mou = selProject.mouId;
       }
       this.previousSelection = undefined;
     },

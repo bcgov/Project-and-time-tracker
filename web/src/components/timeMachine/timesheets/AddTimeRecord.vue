@@ -1,3 +1,4 @@
+/* eslint-disable vue/no-side-effects-in-computed-properties */
 <template>
   <v-layout row justify-center>
     <snackbar ref="snackbar"></snackbar>
@@ -140,11 +141,13 @@
                     <v-select
                       v-model="form.rfx"
                       :items="projectRfx"
+                      :rules="requiredRule"
                       item-text="rfxName"
                       item-value="id"
                       label="Project Rfx"
-                      :disabled="form.is_locked"
+                      :disabled="editMode"
                       @input="onChangeProjectRfx()"
+                      validate-on-blur
                     ></v-select>
                   </v-flex>
                 </v-flex>
@@ -243,11 +246,12 @@ export default {
   computed: {
     computeTimesheet: {
       get() {
-        if (this.form.project === undefined || this.form.project === '') {
+        if (this.form.rfx === undefined || this.form.rfx === '') {
           if (this.blankTimesheet.length === 0) {
             this.addTimeSheetRow(true);
           }
-
+          // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+          this.weeklyProjectIndex = this.blankTimesheet.length - 1;
           return this.blankTimesheet;
         }
         return this.timesheet;
@@ -264,16 +268,7 @@ export default {
       return this.$store.state.timesheetEntryData;
     },
     projectRfx() {
-      return this.$store.state.activeProjectRfxData;
-      // if (typeof this.form.project !== 'undefined') {
-      //   if (this.$store.state.activeProjectRfxData.length === 1) {
-      //     if (this.$store.state.activeProjectRfxData[0].id === '') {
-      //       return [];
-      //     }
-      //   }
-      //   return this.$store.state.activeProjectRfxData;
-      // }
-      // return [];
+      return this.rfxList;
     },
     mouAmount() {
       if (!this.form || !this.form.mou || !this.form.project) {
@@ -318,9 +313,9 @@ export default {
       const referenceId = this.$store.state.activeUser.refId;
       const user = this.$store.state.users.find(value => value.referenceId === referenceId);
       if (user && user.id) {
-        this.userMouProjects = this.$store.state.allProjects.filter(
-          item => item.mou && (item.backupUserId === user.id || item.leadUserId === user.id),
-        );
+        // this.userMouProjects = this.$store.state.allProjects.filter(
+        //   item => item.mou && (item.backupUserId === user.id || item.leadUserId === user.id),
+        // );
         return user.id;
       }
       return '';
@@ -334,6 +329,7 @@ export default {
         blankTimesheet: [],
         userMouProjects: [],
         projectList: [],
+        rfxList: [],
         editMode: false,
         activeTab: 'weekly',
         recordType: 1,
@@ -344,24 +340,33 @@ export default {
         form: { ...form },
       };
     },
-    onChangeUser(userId, editMode = false) {
+    async onChangeUser(userId, editMode = false) {
       if (this.$refs.spinner) {
         this.$refs.spinner.open();
       }
       this.clearTimesheet();
       this.form.userId = userId;
-      this.userMouProjects = this.$store.state.allProjects.filter(
-        item => item.mou
-          && (item.backupUserId === this.form.userId
-            || item.leadUserId === this.form.userId
-            || item.teamWideProject === true),
-      );
+      // this.userMouProjects = this.$store.state.allProjects.filter(
+      //   item => item.mou
+      //     && (item.backupUserId === this.form.userId
+      //       || item.leadUserId === this.form.userId
+      //       || item.teamWideProject === true),
+      // );
+      const vm = this;
+      vm.mouList = [];
+      vm.projectList = [];
+      vm.rfxList = [];
+      vm.userMouProjects = [];
+      await vm.$store.dispatch('fetchMouProjects', { id: userId }).then((res) => {
+        vm.userMouProjects = res;
+      });
       if (!editMode) {
         this.getTimeSheets();
       }
       if (this.$refs.spinner) {
         this.$refs.spinner.close();
       }
+      return vm.userMouProjects;
     },
     onChangeMou(editMode) {
       if (
@@ -370,27 +375,18 @@ export default {
         && this.form.mou
         && this.form.userId
       ) {
-        this.projectList = this.userMouProjects.filter(
-          item => item.mou
-            && (item.backupUserId === this.form.userId
-              || item.leadUserId === this.form.userId
-              || item.teamWideProject === true)
-            && item.mou.id === this.form.mou,
-        );
+        this.projectList = this.userMouProjects.filter(item => item.mouId === this.form.mou);
       } else {
         this.projectList = [];
       }
       this.form.is_locked = false;
       this.form.project = undefined;
-      this.$store.state.activeProjectRfxData = [];
+      this.rfxList = [];
       this.form.rfx = undefined;
       if (!editMode) {
         this.form.is_locked = false;
       }
-      // this.selectWeeklyProject(undefined, this.form.mou);
-      // if (this.projectList.length > 0) {
-      //   this.selectWeeklyProject(this.projectList[0].id, this.form.mou);
-      // } else { this.selectWeeklyProject(undefined, this.form.mou); }
+      // this.selectWeeklyProject(this.form.project, this.form.mou, this.form.rfx);
     },
     onBatchEntry() {
       if (this.timesheet.length > 1) {
@@ -400,7 +396,6 @@ export default {
         if (this.timesheet.length === 0) {
           this.addTimeSheetRow();
         }
-        // this.selectWeeklyProject(this.form.project, this.form.mou);
       }
     },
     onWeekEntry() {
@@ -409,16 +404,16 @@ export default {
         this.form.is_locked = false;
       }
     },
-    selectWeeklyProject(projectId, mou) {
+    selectWeeklyProject(projectId, mou, rfx) {
       let projectIndex = -1;
       for (let index = 0; index < this.timesheet.length; index++) {
-        if (this.timesheet[index].project === projectId && !this.timesheet[index].deleted) {
+        if (this.timesheet[index].projectRfx === rfx && !this.timesheet[index].deleted) {
           projectIndex = index;
         }
       }
       if (projectIndex === -1) {
         this.timesheet = this.timesheet.filter(
-          item => item.project !== '' && item.project !== undefined,
+          item => item.projectRfx !== '' && item.projectRfx !== undefined,
         );
         this.addTimeSheetRow();
         this.weeklyProjectIndex = this.timesheet.length - 1;
@@ -430,31 +425,42 @@ export default {
 
       this.timesheet[this.weeklyProjectIndex].project = projectId;
       this.timesheet[this.weeklyProjectIndex].mou = mou;
+      this.timesheet[this.weeklyProjectIndex].projectRfx = rfx;
 
-      if (projectId !== '' && projectId !== undefined) {
-        this.$store.dispatch('fetchProjectRFxData', { id: projectId });
-        this.form.rfx = this.timesheet[this.weeklyProjectIndex].projectRfx;
+      this.rfxList = [];
+      if (this.form.project !== '' && this.form.project !== undefined) {
+        if (this.form.project) {
+          const selProject = this.projectList.find(item => item.id === this.form.project);
+          if (selProject) {
+            this.rfxList = selProject.rfxList;
+            this.form.rfx = this.timesheet[this.weeklyProjectIndex].projectRfx;
+          }
+        }
       }
-      // this.form.mou = mou;
-      // this.form.project = projectId;
     },
     onChangeProjectWeeklyEntry() {
+      this.rfxList = [];
+      this.form.rfx = undefined;
+      if (this.form.project) {
+        const selProject = this.projectList.find(item => item.id === this.form.project);
+        if (selProject) {
+          this.rfxList = selProject.rfxList;
+        }
+      }
+    },
+    onChangeProjectRfx() {
       if (this.$refs.spinner) {
         this.$refs.spinner.open();
       }
       // Keep index of weekly entry selected project. This is used to set props value to weekly entry components.
 
-      this.$store.state.activeProjectRfxData = [];
-      this.form.rfx = undefined;
-      this.selectWeeklyProject(this.form.project, this.form.mou);
+      this.selectWeeklyProject(this.form.project, this.form.mou, this.form.rfx);
       this.blankTimesheet = [];
       this.addTimeSheetRow(true);
+      this.timesheet[this.weeklyProjectIndex].projectRfx = this.form.rfx;
       if (this.$refs.spinner) {
         this.$refs.spinner.close();
       }
-    },
-    onChangeProjectRfx() {
-      this.timesheet[this.weeklyProjectIndex].projectRfx = this.form.rfx;
     },
     onChangeWeek() {
       if (this.$refs.spinner) {
@@ -505,7 +511,7 @@ export default {
 
           if (vm.form.project && vm.form.mou && weekChange) {
             if (this.activeTab === 'weekly') {
-              vm.selectWeeklyProject(vm.form.project, vm.form.mou);
+              vm.selectWeeklyProject(vm.form.project, vm.form.mou, vm.form.rfx);
             } else {
               vm.form.project = undefined;
               vm.form.mou = undefined;
@@ -524,7 +530,7 @@ export default {
         }
         if (vm.form.project && vm.form.mou && weekChange) {
           if (this.activeTab === 'weekly') {
-            vm.selectWeeklyProject(vm.form.project, vm.form.mou);
+            vm.selectWeeklyProject(vm.form.project, vm.form.mou, vm.form.rfx);
           } else {
             vm.form.project = undefined;
             vm.form.mou = undefined;
@@ -540,9 +546,7 @@ export default {
       const vm = this;
       vm.$store.dispatch('fetchTimesheetById', { id: timeSheetId }).then(() => {
         const obj = vm.$store.state.timesheetById;
-
-        this.onChangeUser(obj.userId, true);
-
+        // this.onChangeUser(obj.userId, true);
         vm.timesheet[vm.weeklyProjectIndex].entries = obj.timesheetEntries;
         vm.timesheet[vm.weeklyProjectIndex].startDate = obj.startDate;
         vm.timesheet[vm.weeklyProjectIndex].endDate = obj.endDate;
@@ -559,13 +563,18 @@ export default {
         vm.$store.state.timesheetsWeek.endDate = vm.timesheet[vm.weeklyProjectIndex].endDate;
         vm.$refs.TimeCalenderWeekly.setCalendarText();
         vm.$refs.TimeCalenderBatch.setCalendarText();
-
         vm.form.mou = vm.timesheet[vm.weeklyProjectIndex].mou;
         this.onChangeMou(true);
-
         this.form.is_locked = vm.timesheet[vm.weeklyProjectIndex].is_locked;
+
         vm.form.project = vm.timesheet[vm.weeklyProjectIndex].project;
-        vm.$store.dispatch('fetchProjectRFxData', { id: vm.form.project });
+        vm.rfxList = [];
+        if (vm.form.project) {
+          const selProject = vm.projectList.find(item => item.id === vm.form.project);
+          if (selProject) {
+            vm.rfxList = selProject.rfxList;
+          }
+        }
         vm.form.rfx = vm.timesheet[vm.weeklyProjectIndex].projectRfx
           ? vm.timesheet[vm.weeklyProjectIndex].projectRfx
           : undefined;
@@ -590,7 +599,7 @@ export default {
       this.$refs.AddimeRecords.resetValidation();
       this.form.userId = this.fetchUser();
       if (this.form.userId) {
-        this.onChangeUser(this.form.userId, editMode);
+        await this.onChangeUser(this.form.userId, editMode);
       } else {
         this.clearTimesheet();
       }
@@ -808,10 +817,12 @@ export default {
         for (let i = 0; i < vm.$store.state.timesheetEntryDatabyUser.length; i++) {
           const entries = vm.$store.state.timesheetEntryDatabyUser[i].timesheetEntries;
           const currentProject = vm.$store.state.timesheetEntryDatabyUser[i].project.projectName;
+          const currentProjectRfx = vm.$store.state.timesheetEntryDatabyUser[i].projectRfx.rfxName;
           for (let j = 0; j < entries.length; j++) {
             const entry = entries[j];
             timeEntries.push({
               Project: currentProject,
+              'Project Rfx': currentProjectRfx,
               Date: entry.entryDate,
               'Billable Hours': entry.hoursBillable ? entry.hoursBillable : 0,
               'Hourly Rate': hourlyRate,

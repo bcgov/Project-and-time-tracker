@@ -26,7 +26,7 @@
               prepend-icon="event"
               readonly
               v-on="on"
-              style="width:242px;"
+              class="calender-box"
             ></v-text-field>
           </template>
           <v-date-picker v-model="date" :show-current="true" type="month">
@@ -470,5 +470,9 @@ export default {
 }
 .project-export-table .v-input__control {
   margin-top: 5px;
+}
+.calender-box {
+  width:242px;
+  margin-left: 15px;
 }
 </style>
