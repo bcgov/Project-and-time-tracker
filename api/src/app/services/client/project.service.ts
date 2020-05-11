@@ -11,8 +11,14 @@ import { ReplaceSource } from 'webpack-sources';
 import { FinanceExport } from '../../models/entities';
 import { IFinanceExport } from '../../models/interfaces/i-finance-export';
 import { IFinanceExportDetail } from '../../models/interfaces/i-finance-export-detail';
-import { IFinanceJSON } from '../../models/interfaces/i-finance-json';
+import {
+  IFinanceJSON,
+  IUserFinanceCodes,
+} from '../../models/interfaces/i-finance-json';
 
+const contactRepo = (): Repository<Contact> => {
+  return getRepository(Contact);
+};
 const financeRepo = (): Repository<FinanceExport> => {
   return getRepository(FinanceExport);
 };
@@ -147,16 +153,16 @@ export const retrieveProjects = async () => {
       'p.otherProjectSectorName',
       'c.nonMinistryName',
       'p.mouAmount',
-      'p.teamWideProject'
+      'p.teamWideProject',
     ])
     .where('p.is_archived IS NULL OR p.is_archived = :is_archived', {
-      is_archived: false
+      is_archived: false,
     })
     .getMany();
 };
 
 function uuidv4() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
     var r = (Math.random() * 16) | 0,
       v = c == 'x' ? r : (r & 0x3) | 0x8;
     return v.toString(16);
@@ -198,6 +204,42 @@ function getPDFName(date, count) {
   );
 }
 
+async function fillUserFinanceCodes(
+  userFinanceCodes,
+  financeDetail,
+  contactId
+) {
+  let userItemEntry = userFinanceCodes.find((item) => {
+    return item.user === contactId && item.type === financeDetail.type;
+  });
+  if (userItemEntry) {
+    userItemEntry.amount = userItemEntry.amount + financeDetail.amount;
+  } else {
+    let userFinance = {} as IUserFinanceCodes;
+
+    const repo = contactRepo();
+    const contactRes = await repo
+      .createQueryBuilder('c')
+      .innerJoinAndSelect('c.financeCodes', 'f')
+      .where('c."id" = :contactId', {
+        contactId: contactId,
+      })
+      .getOne();
+    if (contactRes) {
+      userFinance.amount = financeDetail.amount;
+      userFinance.clientNo = contactRes.financeCodes.clientNo;
+      userFinance.financeName = contactRes.financeCodes.financeName;
+      userFinance.projectCode = contactRes.financeCodes.projectCode;
+      userFinance.responsibilityCenter =
+        contactRes.financeCodes.responsibilityCenter;
+      userFinance.serviceCenter = contactRes.financeCodes.serviceCenter;
+      userFinance.stob = contactRes.financeCodes.stob;
+      userFinance.type = financeDetail.type;
+      userFinance.user = contactId;
+      userFinanceCodes.push(userFinance);
+    }
+  }
+}
 export const retrieveFinanceData = async (obj, userId) => {
   const financeExport = obj.selectedProjects as IFinanceExport[];
   const documentNo: string = uuidv4();
@@ -230,7 +272,7 @@ export const retrieveFinanceData = async (obj, userId) => {
         'c.clientNo',
         'c.stob',
         'c.projectCode',
-        'c.serviceCenter'
+        'c.serviceCenter',
       ])
       .where('p.id = :projectId', { projectId: exportData.projectId })
       .getOne();
@@ -241,7 +283,7 @@ export const retrieveFinanceData = async (obj, userId) => {
       .leftJoinAndSelect('pc.contact', 'c')
       .where('c."contactType" = :contactType and pc."projectId" = :projectId', {
         contactType: 'clientfinance',
-        projectId: exportData.projectId
+        projectId: exportData.projectId,
       })
       .getOne();
     exportData.contact = contactRes.contact.fullName;
@@ -269,7 +311,7 @@ export const retrieveFinanceData = async (obj, userId) => {
           projectId: exportData.projectId,
           is_locked: false,
           start: startDate,
-          end: endDate
+          end: endDate,
         }
       )
       .getMany();
@@ -278,6 +320,8 @@ export const retrieveFinanceData = async (obj, userId) => {
     }
 
     let details = [] as IFinanceExportDetail[];
+    let userFinanceCodes = [] as IUserFinanceCodes[];
+
     for (
       let timeSheetIndex = 0;
       timeSheetIndex < timeSheet.length;
@@ -312,6 +356,12 @@ export const retrieveFinanceData = async (obj, userId) => {
           financeDetailHour.amount =
             financeDetailHour.rate * financeDetailHour.hours;
           details.push(financeDetailHour);
+
+          await fillUserFinanceCodes(
+            userFinanceCodes,
+            financeDetailHour,
+            timeSheet[timeSheetIndex].user.contact.id
+          );
         }
 
         if (
@@ -330,19 +380,26 @@ export const retrieveFinanceData = async (obj, userId) => {
           financeDetailExpense.resource =
             timeSheet[timeSheetIndex].user.contact.fullName;
           details.push(financeDetailExpense);
+
+          await fillUserFinanceCodes(
+            userFinanceCodes,
+            financeDetailExpense,
+            timeSheet[timeSheetIndex].user.contact.id
+          );
         }
       }
       exportData.details = details;
+      exportData.userFinanceCodes = userFinanceCodes;
 
       let fees = exportData.details
-        .filter(item => item.type === 'Time')
-        .reduce(function(prev, cur) {
+        .filter((item) => item.type === 'Time')
+        .reduce(function (prev, cur) {
           return prev + Number(cur.amount);
         }, 0);
 
       let expenses = exportData.details
-        .filter(item => item.type === 'Expense')
-        .reduce(function(prev, cur) {
+        .filter((item) => item.type === 'Expense')
+        .reduce(function (prev, cur) {
           return prev + Number(cur.amount);
         }, 0);
 
@@ -376,7 +433,7 @@ export const retrieveFinanceData = async (obj, userId) => {
   return result;
 };
 
-export const downloadpdf = async obj => {
+export const downloadpdf = async (obj) => {
   const repo = financeRepo();
   console.log('result:', obj);
   const result = await repo
@@ -421,13 +478,13 @@ export const retrieveArchivedProjects = async () => {
       'p.projectSuccess',
       'p.otherProjectSectorName',
       'o.name',
-      'p.teamWideProject'
+      'p.teamWideProject',
     ])
     .where('p.is_archived = :is_archived', { is_archived: true })
     .getMany();
 };
 
-export const retrieveTimesheetProjects = async obj => {
+export const retrieveTimesheetProjects = async (obj) => {
   const repo = timesheetRepo();
 
   const selectedDate = obj.selectedDate.split('-');
@@ -446,14 +503,14 @@ export const retrieveTimesheetProjects = async obj => {
       {
         start: startDate,
         end: endDate,
-        is_locked: false
+        is_locked: false,
       }
     )
     .getRawMany();
 
   return res;
 };
-export const retrieveExportedPdfs = async obj => {
+export const retrieveExportedPdfs = async (obj) => {
   const repo = financeRepo();
 
   const selectedDate = obj.selectedDate.split('-');
@@ -470,7 +527,7 @@ export const retrieveExportedPdfs = async obj => {
     .addSelect('SUM(t.totalAmount)', 'sum')
     .where('(t.monthStartDate >= :start and t.monthStartDate <= :end) ', {
       start: startDate,
-      end: endDate
+      end: endDate,
     })
     .groupBy('t.documentNo')
     .addGroupBy('t.documentPath')
@@ -508,10 +565,10 @@ export const retrieveAllProjects = async () => {
       'p.otherProjectSectorName',
       'c.nonMinistryName',
       'p.mouAmount',
-      'p.teamWideProject'
+      'p.teamWideProject',
     ])
     .where('(p.is_archived IS NULL OR p.is_archived = :is_archived)', {
-      is_archived: false
+      is_archived: false,
     })
     .getMany();
 };
@@ -544,13 +601,13 @@ export const retrieveProjectsByUserId = async (userId: string) => {
       'p.projectSuccess',
       'p.otherProjectSectorName',
       'c.nonMinistryName',
-      'p.teamWideProject'
+      'p.teamWideProject',
     ])
     .where(
       '(p.is_archived IS NULL OR p.is_archived = :is_archived) AND (p."leadUserId" = :userId OR p."backupUserId" = :userId OR p.teamWideProject=true)',
       {
         is_archived: false,
-        userId
+        userId,
       }
     )
     .getMany();
@@ -581,7 +638,7 @@ export const retrieveArchivedProjectsByUserId = async (userId: string) => {
       'p.projectFailImpact',
       'p.projectSuccess',
       'p.otherProjectSectorName',
-      'p.teamWideProject'
+      'p.teamWideProject',
     ])
 
     //   From merge conflict, this line replaced below
