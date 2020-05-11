@@ -47,6 +47,15 @@
             </v-list-tile-content>
           </v-list-tile>
 
+          <v-list-tile avatar>
+            <v-list-tile-content>
+              <v-list-tile-title>
+                <router-link to="/admin/STOBs">STOB's</router-link>
+              </v-list-tile-title>
+              <v-list-tile-sub-title>Add or remove STOB's</v-list-tile-sub-title>
+            </v-list-tile-content>
+          </v-list-tile>
+
 
           <v-list-tile avatar>
             <v-list-tile-content>
