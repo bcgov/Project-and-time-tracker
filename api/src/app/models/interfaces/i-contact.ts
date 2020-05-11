@@ -1,4 +1,5 @@
 import { ContactType } from '../entities/contact.entity';
+import { IFinanceCodes } from './i-finance-codes';
 
 export interface IContact {
   id: string;
@@ -16,4 +17,5 @@ export interface IContact {
   country: string;
   postalCode: string;
   roleName: string;
+  financeCodes: IFinanceCodes;
 }
