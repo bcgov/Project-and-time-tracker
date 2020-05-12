@@ -227,7 +227,7 @@ export default {
         formData.id = this.id;
         await this.$store
           .dispatch('updateProctLog', {
-            procurementlog: formData,
+            financecode: formData,
           })
           .then(
             () => {

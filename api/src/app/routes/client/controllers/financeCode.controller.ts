@@ -25,7 +25,7 @@ export const updateFinanceCode = async (ctx: Koa.Context) => {
   try {
     const body = ctx.request.body;
     console.log(body);
-    ctx.body = await updatFinanceCodes(body.procurementlog.id, body.procurementlog);
+    ctx.body = await updatFinanceCodes(body.FinanceCodes.id, body.FinanceCodes);
   } catch (err) {
     ctx.throw(err.message);
   }
@@ -49,7 +49,7 @@ const router: Router = new Router(routerOpts);
 
 // router.get('/:id/by-project-id', authorize, getContactByProjectId);
 router.post('/', authorize, saveFinanceCodes);
-router.get('/:id', authorize, getAllFinanceCodes);
+router.get('/all', authorize, getAllFinanceCodes);
 router.patch('/:id', authorize, updateFinanceCode);
 
 export default router;

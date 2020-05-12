@@ -99,9 +99,11 @@ const permissions = {
   PSB_Admin: [
     ...commonForAllUsers,
     'GET/intake/',
+    'GET/financecode/all',
     'GET/intake/:id',
     // 'PATCH/intake/:id',
     'POST/procurement/',
+    'PATCH/financecode/:id',
     'POST/financecode/',
     'POST/projectnotes/',
     'POST/intake/:id/approve',

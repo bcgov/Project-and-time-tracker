@@ -49,6 +49,7 @@ const store = new Vuex.Store({
     projectIntakeServices: [],
     ministries: [],
     allMinistries: [],
+    allFinanceCodes: [],
     rfxPhases: [],
     rfxTypes: [],
     timesheetEntryData: [],
@@ -142,6 +143,9 @@ const store = new Vuex.Store({
     },
     fetchAllMinistries(state, data) {
       state.allMinistries = data;
+    },
+    fetchAllFinanceCodes(state, data) {
+      state.allFinanceCodes = data;
     },
     fetchintakeRiskQuestions(state, data) {
       state.intakeRiskQuestions = data;
@@ -276,6 +280,9 @@ const store = new Vuex.Store({
 
     },
     updateProctLog() {
+
+    },
+    updateFinanceCodes() {
 
     }
     ,
@@ -531,6 +538,14 @@ const store = new Vuex.Store({
         .then((res) => {
           const content = res.data;
           ctx.commit('fetchAllMinistries', content);
+        });
+    },
+    fetchAllFinanceCodes(ctx) {
+      $http
+        .get(`${API_URI}/financecode/all`)
+        .then((res) => {
+          const content = res.data;
+          ctx.commit('fetchAllFinanceCodes', content);
         });
     },
     async addMinistry(ctx, req) {
@@ -874,6 +889,7 @@ const store = new Vuex.Store({
         .catch(err => Promise.reject(err));
       return Promise.resolve(api);
     },
+    
     async updateProctLog(ctx, req) {
       console.log(req);
       const api = $http
@@ -881,6 +897,18 @@ const store = new Vuex.Store({
         .then((res) => {
           const content = res.data;
           ctx.commit('updateProctLog', content);
+          return Promise.resolve(content);
+        })
+        .catch(err => Promise.reject(err));
+      return Promise.resolve(api);
+    },
+    async updateFinanceCodes(ctx, req) {
+      console.log('reqq:', req);
+      const api = $http
+        .patch(`${API_URI}/financecode/${req.id}`, req)
+        .then((res) => {
+          const content = res.data;
+          ctx.commit('updateFinanceCodes', content);
           return Promise.resolve(content);
         })
         .catch(err => Promise.reject(err));

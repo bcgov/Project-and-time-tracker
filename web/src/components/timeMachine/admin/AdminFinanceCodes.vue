@@ -27,12 +27,22 @@
 
         <v-data-table :headers="headers" :items="allFinanceCodes" class="elevation-1">
           <template v-slot:items="props">
-            <td>{{ props.item.financeName }}</td>
-            <td>{{ props.item.clientNo }}</td>
-            <td>{{ props.item.responsibility }}</td>
-            <td>{{ props.item.serviceCenter }}</td>
-            <td>{{ props.item.stob }}</td>
-            <td>{{ props.item.projectCode }}</td>
+            <td class="text-xs-left">{{ props.item.financeName }}</td>
+            <td class="text-xs-left">{{ props.item.clientNo }}</td>
+            <td class="text-xs-left">{{ props.item.responsibilityCenter }}</td>
+            <td class="text-xs-left">{{ props.item.serviceCenter }}</td>
+            <td class="text-xs-left">{{ props.item.stob }}</td>
+            <td class="text-xs-left">{{ props.item.projectCode }}</td>
+            <td class="text-xs-left">
+              <v-tooltip top>
+                <template v-slot:activator="{ on }">
+                  <v-btn flat icon color="grey" @click="editFinanceCodes(props.item.id)" v-on="on">
+                    <v-icon>edit</v-icon>
+                  </v-btn>
+                </template>
+                <span>Edit</span>
+              </v-tooltip>
+            </td>
           </template>
         </v-data-table>
       </v-flex>
@@ -109,9 +119,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" class="btnposition" flat @click="dialog = false"
-            >Close</v-btn
-          >
+          <v-btn color="blue darken-1" class="btnposition" flat @click="closeDialog()">Close</v-btn>
           <v-btn color="blue darken-1" class="btnposition" flat @click="saveFinanceCodes"
             >Save</v-btn
           >
@@ -145,7 +153,8 @@ export default {
         { text: "Responsibility Center", value: "responsibility" },
         { text: "Service Center", value: "serviceCenter" },
         { text: "Stob", value: "stob" },
-        { text: "Project Code", value: "projectCode" }
+        { text: "Project Code", value: "projectCode" },
+        { text: "Action" }
       ],
       dialog: false,
       financeName: "",
@@ -166,7 +175,7 @@ export default {
       // TODO - Need to
       if (this.search) {
         return this.$store.state.allFinanceCodes.filter(item => {
-          return item.stobName.toLowerCase().includes(this.search.toLowerCase());
+          return item.financeName.toLowerCase().includes(this.search.toLowerCase());
         });
       }
       return this.$store.state.allFinanceCodes;
@@ -184,6 +193,26 @@ export default {
       };
 
       if (this.id) {
+       formData.id = this.id;
+         await this.$store
+          .dispatch("updateFinanceCodes", {
+            FinanceCodes: formData
+          })
+          .then(
+            () => {
+              this.$refs.snackbar.displaySnackbar("success", "FinanceCodes Updated");
+              this.$store.dispatch("fetchAllFinanceCodes");
+              this.closeDialog();
+            },
+            err => {
+              try {
+                const { message } = err.response.data.error;
+                this.$refs.snackbar.displaySnackbar("error", message);
+              } catch (ex) {
+                this.$refs.snackbar.displaySnackbar("error", "Failed to Add FinanceCodes");
+              }
+            }
+          );
       } else {
         await this.$store
           .dispatch("addFinanceCodes", {
@@ -192,6 +221,7 @@ export default {
           .then(
             () => {
               this.$refs.snackbar.displaySnackbar("success", "FinanceCodes Added");
+              this.$store.dispatch("fetchAllFinanceCodes");
               this.closeDialog();
             },
             err => {
@@ -214,6 +244,31 @@ export default {
     createFinanceCodePrompt() {
       this.dialog = true;
     },
+    closeDialog() {
+      this.reset();
+      this.dialog = false;
+    },
+    reset() {
+      this.id = "";
+      this.financeName = "";
+      this.clientNo = "";
+      this.responsibility = "";
+      this.serviceCenter = "";
+      this.stob = "";
+      this.projectCode = "";
+      this.search = "";
+    },
+    editFinanceCodes(id) {
+      const FinCodeValues = this.$store.state.allFinanceCodes.find(element => element.id == id);
+      this.clientNo = FinCodeValues.clientNo;
+      this.responsibility = FinCodeValues.responsibilityCenter;
+      this.serviceCenter = FinCodeValues.serviceCenter;
+      this.stob = FinCodeValues.stob;
+      this.projectCode = FinCodeValues.projectCode;
+      this.financeName = FinCodeValues.financeName;
+      this.id = id;
+      this.dialog = true;
+    },
     async createSTOB(stobname, stobvalue) {
       //   await this.$store.dispatch("addMinistry", { ministryName: name });
       //   this.dialog = false; // Close window
@@ -221,7 +276,7 @@ export default {
     }
   },
   created() {
-    this.$store.dispatch("fetchAllMinistries");
+    this.$store.dispatch("fetchAllFinanceCodes");
   }
 };
 </script>
