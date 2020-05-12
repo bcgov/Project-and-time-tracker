@@ -288,13 +288,20 @@ export const retrieveFinanceData = async (obj, userId) => {
       .getOne();
     exportData.contact = contactRes.contact.fullName;
     exportData.projectName = res.projectName;
+
+    let details = [] as IFinanceExportDetail[];
+    let userFinanceCodes = [] as IUserFinanceCodes[];
+    let projectFinance = {} as IUserFinanceCodes;
     if (res.client) {
-      exportData.responsibilityCenter = res.client.responsibilityCenter;
-      exportData.clientNo = res.client.clientNo;
-      exportData.stob = res.client.stob;
-      exportData.projectCode = res.client.projectCode;
-      exportData.serviceCenter = res.client.serviceCenter;
+      projectFinance.responsibilityCenter = res.client.responsibilityCenter;
+      projectFinance.clientNo = res.client.clientNo;
+      projectFinance.stob = res.client.stob;
+      projectFinance.projectCode = res.client.projectCode;
+      projectFinance.serviceCenter = res.client.serviceCenter;
     }
+    projectFinance.type = 'Project';
+    userFinanceCodes.push(projectFinance);
+
     exportData.documentPath = documentPath;
     exportData.documentNo = documentNo;
     exportData.lineDesc = documentNo;
@@ -318,9 +325,6 @@ export const retrieveFinanceData = async (obj, userId) => {
     if (timeSheet.length == 0) {
       continue;
     }
-
-    let details = [] as IFinanceExportDetail[];
-    let userFinanceCodes = [] as IUserFinanceCodes[];
 
     for (
       let timeSheetIndex = 0;
@@ -389,7 +393,6 @@ export const retrieveFinanceData = async (obj, userId) => {
         }
       }
       exportData.details = details;
-      exportData.userFinanceCodes = userFinanceCodes;
 
       let fees = exportData.details
         .filter((item) => item.type === 'Time')
@@ -413,6 +416,13 @@ export const retrieveFinanceData = async (obj, userId) => {
       model.totalAmount = exportData.totalAmount;
       model.monthStartDate = startDate;
 
+      let userItemEntry = userFinanceCodes.find((item) => {
+        return item.type === 'Project';
+      });
+      if (userItemEntry) {
+        userItemEntry.amount = exportData.totalAmount;
+      }
+      exportData.userFinanceCodes = userFinanceCodes;
       model.exportData = JSON.stringify(exportData);
 
       await createFinanceExport(model);
