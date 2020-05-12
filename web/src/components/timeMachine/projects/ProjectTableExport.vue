@@ -257,10 +257,8 @@ export default {
             // doc.text('$0.00', leftStartCoordinate + 150, 100);
 
             // ///////////// PDF First PAGE END /////////////////////////////////////////////
-            debugger;
             for (let i = 0; i < pdfValues.length; i++) {
               if (i != 0) doc.addPage();
-              debugger;
               const tableRowsFormatted = pdfValues[i].userFinanceCodes.map(proj => [
                 proj.clientNo ? proj.clientNo : '',
                 proj.responsibilityCenter ? proj.responsibilityCenter : '',

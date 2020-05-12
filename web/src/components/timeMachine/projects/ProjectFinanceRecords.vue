@@ -211,7 +211,6 @@ export default {
       return {};
     },
     exportToPDF(docNo) {
-      debugger;
       const vm = this;
       const pdfValues = [];
       if (docNo.length) {
