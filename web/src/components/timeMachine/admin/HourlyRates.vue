@@ -55,8 +55,16 @@
 
               <td v-if="props.item.contact.financeCodes">
 
+<v-select
+            :items="allFinanceCodes"
 
-                <v-edit-dialog
+            label="Finance Code"
+
+            v-model="props.item.contact.financeCodes.id"
+            item-value="id"
+            item-text="financeName"
+          ></v-select>
+                <!-- <v-edit-dialog
                 :return-value.sync="props.item.contact.financeCodes.id"
                 lazy
                 @save="saveFinanceCode(props.item.contact)"
@@ -83,7 +91,7 @@
 
 
                 </template>
-              </v-edit-dialog>
+              </v-edit-dialog> -->
 
 
               <td v-else>n/a - click to set</td>
