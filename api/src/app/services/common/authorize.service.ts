@@ -105,6 +105,7 @@ const permissions = {
     'POST/procurement/',
     'PATCH/financecode/:id',
     'POST/financecode/',
+    'DELETE/financecode/:id',
     'POST/projectnotes/',
     'POST/intake/:id/approve',
     'POST/project/:id/assign-lead',

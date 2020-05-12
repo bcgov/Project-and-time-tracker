@@ -20,6 +20,17 @@ export const retrieveAllFinanceCodes = async () => {
     .getMany();
 };
 
+export const deleteFinanceCodes = async (id: string) => {
+  const repo = financeCodeRepo();
+  const fincode = await repo.findOne(id);
+ 
+  if (!fincode) {
+    throw Error('FinanceCodes not Found');
+  }
+  return await repo.delete(fincode);
+};
+
+
 export const updatFinanceCodes = async (id: string, fields: any) => {
   const repo = financeCodeRepo();
   const fincodes: FinanceCodes = await repo.findOne(id);

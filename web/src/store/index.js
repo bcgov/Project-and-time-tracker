@@ -279,6 +279,10 @@ const store = new Vuex.Store({
       // throw new Error('Not implemented!');
 
     },
+    deleteFinanceCodes() {
+      // throw new Error('Not implemented!');
+
+    },
     updateProctLog() {
 
     },
@@ -924,11 +928,21 @@ const store = new Vuex.Store({
         throw err;
       }
     },
+    
     async deleteMOUs(ctx, req) {
       try {
         const res = await $http.delete(`${API_URI}/MOU/${req.id}`);
         const content = res.data;
         ctx.commit('deleteMOUs', content);
+      } catch (err) {
+        throw err;
+      }
+    },
+    async deleteFinanceCodes(ctx, req) {
+      try {
+        const res = await $http.delete(`${API_URI}/financecode/${req.id}`);
+        const content = res.data;
+        ctx.commit('deleteFinanceCodes', content);
       } catch (err) {
         throw err;
       }

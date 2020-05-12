@@ -4,7 +4,7 @@ import * as Router from 'koa-router';
 import {
   createFinanceCodes,
   retrieveAllFinanceCodes,
-  updatFinanceCodes
+  updatFinanceCodes,deleteFinanceCodes
 } from '../../../services/client/financeCode.service';
 import { authorize } from '../../../services/common/authorize.service';
 
@@ -39,7 +39,14 @@ export const getAllFinanceCodes = async (ctx: Koa.Context) => {
     ctx.throw(err.message);
   }
 };
-
+export const deleteFinanceCode = async (ctx: Koa.Context) => {
+  try {
+    await deleteFinanceCodes(ctx.params.id);
+    ctx.body = 'success';
+  } catch (err) {
+    ctx.throw(err.message);
+  }
+};
 
 const routerOpts: Router.IRouterOptions = {
   prefix: '/financecode'
@@ -51,5 +58,5 @@ const router: Router = new Router(routerOpts);
 router.post('/', authorize, saveFinanceCodes);
 router.get('/all', authorize, getAllFinanceCodes);
 router.patch('/:id', authorize, updateFinanceCode);
-
+router.delete('/:id', authorize, deleteFinanceCode);
 export default router;

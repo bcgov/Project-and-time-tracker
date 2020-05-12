@@ -33,7 +33,7 @@
             <td class="text-xs-left">{{ props.item.serviceCenter }}</td>
             <td class="text-xs-left">{{ props.item.stob }}</td>
             <td class="text-xs-left">{{ props.item.projectCode }}</td>
-            <td class="text-xs-left">
+            <td class="text-xs-center">
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
                   <v-btn flat icon color="grey" @click="editFinanceCodes(props.item.id)" v-on="on">
@@ -41,6 +41,14 @@
                   </v-btn>
                 </template>
                 <span>Edit</span>
+              </v-tooltip>
+              <v-tooltip top>
+                <template v-slot:activator="{ on }">
+                  <v-btn flat icon color="grey" v-on="on" @click="deleteFinanceCode(props.item.id)">
+                    <v-icon>delete</v-icon>
+                  </v-btn>
+                </template>
+                <span>Delete</span>
               </v-tooltip>
             </td>
           </template>
@@ -154,7 +162,7 @@ export default {
         { text: "Service Center", value: "serviceCenter" },
         { text: "Stob", value: "stob" },
         { text: "Project Code", value: "projectCode" },
-        { text: "Action" }
+        { text: "Action", align:"center" }
       ],
       dialog: false,
       financeName: "",
@@ -268,6 +276,13 @@ export default {
       this.financeName = FinCodeValues.financeName;
       this.id = id;
       this.dialog = true;
+    },
+     async deleteFinanceCode(id) {
+      if (await this.$refs.confirm.open('danger', 'Are you sure to delete this record?')) {
+        await this.$store.dispatch('deleteFinanceCodes', { id });
+        this.$refs.snackbar.displaySnackbar('success', 'Successfully deleted the record.');
+        this.$store.dispatch("fetchAllFinanceCodes");
+      }
     },
     async createSTOB(stobname, stobvalue) {
       //   await this.$store.dispatch("addMinistry", { ministryName: name });
