@@ -52,6 +52,41 @@
                 </template>
               </v-edit-dialog>
             </td>
+
+              <td v-if="props.item.contact.financeCodes">
+
+
+                <v-edit-dialog
+                :return-value.sync="props.item.contact.financeCodes.id"
+                lazy
+                @save="saveFinanceCode(props.item.contact)"
+                @cancel="cancel"
+                @open="open"
+                @close="close"
+              >
+
+               {{ props.item.contact.financeCodes.financeName }}
+
+
+                <template v-slot:input>
+
+
+                   <v-select
+            :items="allFinanceCodes"
+
+            label="Finance Code"
+
+            v-model="props.item.contact.financeCodes.id"
+            item-value="id"
+            item-text="financeName"
+          ></v-select>
+
+
+                </template>
+              </v-edit-dialog>
+
+
+              <td v-else>n/a - click to set</td>
           </template>
         </v-data-table>
         <!-- </v-layout> -->
@@ -72,11 +107,16 @@ export default {
       headers: [
         { text: 'Name', value: 'contact.fullName' },
         { text: 'Rate', value: 'contact.hourlyRate' },
+        { text: 'Finance Code', value: 'contact.financeCodes.Id' },
       ],
       search: '',
     };
   },
   computed: {
+    allFinanceCodes() {
+      return this.$store.state.allFinanceCodes;
+    },
+
     users() {
       if (this.search) {
         return this.$store.state.users.filter(item => item.contact.fullName.toLowerCase().includes(this.search.toLowerCase()));
@@ -87,6 +127,17 @@ export default {
   methods: {
     fetchData() {
       this.$store.dispatch('fetchUsers');
+      this.$store.dispatch('fetchAllFinanceCodes');
+    },
+
+
+    async saveFinanceCode(contact) {
+      debugger;
+      await this.$store.dispatch('updateContactPartial', {
+        id: contact.id,
+        financeCodesId: contact.financeCodes.id,
+      });
+      this.$refs.snackbar.displaySnackbar('success', 'Data saved');
     },
     async save(contact) {
       let hourlyRate = parseInt(contact.hourlyRate, 10);

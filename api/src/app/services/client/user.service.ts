@@ -4,8 +4,13 @@ import { IUser } from '../../models/interfaces/i-user';
 import { IKeycloakUserByRole } from '../../models/interfaces/i-keycloak-user-fetch-by-role';
 import {
   retrieveKeycloakAdminToken,
-  retrieveKeycloakUsersByRole
+  retrieveKeycloakUsersByRole,
 } from '../common/auth-verification.service';
+import { Contact } from '../../models/entities/contact.entity';
+
+const contactRepo = (): Repository<Contact> => {
+  return getRepository(Contact);
+};
 
 const userRepo = (): Repository<User> => {
   return getRepository(User);
@@ -48,7 +53,7 @@ export const retrieveUsersNameAndIdByRole = async (roles: string[]) => {
       'c.fullName',
       'c.hourlyRate',
       'c.revenueRate',
-      'c.id'
+      'c.id',
     ])
     .getMany();
 
@@ -72,6 +77,28 @@ export const retrieveUsersNameAndIdByRole = async (roles: string[]) => {
       return value.id === element.referenceId;
     });
   });
+
+  for (let i = 0; i < filteredUsers.length; i++) {
+    const contactRep = contactRepo();
+    const contactRes = await contactRep
+      .createQueryBuilder('c')
+      .innerJoin('c.financeCodes', 'f')
+      .select([
+        'c.fullName',
+        'c.hourlyRate',
+        'c.revenueRate',
+        'f.id',
+        'c.id',
+        'f.financeName',
+      ])
+      .where('c."id" = :contactId', {
+        contactId: filteredUsers[i].contact.id,
+      })
+      .getOne();
+    if (contactRes) {
+      filteredUsers[i].contact.financeCodes = contactRes.financeCodes;
+    }
+  }
 
   // console.log('retrieveUsersNameAndIdByRole E - filtered users', { filteredUsers })
 
