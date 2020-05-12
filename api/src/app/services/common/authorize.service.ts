@@ -102,6 +102,7 @@ const permissions = {
     'GET/intake/:id',
     // 'PATCH/intake/:id',
     'POST/procurement/',
+    'POST/financecode/',
     'POST/projectnotes/',
     'POST/intake/:id/approve',
     'POST/project/:id/assign-lead',

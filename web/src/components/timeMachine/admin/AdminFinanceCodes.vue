@@ -1,6 +1,7 @@
 <template>
   <v-container grid-list-xl fluid class="custom-manage-projects-container">
     <confirm ref="confirm"></confirm>
+    <snackbar ref="snackbar"></snackbar>
     <v-layout>
       <v-flex md12>
         <h1 class="projects-header">Admin &mdash; Finance Codes</h1>
@@ -28,9 +29,9 @@
           <template v-slot:items="props">
             <td>{{ props.item.financeName }}</td>
             <td>{{ props.item.clientNo }}</td>
-             <td>{{ props.item.responsibility }}</td>
+            <td>{{ props.item.responsibility }}</td>
             <td>{{ props.item.serviceCenter }}</td>
-             <td>{{ props.item.stob }}</td>
+            <td>{{ props.item.stob }}</td>
             <td>{{ props.item.projectCode }}</td>
           </template>
         </v-data-table>
@@ -111,7 +112,9 @@
           <v-btn color="blue darken-1" class="btnposition" flat @click="dialog = false"
             >Close</v-btn
           >
-          <v-btn color="blue darken-1" class="btnposition" flat @click="saveFinanceCodes">Save</v-btn>
+          <v-btn color="blue darken-1" class="btnposition" flat @click="saveFinanceCodes"
+            >Save</v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -120,10 +123,12 @@
 
 <script>
 import Confirm from "../common/Confirm.vue";
+import Snackbar from "../common/Snackbar.vue";
 
 export default {
   components: {
-    Confirm
+    Confirm,
+    Snackbar
   },
   data() {
     return {
@@ -135,12 +140,12 @@ export default {
         projectCodeRules: v => this.showValidationMessage(v, 7)
       },
       headers: [
-        {text: "Finance Name",  value: "financeName"},
-        {text: "Client Name", value: "clientName" },
-        {text: "Responsibility Center", value: "responsibility" },
-        {text: "Service Center", value: "serviceCenter" },
-        {text: "Stob", value: "stob" },
-         {text: "Project Code", value: "projectCode" }
+        { text: "Finance Name", value: "financeName" },
+        { text: "Client Name", value: "clientName" },
+        { text: "Responsibility Center", value: "responsibility" },
+        { text: "Service Center", value: "serviceCenter" },
+        { text: "Stob", value: "stob" },
+        { text: "Project Code", value: "projectCode" }
       ],
       dialog: false,
       financeName: "",
@@ -171,7 +176,7 @@ export default {
     async saveFinanceCodes() {
       const formData = {
         clientNo: this.clientNo,
-        responsibility: this.responsibility,
+        responsibilityCenter: this.responsibility,
         serviceCenter: this.serviceCenter,
         stob: this.stob,
         projectCode: this.projectCode,
@@ -226,7 +231,7 @@ export default {
   margin-right: 25px !important;
 }
 .spanmargin {
-    margin-left: 30px;
+  margin-left: 30px;
 }
 .btn-create {
   margin-left: 12px;

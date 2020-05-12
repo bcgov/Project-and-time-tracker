@@ -1090,7 +1090,7 @@ const store = new Vuex.Store({
     async addFinanceCodes(ctx, req) {
       const body = req.FinanceCodes;
       const api = await $http
-        .post(`${API_URI}/financecodes`, body)
+        .post(`${API_URI}/financecode`, body)
         .then((res) => {
           const content = res.data;
           ctx.commit('addFinanceCodes', content);
