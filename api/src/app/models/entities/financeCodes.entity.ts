@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column,OneToMany } from 'typeorm';
+import { Contact } from './contact.entity';
 
 @Entity()
 export class FinanceCodes {
@@ -22,4 +23,8 @@ export class FinanceCodes {
 
   @Column({ type: 'text', nullable: true })
   projectCode: string;
+
+  @OneToMany(type => Contact, contact => contact.financeCodes)
+  contacts: Contact[];
+
 }

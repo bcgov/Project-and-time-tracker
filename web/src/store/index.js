@@ -549,6 +549,7 @@ const store = new Vuex.Store({
         .get(`${API_URI}/financecode/all`)
         .then((res) => {
           const content = res.data;
+          console.log('fincodes:', content);
           ctx.commit('fetchAllFinanceCodes', content);
         });
     },

@@ -50,9 +50,9 @@
           <v-list-tile avatar>
             <v-list-tile-content>
               <v-list-tile-title>
-                <router-link to="/admin/financecodes">FinanceCodes</router-link>
+                <router-link to="/admin/financecodes">Set finance codes</router-link>
               </v-list-tile-title>
-              <v-list-tile-sub-title>Add or remove FinanceCode's of Users</v-list-tile-sub-title>
+              <v-list-tile-sub-title>Add or remove finance code's of users</v-list-tile-sub-title>
             </v-list-tile-content>
           </v-list-tile>
 

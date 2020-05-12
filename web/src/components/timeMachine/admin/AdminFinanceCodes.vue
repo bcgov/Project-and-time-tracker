@@ -25,7 +25,8 @@
           </v-flex>
         </v-layout>
 
-        <v-data-table :headers="headers" :items="allFinanceCodes" class="elevation-1">
+        <v-data-table :headers="headers"  :items="allFinanceCodes" class="elevation-1" :rows-per-page-items="[15, 30, 50, 100]"
+            :pagination.sync="pagination">
           <template v-slot:items="props">
             <td class="text-xs-left">{{ props.item.financeName }}</td>
             <td class="text-xs-left">{{ props.item.clientNo }}</td>
@@ -44,7 +45,7 @@
               </v-tooltip>
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
-                  <v-btn flat icon color="grey" v-on="on" @click="deleteFinanceCode(props.item.id)">
+                  <v-btn :disabled="checkIsDisabled(props.item.contacts.length)" flat icon color="grey" v-on="on" @click="deleteFinanceCode(props.item.id)">
                     <v-icon>delete</v-icon>
                   </v-btn>
                 </template>
@@ -61,70 +62,72 @@
         <v-btn color="primary" dark v-on="on">Open Dialog</v-btn>
       </template>-->
       <v-card>
-        <v-card-title>
-          <span class="headline spanmargin">Finance Codes</span>
-        </v-card-title>
-        <v-card-text>
-          <v-container grid-list-md>
-            <v-layout wrap py-2>
-              <v-flex xs12>
-                <div class="v-form-container">
-                  <v-text-field v-model="financeName" label="Finance Name"></v-text-field>
-                </div>
-              </v-flex>
-              <v-flex xs12>
-                <div class="v-form-container">
-                  <v-text-field
-                    v-model="clientNo"
-                    :rules="[rules.clientNoRules]"
-                    maxlength="3"
-                    label="Client No. (3 characters)"
-                  ></v-text-field>
-                </div>
-              </v-flex>
-              <v-flex xs6>
-                <div class="v-form-container">
-                  <v-text-field
-                    v-model="responsibility"
-                    :rules="[rules.responsibilityCenterRules]"
-                    maxlength="5"
-                    label="Responsibility Center (5 characters)"
-                  ></v-text-field>
-                </div>
-              </v-flex>
-              <v-flex xs6>
-                <div class="v-form-container">
-                  <v-text-field
-                    v-model="serviceCenter"
-                    :rules="[rules.serviceCenterRules]"
-                    maxlength="5"
-                    label="Service Center (5 characters)"
-                  ></v-text-field>
-                </div>
-              </v-flex>
-              <v-flex xs6>
-                <div class="v-form-container">
-                  <v-text-field
-                    v-model="stob"
-                    :rules="[rules.stobRules]"
-                    maxlength="4"
-                    label="STOB (4 characters)"
-                  ></v-text-field>
-                </div>
-              </v-flex>
-              <v-flex xs6>
-                <div class="v-form-container">
-                  <v-text-field
-                    v-model="projectCode"
-                    :rules="[rules.projectCodeRules]"
-                    label="Project Code (7 characters)"
-                    maxlength="7"
-                  ></v-text-field>
-                </div>
-              </v-flex>
-            </v-layout>
-          </v-container>
-        </v-card-text>
+        <v-form id="add-financecodes" ref="fincodes">
+          <v-card-title>
+            <span class="headline spanmargin">Finance Codes</span>
+          </v-card-title>
+          <v-card-text>
+            <v-container grid-list-md>
+              <v-layout wrap py-2>
+                <v-flex xs12>
+                  <div class="v-form-container">
+                    <v-text-field v-model="financeName" label="Finance Name"></v-text-field>
+                  </div>
+                </v-flex>
+                <v-flex xs12>
+                  <div class="v-form-container">
+                    <v-text-field
+                      v-model="clientNo"
+                      :rules="[rules.clientNoRules]"
+                      maxlength="3"
+                      label="Client No. (3 characters)"
+                    ></v-text-field>
+                  </div>
+                </v-flex>
+                <v-flex xs6>
+                  <div class="v-form-container">
+                    <v-text-field
+                      v-model="responsibility"
+                      :rules="[rules.responsibilityCenterRules]"
+                      maxlength="5"
+                      label="Responsibility Center (5 characters)"
+                    ></v-text-field>
+                  </div>
+                </v-flex>
+                <v-flex xs6>
+                  <div class="v-form-container">
+                    <v-text-field
+                      v-model="serviceCenter"
+                      :rules="[rules.serviceCenterRules]"
+                      maxlength="5"
+                      label="Service Center (5 characters)"
+                    ></v-text-field>
+                  </div>
+                </v-flex>
+                <v-flex xs6>
+                  <div class="v-form-container">
+                    <v-text-field
+                      v-model="stob"
+                      :rules="[rules.stobRules]"
+                      maxlength="4"
+                      label="STOB (4 characters)"
+                    ></v-text-field>
+                  </div>
+                </v-flex>
+                <v-flex xs6>
+                  <div class="v-form-container">
+                    <v-text-field
+                      v-model="projectCode"
+                      :rules="[rules.projectCodeRules]"
+                      label="Project Code (7 characters)"
+                      maxlength="7"
+                    ></v-text-field>
+                  </div>
+                </v-flex>
+              </v-layout>
+            </v-container>
+          </v-card-text>
+        </v-form>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="blue darken-1" class="btnposition" flat @click="closeDialog()">Close</v-btn>
@@ -148,6 +151,9 @@ export default {
   },
   data() {
     return {
+      pagination: {
+      rowsPerPage: 30
+    },
       rules: {
         clientNoRules: v => this.showValidationMessage(v, 3),
         responsibilityCenterRules: v => this.showValidationMessage(v, 5),
@@ -156,13 +162,13 @@ export default {
         projectCodeRules: v => this.showValidationMessage(v, 7)
       },
       headers: [
-        { text: "Finance Name", value: "financeName" },
-        { text: "Client Name", value: "clientName" },
-        { text: "Responsibility Center", value: "responsibility" },
-        { text: "Service Center", value: "serviceCenter" },
-        { text: "Stob", value: "stob" },
-        { text: "Project Code", value: "projectCode" },
-        { text: "Action", align:"center" }
+        { text: "Finance Name", value: "financeName" , sortable: false },
+        { text: "Client Name", value: "clientName"  , sortable: false },
+        { text: "Responsibility Center", value: "responsibility" , sortable: false  },
+        { text: "Service Center", value: "serviceCenter" , sortable: false  },
+        { text: "Stob", value: "stob" , sortable: false  },
+        { text: "Project Code", value: "projectCode" , sortable: false  },
+        { text: "Action", align: "center",  sortable: false }
       ],
       dialog: false,
       financeName: "",
@@ -190,57 +196,64 @@ export default {
     }
   },
   methods: {
+    checkIsDisabled(val) {
+    if(val) {
+      return true;
+    } else return false;
+    },
     async saveFinanceCodes() {
-      const formData = {
-        clientNo: this.clientNo,
-        responsibilityCenter: this.responsibility,
-        serviceCenter: this.serviceCenter,
-        stob: this.stob,
-        projectCode: this.projectCode,
-        financeName: this.financeName
-      };
+      if (this.$refs.fincodes.validate()) {
+        const formData = {
+          clientNo: this.clientNo,
+          responsibilityCenter: this.responsibility,
+          serviceCenter: this.serviceCenter,
+          stob: this.stob,
+          projectCode: this.projectCode,
+          financeName: this.financeName
+        };
 
-      if (this.id) {
-       formData.id = this.id;
-         await this.$store
-          .dispatch("updateFinanceCodes", {
-            FinanceCodes: formData
-          })
-          .then(
-            () => {
-              this.$refs.snackbar.displaySnackbar("success", "FinanceCodes Updated");
-              this.$store.dispatch("fetchAllFinanceCodes");
-              this.closeDialog();
-            },
-            err => {
-              try {
-                const { message } = err.response.data.error;
-                this.$refs.snackbar.displaySnackbar("error", message);
-              } catch (ex) {
-                this.$refs.snackbar.displaySnackbar("error", "Failed to Add FinanceCodes");
+        if (this.id) {
+          formData.id = this.id;
+          await this.$store
+            .dispatch("updateFinanceCodes", {
+              FinanceCodes: formData
+            })
+            .then(
+              () => {
+                this.$refs.snackbar.displaySnackbar("success", "FinanceCodes Updated");
+                this.$store.dispatch("fetchAllFinanceCodes");
+                this.closeDialog();
+              },
+              err => {
+                try {
+                  const { message } = err.response.data.error;
+                  this.$refs.snackbar.displaySnackbar("error", message);
+                } catch (ex) {
+                  this.$refs.snackbar.displaySnackbar("error", "Failed to Add FinanceCodes");
+                }
               }
-            }
-          );
-      } else {
-        await this.$store
-          .dispatch("addFinanceCodes", {
-            FinanceCodes: formData
-          })
-          .then(
-            () => {
-              this.$refs.snackbar.displaySnackbar("success", "FinanceCodes Added");
-              this.$store.dispatch("fetchAllFinanceCodes");
-              this.closeDialog();
-            },
-            err => {
-              try {
-                const { message } = err.response.data.error;
-                this.$refs.snackbar.displaySnackbar("error", message);
-              } catch (ex) {
-                this.$refs.snackbar.displaySnackbar("error", "Failed to Add FinanceCodes");
+            );
+        } else {
+          await this.$store
+            .dispatch("addFinanceCodes", {
+              FinanceCodes: formData
+            })
+            .then(
+              () => {
+                this.$refs.snackbar.displaySnackbar("success", "FinanceCodes Added");
+                this.$store.dispatch("fetchAllFinanceCodes");
+                this.closeDialog();
+              },
+              err => {
+                try {
+                  const { message } = err.response.data.error;
+                  this.$refs.snackbar.displaySnackbar("error", message);
+                } catch (ex) {
+                  this.$refs.snackbar.displaySnackbar("error", "Failed to Add FinanceCodes");
+                }
               }
-            }
-          );
+            );
+        }
       }
     },
     showValidationMessage(value, count) {
@@ -277,10 +290,10 @@ export default {
       this.id = id;
       this.dialog = true;
     },
-     async deleteFinanceCode(id) {
-      if (await this.$refs.confirm.open('danger', 'Are you sure to delete this record?')) {
-        await this.$store.dispatch('deleteFinanceCodes', { id });
-        this.$refs.snackbar.displaySnackbar('success', 'Successfully deleted the record.');
+    async deleteFinanceCode(id) {
+      if (await this.$refs.confirm.open("danger", "Are you sure to delete this record?")) {
+        await this.$store.dispatch("deleteFinanceCodes", { id });
+        this.$refs.snackbar.displaySnackbar("success", "Successfully deleted the record.");
         this.$store.dispatch("fetchAllFinanceCodes");
       }
     },

@@ -1,7 +1,7 @@
 import { getRepository, Repository } from 'typeorm';
 import { IFinanceCodes } from '../../models/interfaces/i-finance-codes';
 import { FinanceCodes } from '../../models/entities/financeCodes.entity';
-import { Project } from '../../models/entities';
+import { Contact } from '../../models/entities';
 
 const financeCodeRepo = (): Repository<FinanceCodes> => {
   return getRepository(FinanceCodes);
@@ -17,6 +17,8 @@ export const retrieveAllFinanceCodes = async () => {
   const repo = financeCodeRepo();
   return await repo
     .createQueryBuilder('f')
+    .leftJoinAndSelect("f.contacts", "contact")
+    .orderBy('f.id::int', 'DESC')
     .getMany();
 };
 
