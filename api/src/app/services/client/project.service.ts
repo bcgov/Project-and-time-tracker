@@ -203,7 +203,9 @@ function getPDFName(date, count) {
     ' Projects.pdf'
   );
 }
-
+function round(x) {
+  return Number.parseFloat(Number.parseFloat(x).toFixed(2));
+}
 async function fillUserFinanceCodes(
   userFinanceCodes,
   financeDetail,
@@ -357,8 +359,9 @@ export const retrieveFinanceData = async (obj, userId) => {
             .hourlyRate
             ? timeSheet[timeSheetIndex].user.contact.hourlyRate
             : 0;
-          financeDetailHour.amount =
-            financeDetailHour.rate * financeDetailHour.hours;
+          financeDetailHour.amount = round(
+            financeDetailHour.rate * financeDetailHour.hours
+          );
           details.push(financeDetailHour);
 
           await fillUserFinanceCodes(
@@ -377,8 +380,9 @@ export const retrieveFinanceData = async (obj, userId) => {
             timesheetEntry[timeSheetEntryIndex].entryDate;
           financeDetailExpense.description =
             timesheetEntry[timeSheetEntryIndex].expenseComment;
-          financeDetailExpense.amount =
-            timesheetEntry[timeSheetEntryIndex].expenseAmount;
+          financeDetailExpense.amount = round(
+            timesheetEntry[timeSheetEntryIndex].expenseAmount
+          );
           financeDetailExpense.type = 'Expense';
           financeDetailExpense.user = timeSheet[timeSheetIndex].userId;
           financeDetailExpense.resource =
@@ -394,21 +398,25 @@ export const retrieveFinanceData = async (obj, userId) => {
       }
       exportData.details = details;
 
-      let fees = exportData.details
-        .filter((item) => item.type === 'Time')
-        .reduce(function (prev, cur) {
-          return prev + Number(cur.amount);
-        }, 0);
+      let fees = round(
+        exportData.details
+          .filter((item) => item.type === 'Time')
+          .reduce(function (prev, cur) {
+            return prev + Number(cur.amount);
+          }, 0)
+      );
 
-      let expenses = exportData.details
-        .filter((item) => item.type === 'Expense')
-        .reduce(function (prev, cur) {
-          return prev + Number(cur.amount);
-        }, 0);
+      let expenses = round(
+        exportData.details
+          .filter((item) => item.type === 'Expense')
+          .reduce(function (prev, cur) {
+            return prev + Number(cur.amount);
+          }, 0)
+      );
 
       exportData.fees = fees;
       exportData.expenses = expenses;
-      exportData.totalAmount = fees + expenses;
+      exportData.totalAmount = round(fees + expenses);
       exportData.dateCreated = new Date();
       model.createdUserId = userId;
       model.documentNo = documentNo;
@@ -427,7 +435,7 @@ export const retrieveFinanceData = async (obj, userId) => {
 
       await createFinanceExport(model);
 
-      timeSheet[timeSheetIndex].amountBilled = fees + expenses;
+      timeSheet[timeSheetIndex].amountBilled = round(fees + expenses);
       timeSheet[timeSheetIndex].is_locked = true;
       await timesheetRepo().save(timeSheet[timeSheetIndex]);
     }
