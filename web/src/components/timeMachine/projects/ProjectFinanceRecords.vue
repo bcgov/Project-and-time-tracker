@@ -155,10 +155,14 @@ export default {
       const postData = {
         selectedDate: this.date,
       };
-      if (vm.$refs.spinner) { vm.$refs.spinner.open(); }
+      if (vm.$refs.spinner) {
+        vm.$refs.spinner.open();
+      }
       await this.$store.dispatch('fetchExportedPdfs', postData).then(
         (res) => {
-          if (vm.$refs.spinner) { vm.$refs.spinner.close(); }
+          if (vm.$refs.spinner) {
+            vm.$refs.spinner.close();
+          }
           vm.projectsList = res;
         },
         (err) => {
@@ -168,7 +172,9 @@ export default {
           } catch (ex) {
             // vm.$refs.snackbar.displaySnackbar('error', 'Failed to update');
           }
-          if (vm.$refs.spinner) { vm.$refs.spinner.close(); }
+          if (vm.$refs.spinner) {
+            vm.$refs.spinner.close();
+          }
         },
       );
     },

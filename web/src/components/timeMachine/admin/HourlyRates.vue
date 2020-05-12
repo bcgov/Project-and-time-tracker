@@ -52,16 +52,28 @@
                 </template>
               </v-edit-dialog>
             </td>
-
             <td v-if="props.item.contact.financeCodes">
               <v-select
                 :items="allFinanceCodes"
                 v-model="props.item.contact.financeCodes.id"
                 item-value="id"
-                @change="saveFinanceCode(props.item.contact)"
+                @change="saveFinanceCode(props.item.contact, props.item.contact.financeCodes.id)"
                 item-text="financeName"
               ></v-select>
-              <!-- <v-edit-dialog
+            </td>
+            <td v-else>
+              <v-select
+                v-model="props.item.contact.financeCodes"
+                :items="allFinanceCodes"
+                item-value="id"
+                @change="saveFinanceCode(props.item.contact, props.item.contact.financeCodes)"
+                item-text="financeName"
+              ></v-select>
+            </td>
+
+            <!-- <td v-if="props.item.contact.financeCodes">
+
+              <v-edit-dialog
                 :return-value.sync="props.item.contact.financeCodes.id"
                 lazy
                 @save="saveFinanceCode(props.item.contact)"
@@ -88,10 +100,10 @@
 
 
                 </template>
-              </v-edit-dialog> -->
+              </v-edit-dialog>
             </td>
 
-            <td v-else>n/a - click to set</td>
+            <td v-else>n/a - click to set</td> -->
           </template>
         </v-data-table>
         <!-- </v-layout> -->
@@ -100,21 +112,21 @@
   </v-container>
 </template>
 <script>
-import Snackbar from "../common/Snackbar.vue";
+import Snackbar from '../common/Snackbar.vue';
 
 export default {
-  name: "admin-hourly-rates",
+  name: 'admin-hourly-rates',
   components: {
-    Snackbar
+    Snackbar,
   },
   data() {
     return {
       headers: [
-        { text: "Name", value: "contact.fullName" },
-        { text: "Rate", value: "contact.hourlyRate" },
-        { text: "Finance Code", value: "contact.financeCodes.Id" }
+        { text: 'Name', value: 'contact.fullName' },
+        { text: 'Rate', value: 'contact.hourlyRate' },
+        { text: 'Finance Code', value: 'contact.financeCodes.Id' },
       ],
-      search: ""
+      search: '',
     };
   },
   computed: {
@@ -124,43 +136,42 @@ export default {
 
     users() {
       if (this.search) {
-        return this.$store.state.users.filter(item =>
-          item.contact.fullName.toLowerCase().includes(this.search.toLowerCase())
-        );
+        return this.$store.state.users.filter(item => item.contact.fullName.toLowerCase().includes(this.search.toLowerCase()));
       }
       return this.$store.state.users;
-    }
+    },
   },
   methods: {
     fetchData() {
-      this.$store.dispatch("fetchUsers");
-      this.$store.dispatch("fetchAllFinanceCodes");
+      this.$store.dispatch('fetchUsers');
+      this.$store.dispatch('fetchAllFinanceCodes');
     },
 
-    async saveFinanceCode(contact) {
-      await this.$store.dispatch("updateContactPartial", {
+    async saveFinanceCode(contact, financeId) {
+      await this.$store.dispatch('updateContactPartial', {
         id: contact.id,
-        financeCodes: contact.financeCodes.id
+        financeCodes: financeId,
       });
-      this.$refs.snackbar.displaySnackbar("success", "Data saved");
+      this.$store.dispatch('fetchAllFinanceCodes');
+      this.$refs.snackbar.displaySnackbar('success', 'Data saved');
     },
     async save(contact) {
       let hourlyRate = parseInt(contact.hourlyRate, 10);
       hourlyRate = !isNaN(hourlyRate) ? hourlyRate : null;
-      await this.$store.dispatch("updateContactPartial", {
+      await this.$store.dispatch('updateContactPartial', {
         id: contact.id,
-        hourlyRate
+        hourlyRate,
       });
-      this.$refs.snackbar.displaySnackbar("success", "Data saved");
+      this.$refs.snackbar.displaySnackbar('success', 'Data saved');
     },
     cancel() {
-      this.$refs.snackbar.displaySnackbar("info", "Cancelled");
+      this.$refs.snackbar.displaySnackbar('info', 'Cancelled');
     },
     open() {},
-    close() {}
+    close() {},
   },
   created() {
     this.fetchData();
-  }
+  },
 };
 </script>

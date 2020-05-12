@@ -25,8 +25,13 @@
           </v-flex>
         </v-layout>
 
-        <v-data-table :headers="headers"  :items="allFinanceCodes" class="elevation-1" :rows-per-page-items="[15, 30, 50, 100]"
-            :pagination.sync="pagination">
+        <v-data-table
+          :headers="headers"
+          :items="allFinanceCodes"
+          class="elevation-1"
+          :rows-per-page-items="[15, 30, 50, 100]"
+          :pagination.sync="pagination"
+        >
           <template v-slot:items="props">
             <td class="text-xs-left">{{ props.item.financeName }}</td>
             <td class="text-xs-left">{{ props.item.clientNo }}</td>
@@ -45,7 +50,14 @@
               </v-tooltip>
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
-                  <v-btn :disabled="checkIsDisabled(props.item.contacts.length)" flat icon color="grey" v-on="on" @click="deleteFinanceCode(props.item.id)">
+                  <v-btn
+                    :disabled="checkIsDisabled(props.item.contacts.length)"
+                    flat
+                    icon
+                    color="grey"
+                    v-on="on"
+                    @click="deleteFinanceCode(props.item.id)"
+                  >
                     <v-icon>delete</v-icon>
                   </v-btn>
                 </template>
@@ -141,44 +153,44 @@
 </template>
 
 <script>
-import Confirm from "../common/Confirm.vue";
-import Snackbar from "../common/Snackbar.vue";
+import Confirm from '../common/Confirm.vue';
+import Snackbar from '../common/Snackbar.vue';
 
 export default {
   components: {
     Confirm,
-    Snackbar
+    Snackbar,
   },
   data() {
     return {
       pagination: {
-      rowsPerPage: 30
-    },
+        rowsPerPage: 30,
+      },
       rules: {
         clientNoRules: v => this.showValidationMessage(v, 3),
         responsibilityCenterRules: v => this.showValidationMessage(v, 5),
         serviceCenterRules: v => this.showValidationMessage(v, 5),
         stobRules: v => this.showValidationMessage(v, 4),
-        projectCodeRules: v => this.showValidationMessage(v, 7)
+        projectCodeRules: v => this.showValidationMessage(v, 7),
       },
       headers: [
-        { text: "Finance Name", value: "financeName" , sortable: false },
-        { text: "Client Name", value: "clientName"  , sortable: false },
-        { text: "Responsibility Center", value: "responsibility" , sortable: false  },
-        { text: "Service Center", value: "serviceCenter" , sortable: false  },
-        { text: "Stob", value: "stob" , sortable: false  },
-        { text: "Project Code", value: "projectCode" , sortable: false  },
-        { text: "Action", align: "center",  sortable: false }
+        { text: 'Finance Name', value: 'financeName', sortable: false },
+        { text: 'Client Name', value: 'clientName', sortable: false },
+        { text: 'Responsibility Center', value: 'responsibility', sortable: false },
+        { text: 'Service Center', value: 'serviceCenter', sortable: false },
+        { text: 'Stob', value: 'stob', sortable: false },
+        { text: 'Project Code', value: 'projectCode', sortable: false },
+        { text: 'Action', align: 'center', sortable: false },
       ],
       dialog: false,
-      financeName: "",
-      clientNo: "",
-      responsibility: "",
-      serviceCenter: "",
-      stob: "",
-      projectCode: "",
-      search: "",
-      id: ""
+      financeName: '',
+      clientNo: '',
+      responsibility: '',
+      serviceCenter: '',
+      stob: '',
+      projectCode: '',
+      search: '',
+      id: '',
     };
   },
   computed: {
@@ -188,18 +200,16 @@ export default {
     allFinanceCodes() {
       // TODO - Need to
       if (this.search) {
-        return this.$store.state.allFinanceCodes.filter(item => {
-          return item.financeName.toLowerCase().includes(this.search.toLowerCase());
-        });
+        return this.$store.state.allFinanceCodes.filter(item => item.financeName.toLowerCase().includes(this.search.toLowerCase()));
       }
       return this.$store.state.allFinanceCodes;
-    }
+    },
   },
   methods: {
     checkIsDisabled(val) {
-    if(val) {
-      return true;
-    } else return false;
+      if (val) {
+        return true;
+      } return false;
     },
     async saveFinanceCodes() {
       if (this.$refs.fincodes.validate()) {
@@ -209,49 +219,49 @@ export default {
           serviceCenter: this.serviceCenter,
           stob: this.stob,
           projectCode: this.projectCode,
-          financeName: this.financeName
+          financeName: this.financeName,
         };
 
         if (this.id) {
           formData.id = this.id;
           await this.$store
-            .dispatch("updateFinanceCodes", {
-              FinanceCodes: formData
+            .dispatch('updateFinanceCodes', {
+              FinanceCodes: formData,
             })
             .then(
               () => {
-                this.$refs.snackbar.displaySnackbar("success", "FinanceCodes Updated");
-                this.$store.dispatch("fetchAllFinanceCodes");
+                this.$refs.snackbar.displaySnackbar('success', 'FinanceCodes Updated');
+                this.$store.dispatch('fetchAllFinanceCodes');
                 this.closeDialog();
               },
-              err => {
+              (err) => {
                 try {
                   const { message } = err.response.data.error;
-                  this.$refs.snackbar.displaySnackbar("error", message);
+                  this.$refs.snackbar.displaySnackbar('error', message);
                 } catch (ex) {
-                  this.$refs.snackbar.displaySnackbar("error", "Failed to Add FinanceCodes");
+                  this.$refs.snackbar.displaySnackbar('error', 'Failed to Add FinanceCodes');
                 }
-              }
+              },
             );
         } else {
           await this.$store
-            .dispatch("addFinanceCodes", {
-              FinanceCodes: formData
+            .dispatch('addFinanceCodes', {
+              FinanceCodes: formData,
             })
             .then(
               () => {
-                this.$refs.snackbar.displaySnackbar("success", "FinanceCodes Added");
-                this.$store.dispatch("fetchAllFinanceCodes");
+                this.$refs.snackbar.displaySnackbar('success', 'FinanceCodes Added');
+                this.$store.dispatch('fetchAllFinanceCodes');
                 this.closeDialog();
               },
-              err => {
+              (err) => {
                 try {
                   const { message } = err.response.data.error;
-                  this.$refs.snackbar.displaySnackbar("error", message);
+                  this.$refs.snackbar.displaySnackbar('error', message);
                 } catch (ex) {
-                  this.$refs.snackbar.displaySnackbar("error", "Failed to Add FinanceCodes");
+                  this.$refs.snackbar.displaySnackbar('error', 'Failed to Add FinanceCodes');
                 }
-              }
+              },
             );
         }
       }
@@ -270,14 +280,14 @@ export default {
       this.dialog = false;
     },
     reset() {
-      this.id = "";
-      this.financeName = "";
-      this.clientNo = "";
-      this.responsibility = "";
-      this.serviceCenter = "";
-      this.stob = "";
-      this.projectCode = "";
-      this.search = "";
+      this.id = '';
+      this.financeName = '';
+      this.clientNo = '';
+      this.responsibility = '';
+      this.serviceCenter = '';
+      this.stob = '';
+      this.projectCode = '';
+      this.search = '';
     },
     editFinanceCodes(id) {
       const FinCodeValues = this.$store.state.allFinanceCodes.find(element => element.id == id);
@@ -291,21 +301,21 @@ export default {
       this.dialog = true;
     },
     async deleteFinanceCode(id) {
-      if (await this.$refs.confirm.open("danger", "Are you sure to delete this record?")) {
-        await this.$store.dispatch("deleteFinanceCodes", { id });
-        this.$refs.snackbar.displaySnackbar("success", "Successfully deleted the record.");
-        this.$store.dispatch("fetchAllFinanceCodes");
+      if (await this.$refs.confirm.open('danger', 'Are you sure to delete this record?')) {
+        await this.$store.dispatch('deleteFinanceCodes', { id });
+        this.$refs.snackbar.displaySnackbar('success', 'Successfully deleted the record.');
+        this.$store.dispatch('fetchAllFinanceCodes');
       }
     },
     async createSTOB(stobname, stobvalue) {
       //   await this.$store.dispatch("addMinistry", { ministryName: name });
       //   this.dialog = false; // Close window
       //   this.$store.dispatch("fetchAllMinistries");
-    }
+    },
   },
   created() {
-    this.$store.dispatch("fetchAllFinanceCodes");
-  }
+    this.$store.dispatch('fetchAllFinanceCodes');
+  },
 };
 </script>
 
