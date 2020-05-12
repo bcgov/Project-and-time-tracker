@@ -132,10 +132,9 @@ export default {
 
 
     async saveFinanceCode(contact) {
-      debugger;
       await this.$store.dispatch('updateContactPartial', {
         id: contact.id,
-        financeCodesId: contact.financeCodes.id,
+        financeCodes: contact.financeCodes.id,
       });
       this.$refs.snackbar.displaySnackbar('success', 'Data saved');
     },
