@@ -3,7 +3,7 @@ import {
   Project,
   ProjectContacts,
   Contact,
-  ProjectRfx
+  ProjectRfx,
 } from '../../models/entities';
 import { Client } from '../../models/entities';
 import { IProject } from '../../models/interfaces/i-project';
@@ -567,18 +567,19 @@ export const retrieveMouProjectsByUserId = async (userId: string) => {
   const res = await repo
     .createQueryBuilder('p')
     .innerJoin('p.mou', 'o')
+    .orderBy('p.projectName', 'ASC')
     .select([
       'p.id AS "id"',
       'p.projectName AS "projectName"',
       'p.mouAmount AS "mouAmount"',
       'o.name AS "mouName"',
-      'o.id  AS "mouId"'
+      'o.id  AS "mouId"',
     ])
     .where(
       '(p.is_archived IS NULL OR p.is_archived = :is_archived) AND (p."leadUserId" = :userId OR p."backupUserId" = :userId OR p.teamWideProject=true)',
       {
         is_archived: false,
-        userId
+        userId,
       }
     )
     .getRawMany();
@@ -595,6 +596,7 @@ export const retrieveRFXByProjectId = async (id: string) => {
     .createQueryBuilder('pr')
     .select(['pr.id as "id"', 'pr.rfxName as "rfxName"'])
     .where('pr."projectId" = :id', { id: id })
+    .orderBy('pr.rfxName', 'ASC')
     .getRawMany();
   return res;
 };

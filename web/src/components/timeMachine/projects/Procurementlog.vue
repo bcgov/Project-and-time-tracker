@@ -337,15 +337,16 @@ export default {
         logType: '',
         itemList: [
           { id: 'Contact Update', logType: 'Contact Update' },
-          { id: 'RFX Update', logType: 'RFX Update' },
           { id: 'Project Lead', logType: 'Project Lead' },
+          { id: 'RFX Update', logType: 'RFX Update' },
           { id: 'Risk Assessment', logType: 'Risk Assessment' },
         ],
         notificationMethod: '',
         notificationMethodList: [
-          { id: 'Phone', notificationMethod: 'Phone' },
           { id: 'Email', notificationMethod: 'Email' },
           { id: 'In person', notificationMethod: 'In person' },
+          { id: 'Phone', notificationMethod: 'Phone' },
+
         ],
         clientDecision: '',
       };

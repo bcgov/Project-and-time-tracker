@@ -8,7 +8,7 @@ const mouRepo = (): Repository<MOU> => {
 
 export const retrieveMOUs = async () => {
   const repo = mouRepo();
-  return await repo.find();
+  return await repo.createQueryBuilder('m').orderBy('m.name', 'ASC').getMany();
 };
 
 // TODO - CHANGE THIS!  Do a lookup first, and if so, assign.
@@ -39,15 +39,14 @@ export const createMOU = async (obj: { name: string }) => {
 export const deleteMOU = async (id: string) => {
   const repo = mouRepo();
   const mou = await repo.findOne(id);
- 
+
   if (!mou) {
     throw Error('MOU not Found');
   }
   return await repo.delete(mou);
 };
 
-
-export const assignProjectToMOU = async obj => {
+export const assignProjectToMOU = async (obj) => {
   const id_todo = '1';
   // const proj = await retrieveProjectById(id_todo)
   // projs.mouID = '999'

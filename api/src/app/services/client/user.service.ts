@@ -55,6 +55,7 @@ export const retrieveUsersNameAndIdByRole = async (roles: string[]) => {
       'c.revenueRate',
       'c.id',
     ])
+    .orderBy('c.fullName', 'ASC')
     .getMany();
 
   // console.log('retrieveUsersNameAndIdByRole B -', { repo, users })
