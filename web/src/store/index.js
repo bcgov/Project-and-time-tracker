@@ -49,6 +49,7 @@ const store = new Vuex.Store({
     projectIntakeServices: [],
     ministries: [],
     allMinistries: [],
+    allFinanceCodes: [],
     rfxPhases: [],
     rfxTypes: [],
     timesheetEntryData: [],
@@ -142,6 +143,9 @@ const store = new Vuex.Store({
     },
     fetchAllMinistries(state, data) {
       state.allMinistries = data;
+    },
+    fetchAllFinanceCodes(state, data) {
+      state.allFinanceCodes = data;
     },
     fetchintakeRiskQuestions(state, data) {
       state.intakeRiskQuestions = data;
@@ -275,7 +279,14 @@ const store = new Vuex.Store({
       // throw new Error('Not implemented!');
 
     },
+    deleteFinanceCodes() {
+      // throw new Error('Not implemented!');
+
+    },
     updateProctLog() {
+
+    },
+    updateFinanceCodes() {
 
     }
     ,
@@ -365,6 +376,8 @@ const store = new Vuex.Store({
     updateProjectFinanceCodes() {
     },
     updateProcurementLog() {
+    },
+    addFinanceCodes() {
     },
     addProjectNotes() {
     },
@@ -529,6 +542,15 @@ const store = new Vuex.Store({
         .then((res) => {
           const content = res.data;
           ctx.commit('fetchAllMinistries', content);
+        });
+    },
+    fetchAllFinanceCodes(ctx) {
+      $http
+        .get(`${API_URI}/financecode/all`)
+        .then((res) => {
+          const content = res.data;
+          console.log('fincodes:', content);
+          ctx.commit('fetchAllFinanceCodes', content);
         });
     },
     async addMinistry(ctx, req) {
@@ -884,6 +906,7 @@ const store = new Vuex.Store({
         .catch(err => Promise.reject(err));
       return Promise.resolve(api);
     },
+    
     async updateProctLog(ctx, req) {
       console.log(req);
       const api = $http
@@ -896,6 +919,19 @@ const store = new Vuex.Store({
         .catch(err => Promise.reject(err));
       return Promise.resolve(api);
     },
+    async updateFinanceCodes(ctx, req) {
+      console.log('reqq:', req);
+      const api = $http
+        .patch(`${API_URI}/financecode/${req.id}`, req)
+        .then((res) => {
+          const content = res.data;
+          ctx.commit('updateFinanceCodes', content);
+          return Promise.resolve(content);
+        })
+        .catch(err => Promise.reject(err));
+      return Promise.resolve(api);
+    },
+    
     async deleteIntakeRequest(ctx, req) {
       try {
         const res = await $http.delete(`${API_URI}/intake/${req.id}`);
@@ -905,11 +941,21 @@ const store = new Vuex.Store({
         throw err;
       }
     },
+    
     async deleteMOUs(ctx, req) {
       try {
         const res = await $http.delete(`${API_URI}/MOU/${req.id}`);
         const content = res.data;
         ctx.commit('deleteMOUs', content);
+      } catch (err) {
+        throw err;
+      }
+    },
+    async deleteFinanceCodes(ctx, req) {
+      try {
+        const res = await $http.delete(`${API_URI}/financecode/${req.id}`);
+        const content = res.data;
+        ctx.commit('deleteFinanceCodes', content);
       } catch (err) {
         throw err;
       }
@@ -1091,6 +1137,18 @@ const store = new Vuex.Store({
         .then((res) => {
           const content = res.data;
           ctx.commit('updateProcurementLog', content);
+          return Promise.resolve(content);
+        })
+        .catch(err => Promise.reject(err));
+      return Promise.resolve(api);
+    },
+    async addFinanceCodes(ctx, req) {
+      const body = req.FinanceCodes;
+      const api = await $http
+        .post(`${API_URI}/financecode`, body)
+        .then((res) => {
+          const content = res.data;
+          ctx.commit('addFinanceCodes', content);
           return Promise.resolve(content);
         })
         .catch(err => Promise.reject(err));

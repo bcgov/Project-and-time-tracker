@@ -1,5 +1,16 @@
 import { IFinanceExportDetail } from './i-finance-export-detail';
-
+export interface IUserFinanceCodes {
+  id: string;
+  financeName: string;
+  clientNo: string;
+  responsibilityCenter: string;
+  serviceCenter: string;
+  stob: string;
+  projectCode: string;
+  user: string;
+  type: string;
+  amount: number;
+}
 export interface IFinanceJSON {
   id: string;
   documentNo: string;
@@ -22,4 +33,5 @@ export interface IFinanceJSON {
   projectName: string;
   documentPath: string;
   details: IFinanceExportDetail[];
+  userFinanceCodes: IUserFinanceCodes[];
 }

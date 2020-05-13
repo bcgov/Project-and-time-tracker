@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { FinanceCodes } from './financeCodes.entity';
 
 @Entity()
 export class Contact {
@@ -57,6 +58,9 @@ export class Contact {
 
   @Column({ type: 'int', nullable: true })
   revenueRate: number;
+
+  @ManyToOne((type) => FinanceCodes)
+  financeCodes: FinanceCodes;
 }
 
 export type ContactType =

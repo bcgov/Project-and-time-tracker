@@ -12,6 +12,7 @@ import TimeMachineProjects from "./components/timeMachine/projects/Projects.vue"
 import TimeMachineTimesheets from "./components/timeMachine/timesheets/Timesheets.vue";
 import AdminMain from "./components/timeMachine/admin/AdminMain.vue";
 import AdminMinistries from "./components/timeMachine/admin/AdminMinistries.vue";
+import AdminFinanceCodes from "./components/timeMachine/admin/AdminFinanceCodes.vue";
 import AdminHourlyRates from "./components/timeMachine/admin/HourlyRates.vue";
 import AdminRevenueRates from "./components/timeMachine/admin/RevenueRates.vue";
 import AdminRemoveMOU from "./components/timeMachine/admin/RemoveMOU.vue";
@@ -151,6 +152,13 @@ const routes = [
     path: "/admin/ministries",
     name: "admin-ministries",
     component: AdminMinistries,
+    meta: { requiresAuth: true, roles: ["PSB_Admin"] }
+  },
+  {
+    exact: true,
+    path: "/admin/financecodes",
+    name: "admin-finance-codes",
+    component: AdminFinanceCodes,
     meta: { requiresAuth: true, roles: ["PSB_Admin"] }
   },
   {

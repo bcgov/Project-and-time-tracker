@@ -155,10 +155,14 @@ export default {
       const postData = {
         selectedDate: this.date,
       };
-      if (vm.$refs.spinner) { vm.$refs.spinner.open(); }
+      if (vm.$refs.spinner) {
+        vm.$refs.spinner.open();
+      }
       await this.$store.dispatch('fetchExportedPdfs', postData).then(
         (res) => {
-          if (vm.$refs.spinner) { vm.$refs.spinner.close(); }
+          if (vm.$refs.spinner) {
+            vm.$refs.spinner.close();
+          }
           vm.projectsList = res;
         },
         (err) => {
@@ -168,7 +172,9 @@ export default {
           } catch (ex) {
             // vm.$refs.snackbar.displaySnackbar('error', 'Failed to update');
           }
-          if (vm.$refs.spinner) { vm.$refs.spinner.close(); }
+          if (vm.$refs.spinner) {
+            vm.$refs.spinner.close();
+          }
         },
       );
     },
@@ -238,41 +244,7 @@ export default {
             'Project',
             'Amount',
           ];
-          const tableRowsFormatted = pdfValues.map(proj => [
-            proj.clientNo ? proj.clientNo : '',
-            proj.responsibilityCenter ? proj.responsibilityCenter : '',
-            proj.serviceCenter ? proj.serviceCenter : '',
-            proj.stob ? proj.stob : '',
-            proj.projectCode ? proj.projectCode : '',
-            `$${proj.totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`,
-          ]);
-          const pdfSinglePageHeight = doc.internal.pageSize.height;
-          const firstPageInitialCoordinate = 0;
-          const secondPageInitialCoordinate = pdfSinglePageHeight + 100;
-          const leftStartCoordinate = 20;
-          const topStartCoordinate = 20;
 
-          doc.setFontSize(11);
-          doc.setFontStyle('bold');
-          doc.text('Document # ', leftStartCoordinate, 20);
-          doc.text(pdfValues[0].documentNo, leftStartCoordinate + 35, 20);
-          doc.text('SAP', leftStartCoordinate + 150, 20);
-          doc.text('Line Description: ', leftStartCoordinate, 30);
-          doc.text(pdfValues[0].lineDesc, leftStartCoordinate + 35, 30);
-          doc.setFontSize(18);
-          doc.setFontStyle('normal');
-          doc.autoTable(tableHeaders, tableRowsFormatted, {
-            theme: 'plain',
-            tableWidth: 'auto',
-            margin: { top: 60 },
-            styles: {
-              overflow: 'linebreak',
-              fontSize: 12,
-              overflowColumns: 'linebreak',
-            },
-          });
-          doc.setFontSize(11);
-          doc.setFontStyle('bold');
           // doc.text('Amount Check', leftStartCoordinate + 110, 100);
           // doc.setFontSize(12);
           // doc.text('$0.00', leftStartCoordinate + 150, 100);
@@ -280,6 +252,43 @@ export default {
           // ///////////// PDF First PAGE END /////////////////////////////////////////////
 
           for (let i = 0; i < pdfValues.length; i++) {
+            if (i != 0) doc.addPage();
+            const tableRowsFormatted = pdfValues[i].userFinanceCodes.map(proj => [
+              proj.clientNo ? proj.clientNo : '',
+              proj.responsibilityCenter ? proj.responsibilityCenter : '',
+              proj.serviceCenter ? proj.serviceCenter : '',
+              proj.stob ? proj.stob : '',
+              proj.projectCode ? proj.projectCode : '',
+              `$${proj.amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`,
+            ]);
+            const pdfSinglePageHeight = doc.internal.pageSize.height;
+            const firstPageInitialCoordinate = 0;
+            const secondPageInitialCoordinate = pdfSinglePageHeight + 100;
+            const leftStartCoordinate = 20;
+            const topStartCoordinate = 20;
+
+            doc.setFontSize(11);
+            doc.setFontStyle('bold');
+            doc.text('Document # ', leftStartCoordinate, 20);
+            doc.text(pdfValues[0].documentNo, leftStartCoordinate + 35, 20);
+            doc.text('SAP', leftStartCoordinate + 150, 20);
+            doc.text('Line Description: ', leftStartCoordinate, 30);
+            doc.text(pdfValues[0].lineDesc, leftStartCoordinate + 35, 30);
+            doc.setFontSize(18);
+            doc.setFontStyle('normal');
+            doc.autoTable(tableHeaders, tableRowsFormatted, {
+              theme: 'plain',
+              tableWidth: 'auto',
+              margin: { top: 60 },
+              styles: {
+                overflow: 'linebreak',
+                fontSize: 12,
+                overflowColumns: 'linebreak',
+              },
+            });
+            doc.setFontSize(11);
+            doc.setFontStyle('bold');
+
             doc.addPage();
             doc.setFontStyle('normal');
             doc.setFontSize(11);

@@ -27,8 +27,8 @@
           class="elevation-0 tm-v-datatable"
         >
           <template v-slot:items="props">
-            <td>{{ props.item.contact.fullName }}</td>
-            <td>
+            <td style="width:30%">{{ props.item.contact.fullName }}</td>
+            <td style="width:30%">
               <v-edit-dialog
                 :return-value.sync="props.item.contact.hourlyRate"
                 lazy
@@ -52,6 +52,58 @@
                 </template>
               </v-edit-dialog>
             </td>
+            <td v-if="props.item.contact.financeCodes">
+              <v-select
+                :items="allFinanceCodes"
+                v-model="props.item.contact.financeCodes.id"
+                item-value="id"
+                @change="saveFinanceCode(props.item.contact, props.item.contact.financeCodes.id)"
+                item-text="financeName"
+              ></v-select>
+            </td>
+            <td v-else>
+              <v-select
+                v-model="props.item.contact.financeCodes"
+                :items="allFinanceCodes"
+                item-value="id"
+                @change="saveFinanceCode(props.item.contact, props.item.contact.financeCodes)"
+                item-text="financeName"
+              ></v-select>
+            </td>
+
+            <!-- <td v-if="props.item.contact.financeCodes">
+
+              <v-edit-dialog
+                :return-value.sync="props.item.contact.financeCodes.id"
+                lazy
+                @save="saveFinanceCode(props.item.contact)"
+                @cancel="cancel"
+                @open="open"
+                @close="close"
+              >
+
+               {{ props.item.contact.financeCodes.financeName }}
+
+
+                <template v-slot:input>
+
+
+                   <v-select
+            :items="allFinanceCodes"
+
+            label="Finance Code"
+
+            v-model="props.item.contact.financeCodes.id"
+            item-value="id"
+            item-text="financeName"
+          ></v-select>
+
+
+                </template>
+              </v-edit-dialog>
+            </td>
+
+            <td v-else>n/a - click to set</td> -->
           </template>
         </v-data-table>
         <!-- </v-layout> -->
@@ -72,11 +124,16 @@ export default {
       headers: [
         { text: 'Name', value: 'contact.fullName' },
         { text: 'Rate', value: 'contact.hourlyRate' },
+        { text: 'Finance Code', value: 'contact.financeCodes.Id' },
       ],
       search: '',
     };
   },
   computed: {
+    allFinanceCodes() {
+      return this.$store.state.allFinanceCodes;
+    },
+
     users() {
       if (this.search) {
         return this.$store.state.users.filter(item => item.contact.fullName.toLowerCase().includes(this.search.toLowerCase()));
@@ -87,6 +144,16 @@ export default {
   methods: {
     fetchData() {
       this.$store.dispatch('fetchUsers');
+      this.$store.dispatch('fetchAllFinanceCodes');
+    },
+
+    async saveFinanceCode(contact, financeId) {
+      await this.$store.dispatch('updateContactPartial', {
+        id: contact.id,
+        financeCodes: financeId,
+      });
+      this.$store.dispatch('fetchAllFinanceCodes');
+      this.$refs.snackbar.displaySnackbar('success', 'Data saved');
     },
     async save(contact) {
       let hourlyRate = parseInt(contact.hourlyRate, 10);
