@@ -296,6 +296,11 @@ export default {
                   overflowColumns: 'linebreak',
                 },
                 columnStyles: { 5: { halign: 'right' } },
+                didParseCell(table) {
+                  if (table.section === 'head' && table.cell.raw === 'Amount') {
+                    table.cell.styles.halign = 'right';
+                  }
+                },
               });
               doc.setFontSize(11);
               doc.setFontStyle('bold');
@@ -455,6 +460,12 @@ export default {
                   overflow: 'linebreak',
                   fontSize: 12,
                   overflowColumns: 'linebreak',
+                },
+                columnStyles: { 6: { halign: 'right' } },
+                didParseCell(table) {
+                  if (table.section === 'head' && table.cell.raw === 'Amount') {
+                    table.cell.styles.halign = 'right';
+                  }
                 },
               });
 

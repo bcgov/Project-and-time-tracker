@@ -450,6 +450,12 @@ export default {
                 fontSize: 12,
                 overflowColumns: 'linebreak',
               },
+              columnStyles: { 6: { halign: 'right' } },
+              didParseCell(table) {
+                if (table.section === 'head' && table.cell.raw === 'Amount') {
+                  table.cell.styles.halign = 'right';
+                }
+              },
             });
 
             // theme: 'striped'|'grid'|'plain'|'css'
