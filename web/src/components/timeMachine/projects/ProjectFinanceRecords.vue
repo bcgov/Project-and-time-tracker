@@ -276,7 +276,7 @@ export default {
             doc.text(pdfValues[0].lineDesc, leftStartCoordinate + 35, 30);
             doc.setFontSize(18);
             doc.setFontStyle('normal');
-            doc.autoTable(tableHeaders, tableRowsFormatted, {
+            const prevAutoTable = doc.autoTable(tableHeaders, tableRowsFormatted, {
               theme: 'plain',
               tableWidth: 'auto',
               margin: { top: 60 },
@@ -288,9 +288,11 @@ export default {
             });
             doc.setFontSize(11);
             doc.setFontStyle('bold');
-            doc.text('Amount Check', leftStartCoordinate + 110, 100);
+
+            const { previous } = prevAutoTable.autoTable;
+            doc.text('Amount Check', leftStartCoordinate + 110, previous.finalY + 10);
             doc.setFontSize(12);
-            doc.text('$0.00', leftStartCoordinate + 150, 100);
+            doc.text('$0.00', leftStartCoordinate + 150, previous.finalY + 10);
 
             doc.addPage();
             doc.setFontStyle('normal');

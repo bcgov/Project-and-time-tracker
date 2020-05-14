@@ -251,15 +251,16 @@ export default {
               'Project',
               'Amount',
             ];
-            const finalRow = { amount: '$0.00', clientNo: '', projectCode: 'Amount Check', responsibilityCenter: '', serviceCenter: '', stob: '' };
+            // const finalRow = { amount: '$0.00', clientNo: '', projectCode: 'Amount Check', responsibilityCenter: '', serviceCenter: '', stob: '' };
             // doc.text('Amount Check', leftStartCoordinate + 110, 100);
             // doc.setFontSize(12);
             // doc.text('$0.00', leftStartCoordinate + 150, 100);
 
             // ///////////// PDF First PAGE END /////////////////////////////////////////////
+
+            // pdfValues[i].userFinanceCodes.push(finalRow);
             for (let i = 0; i < pdfValues.length; i++) {
               if (i != 0) doc.addPage();
-              pdfValues[i].userFinanceCodes.push(finalRow);
               const tableRowsFormatted = pdfValues[i].userFinanceCodes.map(proj => [
                 proj.clientNo ? proj.clientNo : '',
                 proj.responsibilityCenter ? proj.responsibilityCenter : '',
@@ -285,7 +286,7 @@ export default {
               doc.text(pdfValues[i].lineDesc, leftStartCoordinate + 35, 30);
               doc.setFontSize(18);
               doc.setFontStyle('normal');
-              doc.autoTable(tableHeaders, tableRowsFormatted, {
+              const prevAutoTable = doc.autoTable(tableHeaders, tableRowsFormatted, {
                 theme: 'plain',
                 tableWidth: 'auto',
                 margin: { top: 60 },
@@ -300,6 +301,11 @@ export default {
               // doc.text('Amount Check', leftStartCoordinate + 110, 100);
               // doc.setFontSize(12);
               // doc.text('$0.00', leftStartCoordinate + 150, 100);
+              const { previous } = prevAutoTable.autoTable;
+              doc.text('Amount Check', leftStartCoordinate + 110, previous.finalY + 10);
+              doc.setFontSize(12);
+              doc.text('$0.00', leftStartCoordinate + 150, previous.finalY + 10);
+
 
               doc.addPage();
               doc.setFontStyle('normal');
