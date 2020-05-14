@@ -265,8 +265,10 @@ export default {
                 proj.serviceCenter ? proj.serviceCenter : '',
                 proj.stob ? proj.stob : '',
                 proj.projectCode ? proj.projectCode : '',
-                `$${proj.amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`,
+                proj.type !== 'Project' ? `-$${proj.amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : `$${proj.amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`,
               ]);
+
+
               const pdfSinglePageHeight = doc.internal.pageSize.height;
               const firstPageInitialCoordinate = 0;
               const secondPageInitialCoordinate = pdfSinglePageHeight + 100;
@@ -294,7 +296,9 @@ export default {
               });
               doc.setFontSize(11);
               doc.setFontStyle('bold');
-
+              doc.text('Amount Check', leftStartCoordinate + 110, 100);
+              doc.setFontSize(12);
+              doc.text('$0.00', leftStartCoordinate + 150, 100);
 
               doc.addPage();
               doc.setFontStyle('normal');
@@ -322,23 +326,23 @@ export default {
               );
               doc.text(pdfValues[i].documentNo, leftStartCoordinate + 125, 61);
               doc.text(
-                pdfValues[i].clientNo ? pdfValues[i].clientNo : '',
+                pdfValues[i].userFinanceCodes[0].clientNo ? pdfValues[i].userFinanceCodes[0].clientNo : '',
                 leftStartCoordinate + 125,
                 70,
               );
               doc.text(
-                pdfValues[i].responsibilityCenter ? pdfValues[i].responsibilityCenter : '',
+                pdfValues[i].userFinanceCodes[0].responsibilityCenter ? pdfValues[i].userFinanceCodes[0].responsibilityCenter : '',
                 leftStartCoordinate + 125,
                 76,
               );
               doc.text(
-                pdfValues[i].serviceCenter ? pdfValues[i].serviceCenter : '',
+                pdfValues[i].userFinanceCodes[0].serviceCenter ? pdfValues[i].userFinanceCodes[0].serviceCenter : '',
                 leftStartCoordinate + 125,
                 82,
               );
-              doc.text(pdfValues[i].stob ? pdfValues[i].stob : '', leftStartCoordinate + 125, 88);
+              doc.text(pdfValues[i].userFinanceCodes[0].stob ? pdfValues[i].userFinanceCodes[0].stob : '', leftStartCoordinate + 125, 88);
               doc.text(
-                pdfValues[i].projectCode ? pdfValues[i].projectCode : '',
+                pdfValues[i].userFinanceCodes[0].projectCode ? pdfValues[i].userFinanceCodes[0].projectCode : '',
                 leftStartCoordinate + 125,
                 94,
               );
