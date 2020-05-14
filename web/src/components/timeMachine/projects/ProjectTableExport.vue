@@ -296,15 +296,12 @@ export default {
                   overflowColumns: 'linebreak',
                 },
               });
-              // doc.setFontSize(11);
-              // doc.setFontStyle('bold');
-              // doc.text('Amount Check', leftStartCoordinate + 110, 100);
-              // doc.setFontSize(12);
-              // doc.text('$0.00', leftStartCoordinate + 150, 100);
+              doc.setFontSize(11);
+              doc.setFontStyle('bold');
               const { previous } = prevAutoTable.autoTable;
               doc.text('Amount Check', leftStartCoordinate + 110, previous.finalY + 10);
               doc.setFontSize(12);
-              doc.text('$0.00', leftStartCoordinate + 150, previous.finalY + 10);
+              doc.text('$0.00', leftStartCoordinate + 155, previous.finalY + 10);
 
 
               doc.addPage();
