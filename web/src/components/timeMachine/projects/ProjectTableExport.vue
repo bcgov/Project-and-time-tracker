@@ -267,7 +267,7 @@ export default {
                 proj.serviceCenter ? proj.serviceCenter : '',
                 proj.stob ? proj.stob : '',
                 proj.projectCode ? proj.projectCode : '',
-                proj.type !== 'Project' ? `-$${proj.amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : `$${proj.amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`,
+                proj.type !== 'Project' ? `-$${proj.amount.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : `$${proj.amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`,
               ]);
 
 
@@ -379,17 +379,17 @@ export default {
 
               doc.setFontStyle('normal');
               doc.text(
-                `$${pdfValues[i].fees.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`,
+                `$${pdfValues[i].fees.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`,
                 leftStartCoordinate + 136,
                 160,
               );
               doc.text(
-                `$${pdfValues[i].expenses.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`,
+                `$${pdfValues[i].expenses.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`,
                 leftStartCoordinate + 136,
                 169,
               );
               doc.text(
-                `$${pdfValues[i].totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`,
+                `$${pdfValues[i].totalAmount.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`,
                 leftStartCoordinate + 136,
                 178,
               );
@@ -443,7 +443,7 @@ export default {
                 proj.hours ? proj.hours : '',
                 proj.rate ? proj.rate : '',
                 proj.amount
-                  ? `$${proj.amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`
+                  ? `$${proj.amount.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`
                   : '$0',
               ]);
               doc.autoTable(tableBillingDetailsHeaders, tableRowsBillingFormatted, {
