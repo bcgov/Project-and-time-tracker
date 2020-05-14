@@ -251,7 +251,7 @@ export default {
               'Project',
               'Amount',
             ];
-
+            const finalRow = { amount: '$0.00', clientNo: '', projectCode: 'Amount Check', responsibilityCenter: '', serviceCenter: '', stob: '' };
             // doc.text('Amount Check', leftStartCoordinate + 110, 100);
             // doc.setFontSize(12);
             // doc.text('$0.00', leftStartCoordinate + 150, 100);
@@ -259,6 +259,7 @@ export default {
             // ///////////// PDF First PAGE END /////////////////////////////////////////////
             for (let i = 0; i < pdfValues.length; i++) {
               if (i != 0) doc.addPage();
+              pdfValues[i].userFinanceCodes.push(finalRow);
               const tableRowsFormatted = pdfValues[i].userFinanceCodes.map(proj => [
                 proj.clientNo ? proj.clientNo : '',
                 proj.responsibilityCenter ? proj.responsibilityCenter : '',
@@ -294,11 +295,11 @@ export default {
                   overflowColumns: 'linebreak',
                 },
               });
-              doc.setFontSize(11);
-              doc.setFontStyle('bold');
-              doc.text('Amount Check', leftStartCoordinate + 110, 100);
-              doc.setFontSize(12);
-              doc.text('$0.00', leftStartCoordinate + 150, 100);
+              // doc.setFontSize(11);
+              // doc.setFontStyle('bold');
+              // doc.text('Amount Check', leftStartCoordinate + 110, 100);
+              // doc.setFontSize(12);
+              // doc.text('$0.00', leftStartCoordinate + 150, 100);
 
               doc.addPage();
               doc.setFontStyle('normal');
