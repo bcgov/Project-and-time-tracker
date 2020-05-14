@@ -296,7 +296,7 @@ export default {
             doc.setFontStyle('bold');
 
             const { previous } = prevAutoTable.autoTable;
-            doc.text('Amount Check', leftStartCoordinate + 110, previous.finalY + 10);
+            doc.text('Amount Check', leftStartCoordinate + 117, previous.finalY + 10);
             doc.setFontSize(12);
             doc.text('$0.00', leftStartCoordinate + 163, previous.finalY + 10);
 
