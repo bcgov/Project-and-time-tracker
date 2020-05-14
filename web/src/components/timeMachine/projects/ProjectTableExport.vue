@@ -267,7 +267,7 @@ export default {
                 proj.serviceCenter ? proj.serviceCenter : '',
                 proj.stob ? proj.stob : '',
                 proj.projectCode ? proj.projectCode : '',
-                proj.type !== 'Project' ? `-$${proj.amount.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : `$${proj.amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`,
+                proj.type !== 'Project' ? `-$${proj.amount.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : `$${proj.amount.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`,
               ]);
 
 
@@ -295,13 +295,14 @@ export default {
                   fontSize: 12,
                   overflowColumns: 'linebreak',
                 },
+                columnStyles: { 5: { halign: 'right' } },
               });
               doc.setFontSize(11);
               doc.setFontStyle('bold');
               const { previous } = prevAutoTable.autoTable;
               doc.text('Amount Check', leftStartCoordinate + 110, previous.finalY + 10);
               doc.setFontSize(12);
-              doc.text('$0.00', leftStartCoordinate + 155, previous.finalY + 10);
+              doc.text('$0.00', leftStartCoordinate + 163, previous.finalY + 10);
 
 
               doc.addPage();

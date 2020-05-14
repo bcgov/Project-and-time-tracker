@@ -285,6 +285,12 @@ export default {
                 fontSize: 12,
                 overflowColumns: 'linebreak',
               },
+              columnStyles: { 5: { halign: 'right' } },
+              didParseCell(table) {
+                if (table.section === 'head' && table.cell.raw === 'Amount') {
+                  table.cell.styles.halign = 'right';
+                }
+              },
             });
             doc.setFontSize(11);
             doc.setFontStyle('bold');
@@ -292,7 +298,7 @@ export default {
             const { previous } = prevAutoTable.autoTable;
             doc.text('Amount Check', leftStartCoordinate + 110, previous.finalY + 10);
             doc.setFontSize(12);
-            doc.text('$0.00', leftStartCoordinate + 155, previous.finalY + 10);
+            doc.text('$0.00', leftStartCoordinate + 163, previous.finalY + 10);
 
             doc.addPage();
             doc.setFontStyle('normal');
