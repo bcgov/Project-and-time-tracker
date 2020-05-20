@@ -7,10 +7,7 @@ const rfxPhaseRepo = (): Repository<RfxPhase> => {
 
 export const retrieveRfxPhases = async () => {
   const repo = rfxPhaseRepo();
-  return await repo
-    .createQueryBuilder('r')
-    .orderBy('r.rfxPhaseName', 'ASC')
-    .getMany();
+  return await repo.createQueryBuilder('r').getMany();
 };
 
 export const retrieveRfxPhaseById = async (id: string) => {
