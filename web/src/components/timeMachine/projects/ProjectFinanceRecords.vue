@@ -463,7 +463,6 @@ export default {
             doc.text('Total Amount', leftStartCoordinate + 117, billTotalPosition.finalY + 10);
             doc.setFontSize(12);
             doc.text(`$${pdfValues[i].totalAmount.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`, leftStartCoordinate + 155, billTotalPosition.finalY + 10);
-            doc.setFontStyle('Normal');
             // theme: 'striped'|'grid'|'plain'|'css'
           }
           const monthYear = this.getMonthAndYear(this.selectedDate);
