@@ -29,6 +29,7 @@ export interface IFinanceJSON {
   responsibilityCenter: string;
   serviceCenter: string;
   stob: string;
+  mouName: string;
   projectCode: string;
   projectName: string;
   documentPath: string;

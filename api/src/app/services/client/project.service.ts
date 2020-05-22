@@ -276,6 +276,7 @@ export const retrieveFinanceData = async (obj, userId) => {
     const res = await repo
       .createQueryBuilder('p')
       .innerJoin('p.client', 'c')
+      .innerJoin('p.mou', 'm')
       .select([
         'p.id',
         'p.projectName',
@@ -286,6 +287,7 @@ export const retrieveFinanceData = async (obj, userId) => {
         'c.stob',
         'c.projectCode',
         'c.serviceCenter',
+        'm.name',
       ])
       .where('p.id = :projectId', { projectId: exportData.projectId })
       .getOne();
@@ -321,6 +323,7 @@ export const retrieveFinanceData = async (obj, userId) => {
     exportData.lineDesc = documentNo;
     exportData.createdUserId = userId;
     exportData.billingCount = billingCount;
+    exportData.mouName = res.mou.name;
     const timeSheet = await timesheetRepo()
       .createQueryBuilder('t')
       .leftJoinAndSelect('t.timesheetEntries', 'te')
