@@ -373,7 +373,6 @@ export default {
             doc.text('Total', leftStartCoordinate + 106, 178);
             doc.text('Contact', 15, 200);
             doc.text('Number of Pages', 15, 220);
-
             doc.setFontStyle('normal');
             doc.text(
               `$${pdfValues[i].fees.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`,
