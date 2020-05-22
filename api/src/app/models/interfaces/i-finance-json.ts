@@ -32,6 +32,7 @@ export interface IFinanceJSON {
   projectCode: string;
   projectName: string;
   documentPath: string;
+  billingCount: number;
   details: IFinanceExportDetail[];
   userFinanceCodes: IUserFinanceCodes[];
 }

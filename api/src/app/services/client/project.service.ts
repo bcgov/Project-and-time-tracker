@@ -23,7 +23,7 @@ import {
 
 const projectRFXRepo = (): Repository<ProjectRfx> => {
   return getRepository(ProjectRfx);
-}
+};
 const contactRepo = (): Repository<Contact> => {
   return getRepository(Contact);
 };
@@ -269,6 +269,7 @@ export const retrieveFinanceData = async (obj, userId) => {
     if (!model) {
       return [];
     }
+    let billingCount = 1;
     const exportData = {} as IFinanceJSON;
     exportData.projectId = financeExport[index].projectId;
     const repo = projectRepo();
@@ -280,6 +281,8 @@ export const retrieveFinanceData = async (obj, userId) => {
         'p.projectName',
         'c.responsibilityCenter',
         'c.clientNo',
+        'c.id',
+        'c.billingCount',
         'c.stob',
         'c.projectCode',
         'c.serviceCenter',
@@ -308,6 +311,7 @@ export const retrieveFinanceData = async (obj, userId) => {
       projectFinance.stob = res.client.stob;
       projectFinance.projectCode = res.client.projectCode;
       projectFinance.serviceCenter = res.client.serviceCenter;
+      billingCount = res.client.billingCount ? res.client.billingCount + 1 : 1;
     }
     projectFinance.type = 'Project';
     userFinanceCodes.push(projectFinance);
@@ -316,7 +320,7 @@ export const retrieveFinanceData = async (obj, userId) => {
     exportData.documentNo = documentNo;
     exportData.lineDesc = documentNo;
     exportData.createdUserId = userId;
-
+    exportData.billingCount = billingCount;
     const timeSheet = await timesheetRepo()
       .createQueryBuilder('t')
       .leftJoinAndSelect('t.timesheetEntries', 'te')
@@ -446,6 +450,12 @@ export const retrieveFinanceData = async (obj, userId) => {
       timeSheet[timeSheetIndex].amountBilled = round(fees + expenses);
       timeSheet[timeSheetIndex].is_locked = true;
       await timesheetRepo().save(timeSheet[timeSheetIndex]);
+    }
+    const repoClient = clientRepo();
+    let client = await repoClient.findOne(res.client.id);
+    if (client) {
+      client.billingCount = billingCount;
+      repoClient.save(client);
     }
   }
 
