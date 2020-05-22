@@ -269,11 +269,12 @@ export default {
 
             doc.setFontSize(11);
             doc.setFontStyle('bold');
-            doc.text('Document # ', leftStartCoordinate, 20);
-            doc.text(pdfValues[0].documentNo, leftStartCoordinate + 35, 20);
+            // doc.text('Document # ', leftStartCoordinate, 20);
+            doc.text('MOU: ', leftStartCoordinate, 20);
+            doc.text(pdfValues[i].mouName + "-" + pdfValues[i].billingCount, leftStartCoordinate + 35, 20);
             doc.text('SAP', leftStartCoordinate + 150, 20);
             doc.text('Line Description: ', leftStartCoordinate, 30);
-            doc.text(pdfValues[0].lineDesc, leftStartCoordinate + 35, 30);
+            doc.text(pdfValues[i].lineDesc, leftStartCoordinate + 35, 30);
             doc.setFontSize(18);
             doc.setFontStyle('normal');
             const prevAutoTable = doc.autoTable(tableHeaders, tableRowsFormatted, {
@@ -295,7 +296,7 @@ export default {
             doc.setFontSize(11);
             doc.setFontStyle('bold');
 
-            const { previous } = prevAutoTable.autoTable;
+            let { previous } = prevAutoTable.autoTable;
             doc.text('Amount Check', leftStartCoordinate + 117, previous.finalY + 10);
             doc.setFontSize(12);
             doc.text('$0.00', leftStartCoordinate + 163, previous.finalY + 10);
@@ -324,7 +325,7 @@ export default {
               leftStartCoordinate + 125,
               55,
             );
-            doc.text(pdfValues[i].documentNo, leftStartCoordinate + 125, 61);
+            doc.text(pdfValues[i].mouName + "-" + pdfValues[i].billingCount, leftStartCoordinate + 125, 61);
             doc.text(
               pdfValues[i].userFinanceCodes[0].clientNo ? pdfValues[i].userFinanceCodes[0].clientNo : '',
               leftStartCoordinate + 125,
@@ -358,7 +359,7 @@ export default {
 
             doc.setFontStyle('bold');
             doc.text('Date', leftStartCoordinate + 110, 55);
-            doc.text('Document #', leftStartCoordinate + 97, 61);
+            doc.text('MOU', leftStartCoordinate + 110, 61);
             doc.text('Client  ', leftStartCoordinate + 108, 70);
             doc.text('Responsibility', leftStartCoordinate + 93, 76);
             doc.text('ServiceLine', leftStartCoordinate + 97, 82);
@@ -441,7 +442,7 @@ export default {
                 ? `$${proj.amount.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`
                 : '$0',
             ]);
-            doc.autoTable(tableBillingDetailsHeaders, tableRowsBillingFormatted, {
+             const billTable = doc.autoTable(tableBillingDetailsHeaders, tableRowsBillingFormatted, {
               theme: 'plain',
               tableWidth: 'auto',
               margin: { top: 30 },
@@ -457,7 +458,12 @@ export default {
                 }
               },
             });
-
+            doc.setFontStyle('bold');
+            let  billTotalPosition  = billTable.autoTable.previous;
+            doc.text('Total Amount', leftStartCoordinate + 117, billTotalPosition.finalY + 10);
+            doc.setFontSize(12);
+            doc.text(`$${pdfValues[i].totalAmount.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`, leftStartCoordinate + 155, billTotalPosition.finalY + 10);
+            doc.setFontStyle('Normal');
             // theme: 'striped'|'grid'|'plain'|'css'
           }
           const monthYear = this.getMonthAndYear(this.selectedDate);
