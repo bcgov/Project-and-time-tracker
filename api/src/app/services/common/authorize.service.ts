@@ -30,7 +30,7 @@ const commonForAllUsers = [
   'GET/rfx-type/:id',
   'GET/user/',
   'GET/MOU/',
-  'POST/intake/'
+  'POST/intake/',
 ];
 
 const commonForPSBAdminAndUser = [
@@ -67,7 +67,7 @@ const commonForPSBAdminAndUser = [
   'POST/MOU/',
   'PATCH/intake/:id',
   'DELETE/intake/:id',
-  'DELETE/MOU/:id'
+  'DELETE/MOU/:id',
 ];
 
 const User = [...commonForAllUsers];
@@ -76,7 +76,7 @@ const PSB_User = [
   ...commonForAllUsers,
   ...commonForPSBAdminAndUser,
   'POST/project/:id/assign-backup', // should be removed on 2nd phase based on the new requirement.
-  'POST/project/:id/assign-lead' // should be removed on 2nd phase based on the new requirement.
+  'POST/project/:id/assign-lead', // should be removed on 2nd phase based on the new requirement.
 ];
 
 const manage_finances = [
@@ -84,7 +84,7 @@ const manage_finances = [
   'POST/project/finance',
   'POST/project/timesheetprojects',
   'POST/project/exportedPdfs',
-  'POST/project/downloadFinancePdf'
+  'POST/project/downloadFinancePdf',
 ];
 
 const PSB_Intake_User = [
@@ -93,19 +93,25 @@ const PSB_Intake_User = [
   'POST/project/:id/assign-backup',
   'GET/intake/',
   'GET/intake/:id',
-  'POST/intake/:id/approve'
+  'POST/intake/:id/approve',
 ];
 
 const permissions = {
   PSB_Admin: [
     ...commonForAllUsers,
+    'PATCH/rfx-type/:id',
+    'DELETE/rfx-type/:id',
+    'POST/rfx-type/',
+    'PATCH/rfx-phase/:id',
+    'DELETE/rfx-phase/:id',
+    'POST/rfx-phase/',
     'GET/intake/',
     'GET/financecode/all',
     'GET/intake/:id',
     // 'PATCH/intake/:id',
     'POST/procurement/',
-    'PATCH/financecode/:id',
     'POST/financecode/',
+    'PATCH/financecode/:id',
     'DELETE/financecode/:id',
     'POST/projectnotes/',
     'POST/intake/:id/approve',
@@ -121,10 +127,10 @@ const permissions = {
     'POST/project/timesheetprojects',
     'POST/project/exportedPdfs',
     'POST/project/downloadFinancePdf',
-    ...commonForPSBAdminAndUser
+    ...commonForPSBAdminAndUser,
   ],
   PSB_User,
   User,
   PSB_Intake_User,
-  manage_finances
+  manage_finances,
 };

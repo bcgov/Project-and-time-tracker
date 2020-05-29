@@ -931,7 +931,26 @@ const store = new Vuex.Store({
         .catch(err => Promise.reject(err));
       return Promise.resolve(api);
     },
-    
+    async updateRfxPhase(ctx, req) {    
+      const api = $http
+        .patch(`${API_URI}/rfx-phase/${req.id}`, req)
+        .then((res) => {
+          const content = res.data;         
+          return Promise.resolve(content);
+        })
+        .catch(err => Promise.reject(err));
+      return Promise.resolve(api);
+    },
+    async updateRfxType(ctx, req) {     
+      const api = $http
+        .patch(`${API_URI}/rfx-type/${req.id}`, req)
+        .then((res) => {
+          const content = res.data;
+          return Promise.resolve(content);
+        })
+        .catch(err => Promise.reject(err));
+      return Promise.resolve(api);
+    },
     async deleteIntakeRequest(ctx, req) {
       try {
         const res = await $http.delete(`${API_URI}/intake/${req.id}`);
@@ -956,6 +975,34 @@ const store = new Vuex.Store({
         const res = await $http.delete(`${API_URI}/financecode/${req.id}`);
         const content = res.data;
         ctx.commit('deleteFinanceCodes', content);
+      } catch (err) {
+        throw err;
+      }
+    },
+    async deleteRfxPhase(ctx, req) {
+      try {
+        const api = await $http
+          .delete(`${API_URI}/rfx-phase/${req.id}`)
+          .then((res) => {
+            const content = res.data;
+            return Promise.resolve(content);
+          })
+          .catch(err => Promise.reject(err.response));
+        return Promise.resolve(api);
+      } catch (err) {
+        throw err;
+      }
+    },
+    async deleteRfxType(ctx, req) {
+      try {
+        const api = await $http
+          .delete(`${API_URI}/rfx-type/${req.id}`)
+          .then((res) => {
+            const content = res.data;
+            return Promise.resolve(content);
+          })
+          .catch(err => Promise.reject(err.response));
+        return Promise.resolve(api);
       } catch (err) {
         throw err;
       }
@@ -1137,6 +1184,28 @@ const store = new Vuex.Store({
         .then((res) => {
           const content = res.data;
           ctx.commit('updateProcurementLog', content);
+          return Promise.resolve(content);
+        })
+        .catch(err => Promise.reject(err));
+      return Promise.resolve(api);
+    },
+    async addRfxType(ctx, req) {
+      const body = req.RfxType;
+      const api = await $http
+        .post(`${API_URI}/rfx-type`, body)
+        .then((res) => {
+          const content = res.data;
+          return Promise.resolve(content);
+        })
+        .catch(err => Promise.reject(err));
+      return Promise.resolve(api);
+    },
+    async addRfxPhase(ctx, req) {
+      const body = req.RfxPhase;
+      const api = await $http
+        .post(`${API_URI}/rfx-phase`, body)
+        .then((res) => {
+          const content = res.data;
           return Promise.resolve(content);
         })
         .catch(err => Promise.reject(err));
