@@ -18,7 +18,7 @@
               class="search-bar"
               v-model="search"
               append-icon="search"
-              label="Search rfx Type Name"
+              label="Search Rfx Type"
               single-line
               hide-details
             ></v-text-field>
@@ -68,14 +68,14 @@
       <v-card>
         <v-form  ref="rfxPhase">
           <v-card-title>
-            <span class="headline spanmargin">Rfx-type</span>
+            <span class="headline spanmargin">Rfx Type</span>
           </v-card-title>
           <v-card-text>
             <v-container grid-list-md>
               <v-layout wrap py-2>
                 <v-flex xs12>
                   <div class="v-form-container">
-                    <v-text-field v-model="rfxTypeName" label="Rfx-type Name"></v-text-field>
+                    <v-text-field v-model="rfxTypeName" label="Rfx Type"></v-text-field>
                   </div>
                 </v-flex>
               </v-layout>
@@ -109,7 +109,7 @@ export default {
         rowsPerPage: 30,
       },
       headers: [
-        { text: 'Rfx-type Name', value: 'rfxTypeName', sortable: false },
+        { text: 'Rfx Type', value: 'rfxTypeName', sortable: false },
         { text: 'Action', align: 'center', sortable: false },
       ],
       dialog: false,
