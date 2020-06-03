@@ -260,6 +260,7 @@ export default {
 
             // pdfValues[i].userFinanceCodes.push(finalRow);
             for (let i = 0; i < pdfValues.length; i++) {
+              // eslint-disable-next-line eqeqeq
               if (i != 0) doc.addPage();
               const tableRowsFormatted = pdfValues[i].userFinanceCodes.map(proj => [
                 proj.clientNo ? proj.clientNo : '',
@@ -272,15 +273,18 @@ export default {
 
 
               const pdfSinglePageHeight = doc.internal.pageSize.height;
+              // eslint-disable-next-line no-unused-vars
               const firstPageInitialCoordinate = 0;
+              // eslint-disable-next-line no-unused-vars
               const secondPageInitialCoordinate = pdfSinglePageHeight + 100;
               const leftStartCoordinate = 20;
+              // eslint-disable-next-line no-unused-vars
               const topStartCoordinate = 20;
 
               doc.setFontSize(11);
               doc.setFontStyle('bold');
               doc.text('MOU ', leftStartCoordinate, 20);
-              doc.text(pdfValues[i].mouName + "-" + pdfValues[i].billingCount, leftStartCoordinate + 35, 20);
+              doc.text(`${pdfValues[i].mouName}-${pdfValues[i].billingCount}`, leftStartCoordinate + 35, 20);
               doc.text('SAP', leftStartCoordinate + 150, 20);
               doc.setFontSize(18);
               doc.setFontStyle('normal');
@@ -325,14 +329,14 @@ export default {
               // /// PDF SECOND PAGE HEADER END//////
 
               doc.text("Ministry of Citizens' Services", 15, 55);
-              doc.text('OCIO - Technology Soultions', 15, 61);
+              doc.text('OCIO - Technology Solutions', 15, 61);
 
               doc.text(
                 pdfValues[i].dateCreated.toString().slice(0, 10),
                 leftStartCoordinate + 125,
                 55,
               );
-              doc.text(pdfValues[i].mouName + "-" + pdfValues[i].billingCount, leftStartCoordinate + 125, 61);
+              doc.text(`${pdfValues[i].mouName}`, leftStartCoordinate + 125, 61);
               doc.text(
                 pdfValues[i].userFinanceCodes[0].clientNo ? pdfValues[i].userFinanceCodes[0].clientNo : '',
                 leftStartCoordinate + 125,
@@ -360,9 +364,9 @@ export default {
               doc.text('Notification of Charges', leftStartCoordinate + 50, 105);
               doc.setFontStyle('normal');
               doc.setFontSize(11);
-              doc.text(pdfValues[i].projectName, 40, 115);
-              doc.text(pdfValues[i].reference ? pdfValues[i].reference : '', 40, 122);
-              doc.text(pdfValues[i].contact ? pdfValues[i].contact : '', 40, 129);
+              doc.text(pdfValues[i].financeName, 40, 115);
+              doc.text(pdfValues[i].mouName ? pdfValues[i].mouName : '', 40, 122);
+              doc.text(pdfValues[i].leadUser ? pdfValues[i].leadUser : '', 40, 129);
 
               doc.setFontStyle('bold');
               doc.text('Date', leftStartCoordinate + 110, 55);
@@ -403,7 +407,7 @@ export default {
                 leftStartCoordinate + 38,
                 200,
               );
-              doc.text("Ministry of Citizens' Seevices", leftStartCoordinate + 38, 205);
+              doc.text("Ministry of Citizens' Services", leftStartCoordinate + 38, 205);
 
               const res = this.date.split('-');
               const valdate = this.getDateInYYYYMMDD(
@@ -450,7 +454,7 @@ export default {
                   ? `$${proj.amount.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`
                   : '$0',
               ]);
-             const billTable =  doc.autoTable(tableBillingDetailsHeaders, tableRowsBillingFormatted, {
+              const billTable = doc.autoTable(tableBillingDetailsHeaders, tableRowsBillingFormatted, {
                 theme: 'plain',
                 tableWidth: 'auto',
                 margin: { top: 30 },
@@ -466,14 +470,31 @@ export default {
                   }
                 },
               });
-            doc.setFontStyle('bold');
-            let  billTotalPosition  = billTable.autoTable.previous;
-            doc.text('Total Amount', leftStartCoordinate + 117, billTotalPosition.finalY + 10);
-            doc.setFontSize(12);
-            doc.text(`$${pdfValues[i].totalAmount.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`, leftStartCoordinate + 155, billTotalPosition.finalY + 10);
-              // theme: 'striped'|'grid'|'plain'|'css'
+              doc.setFontStyle('normal');
+              const billTotalPosition = billTable.autoTable.previous;
+              doc.setFontStyle('bold');
+              doc.autoTable({
+                margin: { top: 10, left: 96 },
+                theme: 'plain',
+                colSpan: 2,
+                tableWidth: 'auto',
+                cellWidth: 'wrap',
+                columnStyles: {
+                  0: { cellWidth: 'auto' }, 1: { cellWidth: 'auto', halign: 'right' } },
+                styles: {
+                  fontSize: 11, fontStyle: 'bold',
+                },
+                body: [
+                  ['Total Current Fees:', `$${pdfValues[i].fees.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`],
+                  ['Total Current Expenses:', `$${pdfValues[i].expenses.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`],
+                  ['Total Current Billing:', `$${pdfValues[i].totalAmount.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`],
+                  ['Total Previous Billings:', `$${pdfValues[i].prevBillAmount.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`],
+                  ['Total Billings to Date:', `$${pdfValues[i].totalBillingToDate.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`],
+                  ['MOU Estimate:', `$${pdfValues[i].mouEstimate.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`],
+                  ['Balance Remaining on MOU:', `$${pdfValues[i].balanceMou.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`],
+                ],
+              });
             }
-
             doc.save(pdfValues[0].documentPath);
             this.getAllProjectList();
           });
