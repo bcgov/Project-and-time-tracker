@@ -38,6 +38,8 @@ export interface IFinanceJSON {
   totalBillingToDate: number;
   prevBillAmount: number;
   balanceMou: number;
+  leadUser: string;
+  financeName: string;
   details: IFinanceExportDetail[];
   userFinanceCodes: IUserFinanceCodes[];
 }

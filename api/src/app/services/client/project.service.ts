@@ -12,7 +12,7 @@ import { TimesheetEntry } from './../../models/entities/timesheetEntry.entity';
 import { IClient } from '../../models/interfaces/i-client';
 import { type } from 'os';
 import { ReplaceSource } from 'webpack-sources';
-
+import { User } from '../../models/entities/user.entity';
 import { FinanceExport } from '../../models/entities';
 import { IFinanceExport } from '../../models/interfaces/i-finance-export';
 import { IFinanceExportDetail } from '../../models/interfaces/i-finance-export-detail';
@@ -20,6 +20,10 @@ import {
   IFinanceJSON,
   IUserFinanceCodes,
 } from '../../models/interfaces/i-finance-json';
+
+const userRepo = (): Repository<User> => {
+  return getRepository(User);
+};
 
 const projectRFXRepo = (): Repository<ProjectRfx> => {
   return getRepository(ProjectRfx);
@@ -280,6 +284,8 @@ export const retrieveFinanceData = async (obj, userId) => {
       .select([
         'p.id',
         'p.projectName',
+        'p.leadUserId',
+        'p.teamWideProject',
         'c.responsibilityCenter',
         'p.mouAmount',
         'c.clientNo',
@@ -292,6 +298,38 @@ export const retrieveFinanceData = async (obj, userId) => {
       ])
       .where('p.id = :projectId', { projectId: exportData.projectId })
       .getOne();
+
+    exportData.leadUser = '';
+    exportData.financeName = '';
+    if (res.teamWideProject) {
+      exportData.leadUser = 'Team Wide Project';
+    } else if (res.leadUserId) {
+      const repoUser = userRepo();
+      const leadUser = await repoUser
+        .createQueryBuilder('u')
+        .innerJoinAndSelect('u.contact', 'c')
+        .where('u.id = :projectLeadId', { projectLeadId: res.leadUserId })
+        .getOne();
+      if (leadUser) {
+        const repo = contactRepo();
+        const contactRes = await repo
+          .createQueryBuilder('c')
+          .leftJoin('c.financeCodes', 'f')
+          .select(['c.fullName', 'f.financeName'])
+          .where('c."id" = :contactId', {
+            contactId: leadUser.contact.id,
+          })
+          .getOne();
+
+        if (contactRes) {
+          exportData.leadUser = contactRes.fullName;
+          if (contactRes.financeCodes)
+            exportData.financeName = contactRes.financeCodes.financeName;
+        }
+      }
+    } else {
+      exportData.leadUser = 'Team Wide Project';
+    }
 
     // Get previous Bill amount
     const financeRep = financeRepo();
