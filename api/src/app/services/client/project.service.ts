@@ -484,7 +484,7 @@ export const retrieveFinanceData = async (obj, userId) => {
       exportData.fees = fees;
       exportData.expenses = expenses;
       exportData.totalAmount = round(fees + expenses);
-      exportData.prevBillAmount = round(prevBills.sum);
+      exportData.prevBillAmount = prevBills ? round(prevBills.sum) : 0;
       exportData.totalBillingToDate = round(
         exportData.prevBillAmount + exportData.totalAmount
       );
