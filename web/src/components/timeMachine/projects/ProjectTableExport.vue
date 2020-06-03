@@ -282,8 +282,6 @@ export default {
               doc.text('MOU ', leftStartCoordinate, 20);
               doc.text(pdfValues[i].mouName + "-" + pdfValues[i].billingCount, leftStartCoordinate + 35, 20);
               doc.text('SAP', leftStartCoordinate + 150, 20);
-              doc.text('Line Description: ', leftStartCoordinate, 30);
-              doc.text(pdfValues[i].lineDesc, leftStartCoordinate + 35, 30);
               doc.setFontSize(18);
               doc.setFontStyle('normal');
               const prevAutoTable = doc.autoTable(tableHeaders, tableRowsFormatted, {
