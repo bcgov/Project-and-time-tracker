@@ -268,6 +268,7 @@ export default {
                 proj.serviceCenter ? proj.serviceCenter : '',
                 proj.stob ? proj.stob : '',
                 proj.projectCode ? proj.projectCode : '',
+                // eslint-disable-next-line max-len
                 proj.type !== 'Project' ? `-$${proj.amount.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : `$${proj.amount.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`,
               ]);
 
@@ -336,7 +337,7 @@ export default {
                 leftStartCoordinate + 125,
                 55,
               );
-              doc.text(`${pdfValues[i].mouName}`, leftStartCoordinate + 125, 61);
+              doc.text(`${pdfValues[i].mouName}-${pdfValues[i].billingCount}`, leftStartCoordinate + 125, 61);
               doc.text(
                 pdfValues[i].userFinanceCodes[0].clientNo ? pdfValues[i].userFinanceCodes[0].clientNo : '',
                 leftStartCoordinate + 125,
@@ -471,6 +472,7 @@ export default {
                 },
               });
               doc.setFontStyle('normal');
+              // eslint-disable-next-line no-unused-vars
               const billTotalPosition = billTable.autoTable.previous;
               doc.setFontStyle('bold');
               doc.autoTable({

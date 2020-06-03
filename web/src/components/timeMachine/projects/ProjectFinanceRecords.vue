@@ -271,7 +271,7 @@ export default {
             doc.setFontStyle('bold');
             // doc.text('Document # ', leftStartCoordinate, 20);
             doc.text('MOU: ', leftStartCoordinate, 20);
-            doc.text(pdfValues[i].mouName + "-" + pdfValues[i].billingCount, leftStartCoordinate + 35, 20);
+            doc.text(`${pdfValues[i].mouName}-${pdfValues[i].billingCount}`, leftStartCoordinate + 35, 20);
             doc.text('SAP', leftStartCoordinate + 150, 20);
             doc.setFontSize(18);
             doc.setFontStyle('normal');
@@ -294,7 +294,7 @@ export default {
             doc.setFontSize(11);
             doc.setFontStyle('bold');
 
-            let { previous } = prevAutoTable.autoTable;
+            const { previous } = prevAutoTable.autoTable;
             doc.text('Amount Check', leftStartCoordinate + 117, previous.finalY + 10);
             doc.setFontSize(12);
             doc.text('$0.00', leftStartCoordinate + 163, previous.finalY + 10);
@@ -323,7 +323,7 @@ export default {
               leftStartCoordinate + 125,
               55,
             );
-            doc.text(pdfValues[i].mouName, leftStartCoordinate + 125, 61);
+            doc.text(`${pdfValues[i].mouName}-${pdfValues[i].billingCount}`, leftStartCoordinate + 125, 61);
             doc.text(
               pdfValues[i].userFinanceCodes[0].clientNo ? pdfValues[i].userFinanceCodes[0].clientNo : '',
               leftStartCoordinate + 125,
@@ -456,7 +456,7 @@ export default {
               },
             });
             // doc.setFontStyle('bold');
-            let  billTotalPosition  = billTable.autoTable.previous;
+            let billTotalPosition = billTable.autoTable.previous;
             doc.setFontStyle('bold');
             doc.autoTable({
               margin: { top: 10, left: 96 },
