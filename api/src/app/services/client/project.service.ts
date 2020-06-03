@@ -281,6 +281,7 @@ export const retrieveFinanceData = async (obj, userId) => {
         'p.id',
         'p.projectName',
         'c.responsibilityCenter',
+        'p.mouAmount',
         'c.clientNo',
         'c.id',
         'c.billingCount',
@@ -291,6 +292,18 @@ export const retrieveFinanceData = async (obj, userId) => {
       ])
       .where('p.id = :projectId', { projectId: exportData.projectId })
       .getOne();
+
+    // Get previous Bill amount
+    const financeRep = financeRepo();
+
+    const prevBills = await financeRep
+      .createQueryBuilder('f')
+      .select(['f.projectId'])
+      .addSelect('SUM(f.totalAmount)', 'sum')
+      .where('f.projectId = :projectId', { projectId: exportData.projectId })
+      .groupBy('f.projectId')
+      .getRawOne();
+
     const contactproRepo = projectContactRepo();
     const contactRes = await contactproRepo
       .createQueryBuilder('pc')
@@ -324,6 +337,7 @@ export const retrieveFinanceData = async (obj, userId) => {
     exportData.createdUserId = userId;
     exportData.billingCount = billingCount;
     exportData.mouName = res.mou.name;
+    exportData.mouEstimate = res.mouAmount;
     const timeSheet = await timesheetRepo()
       .createQueryBuilder('t')
       .leftJoinAndSelect('t.timesheetEntries', 'te')
@@ -432,6 +446,13 @@ export const retrieveFinanceData = async (obj, userId) => {
       exportData.fees = fees;
       exportData.expenses = expenses;
       exportData.totalAmount = round(fees + expenses);
+      exportData.prevBillAmount = round(prevBills.sum);
+      exportData.totalBillingToDate = round(
+        exportData.prevBillAmount + exportData.totalAmount
+      );
+      exportData.balanceMou = round(
+        exportData.mouEstimate - exportData.totalBillingToDate
+      );
       exportData.dateCreated = new Date();
       model.createdUserId = userId;
       model.documentNo = documentNo;

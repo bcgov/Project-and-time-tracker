@@ -34,6 +34,10 @@ export interface IFinanceJSON {
   projectName: string;
   documentPath: string;
   billingCount: number;
+  mouEstimate: number;
+  totalBillingToDate: number;
+  prevBillAmount: number;
+  balanceMou: number;
   details: IFinanceExportDetail[];
   userFinanceCodes: IUserFinanceCodes[];
 }
