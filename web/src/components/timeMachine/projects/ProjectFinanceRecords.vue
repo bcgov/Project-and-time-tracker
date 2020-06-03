@@ -58,7 +58,7 @@
           <template slot="items" slot-scope="props">
             <td class="text-xs-left">{{ props.item.t_documentNo }}</td>
             <td class="text-xs-left">
-              {{ props.item.t_documentPath + " - $" + getvalue(props.item.sum) }}
+              {{ props.item.t_documentPath }}
             </td>
             <td class="text-xs-left">{{ props.item.t_documentPath.toString().slice(0, 10) }}</td>
             <td class="text-xs-left">
