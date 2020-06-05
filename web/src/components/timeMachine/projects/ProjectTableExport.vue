@@ -365,7 +365,7 @@ export default {
               doc.text('Notification of Charges', leftStartCoordinate + 50, 105);
               doc.setFontStyle('normal');
               doc.setFontSize(11);
-              doc.text(pdfValues[i].financeName, 40, 115);
+              doc.text(pdfValues[i].financeName ? pdfValues[i].financeName : '', 40, 115);
               doc.text(pdfValues[i].mouName ? pdfValues[i].mouName : '', 40, 122);
               doc.text(pdfValues[i].leadUser ? pdfValues[i].leadUser : '', 40, 129);
 
@@ -475,27 +475,29 @@ export default {
               // eslint-disable-next-line no-unused-vars
               const billTotalPosition = billTable.autoTable.previous;
               doc.setFontStyle('bold');
-              doc.autoTable({
-                margin: { top: 10, left: 96 },
-                theme: 'plain',
-                colSpan: 2,
-                tableWidth: 'auto',
-                cellWidth: 'wrap',
-                columnStyles: {
-                  0: { cellWidth: 'auto' }, 1: { cellWidth: 'auto', halign: 'right' } },
-                styles: {
-                  fontSize: 11, fontStyle: 'bold',
-                },
-                body: [
-                  ['Total Current Fees:', `$${pdfValues[i].fees.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`],
-                  ['Total Current Expenses:', `$${pdfValues[i].expenses.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`],
-                  ['Total Current Billing:', `$${pdfValues[i].totalAmount.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`],
-                  ['Total Previous Billings:', `$${pdfValues[i].prevBillAmount.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`],
-                  ['Total Billings to Date:', `$${pdfValues[i].totalBillingToDate.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`],
-                  ['MOU Estimate:', `$${pdfValues[i].mouEstimate.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`],
-                  ['Balance Remaining on MOU:', `$${pdfValues[i].balanceMou.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`],
-                ],
-              });
+              if (pdfValues[i].mouEstimate) {
+                doc.autoTable({
+                  margin: { top: 10, left: 96 },
+                  theme: 'plain',
+                  colSpan: 2,
+                  tableWidth: 'auto',
+                  cellWidth: 'wrap',
+                  columnStyles: {
+                    0: { cellWidth: 'auto' }, 1: { cellWidth: 'auto', halign: 'right' } },
+                  styles: {
+                    fontSize: 11, fontStyle: 'bold',
+                  },
+                  body: [
+                    ['Total Current Fees:', `$${pdfValues[i].fees ? pdfValues[i].fees.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '0'}`],
+                    ['Total Current Expenses:', `$${pdfValues[i].expenses ? pdfValues[i].expenses.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '0'}`],
+                    ['Total Current Billing:', `$${pdfValues[i].totalAmount ? pdfValues[i].totalAmount.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '0'}`],
+                    ['Total Previous Billings:', `$${pdfValues[i].prevBillAmount ? pdfValues[i].prevBillAmount.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '0'}`],
+                    ['Total Billings to Date:', `$${pdfValues[i].totalBillingToDate ? pdfValues[i].totalBillingToDate.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '0'}`],
+                    ['MOU Estimate:', `$${pdfValues[i].mouEstimate ? pdfValues[i].mouEstimate.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '0'}`],
+                    ['Balance Remaining on MOU:', `$${pdfValues[i].balanceMou ? pdfValues[i].balanceMou.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '0'}`],
+                  ],
+                });
+              }
             }
             doc.save(pdfValues[0].documentPath);
             this.getAllProjectList();
