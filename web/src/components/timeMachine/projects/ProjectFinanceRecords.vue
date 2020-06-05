@@ -58,7 +58,7 @@
           <template slot="items" slot-scope="props">
             <td class="text-xs-left">{{ props.item.t_documentNo }}</td>
             <td class="text-xs-left">
-              {{ props.item.t_documentPath + " - $" + getvalue(props.item.sum) }}
+              {{ props.item.t_documentPath }}
             </td>
             <td class="text-xs-left">{{ props.item.t_documentPath.toString().slice(0, 10) }}</td>
             <td class="text-xs-left">
@@ -147,6 +147,7 @@ export default {
     getvalue(num) {
       const value = Math.floor(num) / 1000 < 1
         ? `${parseFloat(Math.floor(num) / 1000, 1)}k`
+        // eslint-disable-next-line radix
         : `${parseInt(Math.floor(num) / 1000)}k`;
       return value.toString();
     },
@@ -252,26 +253,49 @@ export default {
           // ///////////// PDF First PAGE END /////////////////////////////////////////////
 
           for (let i = 0; i < pdfValues.length; i++) {
+            // eslint-disable-next-line eqeqeq
             if (i != 0) doc.addPage();
-            const tableRowsFormatted = pdfValues[i].userFinanceCodes.map(proj => [
-              proj.clientNo ? proj.clientNo : '',
-              proj.responsibilityCenter ? proj.responsibilityCenter : '',
-              proj.serviceCenter ? proj.serviceCenter : '',
-              proj.stob ? proj.stob : '',
-              proj.projectCode ? proj.projectCode : '',
-              proj.type !== 'Project' ? `-$${proj.amount.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : `$${proj.amount.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`,
-            ]);
+            let tableRowsFormatted;
+            if (!(pdfValues[i].userFinanceCodes) && i === 0) {
+              tableRowsFormatted = pdfValues.map(proj => [
+                proj.clientNo ? proj.clientNo : '',
+                proj.responsibilityCenter ? proj.responsibilityCenter : '',
+                proj.serviceCenter ? proj.serviceCenter : '',
+                proj.stob ? proj.stob : '',
+                proj.projectCode ? proj.projectCode : '',
+                `$${proj.totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`,
+              ]);
+            } else {
+            // eslint-disable-next-line eqeqeq
+              tableRowsFormatted = pdfValues[i].userFinanceCodes.map(proj => [
+                proj.clientNo ? proj.clientNo : '',
+                proj.responsibilityCenter ? proj.responsibilityCenter : '',
+                proj.serviceCenter ? proj.serviceCenter : '',
+                proj.stob ? proj.stob : '',
+                proj.projectCode ? proj.projectCode : '',
+                proj.type !== 'Project' ? `-$${proj.amount.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}` : `$${proj.amount.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`,
+              ]);
+            }
             const pdfSinglePageHeight = doc.internal.pageSize.height;
+            // eslint-disable-next-line no-unused-vars
             const firstPageInitialCoordinate = 0;
+            // eslint-disable-next-line no-unused-vars
             const secondPageInitialCoordinate = pdfSinglePageHeight + 100;
             const leftStartCoordinate = 20;
+            // eslint-disable-next-line no-unused-vars
             const topStartCoordinate = 20;
 
             doc.setFontSize(11);
             doc.setFontStyle('bold');
             // doc.text('Document # ', leftStartCoordinate, 20);
             doc.text('MOU: ', leftStartCoordinate, 20);
-            doc.text(`${pdfValues[i].mouName}-${pdfValues[i].billingCount}`, leftStartCoordinate + 35, 20);
+            let mouWithBillCount;
+            if (pdfValues[i].billingCount) {
+              mouWithBillCount = (pdfValues[i].billingCount ? (`${pdfValues[i].mouName}-${pdfValues[i].billingCount}`) : (pdfValues[i].mouName));
+            } else {
+              mouWithBillCount = pdfValues[i].mouName ? pdfValues[i].mouName : '';
+            }
+            doc.text(mouWithBillCount, leftStartCoordinate + 35, 20);
             doc.text('SAP', leftStartCoordinate + 150, 20);
             doc.setFontSize(18);
             doc.setFontStyle('normal');
@@ -323,25 +347,38 @@ export default {
               leftStartCoordinate + 125,
               55,
             );
-            doc.text(`${pdfValues[i].mouName}-${pdfValues[i].billingCount}`, leftStartCoordinate + 125, 61);
+            doc.text(mouWithBillCount, leftStartCoordinate + 125, 61);
             doc.text(
-              pdfValues[i].userFinanceCodes[0].clientNo ? pdfValues[i].userFinanceCodes[0].clientNo : '',
+              // eslint-disable-next-line no-nested-ternary
+              pdfValues[i].userFinanceCodes ? (pdfValues[i].userFinanceCodes[0].clientNo ? pdfValues[i].userFinanceCodes[0].clientNo : '') : (pdfValues[i].clientNo ? pdfValues[i].clientNo : ''),
               leftStartCoordinate + 125,
               70,
             );
             doc.text(
-              pdfValues[i].userFinanceCodes[0].responsibilityCenter ? pdfValues[i].userFinanceCodes[0].responsibilityCenter : '',
+              // eslint-disable-next-line no-nested-ternary
+              pdfValues[i].userFinanceCodes ? (pdfValues[i].userFinanceCodes[0].responsibilityCenter ? pdfValues[i].userFinanceCodes[0].responsibilityCenter : '')
+                : (pdfValues[i].responsibilityCenter ? pdfValues[i].responsibilityCenter : ''),
               leftStartCoordinate + 125,
               76,
             );
             doc.text(
-              pdfValues[i].userFinanceCodes[0].serviceCenter ? pdfValues[i].userFinanceCodes[0].serviceCenter : '',
+              // eslint-disable-next-line max-len
+              // eslint-disable-next-line no-nested-ternary
+              pdfValues[i].userFinanceCodes ? pdfValues[i].userFinanceCodes[0].serviceCenter ? pdfValues[i].userFinanceCodes[0].serviceCenter : ''
+                : pdfValues[i].serviceCenter ? pdfValues[i].serviceCenter : '',
               leftStartCoordinate + 125,
               82,
             );
-            doc.text(pdfValues[i].userFinanceCodes[0].stob ? pdfValues[i].userFinanceCodes[0].stob : '', leftStartCoordinate + 125, 88);
             doc.text(
-              pdfValues[i].userFinanceCodes[0].projectCode ? pdfValues[i].userFinanceCodes[0].projectCode : '',
+              // eslint-disable-next-line no-nested-ternary
+              pdfValues[i].userFinanceCodes ? pdfValues[i].userFinanceCodes[0].stob ? pdfValues[i].userFinanceCodes[0].stob : ''
+                : pdfValues[i].stob ? pdfValues[i].stob : '',
+              leftStartCoordinate + 125, 88,
+            );
+            doc.text(
+              // eslint-disable-next-line no-nested-ternary
+              pdfValues[i].userFinanceCodes ? pdfValues[i].userFinanceCodes[0].projectCode ? pdfValues[i].userFinanceCodes[0].projectCode : ''
+                : pdfValues[i].projectCode ? pdfValues[i].projectCode : '',
               leftStartCoordinate + 125,
               94,
             );
@@ -351,9 +388,16 @@ export default {
             doc.text('Notification of Charges', leftStartCoordinate + 50, 105);
             doc.setFontStyle('normal');
             doc.setFontSize(11);
-            doc.text(pdfValues[i].financeName, 40, 115);
-            doc.text(pdfValues[i].mouName ? pdfValues[i].mouName : '', 40, 122);
-            doc.text(pdfValues[i].leadUser ? pdfValues[i].leadUser : '', 40, 129);
+            // this if-else condition to support old pdf version
+            if (pdfValues[i].leadUser) {
+              doc.text(pdfValues[i].financeName ? pdfValues[i].financeName : '', 40, 115);
+              doc.text(pdfValues[i].mouName ? pdfValues[i].mouName : '', 40, 122);
+              doc.text(pdfValues[i].leadUser ? pdfValues[i].leadUser : '', 40, 129);
+            } else {
+              doc.text(pdfValues[i].projectName, 40, 115);
+              doc.text(pdfValues[i].reference ? pdfValues[i].reference : '', 40, 122);
+              doc.text(pdfValues[i].contact ? pdfValues[i].contact : '', 40, 129);
+            }
 
             doc.setFontStyle('bold');
             doc.text('Date', leftStartCoordinate + 110, 55);
@@ -456,29 +500,38 @@ export default {
               },
             });
             // doc.setFontStyle('bold');
-            let billTotalPosition = billTable.autoTable.previous;
+            const billTotalPosition = billTable.autoTable.previous;
             doc.setFontStyle('bold');
-            doc.autoTable({
-              margin: { top: 10, left: 96 },
-              theme: 'plain',
-              colSpan: 2,
-              tableWidth: 'auto',
-              cellWidth: 'wrap',
-              columnStyles: {
-                0: { cellWidth: 'auto' }, 1: { cellWidth: 'auto', halign: 'right' } },
-              styles: {
-                fontSize: 11, fontStyle: 'bold',
-              },
-              body: [
-                ['Total Current Fees:', `$${pdfValues[i].fees.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`],
-                ['Total Current Expenses:', `$${pdfValues[i].expenses.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`],
-                ['Total Current Billing:', `$${pdfValues[i].totalAmount.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`],
-                ['Total Previous Billings:', `$${pdfValues[i].prevBillAmount.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`],
-                ['Total Billings to Date:', `$${pdfValues[i].totalBillingToDate.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`],
-                ['MOU Estimate:', `$${pdfValues[i].mouEstimate.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`],
-                ['Balance Remaining on MOU:', `$${pdfValues[i].balanceMou.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`],
-              ],
-            });
+            // this if-else condition to support old pdf version
+            if (pdfValues[i].mouEstimate !== undefined) {
+              doc.autoTable({
+                margin: { top: 10, left: 96 },
+                theme: 'plain',
+                colSpan: 2,
+                tableWidth: 'auto',
+                cellWidth: 'wrap',
+                columnStyles: {
+                  0: { cellWidth: 'auto' }, 1: { cellWidth: 'auto', halign: 'right' } },
+                styles: {
+                  fontSize: 11, fontStyle: 'bold',
+                },
+                body: [
+                  ['Total Current Fees:', `$${pdfValues[i].fees ? pdfValues[i].fees.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '0'}`],
+                  ['Total Current Expenses:', `$${pdfValues[i].expenses ? pdfValues[i].expenses.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '0'}`],
+                  ['Total Current Billing:', `$${pdfValues[i].totalAmount ? pdfValues[i].totalAmount.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '0'}`],
+                  ['Total Previous Billings:', `$${pdfValues[i].prevBillAmount ? pdfValues[i].prevBillAmount.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '0'}`],
+                  ['Total Billings to Date:', `$${pdfValues[i].totalBillingToDate ? pdfValues[i].totalBillingToDate.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '0'}`],
+                  ['MOU Estimate:', `$${pdfValues[i].mouEstimate ? pdfValues[i].mouEstimate.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '0'}`],
+                  ['Balance Remaining on MOU:', `$${pdfValues[i].balanceMou ? pdfValues[i].balanceMou.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '0'}`],
+                ],
+              });
+            } else {
+              doc.text('Total Amount', leftStartCoordinate + 117, billTotalPosition.finalY + 10);
+              doc.setFontSize(12);
+              doc.text(`$${pdfValues[i].totalAmount.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`, leftStartCoordinate + 155, billTotalPosition.finalY + 10);
+            // theme: 'striped'|'grid'|'plain'|'css'
+            }
+            // if (!(pdfValues[i].userFinanceCodes)) { break; }
           }
           doc.save(pdfValues[0].documentPath);
         });
