@@ -356,9 +356,16 @@ export default {
             doc.text('Notification of Charges', leftStartCoordinate + 50, 105);
             doc.setFontStyle('normal');
             doc.setFontSize(11);
-            doc.text(pdfValues[i].financeName ? pdfValues[i].financeName : '', 40, 115);
-            doc.text(pdfValues[i].mouName ? pdfValues[i].mouName : '', 40, 122);
-            doc.text(pdfValues[i].leadUser ? pdfValues[i].leadUser : '', 40, 129);
+            // this if-else condition to support old pdf version
+            if (pdfValues[i].leadUser) {
+              doc.text(pdfValues[i].financeName ? pdfValues[i].financeName : '', 40, 115);
+              doc.text(pdfValues[i].mouName ? pdfValues[i].mouName : '', 40, 122);
+              doc.text(pdfValues[i].leadUser ? pdfValues[i].leadUser : '', 40, 129);
+            } else {
+              doc.text(pdfValues[i].projectName, 40, 115);
+              doc.text(pdfValues[i].reference ? pdfValues[i].reference : '', 40, 122);
+              doc.text(pdfValues[i].contact ? pdfValues[i].contact : '', 40, 129);
+            }
 
             doc.setFontStyle('bold');
             doc.text('Date', leftStartCoordinate + 110, 55);
@@ -463,6 +470,7 @@ export default {
             // doc.setFontStyle('bold');
             const billTotalPosition = billTable.autoTable.previous;
             doc.setFontStyle('bold');
+            // this if-else condition to support old pdf version
             if (pdfValues[i].mouEstimate) {
               doc.autoTable({
                 margin: { top: 10, left: 96 },
