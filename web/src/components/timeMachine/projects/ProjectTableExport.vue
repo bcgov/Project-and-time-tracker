@@ -475,29 +475,27 @@ export default {
               // eslint-disable-next-line no-unused-vars
               const billTotalPosition = billTable.autoTable.previous;
               doc.setFontStyle('bold');
-              if (pdfValues[i].mouEstimate) {
-                doc.autoTable({
-                  margin: { top: 10, left: 96 },
-                  theme: 'plain',
-                  colSpan: 2,
-                  tableWidth: 'auto',
-                  cellWidth: 'wrap',
-                  columnStyles: {
-                    0: { cellWidth: 'auto' }, 1: { cellWidth: 'auto', halign: 'right' } },
-                  styles: {
-                    fontSize: 11, fontStyle: 'bold',
-                  },
-                  body: [
-                    ['Total Current Fees:', `$${pdfValues[i].fees ? pdfValues[i].fees.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '0'}`],
-                    ['Total Current Expenses:', `$${pdfValues[i].expenses ? pdfValues[i].expenses.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '0'}`],
-                    ['Total Current Billing:', `$${pdfValues[i].totalAmount ? pdfValues[i].totalAmount.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '0'}`],
-                    ['Total Previous Billings:', `$${pdfValues[i].prevBillAmount ? pdfValues[i].prevBillAmount.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '0'}`],
-                    ['Total Billings to Date:', `$${pdfValues[i].totalBillingToDate ? pdfValues[i].totalBillingToDate.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '0'}`],
-                    ['MOU Estimate:', `$${pdfValues[i].mouEstimate ? pdfValues[i].mouEstimate.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '0'}`],
-                    ['Balance Remaining on MOU:', `$${pdfValues[i].balanceMou ? pdfValues[i].balanceMou.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '0'}`],
-                  ],
-                });
-              }
+              doc.autoTable({
+                margin: { top: 10, left: 96 },
+                theme: 'plain',
+                colSpan: 2,
+                tableWidth: 'auto',
+                cellWidth: 'wrap',
+                columnStyles: {
+                  0: { cellWidth: 'auto' }, 1: { cellWidth: 'auto', halign: 'right' } },
+                styles: {
+                  fontSize: 11, fontStyle: 'bold',
+                },
+                body: [
+                  ['Total Current Fees:', `$${pdfValues[i].fees ? pdfValues[i].fees.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '0'}`],
+                  ['Total Current Expenses:', `$${pdfValues[i].expenses ? pdfValues[i].expenses.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '0'}`],
+                  ['Total Current Billing:', `$${pdfValues[i].totalAmount ? pdfValues[i].totalAmount.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '0'}`],
+                  ['Total Previous Billings:', `$${pdfValues[i].prevBillAmount ? pdfValues[i].prevBillAmount.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '0'}`],
+                  ['Total Billings to Date:', `$${pdfValues[i].totalBillingToDate ? pdfValues[i].totalBillingToDate.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '0'}`],
+                  ['MOU Estimate:', `$${pdfValues[i].mouEstimate ? pdfValues[i].mouEstimate.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '0'}`],
+                  ['Balance Remaining on MOU:', `$${pdfValues[i].balanceMou ? pdfValues[i].balanceMou.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '0'}`],
+                ],
+              });
             }
             doc.save(pdfValues[0].documentPath);
             this.getAllProjectList();
