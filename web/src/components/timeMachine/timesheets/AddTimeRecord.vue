@@ -547,6 +547,7 @@ export default {
       vm.$store.dispatch('fetchTimesheetById', { id: timeSheetId }).then(() => {
         const obj = vm.$store.state.timesheetById;
         // this.onChangeUser(obj.userId, true);
+        this.form.userId = obj.userId;
         vm.timesheet[vm.weeklyProjectIndex].entries = obj.timesheetEntries;
         vm.timesheet[vm.weeklyProjectIndex].startDate = obj.startDate;
         vm.timesheet[vm.weeklyProjectIndex].endDate = obj.endDate;
