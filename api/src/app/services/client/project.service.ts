@@ -302,7 +302,7 @@ export const retrieveFinanceData = async (obj, userId) => {
     exportData.leadUser = '';
     exportData.financeName = '';
     if (res.teamWideProject) {
-      exportData.leadUser = 'Team Wide Project';
+      exportData.leadUser = 'Procurement and Supply Division';
     } else if (res.leadUserId) {
       const repoUser = userRepo();
       const leadUser = await repoUser
@@ -328,7 +328,7 @@ export const retrieveFinanceData = async (obj, userId) => {
         }
       }
     } else {
-      exportData.leadUser = 'Team Wide Project';
+      exportData.leadUser = 'Procurement and Supply Division';
     }
 
     // Get previous Bill amount
