@@ -87,17 +87,13 @@
 </template>
 
 <script>
-// import moment from 'moment';
+
 import jsPDF from 'jspdf';
 import Confirm from '../common/Confirm.vue';
 import Snackbar from '../common/Snackbar.vue';
 import Spinner from '../common/Spinner.vue';
 import 'jspdf-autotable';
-// Vue.filter('formatDate', function(value) {
-//       if (value) {
-//         return moment(String(value)).format('MM/DD/YYYY hh:mm')
-//       }
-//     })
+
 
 export default {
   props: {
