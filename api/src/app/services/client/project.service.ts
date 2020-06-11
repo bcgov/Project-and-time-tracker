@@ -338,8 +338,11 @@ export const retrieveFinanceData = async (obj, userId) => {
       .createQueryBuilder('f')
       .select(['f.projectId'])
       .addSelect('SUM(f.totalAmount)', 'sum')
-      .where('f.projectId = :projectId', { projectId: exportData.projectId })
-      .groupBy('f.projectId')
+      .where('f.projectId = :projectId  and f.isDischarged != :discharged', {
+        projectId: exportData.projectId,
+        discharged: true,
+      })
+      .groupBy('f.projectId ')
       .getRawOne();
 
     const contactproRepo = projectContactRepo();
@@ -400,6 +403,7 @@ export const retrieveFinanceData = async (obj, userId) => {
       timeSheetIndex < timeSheet.length;
       timeSheetIndex++
     ) {
+      let timeSheetId = timeSheet[timeSheetIndex].id;
       for (
         let timeSheetEntryIndex = 0;
         timeSheetEntryIndex < timeSheet[timeSheetIndex].timesheetEntries.length;
@@ -429,6 +433,7 @@ export const retrieveFinanceData = async (obj, userId) => {
           financeDetailHour.amount = round(
             financeDetailHour.rate * financeDetailHour.hours
           );
+          financeDetailHour.id = timeSheetId;
           details.push(financeDetailHour);
 
           await fillUserFinanceCodes(
@@ -454,6 +459,7 @@ export const retrieveFinanceData = async (obj, userId) => {
           financeDetailExpense.user = timeSheet[timeSheetIndex].userId;
           financeDetailExpense.resource =
             timeSheet[timeSheetIndex].user.contact.fullName;
+          financeDetailExpense.id = timeSheetId;
           details.push(financeDetailExpense);
 
           await fillUserFinanceCodes(
@@ -506,9 +512,11 @@ export const retrieveFinanceData = async (obj, userId) => {
       }
       exportData.userFinanceCodes = userFinanceCodes;
       model.exportData = JSON.stringify(exportData);
-
+      model.billingCount = billingCount;
+      model.isDischarged = false;
       await createFinanceExport(model);
 
+      timeSheet[timeSheetIndex].documentNo = documentNo;
       timeSheet[timeSheetIndex].amountBilled = round(fees + expenses);
       timeSheet[timeSheetIndex].is_locked = true;
       await timesheetRepo().save(timeSheet[timeSheetIndex]);
@@ -533,12 +541,320 @@ export const retrieveFinanceData = async (obj, userId) => {
 
 export const downloadpdf = async (obj) => {
   const repo = financeRepo();
-  console.log('result:', obj);
   const result = await repo
     .createQueryBuilder('f')
     .where('f."documentNo" = :documentId ', { documentId: obj.documentNo })
     .getMany();
-  console.log('result:', result);
+  return result;
+};
+export const dischargeFinanceRecord = async (obj) => {
+  const repo = financeRepo();
+  const result = await repo
+    .createQueryBuilder('f')
+    .where('f."documentNo" = :documentId ', { documentId: obj.documentNo })
+    .getMany();
+
+  for (let index = 0; index < result.length; index++) {
+    let timeSheets = await timesheetRepo()
+      .createQueryBuilder('t')
+      .where('t.is_locked = true and t.documentNo=:document', {
+        document: obj.documentNo,
+      })
+      .getMany();
+
+    for (
+      let timesheetIndex = 0;
+      timesheetIndex < timeSheets.length;
+      timesheetIndex++
+    ) {
+      timeSheets[timesheetIndex].is_locked = false;
+      await timesheetRepo().save(timeSheets[timesheetIndex]);
+    }
+    if (timeSheets) {
+      result[index].isDischarged = true;
+      result[index].exportData = '';
+      await financeRepo().save(result[index]);
+    }
+  }
+
+  return result;
+};
+export const reinstateFinanceRecord = async (obj) => {
+  const repo = financeRepo();
+  const result = await repo
+    .createQueryBuilder('f')
+    .where('f."documentNo" = :documentId ', { documentId: obj.documentNo })
+    .getMany();
+
+  const financeExport = result as IFinanceExport[];
+  const documentNo = result[0].documentNo;
+  const documentPath = result[0].documentNo;
+  const userId = result[0].createdUserId;
+  const startDate = result[0].monthStartDate;
+  let billingCount = result[0].billingCount;
+
+  for (let index = 0; index < result.length; index++) {
+    // finance records
+
+    let projectId = result[index].projectId;
+    let model = financeExport[index];
+    if (!model) {
+      return [];
+    }
+    const exportData = {} as IFinanceJSON;
+    exportData.projectId = projectId;
+    const repo = projectRepo();
+    const res = await repo
+      .createQueryBuilder('p')
+      .innerJoin('p.client', 'c')
+      .innerJoin('p.mou', 'm')
+      .select([
+        'p.id',
+        'p.projectName',
+        'p.leadUserId',
+        'p.teamWideProject',
+        'c.responsibilityCenter',
+        'p.mouAmount',
+        'c.clientNo',
+        'c.id',
+        'c.stob',
+        'c.projectCode',
+        'c.serviceCenter',
+        'm.name',
+      ])
+      .where('p.id = :projectId', { projectId: exportData.projectId })
+      .getOne();
+
+    exportData.leadUser = '';
+    exportData.financeName = '';
+    if (res.teamWideProject) {
+      exportData.leadUser = 'Procurement and Supply Division';
+    } else if (res.leadUserId) {
+      const repoUser = userRepo();
+      const leadUser = await repoUser
+        .createQueryBuilder('u')
+        .innerJoinAndSelect('u.contact', 'c')
+        .where('u.id = :projectLeadId', { projectLeadId: res.leadUserId })
+        .getOne();
+      if (leadUser) {
+        const repo = contactRepo();
+        const contactRes = await repo
+          .createQueryBuilder('c')
+          .leftJoin('c.financeCodes', 'f')
+          .select(['c.fullName', 'f.financeName'])
+          .where('c."id" = :contactId', {
+            contactId: leadUser.contact.id,
+          })
+          .getOne();
+
+        if (contactRes) {
+          exportData.leadUser = contactRes.fullName;
+          if (contactRes.financeCodes)
+            exportData.financeName = contactRes.financeCodes.financeName;
+        }
+      }
+    } else {
+      exportData.leadUser = 'Procurement and Supply Division';
+    }
+
+    // Get previous Bill amount
+    const financeRep = financeRepo();
+
+    const prevBills = await financeRep
+      .createQueryBuilder('f')
+      .select(['f.projectId'])
+      .addSelect('SUM(f.totalAmount)', 'sum')
+      .where(
+        'f.projectId = :projectId  and (f.isDischarged = false OR f.isDischarged IS NULL)',
+        {
+          projectId: exportData.projectId,
+        }
+      )
+      .groupBy('f.projectId')
+      .getRawOne();
+
+    const contactproRepo = projectContactRepo();
+    const contactRes = await contactproRepo
+      .createQueryBuilder('pc')
+      .leftJoinAndSelect('pc.project', 'p')
+      .leftJoinAndSelect('pc.contact', 'c')
+      .where('c."contactType" = :contactType and pc."projectId" = :projectId', {
+        contactType: 'clientfinance',
+        projectId: exportData.projectId,
+      })
+      .getOne();
+    exportData.contact = contactRes.contact.fullName;
+    exportData.projectName = res.projectName;
+
+    let details = [] as IFinanceExportDetail[];
+    let userFinanceCodes = [] as IUserFinanceCodes[];
+    let projectFinance = {} as IUserFinanceCodes;
+    if (res.client) {
+      projectFinance.responsibilityCenter = res.client.responsibilityCenter;
+      projectFinance.clientNo = res.client.clientNo;
+      projectFinance.stob = res.client.stob;
+      projectFinance.projectCode = res.client.projectCode;
+      projectFinance.serviceCenter = res.client.serviceCenter;
+    }
+    projectFinance.type = 'Project';
+    userFinanceCodes.push(projectFinance);
+
+    exportData.documentPath = documentPath;
+    exportData.documentNo = documentNo;
+    exportData.lineDesc = documentNo;
+    exportData.createdUserId = userId;
+    exportData.billingCount = billingCount;
+    exportData.mouName = res.mou.name;
+    exportData.mouEstimate = res.mouAmount;
+    const timeSheet = await timesheetRepo()
+      .createQueryBuilder('t')
+      .leftJoinAndSelect('t.timesheetEntries', 'te')
+      .innerJoinAndSelect('t.user', 'u')
+      .innerJoinAndSelect('u.contact', 'c')
+      .where(
+        't."projectId" = :projectId and  t."documentNo" = :exportDocumentNo',
+        {
+          exportDocumentNo: documentNo,
+          projectId: exportData.projectId,
+          is_locked: false,
+        }
+      )
+      .getMany();
+    if (timeSheet.length == 0) {
+      continue;
+    }
+
+    for (
+      let timeSheetIndex = 0;
+      timeSheetIndex < timeSheet.length;
+      timeSheetIndex++
+    ) {
+      let timeSheetId = timeSheet[timeSheetIndex].id;
+      for (
+        let timeSheetEntryIndex = 0;
+        timeSheetEntryIndex < timeSheet[timeSheetIndex].timesheetEntries.length;
+        timeSheetEntryIndex++
+      ) {
+        const timesheetEntry: TimesheetEntry[] =
+          timeSheet[timeSheetIndex].timesheetEntries;
+        if (
+          timesheetEntry[timeSheetEntryIndex].hoursBillable &&
+          timesheetEntry[timeSheetEntryIndex].hoursBillable > 0
+        ) {
+          let financeDetailHour = {} as IFinanceExportDetail;
+          financeDetailHour.entryDate =
+            timesheetEntry[timeSheetEntryIndex].entryDate;
+          financeDetailHour.description =
+            timesheetEntry[timeSheetEntryIndex].commentsBillable;
+          financeDetailHour.hours =
+            timesheetEntry[timeSheetEntryIndex].hoursBillable;
+          financeDetailHour.type = 'Time';
+          financeDetailHour.user = timeSheet[timeSheetIndex].userId;
+          financeDetailHour.resource =
+            timeSheet[timeSheetIndex].user.contact.fullName;
+          financeDetailHour.rate = timeSheet[timeSheetIndex].user.contact
+            .hourlyRate
+            ? timeSheet[timeSheetIndex].user.contact.hourlyRate
+            : 0;
+          financeDetailHour.amount = round(
+            financeDetailHour.rate * financeDetailHour.hours
+          );
+          financeDetailHour.id = timeSheetId;
+          details.push(financeDetailHour);
+
+          await fillUserFinanceCodes(
+            userFinanceCodes,
+            financeDetailHour,
+            timeSheet[timeSheetIndex].user.contact.id
+          );
+        }
+
+        if (
+          timesheetEntry[timeSheetEntryIndex].expenseAmount &&
+          timesheetEntry[timeSheetEntryIndex].expenseAmount > 0
+        ) {
+          let financeDetailExpense = {} as IFinanceExportDetail;
+          financeDetailExpense.entryDate =
+            timesheetEntry[timeSheetEntryIndex].entryDate;
+          financeDetailExpense.description =
+            timesheetEntry[timeSheetEntryIndex].expenseComment;
+          financeDetailExpense.amount = round(
+            timesheetEntry[timeSheetEntryIndex].expenseAmount
+          );
+          financeDetailExpense.type = 'Expense';
+          financeDetailExpense.user = timeSheet[timeSheetIndex].userId;
+          financeDetailExpense.resource =
+            timeSheet[timeSheetIndex].user.contact.fullName;
+          financeDetailExpense.id = timeSheetId;
+          details.push(financeDetailExpense);
+
+          await fillUserFinanceCodes(
+            userFinanceCodes,
+            financeDetailExpense,
+            timeSheet[timeSheetIndex].user.contact.id
+          );
+        }
+      }
+      exportData.details = details;
+
+      let fees = round(
+        exportData.details
+          .filter((item) => item.type === 'Time')
+          .reduce(function (prev, cur) {
+            return prev + Number(cur.amount);
+          }, 0)
+      );
+
+      let expenses = round(
+        exportData.details
+          .filter((item) => item.type === 'Expense')
+          .reduce(function (prev, cur) {
+            return prev + Number(cur.amount);
+          }, 0)
+      );
+
+      exportData.fees = fees;
+      exportData.expenses = expenses;
+      exportData.totalAmount = round(fees + expenses);
+      exportData.prevBillAmount = prevBills ? round(prevBills.sum) : 0;
+      exportData.totalBillingToDate = round(
+        exportData.prevBillAmount + exportData.totalAmount
+      );
+      exportData.balanceMou = round(
+        exportData.mouEstimate - exportData.totalBillingToDate
+      );
+      exportData.dateCreated = new Date();
+      model.createdUserId = userId;
+      model.documentNo = documentNo;
+      model.documentPath = documentPath;
+      model.totalAmount = exportData.totalAmount;
+      model.monthStartDate = startDate;
+
+      let userItemEntry = userFinanceCodes.find((item) => {
+        return item.type === 'Project';
+      });
+      if (userItemEntry) {
+        userItemEntry.amount = exportData.totalAmount;
+      }
+      exportData.userFinanceCodes = userFinanceCodes;
+      model.exportData = JSON.stringify(exportData);
+      model.billingCount = billingCount;
+      model.isDischarged = false;
+      await financeRepo().save(model);
+
+      timeSheet[timeSheetIndex].documentNo = documentNo;
+      timeSheet[timeSheetIndex].amountBilled = round(fees + expenses);
+      timeSheet[timeSheetIndex].is_locked = true;
+      await timesheetRepo().save(timeSheet[timeSheetIndex]);
+    }
+    const repoClient = clientRepo();
+    let client = await repoClient.findOne(res.client.id);
+    if (client) {
+      client.billingCount = billingCount;
+      repoClient.save(client);
+    }
+  }
+
   return result;
 };
 
@@ -608,6 +924,37 @@ export const retrieveTimesheetProjects = async (obj) => {
 
   return res;
 };
+
+export const retrieveDischargedPdfs = async (obj) => {
+  const repo = financeRepo();
+
+  const selectedDate = obj.selectedDate.split('-');
+
+  const year = parseInt(selectedDate[0], 10);
+  const month = parseInt(selectedDate[1], 10);
+
+  const startDate = new Date(year, month - 1, 1);
+  const endDate = new Date(year, month, 0);
+
+  const res = await repo
+    .createQueryBuilder('t')
+    .select(['t.documentNo', 't.documentPath'])
+    .addSelect('SUM(t.totalAmount)', 'sum')
+    .where(
+      '(t.monthStartDate >= :start and t.monthStartDate <= :end) and t.isDischarged = :discharged ',
+      {
+        start: startDate,
+        end: endDate,
+        discharged: true,
+      }
+    )
+    .groupBy('t.documentNo')
+    .addGroupBy('t.documentPath')
+    .getRawMany();
+
+  return res;
+};
+
 export const retrieveExportedPdfs = async (obj) => {
   const repo = financeRepo();
 
@@ -623,10 +970,14 @@ export const retrieveExportedPdfs = async (obj) => {
     .createQueryBuilder('t')
     .select(['t.documentNo', 't.documentPath'])
     .addSelect('SUM(t.totalAmount)', 'sum')
-    .where('(t.monthStartDate >= :start and t.monthStartDate <= :end) ', {
-      start: startDate,
-      end: endDate,
-    })
+    .where(
+      '(t.monthStartDate >= :start and t.monthStartDate <= :end) and (t.isDischarged = :discharged  OR t.isDischarged IS NULL)',
+      {
+        start: startDate,
+        end: endDate,
+        discharged: false,
+      }
+    )
     .groupBy('t.documentNo')
     .addGroupBy('t.documentPath')
     .getRawMany();

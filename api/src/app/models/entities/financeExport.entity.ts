@@ -28,4 +28,10 @@ export class FinanceExport {
 
   @Column({ type: 'date', nullable: true })
   monthStartDate: Date;
+
+  @Column({ type: 'boolean', nullable: true })
+  isDischarged: boolean;
+
+  @Column({ type: 'int', nullable: true })
+  billingCount: number;
 }

@@ -85,6 +85,9 @@ const manage_finances = [
   'POST/project/timesheetprojects',
   'POST/project/exportedPdfs',
   'POST/project/downloadFinancePdf',
+  'POST/project/dischargeFinanceRecord',
+  'POST/project/reinstateFinanceRecord',
+  'POST/project/dischargedPdfs',
 ];
 
 const PSB_Intake_User = [

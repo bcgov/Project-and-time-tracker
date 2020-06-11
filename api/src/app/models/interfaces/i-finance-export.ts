@@ -8,4 +8,6 @@ export interface IFinanceExport {
   documentPath: string;
   totalAmount: number;
   monthStartDate: Date;
+  isDischarged: boolean;
+  billingCount: number;
 }
