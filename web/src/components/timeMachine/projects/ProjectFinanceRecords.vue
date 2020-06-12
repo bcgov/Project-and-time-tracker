@@ -153,8 +153,8 @@ export default {
       const vm = this;
       if (docNo.length) {
         vm.$refs.spinner.open();
-        vm.$store.dispatch('dischargeFinanceRecords', { documentNo: docNo }).then(() => {
-          this.fetchData();
+        vm.$store.dispatch('dischargeFinanceRecords', { documentNo: docNo }).then((res) => {
+          if (res.length === 0) { vm.$refs.snackbar.displaySnackbar('error', 'Unable to discharge this record'); vm.$refs.spinner.close(); } else { this.fetchData(); }
         });
       }
     },

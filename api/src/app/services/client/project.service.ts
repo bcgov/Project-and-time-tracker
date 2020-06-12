@@ -554,6 +554,9 @@ export const dischargeFinanceRecord = async (obj) => {
     .where('f."documentNo" = :documentId ', { documentId: obj.documentNo })
     .getMany();
 
+  if (result && result.length > 0 && result[0].isDischarged == null) {
+    return [];
+  }
   for (let index = 0; index < result.length; index++) {
     let timeSheets = await timesheetRepo()
       .createQueryBuilder('t')
@@ -588,7 +591,7 @@ export const reinstateFinanceRecord = async (obj) => {
 
   const financeExport = result as IFinanceExport[];
   const documentNo = result[0].documentNo;
-  const documentPath = result[0].documentNo;
+  const documentPath = result[0].documentPath;
   const userId = result[0].createdUserId;
   const startDate = result[0].monthStartDate;
   let billingCount = result[0].billingCount;
