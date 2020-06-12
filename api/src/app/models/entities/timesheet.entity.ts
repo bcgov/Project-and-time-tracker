@@ -62,7 +62,7 @@ export class Timesheet {
   @Column({ type: 'double precision', nullable: true })
   amountBilled: number;
 
-  @Column({ type: 'uuid', nullable: true })
+  @Column({ type: 'text', nullable: true })
   documentNo: string;
 
   @OneToMany((type) => TimesheetEntry, (type) => type.timesheet)

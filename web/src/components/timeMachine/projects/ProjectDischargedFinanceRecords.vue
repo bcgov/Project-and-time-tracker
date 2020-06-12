@@ -67,6 +67,7 @@
                 small
                 color="btnPrimary"
                 class="white--text intake-table-approve-btn ma-0"
+                @click="reinstatePDF(props.item.t_documentNo)"
               >REINSTATE</v-btn>
             </td>
             <!-- <td class="text-xs-left">{{ props.item.dateModified | formatDate }}</td> -->
@@ -131,6 +132,15 @@ export default {
     },
   },
   methods: {
+    reinstatePDF(docNo) {
+      const vm = this;
+      if (docNo.length) {
+        vm.$refs.spinner.open();
+        vm.$store.dispatch('reinstateFinanceRecords', { documentNo: docNo }).then(() => {
+          this.fetchData();
+        });
+      }
+    },
     getvalue(num) {
       const value = Math.floor(num) / 1000 < 1
         ? `${parseFloat(Math.floor(num) / 1000, 1)}k`
