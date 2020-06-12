@@ -591,8 +591,8 @@ export default {
 
     async open(editMode = false) {
       this.dialog = true;
-      this.$refs.TimeCalenderWeekly.disableWeekPicker();
-      this.$refs.TimeCalenderBatch.disableWeekPicker();
+      // this.$refs.TimeCalenderWeekly.disableWeekPicker(true);
+      // this.$refs.TimeCalenderBatch.disableWeekPicker(true);
       if (this.$store.state.users.length === 0) {
         this.$refs.spinner.open();
         await this.$store.dispatch('fetchUsers');
