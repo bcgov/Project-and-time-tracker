@@ -169,6 +169,9 @@ const store = new Vuex.Store({
     downloadExportedPdf(state, data) {
       state.downloadFinancePdf = data;
     },
+    reinstateFinanceRecords(state, data) {
+      state.reinstateFinanceRecords = data;
+    },
     dischargeFinPdf(state, data) {
       state.dischargeFinanceRecord = data;
     },

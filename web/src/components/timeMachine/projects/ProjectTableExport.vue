@@ -216,7 +216,9 @@ export default {
     dataForPdfCreation() {
       return {};
     },
+
     exportToPDF() {
+      let totalPage = 0;
       let projects = this.getAllProjectIds();
       const vm = this;
       projects = projects.map(str => ({ projectId: str }));
@@ -499,10 +501,11 @@ export default {
                   ['Balance Remaining on MOU:', `$${pdfValues[i].balanceMou ? pdfValues[i].balanceMou.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '0'}`],
                 ],
               });
+              // eslint-disable-next-line radix
               doc.setPage(billTotalPosition.startPageNumber - 1);
               doc.setFontStyle('normal');
-              // eslint-disable-next-line radix
-              const totalPages = parseInt(billTotalPosition.startPageNumber.toString()) + parseInt(billTotalPosition.pageCount.toString()) - 1;
+              const totalPages = totalPage === 0 ? parseInt(billTotalPosition.startPageNumber.toString()) + parseInt(billTotalPosition.pageCount.toString()) - 1 : (parseInt(billTotalPosition.startPageNumber.toString()) + parseInt(billTotalPosition.pageCount.toString()) - 1) - totalPage;
+              totalPage = parseInt(totalPage.toString()) + parseInt(totalPages.toString());
               doc.text(totalPages.toString(), 80, 220);
             }
 

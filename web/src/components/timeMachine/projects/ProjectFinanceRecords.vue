@@ -149,13 +149,20 @@ export default {
     },
   },
   methods: {
-    dischargePDF(docNo) {
-      const vm = this;
-      if (docNo.length) {
-        vm.$refs.spinner.open();
-        vm.$store.dispatch('dischargeFinanceRecords', { documentNo: docNo }).then((res) => {
-          if (res.length === 0) { vm.$refs.snackbar.displaySnackbar('error', 'Unable to discharge this record'); vm.$refs.spinner.close(); } else { this.fetchData(); }
-        });
+    async dischargePDF(docNo) {
+      if (
+        await this.$refs.confirm.open(
+          'info',
+          'Are you sure to discharge this pdf?',
+        )
+      ) {
+        const vm = this;
+        if (docNo.length) {
+          vm.$refs.spinner.open();
+          vm.$store.dispatch('dischargeFinanceRecords', { documentNo: docNo }).then((res) => {
+            if (res.length === 0) { vm.$refs.snackbar.displaySnackbar('error', 'Unable to discharge this record'); vm.$refs.spinner.close(); } else { this.fetchData(); }
+          });
+        }
       }
     },
     getvalue(num) {
@@ -232,6 +239,7 @@ export default {
       return {};
     },
     exportToPDF(docNo) {
+      let totalPage = 0;
       const vm = this;
       const pdfValues = [];
       if (docNo.length) {
@@ -539,6 +547,11 @@ export default {
                   ['Balance Remaining on MOU:', `$${pdfValues[i].balanceMou ? pdfValues[i].balanceMou.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '0'}`],
                 ],
               });
+              doc.setPage(billTotalPosition.startPageNumber - 1);
+              doc.setFontStyle('normal');
+              const totalPages = totalPage === 0 ? parseInt(billTotalPosition.startPageNumber.toString()) + parseInt(billTotalPosition.pageCount.toString()) - 1 : (parseInt(billTotalPosition.startPageNumber.toString()) + parseInt(billTotalPosition.pageCount.toString()) - 1) - totalPage;
+              totalPage = parseInt(totalPage.toString()) + parseInt(totalPages.toString());
+              doc.text(totalPages.toString(), 80, 220);
             } else {
               doc.text('Total Amount', leftStartCoordinate + 117, billTotalPosition.finalY + 10);
               doc.setFontSize(12);

@@ -62,7 +62,7 @@
             </td>
             <td class="text-xs-left">{{ props.item.t_documentPath.toString().slice(0, 10) }}</td>
 
-            <td class="text-xs-center">
+            <td class="text-xs-left">
               <v-btn
                 small
                 color="btnPrimary"
@@ -132,13 +132,20 @@ export default {
     },
   },
   methods: {
-    reinstatePDF(docNo) {
-      const vm = this;
-      if (docNo.length) {
-        vm.$refs.spinner.open();
-        vm.$store.dispatch('reinstateFinanceRecords', { documentNo: docNo }).then(() => {
-          this.fetchData();
-        });
+    async reinstatePDF(docNo) {
+      if (
+        await this.$refs.confirm.open(
+          'info',
+          'Are you sure to reinstate this pdf?',
+        )
+      ) {
+        const vm = this;
+        if (docNo.length) {
+          vm.$refs.spinner.open();
+          vm.$store.dispatch('reinstateFinanceRecords', { documentNo: docNo }).then(() => {
+            this.fetchData();
+          });
+        }
       }
     },
     getvalue(num) {
