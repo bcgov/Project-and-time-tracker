@@ -149,13 +149,20 @@ export default {
     },
   },
   methods: {
-    dischargePDF(docNo) {
-      const vm = this;
-      if (docNo.length) {
-        vm.$refs.spinner.open();
-        vm.$store.dispatch('dischargeFinanceRecords', { documentNo: docNo }).then((res) => {
-          if (res.length === 0) { vm.$refs.snackbar.displaySnackbar('error', 'Unable to discharge this record'); vm.$refs.spinner.close(); } else { this.fetchData(); }
-        });
+    async dischargePDF(docNo) {
+      if (
+        await this.$refs.confirm.open(
+          'info',
+          'Are you sure to discharge this pdf?',
+        )
+      ) {
+        const vm = this;
+        if (docNo.length) {
+          vm.$refs.spinner.open();
+          vm.$store.dispatch('dischargeFinanceRecords', { documentNo: docNo }).then((res) => {
+            if (res.length === 0) { vm.$refs.snackbar.displaySnackbar('error', 'Unable to discharge this record'); vm.$refs.spinner.close(); } else { this.fetchData(); }
+          });
+        }
       }
     },
     getvalue(num) {
