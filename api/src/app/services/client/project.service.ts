@@ -543,7 +543,7 @@ export const downloadpdf = async (obj) => {
   const repo = financeRepo();
   const result = await repo
     .createQueryBuilder('f')
-    .where('f."documentNo" = :documentId ', { documentId: obj.documentNo })
+    .where('f."documentNo" = :documentId', { documentId: obj.documentNo })
     .getMany();
   return result;
 };
@@ -912,8 +912,9 @@ export const retrieveTimesheetProjects = async (obj) => {
   const res = await repo
     .createQueryBuilder('t')
     .select('DISTINCT t.project', 'id')
+    .leftJoin(FinanceExport, 'fe', 't."documentNo" = fe.documentNo')
     .where(
-      '(t.startDate >= :start and t.startDate <= :end)  and (t.is_locked = :is_locked or t.is_locked IS NULL)',
+      '(t.startDate >= :start and t.startDate <= :end)  and (t.is_locked = :is_locked or t.is_locked IS NULL) and (fe.isDischarged IS NULL or fe.isDischarged = false)',
       {
         start: startDate,
         end: endDate,

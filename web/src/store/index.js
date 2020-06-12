@@ -648,6 +648,18 @@ const store = new Vuex.Store({
         .catch(err => Promise.reject(err.response));
       return Promise.resolve(api);
     },
+    async reinstateFinanceRecords(ctx, req) {
+      const body = req;
+      const api = await $http
+        .post(`${API_URI}/project/reinstateFinanceRecord`, body)
+        .then((res) => {
+          const content = res.data;
+          ctx.commit('reinstateFinanceRecords', content);
+          return Promise.resolve(content);
+        })
+        .catch(err => Promise.reject(err.response));
+      return Promise.resolve(api);
+    },
     async fetchMouProjects(ctx, req) {
       const body = req;
       const api = await $http
@@ -1322,7 +1334,7 @@ const store = new Vuex.Store({
       const body = req;
       const api = await $http
         .patch(`${API_URI}/project-risk/${req.projectId}/update`, body)
-        .then(res => {
+        .then((res) => {
           const content = res.data;
           return Promise.resolve(content);
         })
@@ -1330,7 +1342,7 @@ const store = new Vuex.Store({
       return Promise.resolve(api);
     },
 
-     async fetchTimesheetProjects(ctx, req) {
+    async fetchTimesheetProjects(ctx, req) {
       const body = req;
       const api = await $http
         .post(`${API_URI}/project/timesheetprojects`, body)
@@ -1357,7 +1369,7 @@ const store = new Vuex.Store({
     async retrieveDischargedPdfs(ctx, req) {
       const body = req;
       const api = await $http
-        .post(`${API_URI}/project/retrieveDischargedPdfs`, body)
+        .post(`${API_URI}/project/dischargedPdfs`, body)
         .then((res) => {
           const content = res.data;
           ctx.commit('fetchDischargedPdfs', content);
