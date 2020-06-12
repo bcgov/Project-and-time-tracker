@@ -381,7 +381,7 @@ export const retrieveFinanceData = async (obj, userId) => {
     exportData.mouEstimate = res.mouAmount;
     const timeSheet = await timesheetRepo()
       .createQueryBuilder('t')
-      .leftJoinAndSelect('t.timesheetEntries', 'te')
+      .innerJoinAndSelect('t.timesheetEntries', 'te')
       .innerJoinAndSelect('t.user', 'u')
       .innerJoinAndSelect('u.contact', 'c')
       .where(
@@ -473,7 +473,7 @@ export const retrieveFinanceData = async (obj, userId) => {
 
       let fees = round(
         exportData.details
-          .filter((item) => item.type === 'Time')
+          .filter((item) => item.type === 'Time' && item.id == timeSheetId)
           .reduce(function (prev, cur) {
             return prev + Number(cur.amount);
           }, 0)
@@ -481,46 +481,63 @@ export const retrieveFinanceData = async (obj, userId) => {
 
       let expenses = round(
         exportData.details
-          .filter((item) => item.type === 'Expense')
+          .filter((item) => item.type === 'Expense' && item.id == timeSheetId)
           .reduce(function (prev, cur) {
             return prev + Number(cur.amount);
           }, 0)
       );
-
-      exportData.fees = fees;
-      exportData.expenses = expenses;
-      exportData.totalAmount = round(fees + expenses);
-      exportData.prevBillAmount = prevBills ? round(prevBills.sum) : 0;
-      exportData.totalBillingToDate = round(
-        exportData.prevBillAmount + exportData.totalAmount
-      );
-      exportData.balanceMou = round(
-        exportData.mouEstimate - exportData.totalBillingToDate
-      );
-      exportData.dateCreated = new Date();
-      model.createdUserId = userId;
-      model.documentNo = documentNo;
-      model.documentPath = documentPath;
-      model.totalAmount = exportData.totalAmount;
-      model.monthStartDate = startDate;
-
-      let userItemEntry = userFinanceCodes.find((item) => {
-        return item.type === 'Project';
-      });
-      if (userItemEntry) {
-        userItemEntry.amount = exportData.totalAmount;
-      }
-      exportData.userFinanceCodes = userFinanceCodes;
-      model.exportData = JSON.stringify(exportData);
-      model.billingCount = billingCount;
-      model.isDischarged = false;
-      await createFinanceExport(model);
 
       timeSheet[timeSheetIndex].documentNo = documentNo;
       timeSheet[timeSheetIndex].amountBilled = round(fees + expenses);
       timeSheet[timeSheetIndex].is_locked = true;
       await timesheetRepo().save(timeSheet[timeSheetIndex]);
     }
+
+    let fees = round(
+      exportData.details
+        .filter((item) => item.type === 'Time')
+        .reduce(function (prev, cur) {
+          return prev + Number(cur.amount);
+        }, 0)
+    );
+
+    let expenses = round(
+      exportData.details
+        .filter((item) => item.type === 'Expense')
+        .reduce(function (prev, cur) {
+          return prev + Number(cur.amount);
+        }, 0)
+    );
+
+    exportData.fees = fees;
+    exportData.expenses = expenses;
+    exportData.totalAmount = round(fees + expenses);
+    exportData.prevBillAmount = prevBills ? round(prevBills.sum) : 0;
+    exportData.totalBillingToDate = round(
+      exportData.prevBillAmount + exportData.totalAmount
+    );
+    exportData.balanceMou = round(
+      exportData.mouEstimate - exportData.totalBillingToDate
+    );
+    exportData.dateCreated = new Date();
+    model.createdUserId = userId;
+    model.documentNo = documentNo;
+    model.documentPath = documentPath;
+    model.totalAmount = exportData.totalAmount;
+    model.monthStartDate = startDate;
+
+    let userItemEntry = userFinanceCodes.find((item) => {
+      return item.type === 'Project';
+    });
+    if (userItemEntry) {
+      userItemEntry.amount = exportData.totalAmount;
+    }
+    exportData.userFinanceCodes = userFinanceCodes;
+    model.exportData = JSON.stringify(exportData);
+    model.billingCount = billingCount;
+    model.isDischarged = false;
+    await createFinanceExport(model);
+
     const repoClient = clientRepo();
     let client = await repoClient.findOne(res.client.id);
     if (client) {
@@ -711,7 +728,7 @@ export const reinstateFinanceRecord = async (obj) => {
     exportData.mouEstimate = res.mouAmount;
     const timeSheet = await timesheetRepo()
       .createQueryBuilder('t')
-      .leftJoinAndSelect('t.timesheetEntries', 'te')
+      .innerJoinAndSelect('t.timesheetEntries', 'te')
       .innerJoinAndSelect('t.user', 'u')
       .innerJoinAndSelect('u.contact', 'c')
       .where(
@@ -802,7 +819,7 @@ export const reinstateFinanceRecord = async (obj) => {
 
       let fees = round(
         exportData.details
-          .filter((item) => item.type === 'Time')
+          .filter((item) => item.type === 'Time' && item.id == timeSheetId)
           .reduce(function (prev, cur) {
             return prev + Number(cur.amount);
           }, 0)
@@ -810,46 +827,63 @@ export const reinstateFinanceRecord = async (obj) => {
 
       let expenses = round(
         exportData.details
-          .filter((item) => item.type === 'Expense')
+          .filter((item) => item.type === 'Expense' && item.id == timeSheetId)
           .reduce(function (prev, cur) {
             return prev + Number(cur.amount);
           }, 0)
       );
-
-      exportData.fees = fees;
-      exportData.expenses = expenses;
-      exportData.totalAmount = round(fees + expenses);
-      exportData.prevBillAmount = prevBills ? round(prevBills.sum) : 0;
-      exportData.totalBillingToDate = round(
-        exportData.prevBillAmount + exportData.totalAmount
-      );
-      exportData.balanceMou = round(
-        exportData.mouEstimate - exportData.totalBillingToDate
-      );
-      exportData.dateCreated = new Date();
-      model.createdUserId = userId;
-      model.documentNo = documentNo;
-      model.documentPath = documentPath;
-      model.totalAmount = exportData.totalAmount;
-      model.monthStartDate = startDate;
-
-      let userItemEntry = userFinanceCodes.find((item) => {
-        return item.type === 'Project';
-      });
-      if (userItemEntry) {
-        userItemEntry.amount = exportData.totalAmount;
-      }
-      exportData.userFinanceCodes = userFinanceCodes;
-      model.exportData = JSON.stringify(exportData);
-      model.billingCount = billingCount;
-      model.isDischarged = false;
-      await financeRepo().save(model);
 
       timeSheet[timeSheetIndex].documentNo = documentNo;
       timeSheet[timeSheetIndex].amountBilled = round(fees + expenses);
       timeSheet[timeSheetIndex].is_locked = true;
       await timesheetRepo().save(timeSheet[timeSheetIndex]);
     }
+
+    let fees = round(
+      exportData.details
+        .filter((item) => item.type === 'Time')
+        .reduce(function (prev, cur) {
+          return prev + Number(cur.amount);
+        }, 0)
+    );
+
+    let expenses = round(
+      exportData.details
+        .filter((item) => item.type === 'Expense')
+        .reduce(function (prev, cur) {
+          return prev + Number(cur.amount);
+        }, 0)
+    );
+
+    exportData.fees = fees;
+    exportData.expenses = expenses;
+    exportData.totalAmount = round(fees + expenses);
+    exportData.prevBillAmount = prevBills ? round(prevBills.sum) : 0;
+    exportData.totalBillingToDate = round(
+      exportData.prevBillAmount + exportData.totalAmount
+    );
+    exportData.balanceMou = round(
+      exportData.mouEstimate - exportData.totalBillingToDate
+    );
+    exportData.dateCreated = new Date();
+    model.createdUserId = userId;
+    model.documentNo = documentNo;
+    model.documentPath = documentPath;
+    model.totalAmount = exportData.totalAmount;
+    model.monthStartDate = startDate;
+
+    let userItemEntry = userFinanceCodes.find((item) => {
+      return item.type === 'Project';
+    });
+    if (userItemEntry) {
+      userItemEntry.amount = exportData.totalAmount;
+    }
+    exportData.userFinanceCodes = userFinanceCodes;
+    model.exportData = JSON.stringify(exportData);
+    model.billingCount = billingCount;
+    model.isDischarged = false;
+    await financeRepo().save(model);
+
     const repoClient = clientRepo();
     let client = await repoClient.findOne(res.client.id);
     if (client) {
@@ -915,6 +949,7 @@ export const retrieveTimesheetProjects = async (obj) => {
   const res = await repo
     .createQueryBuilder('t')
     .select('DISTINCT t.project', 'id')
+    .innerJoin('t.timesheetEntries', 'te')
     .leftJoin(FinanceExport, 'fe', 't."documentNo" = fe.documentNo')
     .where(
       '(t.startDate >= :start and t.startDate <= :end)  and (t.is_locked = :is_locked or t.is_locked IS NULL) and (fe.isDischarged IS NULL or fe.isDischarged = false)',

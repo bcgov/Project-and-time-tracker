@@ -353,7 +353,7 @@ export default {
       //       || item.teamWideProject === true),
       // );
       const vm = this;
-      vm.mouList = [];
+      // vm.mouList = [];
       vm.projectList = [];
       vm.rfxList = [];
       vm.userMouProjects = [];
@@ -361,7 +361,7 @@ export default {
         vm.userMouProjects = res;
       });
       if (!editMode) {
-        this.getTimeSheets();
+        await this.getTimeSheets();
       }
       if (this.$refs.spinner) {
         this.$refs.spinner.close();
@@ -462,11 +462,11 @@ export default {
         this.$refs.spinner.close();
       }
     },
-    onChangeWeek() {
+    async onChangeWeek() {
       if (this.$refs.spinner) {
         this.$refs.spinner.open();
       }
-      this.getTimeSheets(true);
+      await this.getTimeSheets(true);
       if (this.$refs.spinner) {
         this.$refs.spinner.close();
       }
@@ -483,7 +483,7 @@ export default {
         userId: this.form.userId,
       };
       const vm = this;
-      vm.$store.dispatch('fetchTimesheetEntries', formData).then(() => {
+      await vm.$store.dispatch('fetchTimesheetEntries', formData).then(() => {
         const obj = vm.$store.state.timesheetEntryData;
         if (obj && obj[0] && obj[0].timesheetEntries) {
           vm.timesheet = [];
@@ -544,7 +544,7 @@ export default {
 
     async editTimeEntries(timeSheetId) {
       const vm = this;
-      vm.$store.dispatch('fetchTimesheetById', { id: timeSheetId }).then(() => {
+      await vm.$store.dispatch('fetchTimesheetById', { id: timeSheetId }).then(() => {
         const obj = vm.$store.state.timesheetById;
         // this.onChangeUser(obj.userId, true);
         this.form.userId = obj.userId;
@@ -591,6 +591,8 @@ export default {
 
     async open(editMode = false) {
       this.dialog = true;
+      this.$refs.TimeCalenderWeekly.disableWeekPicker();
+      this.$refs.TimeCalenderBatch.disableWeekPicker();
       if (this.$store.state.users.length === 0) {
         this.$refs.spinner.open();
         await this.$store.dispatch('fetchUsers');
