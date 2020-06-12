@@ -4,6 +4,7 @@
     <v-radio-group v-model="selected" row>
       <v-radio label="New Finance Report" value="New Finance Report"></v-radio>
       <v-radio label="Finance Records" value="Finance Records"></v-radio>
+        <v-radio label="Discharged" value="Discharged"></v-radio>
     </v-radio-group>
 
     <v-layout row wrap>
@@ -16,6 +17,10 @@
           v-if="selected === 'Finance Records'"
           ref="projectFinanceRecords"
         ></finance-records>
+        <project-discharged-finance-records
+          v-if="selected === 'Discharged'"
+          ref="ProjectDischargedFinanceRecords"
+        ></project-discharged-finance-records>
       </v-flex>
     </v-layout>
     <v-flex md12></v-flex>
@@ -26,12 +31,14 @@
 import Material from 'vuetify/es5/util/colors';
 import FinanceRecords from './ProjectFinanceRecords.vue';
 import ProjectsTable from './ProjectTableExport.vue';
+import ProjectDischargedFinanceRecords from './ProjectDischargedFinanceRecords.vue';
 import './projects.styl';
 
 export default {
   components: {
     ProjectsTable,
     FinanceRecords,
+    ProjectDischargedFinanceRecords,
   },
   data: () => ({
     color: Material,

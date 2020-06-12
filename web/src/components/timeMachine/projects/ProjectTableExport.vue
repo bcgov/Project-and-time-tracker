@@ -474,6 +474,9 @@ export default {
               doc.setFontStyle('normal');
               // eslint-disable-next-line no-unused-vars
               const billTotalPosition = billTable.autoTable.previous;
+              // eslint-disable-next-line no-console
+              console.log('pos:', billTotalPosition);
+
               doc.setFontStyle('bold');
               doc.autoTable({
                 margin: { top: 10, left: 96 },
@@ -496,7 +499,14 @@ export default {
                   ['Balance Remaining on MOU:', `$${pdfValues[i].balanceMou ? pdfValues[i].balanceMou.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '0'}`],
                 ],
               });
+              doc.setPage(billTotalPosition.startPageNumber - 1);
+              doc.setFontStyle('normal');
+              // eslint-disable-next-line radix
+              const totalPages = parseInt(billTotalPosition.startPageNumber.toString()) + parseInt(billTotalPosition.pageCount.toString()) - 1;
+              doc.text(totalPages.toString(), 80, 220);
             }
+
+            // doc.text('Total Pages', 117, billTotalPosition.finalY + 10);
             doc.save(pdfValues[0].documentPath);
             this.getAllProjectList();
           });

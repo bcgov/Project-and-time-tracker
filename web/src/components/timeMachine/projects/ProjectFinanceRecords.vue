@@ -61,7 +61,7 @@
               {{ props.item.t_documentPath }}
             </td>
             <td class="text-xs-left">{{ props.item.t_documentPath.toString().slice(0, 10) }}</td>
-            <td class="text-xs-left">
+            <td class="text-xs-center">
               <v-tooltip top v-if="!props.item.is_archived">
                 <template v-slot:activator="{ on }">
                   <v-btn
@@ -76,6 +76,14 @@
                 </template>
                 <span>Download</span>
               </v-tooltip>
+            </td>
+            <td class="text-xs-center">
+              <v-btn
+                small
+                color="btnPrimary"
+                class="white--text intake-table-approve-btn ma-0"
+                 @click="dischargePDF(props.item.t_documentNo)"
+              >DISCHARGE</v-btn>
             </td>
             <!-- <td class="text-xs-left">{{ props.item.dateModified | formatDate }}</td> -->
           </template>
@@ -124,6 +132,7 @@ export default {
         { text: 'PDF Name', value: 'recordName', sortable: true },
         { text: 'Export Month', value: 'pdfdate', sortable: true },
         { text: 'Download File', value: 'download', sortable: true },
+        { text: 'Discharge File', value: 'discharge' },
       ],
       projectsList: [],
     };
@@ -140,6 +149,15 @@ export default {
     },
   },
   methods: {
+    dischargePDF(docNo) {
+      const vm = this;
+      if (docNo.length) {
+        vm.$refs.spinner.open();
+        vm.$store.dispatch('dischargeFinanceRecords', { documentNo: docNo }).then(() => {
+          this.fetchData();
+        });
+      }
+    },
     getvalue(num) {
       const value = Math.floor(num) / 1000 < 1
         ? `${parseFloat(Math.floor(num) / 1000, 1)}k`

@@ -56,6 +56,7 @@ const store = new Vuex.Store({
     timesheetEntryDatabyUser: [],
     financeExport: [],
     downloadFinancePdf: [],
+    dischargeFinanceRecord: [],
     timesheetById: [],
     projectRiskAnswers: [],
     intakeRiskQuestions: [],
@@ -168,7 +169,9 @@ const store = new Vuex.Store({
     downloadExportedPdf(state, data) {
       state.downloadFinancePdf = data;
     },
-    
+    dischargeFinPdf(state, data) {
+      state.dischargeFinanceRecord = data;
+    },
     fetchRFxPhases(state, data) {
       state.rfxPhases = data;
     },
@@ -178,6 +181,13 @@ const store = new Vuex.Store({
     fetchExportedPdfs(state, data) {
       state.downloadedPdfs = data;
     },
+    fetchDischargedPdfs(state, data) {
+      state.downloadedPdfs = data;
+    },
+    retrieveDischargedPdfs(state, data) {
+      state.downloadedPdfs = data;
+    },
+
     fetchRFxTypes(state, data) {
       state.rfxTypes = data;
     },
@@ -347,7 +357,7 @@ const store = new Vuex.Store({
         });
       }
 
-     
+
     },
     addProject() {
       throw new Error('Not implemented!');
@@ -601,7 +611,7 @@ const store = new Vuex.Store({
         .catch(err => Promise.reject(err.response));
       return Promise.resolve(api);
     },
-    
+
     async financeExport(ctx, req) {
       const body = req;
       const api = await $http
@@ -626,18 +636,30 @@ const store = new Vuex.Store({
         .catch(err => Promise.reject(err.response));
       return Promise.resolve(api);
     },
+    async dischargeFinanceRecords(ctx, req) {
+      const body = req;
+      const api = await $http
+        .post(`${API_URI}/project/dischargeFinanceRecord`, body)
+        .then((res) => {
+          const content = res.data;
+          ctx.commit('downloadExportedPdf', content);
+          return Promise.resolve(content);
+        })
+        .catch(err => Promise.reject(err.response));
+      return Promise.resolve(api);
+    },
     async fetchMouProjects(ctx, req) {
       const body = req;
-      const api = await $http     
-      .get(`${API_URI}/project/${req.id}/by-user-id`)      
+      const api = await $http
+      .get(`${API_URI}/project/${req.id}/by-user-id`)
         .then((res) => {
-          const content = res.data;        
+          const content = res.data;
           return Promise.resolve(content);
         })
         .catch(err => Promise.reject(err));
       return Promise.resolve(api);
     },
-    
+
     async fetchTimesheetEntriesByUser(ctx, req) {
       const body = req;
       const api = await $http
@@ -906,7 +928,7 @@ const store = new Vuex.Store({
         .catch(err => Promise.reject(err));
       return Promise.resolve(api);
     },
-    
+
     async updateProctLog(ctx, req) {
       console.log(req);
       const api = $http
@@ -931,17 +953,17 @@ const store = new Vuex.Store({
         .catch(err => Promise.reject(err));
       return Promise.resolve(api);
     },
-    async updateRfxPhase(ctx, req) {    
+    async updateRfxPhase(ctx, req) {
       const api = $http
         .patch(`${API_URI}/rfx-phase/${req.id}`, req)
         .then((res) => {
-          const content = res.data;         
+          const content = res.data;
           return Promise.resolve(content);
         })
         .catch(err => Promise.reject(err));
       return Promise.resolve(api);
     },
-    async updateRfxType(ctx, req) {     
+    async updateRfxType(ctx, req) {
       const api = $http
         .patch(`${API_URI}/rfx-type/${req.id}`, req)
         .then((res) => {
@@ -960,7 +982,7 @@ const store = new Vuex.Store({
         throw err;
       }
     },
-    
+
     async deleteMOUs(ctx, req) {
       try {
         const res = await $http.delete(`${API_URI}/MOU/${req.id}`);
@@ -1133,7 +1155,7 @@ const store = new Vuex.Store({
         .catch(err => Promise.reject(err));
       return Promise.resolve(api);
     },
-  
+
     async assignProjectBackup(ctx, req) {
       const body = {
         userId: req.userId,
@@ -1285,7 +1307,7 @@ const store = new Vuex.Store({
       const res = await $http.get(`${API_URI}/timesheet/user`)
       ctx.commit('fetchUserTimesheets', res.data);
       return Promise.resolve(res.data);
-    },    
+    },
     async fetchAllProcurementLog(ctx, req) {
       const res = await $http.get(`${API_URI}/procurement/${req.id}`)
       ctx.commit('fetchAllProcurementLog', res.data);
@@ -1313,26 +1335,38 @@ const store = new Vuex.Store({
       const api = await $http
         .post(`${API_URI}/project/timesheetprojects`, body)
         .then((res) => {
-          const content = res.data;        
+          const content = res.data;
           ctx.commit('fetchTimesheetProjects', content);
           return Promise.resolve(content);
         })
         .catch(err => Promise.reject(err.response));
       return Promise.resolve(api);
-    }, 
+    },
     async fetchExportedPdfs(ctx, req) {
       const body = req;
       const api = await $http
         .post(`${API_URI}/project/exportedPdfs`, body)
         .then((res) => {
-          const content = res.data;        
+          const content = res.data;
           ctx.commit('fetchExportedPdfs', content);
           return Promise.resolve(content);
         })
         .catch(err => Promise.reject(err.response));
       return Promise.resolve(api);
-    },     
-  async addBatchTimesheet(ctx, req) {
+    },
+    async retrieveDischargedPdfs(ctx, req) {
+      const body = req;
+      const api = await $http
+        .post(`${API_URI}/project/retrieveDischargedPdfs`, body)
+        .then((res) => {
+          const content = res.data;
+          ctx.commit('fetchDischargedPdfs', content);
+          return Promise.resolve(content);
+        })
+        .catch(err => Promise.reject(err.response));
+      return Promise.resolve(api);
+    },
+    async addBatchTimesheet(ctx, req) {
       const body = req;
 
       const api = await $http
