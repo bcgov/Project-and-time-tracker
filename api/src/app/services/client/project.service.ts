@@ -254,6 +254,100 @@ async function fillUserFinanceCodes(
     }
   }
 }
+
+async function generateExportEntries(
+  timeSheet,
+  timesheetEntry,
+  timeSheetId,
+  details,
+  userFinanceCodes
+) {
+  if (timesheetEntry.hoursBillable && timesheetEntry.hoursBillable > 0) {
+    let financeDetailHour = {} as IFinanceExportDetail;
+    financeDetailHour.entryDate = timesheetEntry.entryDate;
+    financeDetailHour.description = timesheetEntry.commentsBillable;
+    financeDetailHour.hours = timesheetEntry.hoursBillable;
+    financeDetailHour.type = 'Time';
+    financeDetailHour.user = timeSheet.userId;
+    financeDetailHour.resource = timeSheet.user.contact.fullName;
+    financeDetailHour.rate = timeSheet.user.contact.hourlyRate
+      ? timeSheet.user.contact.hourlyRate
+      : 0;
+    financeDetailHour.amount = round(
+      financeDetailHour.rate * financeDetailHour.hours
+    );
+    financeDetailHour.id = timeSheetId;
+    details.push(financeDetailHour);
+
+    await fillUserFinanceCodes(
+      userFinanceCodes,
+      financeDetailHour,
+      timeSheet.user.contact.id
+    );
+  }
+
+  if (timesheetEntry.hoursUnBillable && timesheetEntry.hoursUnBillable > 0) {
+    let financeDetailHour = {} as IFinanceExportDetail;
+    financeDetailHour.entryDate = timesheetEntry.entryDate;
+    financeDetailHour.description = timesheetEntry.commentsUnBillable;
+    financeDetailHour.hours = timesheetEntry.hoursUnBillable;
+    financeDetailHour.type = 'Time';
+    financeDetailHour.user = timeSheet.userId;
+    financeDetailHour.resource = timeSheet.user.contact.fullName;
+    financeDetailHour.rate = 0;
+    financeDetailHour.amount = 0;
+    financeDetailHour.id = timeSheetId;
+    details.push(financeDetailHour);
+
+    await fillUserFinanceCodes(
+      userFinanceCodes,
+      financeDetailHour,
+      timeSheet.user.contact.id
+    );
+  }
+  if (timesheetEntry.revenueHours && timesheetEntry.revenueHours > 0) {
+    let financeDetailRevenue = {} as IFinanceExportDetail;
+    financeDetailRevenue.entryDate = timesheetEntry.entryDate;
+    financeDetailRevenue.description = timesheetEntry.revenueComment;
+    financeDetailRevenue.hours = timesheetEntry.revenueHours;
+    financeDetailRevenue.rate = timeSheet.user.contact.revenueRate
+      ? timeSheet.user.contact.revenueRate
+      : 0;
+    financeDetailRevenue.amount = round(
+      financeDetailRevenue.rate * financeDetailRevenue.hours
+    );
+    financeDetailRevenue.type = 'Revenue';
+    financeDetailRevenue.user = timeSheet.userId;
+    financeDetailRevenue.resource = timeSheet.user.contact.fullName;
+    financeDetailRevenue.id = timeSheetId;
+    details.push(financeDetailRevenue);
+
+    await fillUserFinanceCodes(
+      userFinanceCodes,
+      financeDetailRevenue,
+      timeSheet.user.contact.id
+    );
+  }
+
+  if (timesheetEntry.expenseAmount && timesheetEntry.expenseAmount > 0) {
+    let financeDetailExpense = {} as IFinanceExportDetail;
+    financeDetailExpense.entryDate = timesheetEntry.entryDate;
+    financeDetailExpense.description = timesheetEntry.expenseComment;
+    financeDetailExpense.amount = round(timesheetEntry.expenseAmount);
+    financeDetailExpense.type = 'Expense';
+    financeDetailExpense.user = timeSheet.userId;
+    financeDetailExpense.resource = timeSheet.user.contact.fullName;
+    financeDetailExpense.id = timeSheetId;
+    details.push(financeDetailExpense);
+
+    await fillUserFinanceCodes(
+      userFinanceCodes,
+      financeDetailExpense,
+      timeSheet.user.contact.id
+    );
+  }
+}
+
 export const retrieveFinanceData = async (obj, userId) => {
   const financeExport = obj.selectedProjects as IFinanceExport[];
   const documentNo: string = uuidv4();
@@ -404,76 +498,30 @@ export const retrieveFinanceData = async (obj, userId) => {
       timeSheetIndex++
     ) {
       let timeSheetId = timeSheet[timeSheetIndex].id;
+      const timesheetEntry: TimesheetEntry[] =
+        timeSheet[timeSheetIndex].timesheetEntries;
       for (
         let timeSheetEntryIndex = 0;
         timeSheetEntryIndex < timeSheet[timeSheetIndex].timesheetEntries.length;
         timeSheetEntryIndex++
       ) {
-        const timesheetEntry: TimesheetEntry[] =
-          timeSheet[timeSheetIndex].timesheetEntries;
-        if (
-          timesheetEntry[timeSheetEntryIndex].hoursBillable &&
-          timesheetEntry[timeSheetEntryIndex].hoursBillable > 0
-        ) {
-          let financeDetailHour = {} as IFinanceExportDetail;
-          financeDetailHour.entryDate =
-            timesheetEntry[timeSheetEntryIndex].entryDate;
-          financeDetailHour.description =
-            timesheetEntry[timeSheetEntryIndex].commentsBillable;
-          financeDetailHour.hours =
-            timesheetEntry[timeSheetEntryIndex].hoursBillable;
-          financeDetailHour.type = 'Time';
-          financeDetailHour.user = timeSheet[timeSheetIndex].userId;
-          financeDetailHour.resource =
-            timeSheet[timeSheetIndex].user.contact.fullName;
-          financeDetailHour.rate = timeSheet[timeSheetIndex].user.contact
-            .hourlyRate
-            ? timeSheet[timeSheetIndex].user.contact.hourlyRate
-            : 0;
-          financeDetailHour.amount = round(
-            financeDetailHour.rate * financeDetailHour.hours
-          );
-          financeDetailHour.id = timeSheetId;
-          details.push(financeDetailHour);
-
-          await fillUserFinanceCodes(
-            userFinanceCodes,
-            financeDetailHour,
-            timeSheet[timeSheetIndex].user.contact.id
-          );
-        }
-
-        if (
-          timesheetEntry[timeSheetEntryIndex].expenseAmount &&
-          timesheetEntry[timeSheetEntryIndex].expenseAmount > 0
-        ) {
-          let financeDetailExpense = {} as IFinanceExportDetail;
-          financeDetailExpense.entryDate =
-            timesheetEntry[timeSheetEntryIndex].entryDate;
-          financeDetailExpense.description =
-            timesheetEntry[timeSheetEntryIndex].expenseComment;
-          financeDetailExpense.amount = round(
-            timesheetEntry[timeSheetEntryIndex].expenseAmount
-          );
-          financeDetailExpense.type = 'Expense';
-          financeDetailExpense.user = timeSheet[timeSheetIndex].userId;
-          financeDetailExpense.resource =
-            timeSheet[timeSheetIndex].user.contact.fullName;
-          financeDetailExpense.id = timeSheetId;
-          details.push(financeDetailExpense);
-
-          await fillUserFinanceCodes(
-            userFinanceCodes,
-            financeDetailExpense,
-            timeSheet[timeSheetIndex].user.contact.id
-          );
-        }
+        await generateExportEntries(
+          timeSheet[timeSheetIndex],
+          timesheetEntry[timeSheetEntryIndex],
+          timeSheetId,
+          details,
+          userFinanceCodes
+        );
       }
       exportData.details = details;
 
       let fees = round(
         exportData.details
-          .filter((item) => item.type === 'Time' && item.id == timeSheetId)
+          .filter(
+            (item) =>
+              (item.type === 'Time' || item.type === 'Revenue') &&
+              item.id == timeSheetId
+          )
           .reduce(function (prev, cur) {
             return prev + Number(cur.amount);
           }, 0)
@@ -495,7 +543,7 @@ export const retrieveFinanceData = async (obj, userId) => {
 
     let fees = round(
       exportData.details
-        .filter((item) => item.type === 'Time')
+        .filter((item) => item.type === 'Time' || item.type === 'Revenue')
         .reduce(function (prev, cur) {
           return prev + Number(cur.amount);
         }, 0)
@@ -750,76 +798,30 @@ export const reinstateFinanceRecord = async (obj) => {
       timeSheetIndex++
     ) {
       let timeSheetId = timeSheet[timeSheetIndex].id;
+      let timesheetEntry: TimesheetEntry[] =
+        timeSheet[timeSheetIndex].timesheetEntries;
       for (
         let timeSheetEntryIndex = 0;
         timeSheetEntryIndex < timeSheet[timeSheetIndex].timesheetEntries.length;
         timeSheetEntryIndex++
       ) {
-        const timesheetEntry: TimesheetEntry[] =
-          timeSheet[timeSheetIndex].timesheetEntries;
-        if (
-          timesheetEntry[timeSheetEntryIndex].hoursBillable &&
-          timesheetEntry[timeSheetEntryIndex].hoursBillable > 0
-        ) {
-          let financeDetailHour = {} as IFinanceExportDetail;
-          financeDetailHour.entryDate =
-            timesheetEntry[timeSheetEntryIndex].entryDate;
-          financeDetailHour.description =
-            timesheetEntry[timeSheetEntryIndex].commentsBillable;
-          financeDetailHour.hours =
-            timesheetEntry[timeSheetEntryIndex].hoursBillable;
-          financeDetailHour.type = 'Time';
-          financeDetailHour.user = timeSheet[timeSheetIndex].userId;
-          financeDetailHour.resource =
-            timeSheet[timeSheetIndex].user.contact.fullName;
-          financeDetailHour.rate = timeSheet[timeSheetIndex].user.contact
-            .hourlyRate
-            ? timeSheet[timeSheetIndex].user.contact.hourlyRate
-            : 0;
-          financeDetailHour.amount = round(
-            financeDetailHour.rate * financeDetailHour.hours
-          );
-          financeDetailHour.id = timeSheetId;
-          details.push(financeDetailHour);
-
-          await fillUserFinanceCodes(
-            userFinanceCodes,
-            financeDetailHour,
-            timeSheet[timeSheetIndex].user.contact.id
-          );
-        }
-
-        if (
-          timesheetEntry[timeSheetEntryIndex].expenseAmount &&
-          timesheetEntry[timeSheetEntryIndex].expenseAmount > 0
-        ) {
-          let financeDetailExpense = {} as IFinanceExportDetail;
-          financeDetailExpense.entryDate =
-            timesheetEntry[timeSheetEntryIndex].entryDate;
-          financeDetailExpense.description =
-            timesheetEntry[timeSheetEntryIndex].expenseComment;
-          financeDetailExpense.amount = round(
-            timesheetEntry[timeSheetEntryIndex].expenseAmount
-          );
-          financeDetailExpense.type = 'Expense';
-          financeDetailExpense.user = timeSheet[timeSheetIndex].userId;
-          financeDetailExpense.resource =
-            timeSheet[timeSheetIndex].user.contact.fullName;
-          financeDetailExpense.id = timeSheetId;
-          details.push(financeDetailExpense);
-
-          await fillUserFinanceCodes(
-            userFinanceCodes,
-            financeDetailExpense,
-            timeSheet[timeSheetIndex].user.contact.id
-          );
-        }
+        await generateExportEntries(
+          timeSheet[timeSheetIndex],
+          timesheetEntry[timeSheetEntryIndex],
+          timeSheetId,
+          details,
+          userFinanceCodes
+        );
       }
       exportData.details = details;
 
       let fees = round(
         exportData.details
-          .filter((item) => item.type === 'Time' && item.id == timeSheetId)
+          .filter(
+            (item) =>
+              (item.type === 'Time' || item.type === 'Revenue') &&
+              item.id == timeSheetId
+          )
           .reduce(function (prev, cur) {
             return prev + Number(cur.amount);
           }, 0)
@@ -841,7 +843,7 @@ export const reinstateFinanceRecord = async (obj) => {
 
     let fees = round(
       exportData.details
-        .filter((item) => item.type === 'Time')
+        .filter((item) => item.type === 'Time' || item.type === 'Revenue')
         .reduce(function (prev, cur) {
           return prev + Number(cur.amount);
         }, 0)
