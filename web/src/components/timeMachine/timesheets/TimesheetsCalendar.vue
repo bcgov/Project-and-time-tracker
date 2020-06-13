@@ -149,6 +149,7 @@ export default {
         startDate: startDate.format('YYYY-MM-DD'),
         endDate: endDate.format('YYYY-MM-DD'),
       });
+      this.$emit('next');
     },
     toggleDatePicker() {
       this.showDatePicker = !this.showDatePicker;

@@ -69,7 +69,7 @@
 
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
-                  <v-btn flat icon color="grey" v-on="on"  :disabled="props.item.is_locked"  @click="deleteTimesheet(props.item.id)">
+                  <v-btn flat icon color="grey" v-on="on"  :disabled="props.item.documentNo"  @click="deleteTimesheet(props.item.id)">
                     <v-icon>delete</v-icon>
                   </v-btn>
                 </template>
