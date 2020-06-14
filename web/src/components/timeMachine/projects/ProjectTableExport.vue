@@ -496,7 +496,7 @@ export default {
               console.log('pos:', billTotalPosition);
 
               doc.setFontStyle('bold');
-              doc.autoTable({
+              const finalTable = doc.autoTable({
                 margin: { top: 10, left: 96 },
                 theme: 'plain',
                 colSpan: 2,
@@ -518,9 +518,10 @@ export default {
                 ],
               });
               // eslint-disable-next-line radix
+              const finalTablePosition = finalTable.autoTable.previous;
               doc.setPage(billTotalPosition.startPageNumber - 1);
               doc.setFontStyle('normal');
-              const totalPages = totalPage === 0 ? parseInt(billTotalPosition.startPageNumber.toString()) + parseInt(billTotalPosition.pageCount.toString()) - 1 : (parseInt(billTotalPosition.startPageNumber.toString()) + parseInt(billTotalPosition.pageCount.toString()) - 1) - totalPage;
+              const totalPages = totalPage === 0 ? parseInt(finalTablePosition.startPageNumber.toString()) + parseInt(finalTablePosition.pageCount.toString()) - 1 : (parseInt(finalTablePosition.startPageNumber.toString()) + parseInt(finalTablePosition.pageCount.toString()) - 1) - totalPage;
               totalPage = parseInt(totalPage.toString()) + parseInt(totalPages.toString());
               doc.text(totalPages.toString(), 58, 220);
             }

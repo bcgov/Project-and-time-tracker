@@ -546,7 +546,7 @@ export default {
             doc.setFontStyle('bold');
             // this if-else condition to support old pdf version
             if (pdfValues[i].mouEstimate !== undefined) {
-              doc.autoTable({
+              const finalTable = doc.autoTable({
                 margin: { top: 10, left: 96 },
                 theme: 'plain',
                 colSpan: 2,
@@ -567,9 +567,10 @@ export default {
                   ['Balance Remaining on MOU:', `$${pdfValues[i].balanceMou ? pdfValues[i].balanceMou.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '0'}`],
                 ],
               });
+              const finalTablePosition = finalTable.autoTable.previous;
               doc.setPage(billTotalPosition.startPageNumber - 1);
               doc.setFontStyle('normal');
-              const totalPages = totalPage === 0 ? parseInt(billTotalPosition.startPageNumber.toString()) + parseInt(billTotalPosition.pageCount.toString()) - 1 : (parseInt(billTotalPosition.startPageNumber.toString()) + parseInt(billTotalPosition.pageCount.toString()) - 1) - totalPage;
+              const totalPages = totalPage === 0 ? parseInt(finalTablePosition.startPageNumber.toString()) + parseInt(finalTablePosition.pageCount.toString()) - 1 : (parseInt(finalTablePosition.startPageNumber.toString()) + parseInt(finalTablePosition.pageCount.toString()) - 1) - totalPage;
               totalPage = parseInt(totalPage.toString()) + parseInt(totalPages.toString());
               doc.text(totalPages.toString(), 58, 220);
             } else {
