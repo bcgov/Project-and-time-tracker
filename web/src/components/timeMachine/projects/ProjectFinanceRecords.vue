@@ -56,7 +56,7 @@
           disable-initial-sort
         >
           <template slot="items" slot-scope="props">
-            <td class="text-xs-left">{{ props.item.t_documentNo }}</td>
+            <td class="text-xs-left"> {{ props.item.t_documentNo }}</td>
             <td class="text-xs-left">
               {{ props.item.t_documentPath }}
             </td>
@@ -126,7 +126,7 @@ export default {
       headers: [
         {
           text: 'Document No',
-          value: 'documentNo',
+          value: 'DocumentNo',
           align: 'left',
           sortable: true,
         },
@@ -433,27 +433,46 @@ export default {
             doc.text('Program', 15, 115);
             doc.text('Reference', 15, 122);
             doc.text('Contact', 15, 129);
-            doc.text('Fees', leftStartCoordinate + 106, 160);
-            doc.text('Expenses', leftStartCoordinate + 106, 169);
-            doc.text('Total', leftStartCoordinate + 106, 178);
+            // doc.text('Fees', leftStartCoordinate + 106, 160);
+            // doc.text('Expenses', leftStartCoordinate + 106, 169);
+            // doc.text('Total', leftStartCoordinate + 106, 178);
             doc.text('Contact', 15, 200);
             doc.text('Number of Pages', 15, 220);
             doc.setFontStyle('normal');
-            doc.text(
-              `$${pdfValues[i].fees.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`,
-              leftStartCoordinate + 136,
-              160,
-            );
-            doc.text(
-              `$${pdfValues[i].expenses.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`,
-              leftStartCoordinate + 136,
-              169,
-            );
-            doc.text(
-              `$${pdfValues[i].totalAmount.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`,
-              leftStartCoordinate + 136,
-              178,
-            );
+            // doc.text(
+            //   `$${pdfValues[i].fees.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`,
+            //   leftStartCoordinate + 136,
+            //   160,
+            // );
+            // doc.text(
+            //   `$${pdfValues[i].expenses.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`,
+            //   leftStartCoordinate + 136,
+            //   169,
+            // );
+            // doc.text(
+            //   `$${pdfValues[i].totalAmount.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`,
+            //   leftStartCoordinate + 136,
+            //   178,
+            // );
+
+
+            doc.autoTable({
+              margin: { top: 150, left: 120, right: 40 },
+              theme: 'plain',
+              colSpan: 2,
+              tableWidth: 'auto',
+              cellWidth: 'wrap',
+              columnStyles: {
+                0: { cellWidth: 'auto', halign: 'right' }, 1: { cellWidth: 'auto', halign: 'right' } },
+              styles: {
+                fontSize: 11, fontStyle: 'bold',
+              },
+              body: [
+                ['Fees:', `$${pdfValues[i].fees.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`],
+                ['Expenses:', `$${pdfValues[i].expenses.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`],
+                ['Total:', `$${pdfValues[i].totalAmount.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`],
+              ],
+            });
 
             doc.text(
               pdfValues[i].contact ? pdfValues[i].contact : '',
@@ -501,7 +520,7 @@ export default {
               proj.type,
               proj.resource ? proj.resource : '',
               proj.hours ? proj.hours : '',
-              proj.rate ? proj.rate : '',
+              proj.rate ? proj.rate : '0',
               proj.amount
                 ? `$${proj.amount.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`
                 : '$0',
@@ -552,7 +571,7 @@ export default {
               doc.setFontStyle('normal');
               const totalPages = totalPage === 0 ? parseInt(billTotalPosition.startPageNumber.toString()) + parseInt(billTotalPosition.pageCount.toString()) - 1 : (parseInt(billTotalPosition.startPageNumber.toString()) + parseInt(billTotalPosition.pageCount.toString()) - 1) - totalPage;
               totalPage = parseInt(totalPage.toString()) + parseInt(totalPages.toString());
-              doc.text(totalPages.toString(), 80, 220);
+              doc.text(totalPages.toString(), 58, 220);
             } else {
               doc.text('Total Amount', leftStartCoordinate + 117, billTotalPosition.finalY + 10);
               doc.setFontSize(12);
