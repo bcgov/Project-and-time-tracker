@@ -61,12 +61,13 @@
               {{ props.item.t_documentPath }}
             </td>
             <td class="text-xs-left">{{ props.item.t_documentPath.toString().slice(0, 10) }}</td>
-            <td class="text-xs-center">
+            <td class="text-xs-left">
               <v-tooltip top v-if="!props.item.is_archived">
                 <template v-slot:activator="{ on }">
                   <v-btn
                     flat
                     icon
+                    class='downloadButton'
                     color="grey"
                     v-on="on"
                     @click="exportToPDF(props.item.t_documentNo)"
@@ -77,7 +78,7 @@
                 <span>Download</span>
               </v-tooltip>
             </td>
-            <td class="text-xs-center">
+            <td class="text-xs-left">
               <v-btn
                 small
                 color="btnPrimary"
@@ -588,6 +589,9 @@ export default {
 .calender-box {
   width:242px;
   margin-left: 15px;
+}
+.downloadButton{
+  margin-left: 18% !important;
 }
 /* .v-picker {
   width: 100%;
