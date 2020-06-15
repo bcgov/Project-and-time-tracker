@@ -612,6 +612,7 @@ export default {
 }
 .downloadButton{
   margin-left: 18% !important;
+  margin-bottom:3px !important;
 }
 /* .v-picker {
   width: 100%;
