@@ -589,7 +589,7 @@ export default {
       });
     },
 
-    async open(editMode = false) {
+    async open(editMode = false, userId = null) {
       this.dialog = true;
       // this.$refs.TimeCalenderWeekly.disableWeekPicker(true);
       // this.$refs.TimeCalenderBatch.disableWeekPicker(true);
@@ -602,7 +602,7 @@ export default {
       this.$refs.AddimeRecords.resetValidation();
       this.form.userId = this.fetchUser();
       if (this.form.userId) {
-        await this.onChangeUser(this.form.userId, editMode);
+        await this.onChangeUser(userId || this.form.userId, editMode);
       } else {
         this.clearTimesheet();
       }
