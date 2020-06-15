@@ -520,7 +520,7 @@ export default {
               proj.type,
               proj.resource ? proj.resource : '',
               proj.hours ? proj.hours : '',
-              proj.rate ? proj.rate : '0',
+              proj.type === 'Expense' ? (proj.rate ? proj.rate : '') : (proj.rate ? proj.rate : '0'),
               proj.amount
                 ? `$${proj.amount.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`
                 : '$0',
