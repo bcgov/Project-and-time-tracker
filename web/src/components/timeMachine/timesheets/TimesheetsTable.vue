@@ -69,7 +69,7 @@
 
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
-                  <v-btn flat icon color="grey" v-on="on" @click="deleteTimesheet(props.item.id)">
+                  <v-btn flat icon color="grey" v-on="on"  :disabled="props.item.documentNo ? true : false"  @click="deleteTimesheet(props.item.id)">
                     <v-icon>delete</v-icon>
                   </v-btn>
                 </template>
@@ -220,8 +220,14 @@ export default {
       const found = this.timesheetsList.find(element => element.id === value);
       sessionStorage.setItem('selectedStartDate', found.startDate);
       sessionStorage.setItem('selectedEndDate', found.endDate);
-      await this.$refs.AddTimeRecord.open(true); // specifies edit mode
-      this.$refs.AddTimeRecord.editTimeEntries(value);
+      await this.$refs.AddTimeRecord.open(true, found.user.id); // specifies edit mode
+      if (this.$refs.spinner) {
+        this.$refs.spinner.open();
+      }
+      await this.$refs.AddTimeRecord.editTimeEntries(value);
+      if (this.$refs.spinner) {
+        this.$refs.spinner.close();
+      }
     },
     getFullname(projectLeadId) {
       let projectLeadName = null;

@@ -115,7 +115,7 @@ export default {
         },
         { text: 'PDF Name', value: 'recordName', sortable: true },
         { text: 'Export Month', value: 'pdfdate', sortable: true },
-        { text: 'Discharge File', value: 'discharge' },
+        { text: 'Reinstate File', value: 'reinstate' },
       ],
       projectsList: [],
     };

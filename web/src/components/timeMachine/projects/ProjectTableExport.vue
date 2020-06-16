@@ -382,29 +382,45 @@ export default {
               doc.text('Program', 15, 115);
               doc.text('Reference', 15, 122);
               doc.text('Contact', 15, 129);
-              doc.text('Fees', leftStartCoordinate + 106, 160);
-              doc.text('Expenses', leftStartCoordinate + 106, 169);
-              doc.text('Total', leftStartCoordinate + 106, 178);
+              // doc.text('Fees', leftStartCoordinate + 106, 160);
+              // doc.text('Expenses', leftStartCoordinate + 106, 169);
+              // doc.text('Total', leftStartCoordinate + 106, 178);
               doc.text('Contact', 15, 200);
               doc.text('Number of Pages', 15, 220);
 
               doc.setFontStyle('normal');
-              doc.text(
-                `$${pdfValues[i].fees.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`,
-                leftStartCoordinate + 136,
-                160,
-              );
-              doc.text(
-                `$${pdfValues[i].expenses.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`,
-                leftStartCoordinate + 136,
-                169,
-              );
-              doc.text(
-                `$${pdfValues[i].totalAmount.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`,
-                leftStartCoordinate + 136,
-                178,
-              );
-
+              // doc.text(
+              //   `$${pdfValues[i].fees.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`,
+              //   leftStartCoordinate + 136,
+              //   160,
+              // );
+              // doc.text(
+              //   `$${pdfValues[i].expenses.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`,
+              //   leftStartCoordinate + 136,
+              //   169,
+              // );
+              // doc.text(
+              //   `$${pdfValues[i].totalAmount.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`,
+              //   leftStartCoordinate + 136,
+              //   178,
+              // );
+              doc.autoTable({
+                margin: { top: 150, left: 120, right: 40 },
+                theme: 'plain',
+                colSpan: 2,
+                tableWidth: 'auto',
+                cellWidth: 'wrap',
+                columnStyles: {
+                  0: { cellWidth: 'auto', halign: 'right' }, 1: { cellWidth: 'auto', halign: 'right' } },
+                styles: {
+                  fontSize: 11, fontStyle: 'bold',
+                },
+                body: [
+                  ['Fees:', `$${pdfValues[i].fees.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`],
+                  ['Expenses:', `$${pdfValues[i].expenses.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`],
+                  ['Total:', `$${pdfValues[i].totalAmount.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`],
+                ],
+              });
               doc.text(
                 pdfValues[i].contact ? pdfValues[i].contact : '',
                 leftStartCoordinate + 38,
@@ -452,7 +468,7 @@ export default {
                 proj.type,
                 proj.resource ? proj.resource : '',
                 proj.hours ? proj.hours : '',
-                proj.rate ? proj.rate : '',
+                proj.type === 'Expense' ? (proj.rate ? proj.rate : '') : (proj.rate ? proj.rate : '0'),
                 proj.amount
                   ? `$${proj.amount.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`
                   : '$0',
@@ -480,7 +496,7 @@ export default {
               console.log('pos:', billTotalPosition);
 
               doc.setFontStyle('bold');
-              doc.autoTable({
+              const finalTable = doc.autoTable({
                 margin: { top: 10, left: 96 },
                 theme: 'plain',
                 colSpan: 2,
@@ -502,11 +518,12 @@ export default {
                 ],
               });
               // eslint-disable-next-line radix
+              const finalTablePosition = finalTable.autoTable.previous;
               doc.setPage(billTotalPosition.startPageNumber - 1);
               doc.setFontStyle('normal');
-              const totalPages = totalPage === 0 ? parseInt(billTotalPosition.startPageNumber.toString()) + parseInt(billTotalPosition.pageCount.toString()) - 1 : (parseInt(billTotalPosition.startPageNumber.toString()) + parseInt(billTotalPosition.pageCount.toString()) - 1) - totalPage;
+              const totalPages = totalPage === 0 ? parseInt(finalTablePosition.startPageNumber.toString()) + parseInt(finalTablePosition.pageCount.toString()) - 1 : (parseInt(finalTablePosition.startPageNumber.toString()) + parseInt(finalTablePosition.pageCount.toString()) - 1) - totalPage;
               totalPage = parseInt(totalPage.toString()) + parseInt(totalPages.toString());
-              doc.text(totalPages.toString(), 80, 220);
+              doc.text(totalPages.toString(), 58, 220);
             }
 
             // doc.text('Total Pages', 117, billTotalPosition.finalY + 10);

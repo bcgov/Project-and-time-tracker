@@ -34,7 +34,7 @@ export const deleteTimesheet = async (id: string) => {
 
   const timesheet = await repo.findOne(id);
 
-  if (!timesheet) {
+  if (!timesheet || timesheet.documentNo != null) {
     throw Error('timesheet not found');
   }
   return await repo.delete(timesheet);
@@ -47,7 +47,7 @@ export const retrieveTimesheetById = async (id: string) => {
     .innerJoinAndSelect('t.projectRfx', 'pr')
     .innerJoinAndSelect('t.project', 'p')
     .innerJoinAndSelect('t.mou', 'm')
-    .leftJoinAndSelect('t.timesheetEntries', 'te')
+    .innerJoinAndSelect('t.timesheetEntries', 'te')
     .where('t.id = :id', { id: id })
     .orderBy('te.entryDate', 'ASC')
     .getOne();
@@ -64,11 +64,12 @@ export const retrieveAllTimesheets = async () => {
     .innerJoinAndSelect('t.project', 'p')
     .leftJoinAndSelect('t.user', 'u')
     .leftJoinAndSelect('u.contact', 'c')
+    .innerJoin('t.timesheetEntries', 'te')
     .innerJoin('t.projectRfx', 'pr')
     .orderBy('t.dateModified', 'DESC')
     .getMany();
 };
-export const retrieveMyTimesheets = async userId => {
+export const retrieveMyTimesheets = async (userId) => {
   const repo = timesheetRepo();
   return await repo
     .createQueryBuilder('t')
@@ -76,17 +77,18 @@ export const retrieveMyTimesheets = async userId => {
     .innerJoinAndSelect('t.project', 'p')
     .leftJoinAndSelect('t.user', 'u')
     .leftJoinAndSelect('u.contact', 'c')
+    .innerJoin('t.timesheetEntries', 'te')
     .orderBy('t.dateModified', 'DESC')
     .where('t.userId = :userId', {
-      userId
+      userId,
     })
     .getMany();
 };
-export const retrieveForLightTimesheet = async model => {
+export const retrieveForLightTimesheet = async (model) => {
   const repo = timesheetRepo();
   const res = await repo
     .createQueryBuilder('t')
-    .leftJoinAndSelect('t.timesheetEntries', 'te')
+    .innerJoinAndSelect('t.timesheetEntries', 'te')
     .orderBy('te.entryDate', 'ASC')
     .where(
       // 't."mouId" = :mouId AND ' +
@@ -99,31 +101,31 @@ export const retrieveForLightTimesheet = async model => {
         projectId: model.project,
         projectRfxId: model.projectRfx,
         userId: model.userId,
-        entryDate: model.startDate
+        entryDate: model.startDate,
       }
     )
     .getOne();
   return res;
 };
-export const retrieveForLightTimesheetByUser = async model => {
+export const retrieveForLightTimesheetByUser = async (model) => {
   const repo = timesheetRepo();
   const res = await repo
     .createQueryBuilder('t')
     .innerJoinAndSelect('t.projectRfx', 'pr')
-    .leftJoinAndSelect('t.timesheetEntries', 'te')
+    .innerJoinAndSelect('t.timesheetEntries', 'te')
     .innerJoinAndSelect('t.project', 'p')
     .orderBy('te.entryDate', 'ASC')
     .where(' t."userId" = :userId ', {
-      userId: model.userId
+      userId: model.userId,
     })
     .getMany();
   return res;
 };
-export const retrieveTimesheetByUserAndDate = async model => {
+export const retrieveTimesheetByUserAndDate = async (model) => {
   const repo = timesheetRepo();
   const res = await repo
     .createQueryBuilder('t')
-    .leftJoinAndSelect('t.timesheetEntries', 'te')
+    .innerJoinAndSelect('t.timesheetEntries', 'te')
     .innerJoinAndSelect('t.project', 'p')
     .innerJoinAndSelect('t.mou', 'm')
     .innerJoinAndSelect('t.projectRfx', 'pr')
@@ -133,7 +135,7 @@ export const retrieveTimesheetByUserAndDate = async model => {
         ' t."startDate" = :entryDate AND t."endDate" >= :entryDate',
       {
         userId: model.userId,
-        entryDate: model.startDate
+        entryDate: model.startDate,
       }
     )
     .getMany();
@@ -148,7 +150,7 @@ export const retrieveForLightTimesheetPreview = async (
   const repo = timesheetRepo();
   const res = await repo
     .createQueryBuilder('t')
-    .leftJoinAndSelect('t.timesheetEntries', 'te')
+    .innerJoinAndSelect('t.timesheetEntries', 'te')
     .where(
       't."projectId" = :projectId AND' +
         ' t."projectRfxId" = :projectRfxId AND' +
@@ -159,7 +161,7 @@ export const retrieveForLightTimesheetPreview = async (
         projectId: projectId,
         projectRfxId: projectRfxId,
         userId: userId,
-        entryDate: entryDate
+        entryDate: entryDate,
       }
     )
     .getMany();
@@ -178,7 +180,7 @@ export const retrieveTimesheets = async (
     .innerJoinAndSelect('t.projectRfx', 'pr')
     .innerJoinAndSelect('t.project', 'p')
     .innerJoinAndSelect('t.rfxPhase', 'rp')
-    .leftJoinAndSelect('t.timesheetEntries', 'te')
+    .innerJoinAndSelect('t.timesheetEntries', 'te')
     .orderBy('te.entryDate', 'ASC');
   // .where(
   //   't."projectId" = :projectId AND t."startDate" >= :startDate AND t."endDate" <= :endDate',

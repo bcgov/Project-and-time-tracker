@@ -28,10 +28,10 @@
               {{ [props.item.client.ministry.ministryName, props.item.orgDivision].join(" ") }}
             </td>
             <td class="text-xs-left">
-              {{ props.item.teamWideProject ? "teamWideProject" : props.item.leadUserId }}
+              {{ props.item.teamWideProject ? "teamWideProject" : getUserName(props.item.leadUserId) }}
             </td>
             <td class="text-xs-left">
-              {{ props.item.teamWideProject ? "" : props.item.backupUserId }}
+              {{ props.item.teamWideProject ? "" : getUserName(props.item.backupUserId) }}
             </td>
             <td class="text-xs-left">{{ props.item.completionDate | formatDate }}</td>
             <td class="text-xs-left">{{ props.item.dateModified | formatDate }}</td>
@@ -101,6 +101,13 @@ export default {
     },
   },
   methods: {
+    getUserName(id) {
+      if (id) {
+        const value = this.$store.state.users.filter(el => el.id === id);
+        return value[0].contact.fullName;
+      }
+      return '';
+    },
     fetchArchivedData() {
       this.$store.dispatch('fetchArchivedProjects');
     },
