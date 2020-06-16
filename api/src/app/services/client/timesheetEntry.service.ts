@@ -1,9 +1,14 @@
 import { getRepository, Repository } from 'typeorm';
 import { TimesheetEntry } from './../../models/entities/timesheetEntry.entity';
 import { ITimesheetEntry } from '../../models/interfaces/i-timesheet-entry';
+import { Timesheet } from './../../models/entities/timesheet.entity';
 
 const timesheetEntryRepo = (): Repository<TimesheetEntry> => {
   return getRepository(TimesheetEntry);
+};
+
+const timesheetRepo = (): Repository<Timesheet> => {
+  return getRepository(Timesheet);
 };
 
 export const createTimesheetEntry = async (
@@ -39,6 +44,13 @@ export const updateTimesheetEntry = async (id: string, fields: any) => {
 
 export const deleteEntryByTimesheetId = async (id: string) => {
   const repo = timesheetEntryRepo();
+
+  const timesheetRep = timesheetRepo();
+  const timesheet = await timesheetRep.findOne(id);
+  if (!timesheet || timesheet.documentNo != null) {
+    throw Error('timesheet not found');
+  }
+
   return await repo.delete({ timesheet: { id: id } });
 };
 

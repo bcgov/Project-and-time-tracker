@@ -34,7 +34,7 @@ export const deleteTimesheet = async (id: string) => {
 
   const timesheet = await repo.findOne(id);
 
-  if (!timesheet) {
+  if (!timesheet || timesheet.documentNo != null) {
     throw Error('timesheet not found');
   }
   return await repo.delete(timesheet);
