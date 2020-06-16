@@ -479,7 +479,7 @@ export const retrieveFinanceData = async (obj, userId) => {
       .innerJoinAndSelect('t.user', 'u')
       .innerJoinAndSelect('u.contact', 'c')
       .where(
-        't."projectId" = :projectId and (t.is_locked = :is_locked or t.is_locked IS NULL) and (t.startDate >= :start and t.startDate <= :end)',
+        't."projectId" = :projectId and (t.is_locked = :is_locked or t.is_locked IS NULL) and (t.startDate >= :start and t.startDate <= :end) and t.documentNo is NULL',
         {
           projectId: exportData.projectId,
           is_locked: false,
