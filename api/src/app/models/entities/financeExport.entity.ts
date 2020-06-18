@@ -34,4 +34,7 @@ export class FinanceExport {
 
   @Column({ type: 'int', nullable: true })
   billingCount: number;
+
+  @Column({ type: 'text', nullable: true })
+  selectedMous: string;
 }

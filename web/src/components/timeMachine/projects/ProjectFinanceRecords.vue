@@ -56,7 +56,7 @@
           disable-initial-sort
         >
           <template slot="items" slot-scope="props">
-            <td class="text-xs-left"> {{ props.item.t_documentNo }}</td>
+            <td class="text-xs-left"> {{ props.item.t_selectedMous }}</td>
             <td class="text-xs-left">
               {{ props.item.t_documentPath }}
             </td>
@@ -125,8 +125,8 @@ export default {
       selectedDate: '',
       headers: [
         {
-          text: 'Document No',
-          value: 'DocumentNo',
+          text: 'MOU(s)',
+          value: 'selectedMous',
           align: 'left',
           sortable: true,
         },

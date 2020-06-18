@@ -10,4 +10,5 @@ export interface IFinanceExport {
   monthStartDate: Date;
   isDischarged: boolean;
   billingCount: number;
+  selectedMous: string;
 }

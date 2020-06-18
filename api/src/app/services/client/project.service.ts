@@ -1,4 +1,4 @@
-import { getRepository, Repository } from 'typeorm';
+import { getRepository, Repository, getConnection } from 'typeorm';
 import {
   Project,
   ProjectContacts,
@@ -347,6 +347,21 @@ async function generateExportEntries(
     );
   }
 }
+function mergeMous(mouList) {
+  let jointArray = '';
+
+  const uniqueArray = mouList.reduce(function (a, b) {
+    if (a.indexOf(b) < 0) a.push(b);
+    return a;
+  }, []);
+
+  uniqueArray.forEach((item) => {
+    if (jointArray === '') jointArray = item;
+    else jointArray = jointArray + ', ' + item;
+  });
+
+  return jointArray;
+}
 
 export const retrieveFinanceData = async (obj, userId) => {
   const financeExport = obj.selectedProjects as IFinanceExport[];
@@ -361,7 +376,7 @@ export const retrieveFinanceData = async (obj, userId) => {
   const endDate = new Date(year, month, 0);
 
   const documentPath: string = getPDFName(startDate, financeExport.length);
-
+  let mousSelected = [];
   for (let index = 0; index < financeExport.length; index++) {
     let model = financeExport[index];
     if (!model) {
@@ -472,6 +487,7 @@ export const retrieveFinanceData = async (obj, userId) => {
     exportData.createdUserId = userId;
     exportData.billingCount = billingCount;
     exportData.mouName = res.mou.name;
+    mousSelected.push(exportData.mouName);
     exportData.mouEstimate = res.mouAmount;
     const timeSheet = await timesheetRepo()
       .createQueryBuilder('t')
@@ -594,6 +610,12 @@ export const retrieveFinanceData = async (obj, userId) => {
     }
   }
 
+  await getConnection()
+    .createQueryBuilder()
+    .update(FinanceExport)
+    .set({ selectedMous: mergeMous(mousSelected) })
+    .where('documentNo = :document', { document: documentNo })
+    .execute();
   // await createFinanceExport(financeExport);
   const repo = financeRepo();
   const result = await repo
@@ -660,6 +682,7 @@ export const reinstateFinanceRecord = async (obj) => {
   const userId = result[0].createdUserId;
   const startDate = result[0].monthStartDate;
   let billingCount = result[0].billingCount;
+  let mousSelected = [];
 
   for (let index = 0; index < result.length; index++) {
     // finance records
@@ -773,6 +796,7 @@ export const reinstateFinanceRecord = async (obj) => {
     exportData.createdUserId = userId;
     exportData.billingCount = billingCount;
     exportData.mouName = res.mou.name;
+    mousSelected.push(exportData.mouName);
     exportData.mouEstimate = res.mouAmount;
     const timeSheet = await timesheetRepo()
       .createQueryBuilder('t')
@@ -894,6 +918,13 @@ export const reinstateFinanceRecord = async (obj) => {
     }
   }
 
+  await getConnection()
+    .createQueryBuilder()
+    .update(FinanceExport)
+    .set({ selectedMous: mergeMous(mousSelected) })
+    .where('documentNo = :document', { document: documentNo })
+    .execute();
+
   return result;
 };
 
@@ -979,7 +1010,7 @@ export const retrieveDischargedPdfs = async (obj) => {
 
   const res = await repo
     .createQueryBuilder('t')
-    .select(['t.documentNo', 't.documentPath'])
+    .select(['t.documentNo', 't.documentPath', 't.selectedMous'])
     .addSelect('SUM(t.totalAmount)', 'sum')
     .where(
       '(t.monthStartDate >= :start and t.monthStartDate <= :end) and t.isDischarged = :discharged ',
@@ -991,6 +1022,7 @@ export const retrieveDischargedPdfs = async (obj) => {
     )
     .groupBy('t.documentNo')
     .addGroupBy('t.documentPath')
+    .addGroupBy('t.selectedMous')
     .getRawMany();
 
   return res;
@@ -1009,7 +1041,7 @@ export const retrieveExportedPdfs = async (obj) => {
 
   const res = await repo
     .createQueryBuilder('t')
-    .select(['t.documentNo', 't.documentPath'])
+    .select(['t.documentNo', 't.documentPath', 't.selectedMous'])
     .addSelect('SUM(t.totalAmount)', 'sum')
     .where(
       '(t.monthStartDate >= :start and t.monthStartDate <= :end) and (t.isDischarged = :discharged  OR t.isDischarged IS NULL)',
@@ -1021,6 +1053,7 @@ export const retrieveExportedPdfs = async (obj) => {
     )
     .groupBy('t.documentNo')
     .addGroupBy('t.documentPath')
+    .addGroupBy('t.selectedMous')
     .getRawMany();
 
   return res;

@@ -231,6 +231,10 @@ export default {
             selectedDate: this.date,
           })
           .then(() => {
+            this.selectedProjects = [];
+
+            if (vm.$store.state.financeExport.length === 0) { vm.$refs.spinner.close(); }
+
             vm.$store.state.financeExport.forEach((entry) => {
               const exportData = JSON.parse(entry.exportData);
               pdfValues.push(exportData);
