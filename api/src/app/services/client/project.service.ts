@@ -931,6 +931,7 @@ export const reinstateFinanceRecord = async (obj) => {
     model.exportData = JSON.stringify(exportData);
     model.billingCount = billingCount;
     model.isDischarged = false;
+    model.mouId = res.mou.id;
     await financeRepo().save(model);
   }
 
