@@ -638,6 +638,7 @@ export const downloadpdf = async (obj) => {
   const result = await repo
     .createQueryBuilder('f')
     .where('f."documentNo" = :documentId', { documentId: obj.documentNo })
+    .orderBy('f.mouId, f.billingCount', 'ASC')
     .getMany();
   return result;
 };
@@ -684,6 +685,7 @@ export const reinstateFinanceRecord = async (obj) => {
   const result = await repo
     .createQueryBuilder('f')
     .where('f."documentNo" = :documentId ', { documentId: obj.documentNo })
+    .orderBy('f.mouId, f.billingCount', 'ASC')
     .getMany();
 
   const financeExport = result as IFinanceExport[];
