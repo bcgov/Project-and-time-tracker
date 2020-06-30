@@ -109,14 +109,20 @@ export const retrieveForLightTimesheet = async (model) => {
 };
 export const retrieveForLightTimesheetByUser = async (model) => {
   const repo = timesheetRepo();
+  console.log('model', model);
   const res = await repo
     .createQueryBuilder('t')
     .innerJoinAndSelect('t.projectRfx', 'pr')
     .innerJoinAndSelect('t.timesheetEntries', 'te')
     .innerJoinAndSelect('t.project', 'p')
     .orderBy('te.entryDate', 'ASC')
-    .where(' t."userId" = :userId ', {
+    .where(
+      ' t."userId" = :userId AND' +
+        ' t."startDate" = :startDate AND t."endDate" >= :endDate',
+      {
       userId: model.userId,
+      startDate: model.startDate,
+      endDate: model.endDate,
     })
     .getMany();
   return res;

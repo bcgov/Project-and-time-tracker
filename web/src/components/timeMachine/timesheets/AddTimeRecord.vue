@@ -207,13 +207,18 @@
             </v-tabs>
           </v-card-text>
           <br /><br />
+
           <v-divider class="header-divider"></v-divider>
           <v-card-actions>
+            <BulkCSVExport
+              ref="exporttimesheet"
+              @exportTimeSheets="exportTimeSheets"
+            ></BulkCSVExport>
             <v-btn class="btn-discard" @click="closeDialog(false)" :ripple="false"
               >DISCARD TIMESHEET</v-btn
             >
             <v-flex class="add-btns">
-              <v-btn class="btn-normal" @click="expotTimesheet()">EXPORT TIMESHEET</v-btn>
+              <v-btn class="btn-normal" @click="openExportModal()">EXPORT TIMESHEET</v-btn>
               <v-btn
                 class="add-new-row"
                 color="primary"
@@ -241,6 +246,7 @@ import ExpenseEntry from './AddExpense.vue';
 import RevenueEntry from './AddRevenue.vue';
 import TimesheetEntry from './TimesheetEntry.vue';
 import BatchTimeEntry from './BatchTimeEntry.vue';
+import BulkCSVExport from './BulkCSVExport.vue';
 
 export default {
   computed: {
@@ -289,6 +295,7 @@ export default {
     BatchTimeEntry,
     ExpenseEntry,
     RevenueEntry,
+    BulkCSVExport,
   },
   data() {
     return this.initData();
@@ -299,6 +306,11 @@ export default {
     this.clearTimesheet();
   },
   methods: {
+    openExportModal() {
+      this.$refs.exporttimesheet.reset();
+      this.$refs.exporttimesheet.open();
+    },
+    closeExportModal() {},
     getSubmitButtonVal() {
       if (this.editMode) return 'SAVE CHANGES';
       return 'SUBMIT';
@@ -335,6 +347,8 @@ export default {
         recordType: 1,
         recordTypeWeekly: 1,
         valid: true,
+        exportStartDate: undefined,
+        exportEndDate: undefined,
         requiredRule: [v => !!v || 'This field required'],
         dialog: false,
         form: { ...form },
@@ -795,13 +809,16 @@ export default {
         link.click();
       }
     },
-    expotTimesheet() {
+    exportTimeSheets(val1, val2) {
+      console.log('reached here', val1, val2);
       if (!this.form.userId) {
         this.$refs.snackbar.displaySnackbarTop('error', 'Please select user.');
         return;
       }
       const formData = {
         userId: this.form.userId,
+        startDate: val1,
+        endDate: val2,
       };
       const user = this.$store.state.users.find(item => item.id === this.form.userId);
       let hourlyRate = 0;
@@ -818,6 +835,7 @@ export default {
       vm.$store.dispatch('fetchTimesheetEntriesByUser', formData).then(() => {
         const timeEntries = [];
         for (let i = 0; i < vm.$store.state.timesheetEntryDatabyUser.length; i++) {
+          console.log('hiii');
           const entries = vm.$store.state.timesheetEntryDatabyUser[i].timesheetEntries;
           const currentProject = vm.$store.state.timesheetEntryDatabyUser[i].project.projectName;
           const currentProjectRfx = vm.$store.state.timesheetEntryDatabyUser[i].projectRfx.rfxName;
@@ -849,6 +867,7 @@ export default {
             });
           }
         }
+        console.log(timeEntries);
         this.csvExport(timeEntries);
       });
     },
