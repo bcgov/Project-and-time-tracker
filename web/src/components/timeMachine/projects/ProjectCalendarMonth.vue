@@ -27,7 +27,7 @@
               </v-btn>
             </v-btn-toggle>
           </div>
-          <div :class="`date-picker-container date-picker-wrapper ${getDatePickerClass()}`">
+          <div :class="`date-picker-month date-picker-wrapper ${getDatePickerClass()}`">
             <v-date-picker
               class="timesheets-date-picker"
               @input="setTimesheetsWeek"
@@ -92,16 +92,14 @@ export default {
       months[11] = 'Nov';
       months[12] = 'Dec';
 
-      const startDate = moment(sessionStorage.getItem('selectedStartDate'));
-      const endDate = moment(sessionStorage.getItem('selectedEndDate'));
 
-      if (!startDate && !endDate) {
-        return 'Change Week';
-      }
-      this.calendarMonth = `0${startDate.get('month')}`.slice(-2);
+      // eslint-disable-next-line radix
+      this.calendarMonth = parseInt(new Date().getMonth()) === '0' ? 12 : parseInt(new Date().getMonth());
       this.calendarYear = new Date().getFullYear();
+
       this.$emit('changedMonth', `${this.calendarYear}-${this.calendarMonth}`);
-      return `${months[startDate.get('month')]} ${new Date().getFullYear()}`;
+      // eslint-disable-next-line radix
+      return `${months[parseInt(new Date().getMonth()) === '0' ? 12 : parseInt(new Date().getMonth())]} ${new Date().getFullYear()}`;
     },
     setCalendarText() {
       this.calendarText = this.getCalendarText();
@@ -244,7 +242,12 @@ export default {
   margin: 0 !important;
   padding: 0;
 }
-
+.date-picker-month
+{
+position: absolute;
+top: 60px;
+left:20px;
+}
 .v-btn-toggle .v-btn {
   opacity: 1;
 }
