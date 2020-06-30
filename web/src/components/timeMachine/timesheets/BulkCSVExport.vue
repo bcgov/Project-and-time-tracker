@@ -1,14 +1,36 @@
 <template>
   <v-layout row justify-center class="proc-layout">
     <snackbar ref="snackbar"></snackbar>
-    <v-dialog id="newNote" class="proc-dialgue" max-width="40%" v-model="dialog">
-      <v-form ref="newNotes" v-model="valid" lazy-validation>
+    <v-dialog  max-width="40%" v-model="dialog">
+      <v-form  v-model="valid" lazy-validation>
         <spinner ref="spinner"></spinner>
         <v-card style="width:100%">
-          <v-card-text class="card-contents">
+             <br />
+          <v-layout row wrap>
+            <v-flex md1></v-flex>
+            <v-flex md10 class="headline">Export Timesheet</v-flex>
+
+            <v-flex md1>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="18"
+                height="18"
+                @click="closeDialog()"
+                viewBox="0 0 18 18"
+              >
+                <path
+                  d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"
+                />
+              </svg>
+            </v-flex>
+          </v-layout>
+
+          <br />
+          <v-divider></v-divider>
+          <v-card-text class="csv-card-contents">
             <v-layout row wrap>
             <v-flex md12>
-            <div style="margin-left:25%;color:#57789a;font-weight:bold">PLEASE CHOOSE A DATE RANGE</div>
+            <div class="choose-date-range">Choose the date range:</div>
             </v-flex>
               <v-flex md12>
                 <div class="v-form-container">
@@ -113,12 +135,17 @@ export default {
     timeEntry: Object,
   },
   methods: {
+    closeDialog() {
+      this.dialog = false;
+    },
     parseDate(date) {
       if (!date) return null;
       const [month, day, year] = date.split('/');
       return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
     },
     open(value, name) {
+      this.startDate = undefined;
+      this.endDate = undefined;
       this.replyNoteName = name;
       this.flag = value;
       this.dialog = true;
@@ -154,6 +181,12 @@ export default {
 };
 </script>
 <style scoped>
+.choose-date-range
+{
+     margin-left: 28px;
+    margin-top: 10px;
+    font-size: 15px;
+}
 .replyheaderdiv {
   background-color: gainsboro;
 }
@@ -171,8 +204,9 @@ export default {
 .primary-heading {
   margin-top: 10px !important;
 }
-.v-dialog:not(.v-dialog--fullscreen) {
-  max-width: 40%;
-  max-height: 90%;
+.csv-card-contents
+{
+  margin-bottom: 10px;
 }
+
 </style>
