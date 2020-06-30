@@ -11,4 +11,5 @@ export interface IFinanceExport {
   isDischarged: boolean;
   billingCount: number;
   selectedMous: string;
+  mouId: string;
 }

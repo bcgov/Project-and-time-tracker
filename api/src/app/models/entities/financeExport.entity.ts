@@ -37,4 +37,7 @@ export class FinanceExport {
 
   @Column({ type: 'text', nullable: true })
   selectedMous: string;
+
+  @Column({ type: 'text', nullable: true })
+  mouId: string;
 }

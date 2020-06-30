@@ -12,6 +12,7 @@ import { TimesheetEntry } from './../../models/entities/timesheetEntry.entity';
 import { IClient } from '../../models/interfaces/i-client';
 import { type } from 'os';
 import { ReplaceSource } from 'webpack-sources';
+import { MOU } from '../../models/entities/mou.entity';
 import { User } from '../../models/entities/user.entity';
 import { FinanceExport } from '../../models/entities';
 import { IFinanceExport } from '../../models/interfaces/i-finance-export';
@@ -24,7 +25,9 @@ import {
 const userRepo = (): Repository<User> => {
   return getRepository(User);
 };
-
+const mouRepo = (): Repository<MOU> => {
+  return getRepository(MOU);
+};
 const projectRFXRepo = (): Repository<ProjectRfx> => {
   return getRepository(ProjectRfx);
 };
@@ -399,11 +402,12 @@ export const retrieveFinanceData = async (obj, userId) => {
         'p.mouAmount',
         'c.clientNo',
         'c.id',
-        'c.billingCount',
         'c.stob',
         'c.projectCode',
         'c.serviceCenter',
+        'm.id',
         'm.name',
+        'm.billingCount',
       ])
       .where('p.id = :projectId', { projectId: exportData.projectId })
       .getOne();
@@ -476,7 +480,9 @@ export const retrieveFinanceData = async (obj, userId) => {
       projectFinance.stob = res.client.stob;
       projectFinance.projectCode = res.client.projectCode;
       projectFinance.serviceCenter = res.client.serviceCenter;
-      billingCount = res.client.billingCount ? res.client.billingCount + 1 : 1;
+    }
+    if (res.mou) {
+      billingCount = res.mou.billingCount ? res.mou.billingCount + 1 : 1;
     }
     projectFinance.type = 'Project';
     userFinanceCodes.push(projectFinance);
@@ -600,13 +606,14 @@ export const retrieveFinanceData = async (obj, userId) => {
     model.exportData = JSON.stringify(exportData);
     model.billingCount = billingCount;
     model.isDischarged = false;
+    model.mouId = res.mou.id;
     await createFinanceExport(model);
 
-    const repoClient = clientRepo();
-    let client = await repoClient.findOne(res.client.id);
-    if (client) {
-      client.billingCount = billingCount;
-      repoClient.save(client);
+    const repoMou = mouRepo();
+    let mou = await repoMou.findOne(res.mou.id);
+    if (mou) {
+      mou.billingCount = billingCount;
+      await repoMou.save(mou);
     }
   }
 
@@ -663,6 +670,9 @@ export const dischargeFinanceRecord = async (obj) => {
     if (timeSheets) {
       result[index].isDischarged = true;
       result[index].exportData = '';
+      if (!result[index].mouId) {
+        result[index].billingCount = 0;
+      }
       await financeRepo().save(result[index]);
     }
   }
@@ -681,11 +691,11 @@ export const reinstateFinanceRecord = async (obj) => {
   const documentPath = result[0].documentPath;
   const userId = result[0].createdUserId;
   const startDate = result[0].monthStartDate;
-  let billingCount = result[0].billingCount;
   let mousSelected = [];
 
   for (let index = 0; index < result.length; index++) {
     // finance records
+    let billingCount = result[index].billingCount;
 
     let projectId = result[index].projectId;
     let model = financeExport[index];
@@ -712,6 +722,8 @@ export const reinstateFinanceRecord = async (obj) => {
         'c.projectCode',
         'c.serviceCenter',
         'm.name',
+        'm.id',
+        'm.billingCount',
       ])
       .where('p.id = :projectId', { projectId: exportData.projectId })
       .getOne();
@@ -786,6 +798,15 @@ export const reinstateFinanceRecord = async (obj) => {
       projectFinance.stob = res.client.stob;
       projectFinance.projectCode = res.client.projectCode;
       projectFinance.serviceCenter = res.client.serviceCenter;
+    }
+    if (res.mou && billingCount == 0) {
+      billingCount = res.mou.billingCount ? res.mou.billingCount + 1 : 1;
+      const repoMou = mouRepo();
+      let mou = await repoMou.findOne(res.mou.id);
+      if (mou) {
+        mou.billingCount = billingCount;
+        await repoMou.save(mou);
+      }
     }
     projectFinance.type = 'Project';
     userFinanceCodes.push(projectFinance);
@@ -909,13 +930,6 @@ export const reinstateFinanceRecord = async (obj) => {
     model.billingCount = billingCount;
     model.isDischarged = false;
     await financeRepo().save(model);
-
-    const repoClient = clientRepo();
-    let client = await repoClient.findOne(res.client.id);
-    if (client) {
-      client.billingCount = billingCount;
-      repoClient.save(client);
-    }
   }
 
   await getConnection()

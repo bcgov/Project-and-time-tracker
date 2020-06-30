@@ -61,10 +61,9 @@
         >
           <template slot="items" slot-scope="props">
             <td class="text-xs-left">
-              <v-checkbox
-                v-model="selectedProjects"
-                :value="props.item.id"
-                :input-value="props.selected"
+              <v-checkbox v-if="props.item.checkBox"
+               @change="updateSelectedProjects($event,props.item.key)"
+
               ></v-checkbox>
             </td>
 
@@ -152,6 +151,16 @@ export default {
     },
   },
   methods: {
+    updateSelectedProjects(event, key) {
+      if (event) {
+        const selectedItems = this.projectsList.filter(f => f.key === key);
+        selectedItems.forEach((item) => {
+          this.selectedProjects.push(item);
+        });
+      } else {
+        this.selectedProjects = this.selectedProjects.filter(f => f.key !== key);
+      }
+    },
     groupBy(list, keyGetter) {
       const map = new Map();
       list.forEach((item) => {
@@ -163,7 +172,22 @@ export default {
           collection.push(item);
         }
       });
-      return map;
+
+
+      const projectList = [];
+      for (const [k, v] of map) {
+        const value = v;
+        const key = k;
+        for (let j = 0; j < value.length; j++) {
+          const projectItem = value[j];
+          projectItem.key = key;
+          if (j === 0) projectItem.checkBox = true;
+          else { projectItem.checkBox = false; }
+          projectList.push(projectItem);
+        }
+      }
+
+      return projectList;
     },
     async getAllProjectList() {
       const vm = this;
@@ -171,8 +195,8 @@ export default {
       if (vm.$refs.spinner) { vm.$refs.spinner.open(); }
       await this.$store.dispatch('fetchTimesheetProjects', postData).then(
         (res) => {
-          vm.projectsList = vm.$store.state.allProjects.filter(el => res.some(f => f.id === el.id));
-          // vm.projectsList = this.groupBy(timesheetProjects, timesheetProject => timesheetProject.mou.name);
+          const timeSheetProjects = vm.$store.state.allProjects.filter(el => res.some(f => f.id === el.id));
+          vm.projectsList = this.groupBy(timeSheetProjects, timesheetProject => timesheetProject.mou.id);
           if (vm.$refs.spinner) { vm.$refs.spinner.close(); }
         },
         (err) => {
@@ -235,7 +259,7 @@ export default {
       let totalPage = 0;
       let projects = this.getAllProjectIds();
       const vm = this;
-      projects = projects.map(str => ({ projectId: str }));
+      projects = projects.map(str => ({ projectId: str.id }));
       const pdfValues = [];
       if (projects.length) {
         vm.$refs.spinner.open();
