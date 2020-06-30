@@ -127,7 +127,6 @@ export default {
       }, 400);
     },
     exportCSV() {
-      console.log('date before', this.startDate, this.endDate);
       this.$emit('exportTimeSheets', this.startDate, this.endDate);
       this.dialog = false;
     },

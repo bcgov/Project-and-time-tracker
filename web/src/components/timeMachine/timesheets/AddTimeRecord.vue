@@ -810,7 +810,6 @@ export default {
       }
     },
     exportTimeSheets(val1, val2) {
-      console.log('reached here', val1, val2);
       if (!this.form.userId) {
         this.$refs.snackbar.displaySnackbarTop('error', 'Please select user.');
         return;
@@ -835,7 +834,6 @@ export default {
       vm.$store.dispatch('fetchTimesheetEntriesByUser', formData).then(() => {
         const timeEntries = [];
         for (let i = 0; i < vm.$store.state.timesheetEntryDatabyUser.length; i++) {
-          console.log('hiii');
           const entries = vm.$store.state.timesheetEntryDatabyUser[i].timesheetEntries;
           const currentProject = vm.$store.state.timesheetEntryDatabyUser[i].project.projectName;
           const currentProjectRfx = vm.$store.state.timesheetEntryDatabyUser[i].projectRfx.rfxName;
@@ -867,8 +865,8 @@ export default {
             });
           }
         }
-        console.log(timeEntries);
-        this.csvExport(timeEntries);
+        if (timeEntries.length) this.csvExport(timeEntries);
+        else this.$refs.snackbar.displaySnackbarTop('info', 'No Records Found');
       });
     },
   },

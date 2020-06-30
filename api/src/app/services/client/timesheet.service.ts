@@ -118,7 +118,7 @@ export const retrieveForLightTimesheetByUser = async (model) => {
     .orderBy('te.entryDate', 'ASC')
     .where(
       ' t."userId" = :userId AND' +
-        ' t."startDate" = :startDate AND t."endDate" >= :endDate',
+      ' t."startDate" >= :startDate AND t."endDate" <= :endDate',
       {
       userId: model.userId,
       startDate: model.startDate,
