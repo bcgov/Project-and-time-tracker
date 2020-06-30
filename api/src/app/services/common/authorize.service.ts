@@ -6,11 +6,18 @@ export const authorize = async (ctx: Koa.Context, next: () => Promise<any>) => {
   const auth = ctx.state.auth as IAuth;
 
   const path = `${ctx.method}${ctx._matchedRoute}`;
-  if (permissions[auth.role].includes(path)) {
-    await next();
-  } else {
+  let permitted = false;
+  for (let index = 0; index < auth.role.length; index++) {
+    if (permissions[auth.role[index]].includes(path)) {
+      permitted = true;
+      break;
+    }
+  }
+  if (!permitted) {
     ctx.status = HttpStatus.FORBIDDEN;
     ctx.throw("Don't have permission to perform this action.");
+  } else {
+    await next();
   }
 };
 
