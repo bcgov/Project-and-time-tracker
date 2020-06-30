@@ -152,6 +152,19 @@ export default {
     },
   },
   methods: {
+    groupBy(list, keyGetter) {
+      const map = new Map();
+      list.forEach((item) => {
+        const key = keyGetter(item);
+        const collection = map.get(key);
+        if (!collection) {
+          map.set(key, [item]);
+        } else {
+          collection.push(item);
+        }
+      });
+      return map;
+    },
     async getAllProjectList() {
       const vm = this;
       const postData = { selectedDate: this.date };
@@ -159,6 +172,7 @@ export default {
       await this.$store.dispatch('fetchTimesheetProjects', postData).then(
         (res) => {
           vm.projectsList = vm.$store.state.allProjects.filter(el => res.some(f => f.id === el.id));
+          // vm.projectsList = this.groupBy(timesheetProjects, timesheetProject => timesheetProject.mou.name);
           if (vm.$refs.spinner) { vm.$refs.spinner.close(); }
         },
         (err) => {
