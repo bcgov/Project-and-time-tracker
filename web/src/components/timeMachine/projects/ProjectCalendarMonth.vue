@@ -30,6 +30,7 @@
           <div :class="`date-picker-container date-picker-wrapper ${getDatePickerClass()}`">
             <v-date-picker
               class="timesheets-date-picker"
+              @input="setTimesheetsWeek"
               v-model="selectedDate"
               first-day-of-week="1"
             ></v-date-picker>
@@ -97,7 +98,7 @@ export default {
       if (!startDate && !endDate) {
         return 'Change Week';
       }
-      this.calendarMonth = (`0${startDate.get('month')}`).slice(-2);
+      this.calendarMonth = `0${startDate.get('month')}`.slice(-2);
       this.calendarYear = new Date().getFullYear();
       this.$emit('changedMonth', `${this.calendarYear}-${this.calendarMonth}`);
       return `${months[startDate.get('month')]} ${new Date().getFullYear()}`;
@@ -123,7 +124,7 @@ export default {
       const yearAndMonth = value.split(' ');
       // eslint-disable-next-line radix
       const monthNumber = yearAndMonth[0] === 'Jan' ? 12 : parseInt(months[yearAndMonth[0]]) - 1;
-      this.calendarMonth = (`0${monthNumber}`).slice(-2);
+      this.calendarMonth = `0${monthNumber}`.slice(-2);
       // eslint-disable-next-line prefer-destructuring
       // eslint-disable-next-line radix
       this.calendarYear = yearAndMonth[0] === 'Jan' ? parseInt(yearAndMonth[1]) - 1 : yearAndMonth[1];
@@ -150,7 +151,7 @@ export default {
       const yearAndMonth = value.split(' ');
       // eslint-disable-next-line radix
       const monthNumber = yearAndMonth[0] === 'Dec' ? 1 : parseInt(months[yearAndMonth[0]]) + 1;
-      this.calendarMonth = (`0${monthNumber}`).slice(-2);
+      this.calendarMonth = `0${monthNumber}`.slice(-2);
       // eslint-disable-next-line prefer-destructuring
       // eslint-disable-next-line radix
       this.calendarYear = yearAndMonth[0] === 'Dec' ? parseInt(yearAndMonth[1]) + 1 : yearAndMonth[1];
@@ -178,20 +179,32 @@ export default {
     setTimesheetsWeek(dateString, isToggle = true) {
       // Set start day to start of week, which in our case is Monday
       const startDate = moment(dateString).day(1);
-      const endDate = moment(dateString).day(7);
+      dateString = dateString.slice(0, -3);
+      const yearAndMonth = dateString.split('-');
+      const months = [];
+      months[1] = 'Jan';
+      months[2] = 'Feb';
+      months[3] = 'Mar';
+      months[4] = 'Apr';
+      months[5] = 'May';
+      months[6] = 'Jun';
+      months[7] = 'Jul';
+      months[8] = 'Aug';
+      months[9] = 'Sep';
+      months[10] = 'Oct';
+      months[11] = 'Nov';
+      months[12] = 'Dec';
 
-      sessionStorage.setItem('selectedStartDate', startDate.format('YYYY-MM-DD'));
-      sessionStorage.setItem('selectedEndDate', endDate.format('YYYY-MM-DD'));
-
+      if (!startDate) {
+        return 'Change Week';
+      }
       if (isToggle) {
         this.toggleDatePicker();
       }
 
-      this.$store.dispatch('setTimesheetsWeek', {
-        startDate: startDate.format('YYYY-MM-DD'),
-        endDate: endDate.format('YYYY-MM-DD'),
-      });
-      this.$emit('next');
+      // eslint-disable-next-line radix
+      this.calendarText = `${months[parseInt(yearAndMonth[1])]} ${yearAndMonth[0]}`;
+      this.$emit('changedMonth', `${yearAndMonth[0]}-${yearAndMonth[1]}`);
     },
     toggleDatePicker() {
       this.showDatePicker = !this.showDatePicker;
@@ -202,9 +215,6 @@ export default {
     getDatePickerClass() {
       return this.showDatePicker ? 'date-picker-active' : '';
     },
-  },
-  created() {
-    this.setTimesheetsWeek(moment().format('YYYY-MM-DD'), false);
   },
 };
 </script>
@@ -218,7 +228,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  float:left;
+  float: left;
 }
 
 .date-picker-wrapper:not(.date-picker-active) {
