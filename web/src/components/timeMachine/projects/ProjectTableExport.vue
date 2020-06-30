@@ -11,30 +11,10 @@
     <v-divider></v-divider>
     <v-layout>
       <v-flex md-2>
-        <v-menu
-          ref="menu"
-          v-model="menu"
-          :close-on-content-click="false"
-          :return-value.sync="date"
-          transition="scale-transition"
-          offset-y
-        >
-          <template v-slot:activator="{ on }">
-            <v-text-field
-              v-model="date"
-              label="Choose Month"
-              prepend-icon="event"
-              readonly
-              v-on="on"
-              class="calender-box"
-            ></v-text-field>
-          </template>
-          <v-date-picker v-model="date" :show-current="true" type="month">
-            <v-spacer></v-spacer>
-            <v-btn text color="primary" @click="menu = false">Cancel</v-btn>
-            <v-btn text color="primary" @click="datefilter(date)">OK</v-btn>
-          </v-date-picker>
-        </v-menu>
+      <ProjectCalendarMonth
+                        ref="TimeCalendarMonthly"
+                        @changedMonth="changedMonth"
+                      ></ProjectCalendarMonth>
       </v-flex>
       <v-flex md-10>
         <div class="start-button-div">
@@ -93,6 +73,7 @@
 import jsPDF from 'jspdf';
 import Confirm from '../common/Confirm.vue';
 import Snackbar from '../common/Snackbar.vue';
+import ProjectCalendarMonth from './ProjectCalendarMonth.vue';
 import Spinner from '../common/Spinner.vue';
 import 'jspdf-autotable';
 // Vue.filter('formatDate', function(value) {
@@ -110,6 +91,7 @@ export default {
     Snackbar,
     Confirm,
     Spinner,
+    ProjectCalendarMonth,
   },
   data() {
     return {
@@ -151,6 +133,10 @@ export default {
     },
   },
   methods: {
+    changedMonth(newDate) {
+      this.date = newDate;
+      this.getAllProjectList();
+    },
     updateSelectedProjects(event, key) {
       if (event) {
         const selectedItems = this.projectsList.filter(f => f.key === key);
