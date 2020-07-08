@@ -8,7 +8,7 @@ import { decodeKeycloakToken } from '../../utility/helper';
 import {
   createUser,
   retrieveUserByReferenceId,
-  updateUser
+  updateUser,
 } from '../client/user.service';
 import { IUser } from '../../models/interfaces/i-user';
 import { createContact } from '../client/contact.service';
@@ -32,8 +32,8 @@ export const validateToken = async (
         headers: {
           // add the token you received to the userinfo request, sent to keycloak
           Authorization: ctx.headers.authorization,
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       };
 
       const response = await fetch(url, options);
@@ -54,7 +54,8 @@ export const validateToken = async (
         // const permissions = authorizationData.resource_access[keycloakConfig.resourceName].roles;
         const authData = <IAuth>{
           fullName: data.name,
-          referenceId: data.sub
+          referenceId: data.sub,
+          role: [],
           // permissions: permissions
         };
 
@@ -67,19 +68,19 @@ export const validateToken = async (
           throw Error('realm roles are not configured.');
         }
         if (authorizationData.realm_access.roles.includes('PSB_Admin')) {
-          authData.role = 'PSB_Admin';
-        } else if (
-          authorizationData.realm_access.roles.includes('PSB_Intake_User')
-        ) {
-          authData.role = 'PSB_Intake_User';
-        } else if (authorizationData.realm_access.roles.includes('PSB_User')) {
-          authData.role = 'PSB_User';
-        } else if (authorizationData.realm_access.roles.includes('User')) {
-          authData.role = 'User';
-        } else if (
-          authorizationData.realm_access.roles.includes('manage_finances')
-        ) {
-          authData.role = 'manage_finances';
+          authData.role.push('PSB_Admin');
+        }
+        if (authorizationData.realm_access.roles.includes('PSB_Intake_User')) {
+          authData.role.push('PSB_Intake_User');
+        }
+        if (authorizationData.realm_access.roles.includes('PSB_User')) {
+          authData.role.push('PSB_User');
+        }
+        if (authorizationData.realm_access.roles.includes('User')) {
+          authData.role.push('User');
+        }
+        if (authorizationData.realm_access.roles.includes('manage_finances')) {
+          authData.role.push('manage_finances');
         }
         await verifyAndCreateOrUpdateUser(authData, data);
 
@@ -117,9 +118,9 @@ export const retrieveKeycloakAdminToken = async () => {
     const response = await fetch(tokenUrl, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: tokenParams
+      body: tokenParams,
     });
 
     // console.log('retrieveKeycloakAdminToken RESPONSE', { response })
@@ -144,10 +145,9 @@ export const retrieveKeycloakUsersByRole = async (
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      }
+        'Content-Type': 'application/json',
+      },
     });
-
 
     if (response.status !== 200) {
       throw Error(response.statusText);
@@ -168,24 +168,24 @@ const verifyAndCreateOrUpdateUser = async (authData: IAuth, data: any) => {
     );
     const contact: any = await createContact(<IContact>{
       fullName: authData.fullName,
-      contactType: 'user'
+      contactType: 'user',
     });
 
     console.log('ARC - Created contact.  ID: ', contact.id);
 
     const createdUser = await createUser(<IUser>{
       referenceId: authData.referenceId,
-      role: authData.role,
+      role: authData.role[0],
       contact: {
-        id: contact.id
-      }
+        id: contact.id,
+      },
     });
     authData.userId = createdUser.id;
 
     console.log('ARC - Created user ID:', createdUser.id);
   } else {
-    if (user.role !== authData.role) {
-      await updateUser(user.id, { role: authData.role });
+    if (user.role[0] !== authData.role[0]) {
+      await updateUser(user.id, { role: authData.role[0] });
     }
     authData.userId = user.id;
   }
