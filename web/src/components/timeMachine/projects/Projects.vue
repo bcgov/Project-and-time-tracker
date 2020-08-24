@@ -7,7 +7,7 @@
       </v-flex>
        <v-flex md8><v-radio-group class="right-position" row v-model="selected">
         <v-radio label="My Projects" value="My Projects"></v-radio>
-        <v-radio v-if="($store.state.activeRoles.role=='PSB_Admin')||($store.state.activeRoles.role=='PSB_Intake_User')" label="All Projects" value="All Projects"></v-radio>
+        <v-radio v-if="$store.state.activeRoles && $store.state.activeRoles.role&&($store.state.activeRoles.role.includes('PSB_Admin'))||($store.state.activeRoles.role.includes('PSB_Intake_User'))" label="All Projects" value="All Projects"></v-radio>
         <v-radio label="Archived Projects" value="Archived Projects"></v-radio>
       </v-radio-group></v-flex></v-flex>
     </v-layout>

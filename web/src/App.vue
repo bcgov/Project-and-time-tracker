@@ -93,7 +93,7 @@
 import { mapState } from 'vuex';
 import { shouldDisplayItem } from './menu';
 import './App.styl';
-import { getRole } from './modules/security/init';
+import { getRoles } from './modules/security/init';
 
 export default {
   name: 'App',
@@ -125,7 +125,7 @@ export default {
       this.initialLoadDone = true;
       this.userName = JSON.parse(localStorage.getItem('keycloak_user')).name;
       this.$store.state.activeUser.refId = JSON.parse(localStorage.getItem('keycloak_user')).sub;
-      this.$store.state.activeRoles.role = getRole();
+      this.$store.state.activeRoles.role = getRoles();
     },
   },
   created() {

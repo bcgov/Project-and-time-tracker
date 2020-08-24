@@ -7,7 +7,7 @@ const keycloakFileName = process.env.VUE_APP_KEYCLOAK_JSON_FILENAME
   : "keycloak-local";
 // const keycloakAuth = new Keycloak(`/statics/${keycloakFileName}.json`);
 const keycloakAuth = new Keycloak(`/${keycloakFileName}.json`);
-let roleValue="";
+let userRoles = [];
 const pageBasedOnRole = role => {
   let page = "Unauthorized";
   switch (role) {
@@ -45,9 +45,10 @@ export default (next, roles, isLoggedIn = false) => {
         let keycloakRole;
         roles.forEach(role => {
           if (keycloakAuth.hasRealmRole(role)) {
+            debugger;
             hasAccess = true;
             keycloakRole = role;
-            roleValue = role;
+            userRoles.push(role);
           }
         });
 
@@ -83,8 +84,8 @@ export default (next, roles, isLoggedIn = false) => {
       console.log("failed to login");
     });
 };
-export function getRole() {
-return roleValue;
+export function getRoles() {
+  return userRoles;
 }
 /** Returns link to Keycloak server, useful for admins to login */
 export function getAuthURL() {
