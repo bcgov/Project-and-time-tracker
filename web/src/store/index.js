@@ -40,7 +40,7 @@ const store = new Vuex.Store({
     config,
     // Users and roles
     activeUser: {}, // TODO: Default user shape
-    activeRoles: [],
+    activeRoles: {},
     users: [],
     clients: [],
     services: [],
