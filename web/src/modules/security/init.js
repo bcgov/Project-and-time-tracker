@@ -45,7 +45,6 @@ export default (next, roles, isLoggedIn = false) => {
         let keycloakRole;
         roles.forEach(role => {
           if (keycloakAuth.hasRealmRole(role)) {
-            debugger;
             hasAccess = true;
             keycloakRole = role;
             userRoles.push(role);
