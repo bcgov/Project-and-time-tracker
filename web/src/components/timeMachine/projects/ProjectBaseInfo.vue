@@ -105,7 +105,7 @@
             style="padding:0px !important"
           >
              <v-flex md3> <label class="v-label theme--light" style="margin-left: 2%;">Non-Ministry</label>  </v-flex>
-            <v-flex md1><v-checkbox v-model="form.client.isNonMinistry"></v-checkbox></v-flex>
+            <v-flex md1><v-checkbox v-model="form.client.isNonMinistry" @change="ministryCheck($event)"></v-checkbox></v-flex>
            <v-flex md8> <v-text-field
               :rules="requiredRule"
               v-if="form.client.isNonMinistry"
@@ -315,7 +315,6 @@ export default {
     if (!inputClient) {
       form.client = new ClientDto();
     }
-
     return {
       valid: true,
       requiredTeamRule: [
@@ -370,7 +369,6 @@ export default {
     },
     project(value) {
       this.form = value;
-
       const inputProjectSector = this.form.projectSector || null;
       if (!inputProjectSector) {
         this.form.projectSector = new ProjectSectorDto();
@@ -378,7 +376,6 @@ export default {
     },
     ministry(value) {
       this.form = value;
-
       const inputMinistry = this.form.client.ministry || null;
       if (!inputMinistry) {
         this.form.client.ministry = new MinistryDto();
@@ -386,6 +383,12 @@ export default {
     },
   },
   methods: {
+    ministryCheck(e) {
+		 const inputMinistry = this.form.client.ministry || null;
+      if (!inputMinistry) {
+        this.form.client.ministry = new MinistryDto();
+      }
+    },
     thousandSeprator(amount) {
       if (
         amount !== ''
