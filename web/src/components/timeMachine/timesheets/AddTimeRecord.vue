@@ -7,10 +7,18 @@
       content-class="add-time-record"
       v-model="dialog"
       @input="closeDialog(false)"
-    >
+    >  
       <v-form ref="AddimeRecords" v-model="valid" lazy-validation>
         <spinner ref="spinner"></spinner>
         <v-card>
+          <v-system-bar v-if="mouUsedAmount > MOU_USED_AMOUNT_LEVELS.DANGER" dark color="red" class="mou-amount-warning">
+            <v-icon dark medium>error</v-icon>
+            <span class="pl-1"><b>MOU value is overdrawn and a new MOU amendment would be needed.</b></span>
+          </v-system-bar>
+          <v-system-bar v-else-if="mouUsedAmount > MOU_USED_AMOUNT_LEVELS.WARNING" dark color="orange" class="mou-amount-warning">
+            <v-icon dark medium>warning</v-icon>
+            <span class="pl-1"><b>MOU is within 10% of its remaining value.</b></span>
+          </v-system-bar>          
           <v-card-text class="card-contents">
             <v-layout wrap>
               <v-flex md4>
@@ -278,10 +286,12 @@ export default {
     },
     mouAmount() {
       if (!this.form || !this.form.mou || !this.form.project) {
+        this.setMouUsedAmount();
         return '';
       }
       const selectedProject = this.userMouProjects.filter(item => item.id === this.form.project);
       if (selectedProject[0]) {
+        this.setMouUsedAmount(selectedProject[0]);
         return selectedProject[0].mouAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
       }
       return '';
@@ -304,6 +314,10 @@ export default {
   props: {},
   created() {
     this.clearTimesheet();
+    this.MOU_USED_AMOUNT_LEVELS = {
+      WARNING: 0.9,
+      DANGER: 1
+    };
   },
   methods: {
     openExportModal() {
@@ -322,15 +336,26 @@ export default {
       return sum;
     },
     getTotalBilledAmount() {
-      console.log('getTotalBilledAmount');
       if (!this.form || !this.form.mou || !this.form.project) {
+        this.setMouUsedAmount();
         return '';
       }
       const selectedProject = this.userMouProjects.filter(item => item.id === this.form.project);
       if (selectedProject[0]) {
+        this.setMouUsedAmount(selectedProject[0]);
         return selectedProject[0].totalAmountBilled.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
       }
       return '';
+    },
+    setMouUsedAmount(selectedProject) {
+        if(selectedProject){
+          const mouAmount = selectedProject.mouAmount;
+          const totalAmountBilled = selectedProject.totalAmountBilled;
+          this.mouUsedAmount = totalAmountBilled / mouAmount;
+        }
+        else{
+          this.mouUsedAmount = 0;
+        }
     },
     fetchUser() {
       const referenceId = this.$store.state.activeUser.refId;
@@ -363,6 +388,7 @@ export default {
         requiredRule: [v => !!v || 'This field required'],
         dialog: false,
         form: { ...form },
+        mouUsedAmount: 0
       };
     },
     async onChangeUser(userId, editMode = false) {
