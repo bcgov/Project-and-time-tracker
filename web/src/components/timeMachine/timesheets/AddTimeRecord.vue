@@ -61,7 +61,7 @@
                     ${{ timesheet[weeklyProjectIndex].amountBilled }}
                   </v-flex>
                   <v-flex md4 v-else> <b>Currently Billed:</b> $0 </v-flex>
-                  <v-flex md4> <b>Legal Billed Amount:</b> $0 </v-flex>
+                  <v-flex md4> <b>Legal Billed Amount:</b> ${{ getTotalBilledAmount() }} </v-flex>
                 </v-flex>
               </v-flex>
             </v-layout>
@@ -320,6 +320,17 @@ export default {
         .filter(item => item.amountBilled && item.amountBilled > 0)
         .reduce((prev, cur) => prev + Number(cur.amountBilled), 0);
       return sum;
+    },
+    getTotalBilledAmount() {
+      console.log('getTotalBilledAmount');
+      if (!this.form || !this.form.mou || !this.form.project) {
+        return '';
+      }
+      const selectedProject = this.userMouProjects.filter(item => item.id === this.form.project);
+      if (selectedProject[0]) {
+        return selectedProject[0].totalAmountBilled.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      }
+      return '';
     },
     fetchUser() {
       const referenceId = this.$store.state.activeUser.refId;

@@ -40,6 +40,9 @@ const financeRepo = (): Repository<FinanceExport> => {
 const timesheetRepo = (): Repository<Timesheet> => {
   return getRepository(Timesheet);
 };
+const timesheetEntryRepo = (): Repository<TimesheetEntry> => {
+  return getRepository(TimesheetEntry);
+};
 const projectRepo = (): Repository<Project> => {
   return getRepository(Project);
 };
@@ -1099,11 +1102,19 @@ export const retrieveMouProjectsByUserId = async (userId: string) => {
     .getRawMany();
 
   for (let index = 0; index < res.length; index++) {
-    res[index].rfxList = await retrieveRFXByProjectId(res[index].id);
+    const project = res[index];
+
+    const [totalBillWithForecast, rfxList] = await Promise.all([
+      retrieveTotalBillAmountWithForecastByProject(project.id),
+      retrieveRFXByProjectId(project.id)]);
+
+    project.totalAmountBilled = round(totalBillWithForecast);
+    project.rfxList = rfxList;
   }
 
   return res;
 };
+
 export const retrieveRFXByProjectId = async (id: string) => {
   const repo = projectRFXRepo();
   const res = await repo
@@ -1114,6 +1125,68 @@ export const retrieveRFXByProjectId = async (id: string) => {
     .getRawMany();
   return res;
 };
+
+/**
+ * Retrieve the total bill anount for the project considering the timesheets already locked
+ * and calculating the forecast for the timesheets that are not locked yet.
+ * @param id Project ID to be retrieved.
+ */
+export const retrieveTotalBillAmountWithForecastByProject = async(id: string) => {
+  const [totalLocked, totalUnlocked] = await Promise.all([
+    retrieveTotalAmountBilledByProjectId(id),
+    retrieveTotalAmountToBillByProjectId(id)]);
+      
+  let totalAmountToBill = 0;
+  if(totalUnlocked && totalUnlocked.length){
+    totalAmountToBill = totalUnlocked
+      .map(x => x.totalBillableTime + x.totalRevenue + x.totalExpenses)
+      .reduce((prev, cur) => prev + cur);
+  }
+
+  return totalLocked + totalAmountToBill;
+}
+
+/**
+ * Sum all the already billed timesheets.
+ * When a report is exported for a particular period, the column amountBilled is updated
+ * on the table timesheet. The process will use the current values for hourly rates and revenue
+ * rates to calculate the bill amount.
+ * @param id Project ID to be retrieved.
+ */
+export const retrieveTotalAmountBilledByProjectId = async (id: string) => {
+  const repo = timesheetRepo();
+  const lockedAmount = await repo
+    .createQueryBuilder('t')
+    .select('SUM(t.amountBilled)')
+    .where('t."projectId" = :id AND t."is_locked" = :isLocked', { id: id, isLocked: true })
+    .getRawOne();
+  return lockedAmount.sum;
+};
+
+/**
+ * Sum all the expenses, revenues and timesheet hours that belongs to the project
+ * and that were still not locked (lock will happen during report generation).
+ * @param id Project ID to be retrieved.
+ */
+export const retrieveTotalAmountToBillByProjectId = async (id: string) => {
+  const timeSheetEntryRepo = timesheetEntryRepo();  
+  const openTimeSheetsAmount = await timeSheetEntryRepo
+  .createQueryBuilder("tse")
+  .select('tse."timesheetId"')
+  .addSelect('SUM(tse."hoursBillable") * c."hourlyRate"', 'totalBillableTime')
+  .addSelect('SUM(tse."revenueHours") * COALESCE (c."revenueRate", 0)', 'totalRevenue')
+  .addSelect('SUM(tse."expenseAmount")', 'totalExpenses')
+  .innerJoin('timesheet', 'ts', 'tse."timesheetId" = ts.Id')
+  .innerJoin('user', 'u', 'ts."userId" = u.Id')
+  .innerJoin('contact', 'c', 'u."contactId" = c.Id')
+  .where('ts."projectId" = :id AND ts."is_locked" = :isLocked', { id: id, isLocked: false })
+  .groupBy('tse."timesheetId"')
+  .addGroupBy('c."revenueRate"')
+  .addGroupBy('c."hourlyRate"')
+  .getRawMany();
+  return openTimeSheetsAmount;
+};
+
 export const retrieveAllProjects = async () => {
   const repo = projectRepo();
   return await repo
