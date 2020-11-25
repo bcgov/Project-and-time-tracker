@@ -2,6 +2,7 @@
   <v-card>
     <snackbar ref="snackbar"></snackbar>
     <confirm ref="confirm"></confirm>
+    <selectProjectCategory ref="selectCategory"></selectProjectCategory>
     <v-toolbar v-if="title" card dense color="transparent">
       <v-toolbar-title>
         <h4>{{ title }}</h4>
@@ -177,6 +178,7 @@ import './intakeformtable.styl';
 import IntakeFormView from './IntakeFormView.vue';
 import Snackbar from '../common/Snackbar.vue';
 import Confirm from '../common/Confirm.vue';
+import SelectProjectCategory from './SelectProjectCategory.vue';
 
 export default {
   props: {
@@ -186,6 +188,7 @@ export default {
     Snackbar,
     Confirm,
     IntakeFormView,
+    SelectProjectCategory,
   },
 
   data() {
@@ -247,16 +250,12 @@ export default {
       this.dialog = true;
     },
     async approveRequest(id) {
-      if (
-        await this.$refs.confirm.open(
-          'info',
-          'Are you sure to approve this request?',
-        )
-      ) {
-        this.$store.dispatch('approveIntakeRequest', { id }).then(() => {
-          this.$store.dispatch('fetchIntakeRequests');
-          this.$refs.snackbar.displaySnackbar('success', 'Request Approved.');
-        });
+      const selectedCategory = await this.$refs.selectCategory.open();     
+      if (selectedCategory) {
+          this.$store.dispatch('approveIntakeRequest', { id, categoryId: selectedCategory }).then(() => {
+            this.$store.dispatch('fetchIntakeRequests');
+            this.$refs.snackbar.displaySnackbar('success', 'Request Approved.');
+          });
       }
     },
     getProjectLead(projectLeadUserId) {

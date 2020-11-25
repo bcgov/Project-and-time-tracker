@@ -1,6 +1,7 @@
 import { IClient } from './i-client';
 import { IProjectSector } from './i-project-sector';
 import { IMOU } from './i-mou';
+import { ProjectCategory } from '../entities/project.entity'
 
 export interface IProject {
   id: string;
@@ -23,4 +24,5 @@ export interface IProject {
   projectSuccess: string;
   teamWideProject: boolean;
   mou: IMOU;
+  category: ProjectCategory
 }

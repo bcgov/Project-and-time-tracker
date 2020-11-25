@@ -76,6 +76,7 @@ const store = new Vuex.Store({
     archivedProjects: [],
     allProjects: [],
     projectsRfx: new HashTable(),
+    projectCategories: [],
     // Timesheets component
     activeTimesheetEntryRowId: null, // Row of timesheet entries (1 week)
     activeTimesheetEntryRow: {},
@@ -209,6 +210,9 @@ const store = new Vuex.Store({
     },
     fetchProjectRfx(state, data) {
       state.projectsRfx.set(data.projectId, data.content);
+    },
+    fetchProjectCategories(state, data) {
+      state.projectCategories = data;
     },
     // Clients or Government Ministries
     fetchClients(state, data) {
@@ -974,7 +978,7 @@ const store = new Vuex.Store({
     },
     async approveIntakeRequest(ctx, req) {
       const api = await $http
-        .post(`${API_URI}/intake/${req.id}/approve`)
+        .post(`${API_URI}/intake/${req.id}/approve`, { categoryId: req.categoryId })
         .then(res => {
           const content = res.data;
           return Promise.resolve(content);
@@ -1115,6 +1119,11 @@ const store = new Vuex.Store({
       $http.patch(`${API_URI}/client/${req.id}/finance-code`, body).then(res => {
         const content = res.data;
         ctx.commit("updateProjectFinanceCodes", content);
+      });
+    },
+    fetchProjectCategories(ctx, req) {
+      $http.get(`${API_URI}/project/categories`).then(res => {
+        ctx.commit("fetchProjectCategories", res.data);
       });
     },
     async updateProcurementLog(ctx, req) {

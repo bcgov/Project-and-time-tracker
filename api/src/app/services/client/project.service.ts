@@ -4,6 +4,7 @@ import {
   ProjectContacts,
   Contact,
   ProjectRfx,
+  ProjectCategory
 } from '../../models/entities';
 import { Client } from '../../models/entities';
 import { IProject } from '../../models/interfaces/i-project';
@@ -1302,4 +1303,13 @@ export const retrieveArchivedProjectsByUserId = async (userId: string) => {
       { userId: userId }
     )
     .getMany();
+};
+
+export const getProjectCategories = () => {
+  return [
+    { id: ProjectCategory.CSA, description: 'CSA', hasFinaceReport: false },
+    { id: ProjectCategory.ITQ, description: 'ITQ', hasFinaceReport: false },
+    { id: ProjectCategory.CostRecoverable, description: 'Cost Recoverable', hasFinaceReport: true },
+    { id: ProjectCategory.NonRecoverable, description: 'Non Recoverable', hasFinaceReport: false },
+  ];
 };

@@ -15,6 +15,7 @@ import {
   retrieveFinanceData,
   dischargeFinanceRecord,
   reinstateFinanceRecord,
+  getProjectCategories
 } from '../../../services/client/project.service';
 import { IProject } from '../../../models/interfaces/i-project';
 import { retrieveClientByProjectId } from '../../../services/client/client.service';
@@ -260,6 +261,14 @@ export const assignBackupAction = async (ctx: Koa.Context) => {
   }
 };
 
+export const getCategories = async (ctx: Koa.Context) => {
+  try {
+    ctx.body = getProjectCategories();
+  } catch (err) {
+    ctx.throw(err.message);
+  }
+};
+
 const validateProject = (project: IProject) => {
   const validationErrors = [];
 
@@ -288,6 +297,7 @@ router.get('/', authorize, getProjects);
 router.get('/all', authorize, getAllProjects);
 router.get('/:id/by-user-id', authorize, getmouProjects);
 router.get('/archived', authorize, getArchivedProjects);
+router.get('/categories', authorize, getCategories);
 router.post('/timesheetprojects', authorize, timesheetProjects);
 router.post('/exportedPdfs', authorize, exportedPdfs);
 router.post('/dischargedPdfs', authorize, dischargedPdfs);
