@@ -21,6 +21,7 @@ import {
   IFinanceJSON,
   IUserFinanceCodes,
 } from '../../models/interfaces/i-finance-json';
+import { validateFinanceCodes } from './client.service';
 
 const userRepo = (): Repository<User> => {
   return getRepository(User);
@@ -1081,17 +1082,11 @@ export const retrieveExportedPdfs = async (obj) => {
 
 export const retrieveMouProjectsByUserId = async (userId: string) => {
   const repo = projectRepo();
-  const res = await repo
+  const projects = await repo
     .createQueryBuilder('p')
-    .innerJoin('p.mou', 'o')
+    .innerJoinAndSelect('p.mou', 'o')
+    .innerJoinAndSelect('p.client', 'c')
     .orderBy('p.projectName', 'ASC')
-    .select([
-      'p.id AS "id"',
-      'p.projectName AS "projectName"',
-      'p.mouAmount AS "mouAmount"',
-      'o.name AS "mouName"',
-      'o.id  AS "mouId"',
-    ])
     .where(
       '(p.is_archived IS NULL OR p.is_archived = :is_archived) AND (p."leadUserId" = :userId OR p."backupUserId" = :userId OR p.teamWideProject=true)',
       {
@@ -1099,20 +1094,25 @@ export const retrieveMouProjectsByUserId = async (userId: string) => {
         userId,
       }
     )
-    .getRawMany();
+    .getMany();
 
-  for (let index = 0; index < res.length; index++) {
-    const project = res[index];
-
+  const results = projects.map(async project => {
     const [totalBillWithForecast, rfxList] = await Promise.all([
       retrieveTotalBillAmountWithForecastByProject(project.id),
       retrieveRFXByProjectId(project.id)]);
+    return {
+      id: project.id,
+      projectName: project.projectName,
+      mouAmount: project.mouAmount,
+      mouName: project.mou.name,
+      mouId: project.mou.id,
+      totalAmountBilled: round(totalBillWithForecast),
+      rfxList: rfxList,
+      hasValidFinanceCodes: validateFinanceCodes(project.client).length === 0
+    };
+  });
 
-    project.totalAmountBilled = round(totalBillWithForecast);
-    project.rfxList = rfxList;
-  }
-
-  return res;
+  return await Promise.all(results);
 };
 
 export const retrieveRFXByProjectId = async (id: string) => {
