@@ -1006,14 +1006,11 @@ export const retrieveTimesheetProjects = async (obj) => {
     .select('DISTINCT t.project', 'id')
     .innerJoin('t.timesheetEntries', 'te')
     .leftJoin(FinanceExport, 'fe', 't."documentNo" = fe.documentNo')
-    .where(
-      '(t.startDate >= :start and t.startDate <= :end)  and (t.is_locked = :is_locked or t.is_locked IS NULL) and (fe.isDischarged IS NULL or fe.isDischarged = false)',
-      {
-        start: startDate,
-        end: endDate,
-        is_locked: false,
-      }
-    )
+    .innerJoin('t.project', 'p')
+    .where('t.startDate >= :startDate AND t.startDate <= :endDate', { startDate, endDate })
+    .andWhere('(t.is_locked = false OR t.is_locked IS NULL)')
+    .andWhere('(fe.isDischarged = false OR fe.isDischarged IS NULL)')
+    .andWhere('(p.categoryId = :categoryId OR p.categoryId IS NULL)', { categoryId: ProjectCategory.CostRecoverable })
     .getRawMany();
 
   return res;
@@ -1307,9 +1304,9 @@ export const retrieveArchivedProjectsByUserId = async (userId: string) => {
 
 export const getProjectCategories = () => {
   return [
-    { id: ProjectCategory.CSA, description: 'CSA', hasFinaceReport: false },
-    { id: ProjectCategory.ITQ, description: 'ITQ', hasFinaceReport: false },
-    { id: ProjectCategory.CostRecoverable, description: 'Cost Recoverable', hasFinaceReport: true },
-    { id: ProjectCategory.NonRecoverable, description: 'Non Recoverable', hasFinaceReport: false },
+    { id: ProjectCategory.CSA, description: 'CSA' },
+    { id: ProjectCategory.ITQ, description: 'ITQ' },
+    { id: ProjectCategory.CostRecoverable, description: 'Cost Recoverable' },
+    { id: ProjectCategory.NonRecoverable, description: 'Non Recoverable' },
   ];
 };
