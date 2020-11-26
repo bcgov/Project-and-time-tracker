@@ -83,7 +83,7 @@ export class Project {
   mou: MOU;
 
   @Column({ type: 'int', nullable: true })
-  category: ProjectCategory
+  categoryId: ProjectCategory
 }
 
 export enum ProjectCategory {

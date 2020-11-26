@@ -24,5 +24,5 @@ export interface IProject {
   projectSuccess: string;
   teamWideProject: boolean;
   mou: IMOU;
-  category: ProjectCategory
+  categoryId: ProjectCategory
 }

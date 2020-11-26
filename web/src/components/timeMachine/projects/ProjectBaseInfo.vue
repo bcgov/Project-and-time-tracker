@@ -189,6 +189,17 @@
           ></v-select>
         </div>
       </v-flex>
+      <v-flex xs12>
+        <div class="v-form-container">
+          <v-select
+            :items="projectCategories"
+            label="Project Category"
+            item-value="id"
+            item-text="description"
+            v-model="form.categoryId"
+          ></v-select>
+        </div>
+      </v-flex>
        <v-flex md6>
         <div>
           <v-container fluid>
@@ -301,6 +312,9 @@ export default {
     },
     mouList() {
       return this.$store.state.mouList;
+    },
+    projectCategories() {
+      return this.$store.state.projectCategories;
     },
   },
   data() {
@@ -508,6 +522,7 @@ export default {
     fetchData() {
       // Fetching all the users for now
       this.$store.dispatch('fetchUsers');
+      this.$store.dispatch('fetchProjectCategories');
     },
   },
   created() {

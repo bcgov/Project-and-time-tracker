@@ -155,7 +155,7 @@ export const updateApproveStatus = async (ctx: Koa.Context) => {
       projectSuccess: intake.projectSuccess,
       mou: intake.mou,
       teamWideProject: false,
-      category: body.categoryId
+      categoryId: body.categoryId
     };
     const projectData = await createProject(newProject);
 

@@ -170,11 +170,11 @@ export const updateProjectAction = async (ctx: Koa.Context) => {
       previousContractBackground: project.previousContractBackground,
       projectFailImpact: project.projectFailImpact,
       projectSuccess: project.projectSuccess,
-
+      categoryId: project.categoryId,
       mou: mou,
     };
 
-    const updateingClient = {
+    const updatingClient = {
       id: project.client.id,
       isNonMinistry: project.client.isNonMinistry,
       nonMinistryName: project.client.nonMinistryName,
@@ -206,7 +206,7 @@ export const updateProjectAction = async (ctx: Koa.Context) => {
       }
     }
 
-    await updateProject(ctx.params.id, updatingFields, updateingClient);
+    await updateProject(ctx.params.id, updatingFields, updatingClient);
 
     ctx.body = 'success';
   } catch (err) {
