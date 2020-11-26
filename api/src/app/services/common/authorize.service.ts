@@ -1,6 +1,7 @@
 import * as Koa from 'koa';
 import * as HttpStatus from 'http-status-codes';
 import { IAuth } from '../../models/interfaces/i-auth';
+import { timesheetEntries } from '../../routes/client/controllers/timesheet.controller';
 
 export const authorize = async (ctx: Koa.Context, next: () => Promise<any>) => {
   const auth = ctx.state.auth as IAuth;
@@ -20,6 +21,17 @@ export const authorize = async (ctx: Koa.Context, next: () => Promise<any>) => {
     await next();
   }
 };
+
+/**
+ * Check if the authentication context has some of the provided roles.
+ * @param auth Current authentication context.
+ * @param roles Roles to be verified.
+ */
+export const isInRoles = (auth: IAuth, roles: string[]): boolean => {
+  const authRoles = auth.role.map(r => r.toLowerCase());
+  const rolesToCompare = roles.map(r => r.toLowerCase());
+  return authRoles.some(role => rolesToCompare.includes(role.toLowerCase())); 
+}
 
 const commonForAllUsers = [
   'GET/ministry/',

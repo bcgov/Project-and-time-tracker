@@ -192,6 +192,7 @@
       <v-flex xs12>
         <div class="v-form-container">
           <v-select
+            :disabled="!canEditProjectCategories"
             :items="projectCategories"
             label="Project Category"
             item-value="id"
@@ -315,7 +316,7 @@ export default {
     },
     projectCategories() {
       return this.$store.state.projectCategories;
-    },
+    }, 
   },
   data() {
     const form = Object.assign({}, this.$props.project);
@@ -329,6 +330,10 @@ export default {
     if (!inputClient) {
       form.client = new ClientDto();
     }
+
+    const EDIT_CATEGORY_ROLES = ['psb_admin', 'psb_intake_user'];
+    const canEditProjectCategories = this.$store.state.activeRoles.role.some(role => EDIT_CATEGORY_ROLES.includes(role.toLowerCase()));
+
     return {
       valid: true,
       requiredTeamRule: [
@@ -372,6 +377,7 @@ export default {
           return true;
         },
       ],
+      canEditProjectCategories,
     };
   },
   watch: {

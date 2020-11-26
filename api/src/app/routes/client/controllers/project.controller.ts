@@ -21,7 +21,7 @@ import { IProject } from '../../../models/interfaces/i-project';
 import { retrieveClientByProjectId } from '../../../services/client/client.service';
 import { Role } from '../../roles';
 import { IAuth } from '../../../models/interfaces/i-auth';
-import { authorize } from '../../../services/common/authorize.service';
+import { authorize, isInRoles } from '../../../services/common/authorize.service';
 import { createMOU } from '../../../services/client/mou.service';
 
 export const getProjects = async (ctx: Koa.Context) => {
@@ -155,7 +155,7 @@ export const updateProjectAction = async (ctx: Koa.Context) => {
       mou = await createMOU({ name: project.mou });
     }
 
-    const updatingFields = {
+    let updatingFields = {
       projectName: project.projectName,
       completionDate: project.completionDate,
       contractValue: project.contractValue,
@@ -170,10 +170,15 @@ export const updateProjectAction = async (ctx: Koa.Context) => {
       previousContractBackground: project.previousContractBackground,
       projectFailImpact: project.projectFailImpact,
       projectSuccess: project.projectSuccess,
-      categoryId: project.categoryId,
       mou: mou,
     };
-
+  
+    // Check if the user has permission to update the categoryId.
+    const canEditProjectCategories = isInRoles(auth, [Role.PSB_Admin, Role.PSB_Intake_User]);
+    if(canEditProjectCategories){
+      updatingFields['categoryId'] = project.categoryId;
+    }
+    
     const updatingClient = {
       id: project.client.id,
       isNonMinistry: project.client.isNonMinistry,
