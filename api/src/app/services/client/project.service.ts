@@ -1106,6 +1106,7 @@ export const retrieveMouProjectsByUserId = async (userId: string) => {
       mouId: project.mou.id,
       totalAmountBilled: round(totalBillWithForecast),
       rfxList: rfxList,
+      isCostRecoverable: project.categoryId === ProjectCategory.CostRecoverable || project.categoryId === null,
       hasValidFinanceCodes: validateFinanceCodes(project.client).length === 0
     };
   });
