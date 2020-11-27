@@ -33,6 +33,8 @@
 </template>
 
 <script>
+import './SelectProjectCategory.styl';
+
 export default {
   data: () => ({
     showDialog: false,
