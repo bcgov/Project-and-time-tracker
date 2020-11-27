@@ -71,7 +71,13 @@
 import './projectfinanceinfo.styl';
 
 export default {
-  props: { financeInfo: Object },
+  props: {
+      financeInfo: Object,
+      codesRequired:{
+        type: Boolean,
+        default: false,
+      }
+    },
   data() {
     const form = Object.assign({}, this.$props.financeInfo);
     return {
@@ -98,7 +104,7 @@ export default {
   },
   methods: {
     showValidationMessage(value, count) {
-      if (value && value.length && value.length !== count) {
+      if ((this.codesRequired && !value) || (value.length && value.length !== count)) {
         return `Exactly ${count} characters required`;
       }
       return true; // added to avoid warning 'rules can't be undefined' after atyping valid value
