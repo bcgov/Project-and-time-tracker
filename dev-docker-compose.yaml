@@ -16,3 +16,39 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: timemachine
+    networks:
+      - postgres
+
+  db_debug:
+    image: postgres
+    volumes:
+      # - ~/dev/Project-and-time-tracker/db/:/var/lib/postgresql/data
+      - ~/dev/Project-and-time-tracker/dev_db/:/var/lib/postgresql/data
+      - ~/dev/Project-and-time-tracker/sql/:/sql
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: timemachine
+    networks:
+      - postgres
+
+  pgadmin:
+    container_name: pgadmin_container
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@example.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_LISTEN_PORT: 5050
+    volumes:
+      - ~/dev/Project-and-time-tracker/pgadmin/:/root/.pgadmin
+    ports:
+      - "${PGADMIN_PORT:-5050}:5050"
+    networks:
+      - postgres
+    restart: unless-stopped
+
+networks:
+  postgres:
+    driver: bridge
