@@ -11,21 +11,6 @@ services:
       - ~/dev/Project-and-time-tracker/Risk_MasterData.sql:/Risk_MasterData.sql
       - ~/dev/Project-and-time-tracker/Risk_MasterData_Latest.sql:/Risk_MasterData_Latest.sql
     ports:
-      - "5432:5432"
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: admin
-      POSTGRES_DB: timemachine
-    networks:
-      - postgres
-
-  db_debug:
-    image: postgres
-    volumes:
-      # - ~/dev/Project-and-time-tracker/db/:/var/lib/postgresql/data
-      - ~/dev/Project-and-time-tracker/dev_db/:/var/lib/postgresql/data
-      - ~/dev/Project-and-time-tracker/sql/:/sql
-    ports:
       - "5433:5432"
     environment:
       POSTGRES_USER: postgres
@@ -33,6 +18,21 @@ services:
       POSTGRES_DB: timemachine
     networks:
       - postgres
+
+  # db_debug:
+  #   image: postgres
+  #   volumes:
+  #     # - ~/dev/Project-and-time-tracker/db/:/var/lib/postgresql/data
+  #     - ~/dev/Project-and-time-tracker/dev_db/:/var/lib/postgresql/data
+  #     - ~/dev/Project-and-time-tracker/sql/:/sql
+  #   ports:
+  #     - "5433:5432"
+  #   environment:
+  #     POSTGRES_USER: postgres
+  #     POSTGRES_PASSWORD: admin
+  #     POSTGRES_DB: timemachine
+  #   networks:
+  #     - postgres
 
   pgadmin:
     container_name: pgadmin_container
