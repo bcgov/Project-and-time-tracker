@@ -1,6 +1,6 @@
 {
   "realm": "b9xip88d",
-  "auth-server-url": "https://sso.pathfinder.gov.bc.ca/auth",
+  "auth-server-url": "https://oidc.gov.bc.ca/auth",
   "ssl-required": "none",
   "resource": "timeMachineApp",
   "clientId": "timeMachineApp",
