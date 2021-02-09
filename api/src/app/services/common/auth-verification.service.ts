@@ -184,7 +184,7 @@ const verifyAndCreateOrUpdateUser = async (authData: IAuth, data: any) => {
 
     console.log('ARC - Created user ID:', createdUser.id);
   } else {
-    if (user.role[0] !== authData.role[0]) {
+    if (user.role?user.role[0]:''!== authData.role[0]) {
       await updateUser(user.id, { role: authData.role[0] });
     }
     authData.userId = user.id;
