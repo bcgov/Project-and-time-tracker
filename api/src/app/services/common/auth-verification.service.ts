@@ -43,7 +43,7 @@ export const validateToken = async (
       if (response.status !== 200) {
         // if the request status isn't "OK", the token is invalid
         ctx.status = HttpStatus.UNAUTHORIZED;
-        console.log('ARC unauthorized 1');
+        console.log(`Keycloak request failed with HTTP code: ${response.status}`);
       } else {
         // the token is valid pass request onto your next function
         const data: any = await response.json();
