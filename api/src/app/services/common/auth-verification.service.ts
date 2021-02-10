@@ -170,9 +170,7 @@ const verifyAndCreateOrUpdateUser = async (authData: IAuth, data: any) => {
       fullName: authData.fullName,
       contactType: 'user',
     });
-
     console.log('ARC - Created contact.  ID: ', contact.id);
-
     const createdUser = await createUser(<IUser>{
       referenceId: authData.referenceId,
       role: authData.role[0],
@@ -181,10 +179,9 @@ const verifyAndCreateOrUpdateUser = async (authData: IAuth, data: any) => {
       },
     });
     authData.userId = createdUser.id;
-
     console.log('ARC - Created user ID:', createdUser.id);
   } else {
-    if (user.role[0] !== authData.role[0]) {
+    if (user.role?user.role:'' !== authData.role[0]) {
       await updateUser(user.id, { role: authData.role[0] });
     }
     authData.userId = user.id;

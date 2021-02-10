@@ -15,12 +15,13 @@ import {
   retrieveFinanceData,
   dischargeFinanceRecord,
   reinstateFinanceRecord,
+  getProjectCategories
 } from '../../../services/client/project.service';
 import { IProject } from '../../../models/interfaces/i-project';
 import { retrieveClientByProjectId } from '../../../services/client/client.service';
 import { Role } from '../../roles';
 import { IAuth } from '../../../models/interfaces/i-auth';
-import { authorize } from '../../../services/common/authorize.service';
+import { authorize, isInRoles } from '../../../services/common/authorize.service';
 import { createMOU } from '../../../services/client/mou.service';
 
 export const getProjects = async (ctx: Koa.Context) => {
@@ -154,7 +155,7 @@ export const updateProjectAction = async (ctx: Koa.Context) => {
       mou = await createMOU({ name: project.mou });
     }
 
-    const updatingFields = {
+    let updatingFields = {
       projectName: project.projectName,
       completionDate: project.completionDate,
       contractValue: project.contractValue,
@@ -169,11 +170,16 @@ export const updateProjectAction = async (ctx: Koa.Context) => {
       previousContractBackground: project.previousContractBackground,
       projectFailImpact: project.projectFailImpact,
       projectSuccess: project.projectSuccess,
-
       mou: mou,
     };
-
-    const updateingClient = {
+  
+    // Check if the user has permission to update the categoryId.
+    const canEditProjectCategories = isInRoles(auth, [Role.PSB_Admin, Role.PSB_Intake_User]);
+    if(canEditProjectCategories){
+      updatingFields['categoryId'] = project.categoryId;
+    }
+    
+    const updatingClient = {
       id: project.client.id,
       isNonMinistry: project.client.isNonMinistry,
       nonMinistryName: project.client.nonMinistryName,
@@ -205,7 +211,7 @@ export const updateProjectAction = async (ctx: Koa.Context) => {
       }
     }
 
-    await updateProject(ctx.params.id, updatingFields, updateingClient);
+    await updateProject(ctx.params.id, updatingFields, updatingClient);
 
     ctx.body = 'success';
   } catch (err) {
@@ -260,6 +266,14 @@ export const assignBackupAction = async (ctx: Koa.Context) => {
   }
 };
 
+export const getCategories = async (ctx: Koa.Context) => {
+  try {
+    ctx.body = getProjectCategories();
+  } catch (err) {
+    ctx.throw(err.message);
+  }
+};
+
 const validateProject = (project: IProject) => {
   const validationErrors = [];
 
@@ -288,6 +302,7 @@ router.get('/', authorize, getProjects);
 router.get('/all', authorize, getAllProjects);
 router.get('/:id/by-user-id', authorize, getmouProjects);
 router.get('/archived', authorize, getArchivedProjects);
+router.get('/categories', authorize, getCategories);
 router.post('/timesheetprojects', authorize, timesheetProjects);
 router.post('/exportedPdfs', authorize, exportedPdfs);
 router.post('/dischargedPdfs', authorize, dischargedPdfs);

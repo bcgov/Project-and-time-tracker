@@ -271,6 +271,7 @@
                           ref="projectFinanceInfo"
                           v-if="project && project.client"
                           :financeInfo="project.client"
+                          :codes-required="true"
                         ></project-finance-info>
                         <v-flex xs12 py-2>
                           <div class="v-form-container">

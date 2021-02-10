@@ -7,10 +7,24 @@
       content-class="add-time-record"
       v-model="dialog"
       @input="closeDialog(false)"
-    >
+    >  
       <v-form ref="AddimeRecords" v-model="valid" lazy-validation>
         <spinner ref="spinner"></spinner>
         <v-card>
+          <div class="mou-amount-warning">
+            <v-system-bar v-if="!selectedProject().hasValidFinanceCodes" dark color="red">
+              <v-icon dark medium>error</v-icon>
+              <span class="pl-1"><b>This project has incomplete finance codes.</b></span>
+            </v-system-bar>
+            <v-system-bar v-if="selectedProject().mouUsedAmount > MOU_USED_AMOUNT_LEVELS.DANGER" dark color="red">
+              <v-icon dark medium>error</v-icon>
+              <span class="pl-1"><b>MOU value is overdrawn and a new MOU amendment would be needed.</b></span>
+            </v-system-bar>
+            <v-system-bar v-else-if="selectedProject().mouUsedAmount > MOU_USED_AMOUNT_LEVELS.WARNING" dark color="orange">
+              <v-icon dark medium>warning</v-icon>
+              <span class="pl-1"><b>MOU is within 10% of its remaining value.</b></span>
+            </v-system-bar>
+          </div>
           <v-card-text class="card-contents">
             <v-layout wrap>
               <v-flex md4>
@@ -41,7 +55,7 @@
                   <v-flex md4>
                     <v-flex v-if="form.project && activeTab === 'weekly'">
                       <b>MOU amount:</b>
-                      ${{ mouAmount }}
+                      ${{ selectedProject().mouAmount }}
                     </v-flex>
                   </v-flex>
                   <v-flex md4 v-if="timesheet && activeTab == 'batch'">
@@ -61,7 +75,7 @@
                     ${{ timesheet[weeklyProjectIndex].amountBilled }}
                   </v-flex>
                   <v-flex md4 v-else> <b>Currently Billed:</b> $0 </v-flex>
-                  <v-flex md4> <b>Legal Billed Amount:</b> $0 </v-flex>
+                  <v-flex md4> <b>Legal Billed Amount:</b> ${{ selectedProject().totalBilledAmount }} </v-flex>
                 </v-flex>
               </v-flex>
             </v-layout>
@@ -276,16 +290,6 @@ export default {
     projectRfx() {
       return this.rfxList;
     },
-    mouAmount() {
-      if (!this.form || !this.form.mou || !this.form.project) {
-        return '';
-      }
-      const selectedProject = this.userMouProjects.filter(item => item.id === this.form.project);
-      if (selectedProject[0]) {
-        return selectedProject[0].mouAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-      }
-      return '';
-    },
   },
   components: {
     Snackbar,
@@ -304,6 +308,10 @@ export default {
   props: {},
   created() {
     this.clearTimesheet();
+    this.MOU_USED_AMOUNT_LEVELS = {
+      WARNING: 0.9,
+      DANGER: 1
+    };
   },
   methods: {
     openExportModal() {
@@ -320,6 +328,27 @@ export default {
         .filter(item => item.amountBilled && item.amountBilled > 0)
         .reduce((prev, cur) => prev + Number(cur.amountBilled), 0);
       return sum;
+    },
+    selectedProject() {
+      console.log("selectedProject");
+      if (this.form && this.form.mou && this.form.project) {
+        const selectedProject = this.userMouProjects.filter(item => item.id === this.form.project);
+        if (selectedProject[0]) {
+          const project = selectedProject[0];      
+          return{
+            mouAmount: project.mouAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','),
+            totalBilledAmount: project.totalAmountBilled.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','),
+            mouUsedAmount: project.totalAmountBilled / project.mouAmount,
+            hasValidFinanceCodes: project.hasValidFinanceCodes || !project.isCostRecoverable
+          }
+        }
+      }
+      return{
+        mouAmount: 0,
+        totalBilledAmount: 0,
+        mouUsedAmount: 0,
+        hasValidFinanceCodes: true
+      }
     },
     fetchUser() {
       const referenceId = this.$store.state.activeUser.refId;
@@ -351,7 +380,7 @@ export default {
         exportEndDate: undefined,
         requiredRule: [v => !!v || 'This field required'],
         dialog: false,
-        form: { ...form },
+        form: { ...form }
       };
     },
     async onChangeUser(userId, editMode = false) {
@@ -380,6 +409,7 @@ export default {
       if (this.$refs.spinner) {
         this.$refs.spinner.close();
       }
+      
       return vm.userMouProjects;
     },
     onChangeMou(editMode) {
@@ -411,6 +441,7 @@ export default {
           this.addTimeSheetRow();
         }
       }
+      this.selectWeeklyProject();
     },
     onWeekEntry() {
       if (this.weeklyProjectIndex !== 0 && this.timesheet[this.weeklyProjectIndex].deleted) {
@@ -622,7 +653,6 @@ export default {
       }
       this.$refs.TimeCalenderBatch.disableWeekPicker(editMode);
       this.$refs.TimeCalenderWeekly.disableWeekPicker(editMode);
-
       setTimeout(() => {
         if (document.getElementsByClassName('v-dialog v-dialog--active')[0]) {
           document.getElementsByClassName('v-dialog v-dialog--active')[0].scrollTop = 0;

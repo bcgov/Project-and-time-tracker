@@ -189,6 +189,18 @@
           ></v-select>
         </div>
       </v-flex>
+      <v-flex xs12>
+        <div class="v-form-container">
+          <v-select
+            :disabled="!canEditProjectCategories"
+            :items="projectCategories"
+            label="Project Category"
+            item-value="id"
+            item-text="description"
+            v-model="form.categoryId"
+          ></v-select>
+        </div>
+      </v-flex>
        <v-flex md6>
         <div>
           <v-container fluid>
@@ -302,6 +314,9 @@ export default {
     mouList() {
       return this.$store.state.mouList;
     },
+    projectCategories() {
+      return this.$store.state.projectCategories;
+    }, 
   },
   data() {
     const form = Object.assign({}, this.$props.project);
@@ -315,6 +330,10 @@ export default {
     if (!inputClient) {
       form.client = new ClientDto();
     }
+
+    const EDIT_CATEGORY_ROLES = ['psb_admin', 'psb_intake_user'];
+    const canEditProjectCategories = this.$store.state.activeRoles.role.some(role => EDIT_CATEGORY_ROLES.includes(role.toLowerCase()));
+
     return {
       valid: true,
       requiredTeamRule: [
@@ -358,6 +377,7 @@ export default {
           return true;
         },
       ],
+      canEditProjectCategories,
     };
   },
   watch: {
@@ -508,6 +528,7 @@ export default {
     fetchData() {
       // Fetching all the users for now
       this.$store.dispatch('fetchUsers');
+      this.$store.dispatch('fetchProjectCategories');
     },
   },
   created() {
