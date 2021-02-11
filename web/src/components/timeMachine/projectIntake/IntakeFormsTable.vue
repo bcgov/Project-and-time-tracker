@@ -250,10 +250,13 @@ export default {
       this.dialog = true;
     },
     async approveRequest(id) {
-      const selectedCategory = await this.$refs.selectCategory.open();     
+      const selectedCategory = await this.$refs.selectCategory.open();
       if (selectedCategory) {
-          this.$store.dispatch('approveIntakeRequest', { id, categoryId: selectedCategory }).then(() => {
+          this.$store.dispatch('approveIntakeRequest', { id, categoryId: selectedCategory }).then((res) => {
             this.$store.dispatch('fetchIntakeRequests');
+            if(res && res.msg)
+            this.$refs.snackbar.displaySnackbar('error', res.msg);
+            else
             this.$refs.snackbar.displaySnackbar('success', 'Request Approved.');
           });
       }

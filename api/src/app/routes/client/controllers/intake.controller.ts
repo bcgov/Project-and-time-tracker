@@ -13,7 +13,8 @@ import { IProjectIntakeContact } from '../../../models/interfaces/i-project-inta
 import { createContact } from '../../../services/client/contact.service';
 import {
   createProjectIntakeContact,
-  retrieveIntakeContactByIntakeId
+  retrieveIntakeContactByIntakeId,
+  retrieveExistingProject
 } from '../../../services/client/projectIntakeContacts.service';
 import { createProject } from '../../../services/client/project.service';
 import { IProject } from '../../../models/interfaces/i-project';
@@ -157,8 +158,9 @@ export const updateApproveStatus = async (ctx: Koa.Context) => {
       teamWideProject: false,
       categoryId: body.categoryId
     };
+    const duplicate = await retrieveExistingProject(intake.projectName,intake.estimatedContractValue);
+    if(duplicate.length==0){
     const projectData = await createProject(newProject);
-
     const intakeContacts = await retrieveIntakeContactByIntakeId(ctx.params.id);
     intakeContacts.map(function(intakeContact) {
       createProjectContact(<IProjectContact>{
@@ -175,6 +177,12 @@ export const updateApproveStatus = async (ctx: Koa.Context) => {
     ctx.body = {
       projectId: projectData.id
     };
+  } else {
+    ctx.body = {
+      msg: 'Project Already exists..!!'
+    };
+  }
+
   } catch (err) {
     ctx.throw(err.message);
   }
