@@ -135,6 +135,7 @@ export const updateApproveStatus = async (ctx: Koa.Context) => {
     const auth = ctx.state.auth as IAuth;
     const body = ctx.request.body as { categoryId: number };
     const intake = await retrieveIntakeById(ctx.params.id);
+    if(intake.projectId==null) {
     const newProject: IProject = {
       id: undefined,
       projectName: intake.projectName,
@@ -179,9 +180,17 @@ export const updateApproveStatus = async (ctx: Koa.Context) => {
     };
   } else {
     ctx.body = {
+      status:2,
       msg: 'Project Already exists..!!'
     };
+
   }
+} else {
+  ctx.body = {
+    status:1,
+    msg: 'Already Approved..!!'
+  };
+}
 
   } catch (err) {
     ctx.throw(err.message);
