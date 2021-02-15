@@ -50,7 +50,6 @@ export default {
     setTimeout(() => {
       clearInterval(timer);
       // this.$router.push('/logout');
-      console.log('LOGOUT TODO');
     }, 5000);
   },
 };

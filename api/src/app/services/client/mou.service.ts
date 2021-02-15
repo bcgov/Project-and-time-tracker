@@ -50,6 +50,5 @@ export const assignProjectToMOU = async (obj) => {
   const id_todo = '1';
   // const proj = await retrieveProjectById(id_todo)
   // projs.mouID = '999'
-  console.log('assignProjectToMOU, TODO TEST ME!');
   const status = await updateProject(id_todo, { mouID: 999 });
 };

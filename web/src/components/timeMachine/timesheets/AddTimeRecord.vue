@@ -7,7 +7,7 @@
       content-class="add-time-record"
       v-model="dialog"
       @input="closeDialog(false)"
-    >  
+    >
       <v-form ref="AddimeRecords" v-model="valid" lazy-validation>
         <spinner ref="spinner"></spinner>
         <v-card>
@@ -330,11 +330,10 @@ export default {
       return sum;
     },
     selectedProject() {
-      console.log("selectedProject");
       if (this.form && this.form.mou && this.form.project) {
         const selectedProject = this.userMouProjects.filter(item => item.id === this.form.project);
         if (selectedProject[0]) {
-          const project = selectedProject[0];      
+          const project = selectedProject[0];
           return{
             mouAmount: project.mouAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','),
             totalBilledAmount: project.totalAmountBilled.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','),
@@ -409,7 +408,7 @@ export default {
       if (this.$refs.spinner) {
         this.$refs.spinner.close();
       }
-      
+
       return vm.userMouProjects;
     },
     onChangeMou(editMode) {

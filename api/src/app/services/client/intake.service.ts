@@ -74,8 +74,6 @@ export const updateIntake = async (id: string, fields: any) => {
   const updatedIntake = await repo.merge(intake, fields);
   updatedIntake.dateModified = new Date();
 
-  console.log('\n\nupdateIntake in service', fields);
-
   await repo.save(updatedIntake);
   return updatedIntake;
 };

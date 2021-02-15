@@ -40,7 +40,6 @@ export const retrieveUserByReferenceId = async (id: string) => {
 };
 
 export const retrieveUsersNameAndIdByRole = async (roles: string[]) => {
-  // console.log('retrieveUsersNameAndIdByRole start - ', roles)
 
   const repo = userRepo();
   const users = await repo
@@ -57,9 +56,6 @@ export const retrieveUsersNameAndIdByRole = async (roles: string[]) => {
     ])
     .orderBy('c.fullName', 'ASC')
     .getMany();
-
-  // console.log('retrieveUsersNameAndIdByRole B -', { repo, users })
-  // console.log('retrieveUsersNameAndIdByRole B -')
 
   const kcAdminToken = await retrieveKeycloakAdminToken();
   // ARC - ERROR OCCURS ABOVE

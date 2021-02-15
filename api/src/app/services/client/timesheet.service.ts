@@ -109,7 +109,6 @@ export const retrieveForLightTimesheet = async (model) => {
 };
 export const retrieveForLightTimesheetByUser = async (model) => {
   const repo = timesheetRepo();
-  console.log('model', model);
   const res = await repo
     .createQueryBuilder('t')
     .innerJoinAndSelect('t.projectRfx', 'pr')

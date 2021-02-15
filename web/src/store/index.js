@@ -24,7 +24,6 @@ import HashTable from "@/utils/HashTable";
 import RFxDto from "@/domain/models/RFx.dto";
 
 const API_URI = process.env.VUE_APP_API_URI || "http://localhost:3000";
-console.log("API URL:", { API_URI });
 
 Vue.use(Vuex);
 
@@ -252,7 +251,6 @@ const store = new Vuex.Store({
       throw new Error("Not implemented!");
     },
     addMinistry(state, data) {
-      console.log("TODO - NOT SURE IF COMPLETE - addMinistry MUTATION called", { state, data });
       // state.ministries = data;
       // throw new Error('Not implemented');
     },
@@ -301,7 +299,6 @@ const store = new Vuex.Store({
       throw new Error("Not implemented!");
     },
     createMOU(state, data) {
-      console.log("createMOU mutation", data);
       // state.mouList = data;
       state.mouList.push(data);
     },
@@ -378,7 +375,6 @@ const store = new Vuex.Store({
     // Project RFx
     fetchProjectRFxData(state, data) {
       // if it's an empty array, need to add blank rfX type
-      console.log("fetchProjectRFxData", { data });
       if (data && data.length === 0) {
         data.push(new RFxDto());
       }
@@ -484,7 +480,7 @@ const store = new Vuex.Store({
       throw new Error("Not implemented!");
     },
     archiveProject(state, data) {
-      console.log("archiveProject response", data);
+
     }
   },
   /**
@@ -536,7 +532,6 @@ const store = new Vuex.Store({
     fetchAllFinanceCodes(ctx) {
       $http.get(`${API_URI}/financecode/all`).then(res => {
         const content = res.data;
-        console.log("fincodes:", content);
         ctx.commit("fetchAllFinanceCodes", content);
       });
     },
@@ -556,7 +551,6 @@ const store = new Vuex.Store({
       const api = await $http
         .patch(`${API_URI}/ministry/${req.id}/update`, req)
         .then(res => {
-          console.log("updateMinistires RESPONSE", { res });
           return Promise.resolve(res.data);
         })
         .catch(err => Promise.reject(err));
@@ -819,7 +813,6 @@ const store = new Vuex.Store({
         .post(`${API_URI}/MOU`, body)
         .then(res => {
           const content = res.data;
-          console.log("createMOU called with body", body);
           ctx.commit("createMOU", content);
           return Promise.resolve(content);
         })
@@ -877,7 +870,6 @@ const store = new Vuex.Store({
     },
 
     async updateProctLog(ctx, req) {
-      console.log(req);
       const api = $http
         .patch(`${API_URI}/procurement/${req.id}`, req)
         .then(res => {
@@ -889,7 +881,6 @@ const store = new Vuex.Store({
       return Promise.resolve(api);
     },
     async updateFinanceCodes(ctx, req) {
-      console.log("reqq:", req);
       const api = $http
         .patch(`${API_URI}/financecode/${req.id}`, req)
         .then(res => {

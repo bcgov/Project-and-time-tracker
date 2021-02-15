@@ -90,11 +90,9 @@ export const validateToken = async (
     } else {
       // there is no token, don't process request further
       ctx.status = HttpStatus.UNAUTHORIZED;
-      console.log('ARC Unauthorized 2 - changed');
     }
   } catch (error) {
     ctx.status = HttpStatus.UNAUTHORIZED;
-    console.log('ARC Unauthorized 3');
     throw error;
   }
 };
@@ -162,15 +160,10 @@ export const retrieveKeycloakUsersByRole = async (
 const verifyAndCreateOrUpdateUser = async (authData: IAuth, data: any) => {
   const user = await retrieveUserByReferenceId(data.sub);
   if (!user) {
-    console.log(
-      'ARC - User does not exist, creating contact with nam: ',
-      authData.fullName
-    );
     const contact: any = await createContact(<IContact>{
       fullName: authData.fullName,
       contactType: 'user',
     });
-    console.log('ARC - Created contact.  ID: ', contact.id);
     const createdUser = await createUser(<IUser>{
       referenceId: authData.referenceId,
       role: authData.role[0],
@@ -179,7 +172,6 @@ const verifyAndCreateOrUpdateUser = async (authData: IAuth, data: any) => {
       },
     });
     authData.userId = createdUser.id;
-    console.log('ARC - Created user ID:', createdUser.id);
   } else {
     if (user.role?user.role:'' !== authData.role[0]) {
       await updateUser(user.id, { role: authData.role[0] });
