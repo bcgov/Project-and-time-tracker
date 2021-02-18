@@ -1,9 +1,13 @@
 import { ProjectIntakeContacts } from './../../models/entities/projectIntakeContacts.entity';
+import { Project } from '../../models/entities';
 import { getRepository, Repository } from 'typeorm';
 import { IProjectIntakeContact } from '../../models/interfaces/i-project-intake-contact';
 
 const intakeContactRepo = (): Repository<ProjectIntakeContacts> => {
   return getRepository(ProjectIntakeContacts);
+};
+const projectRepo = (): Repository<Project> => {
+  return getRepository(Project);
 };
 
 export const createProjectIntakeContact = async (obj: IProjectIntakeContact | IProjectIntakeContact[]) => {
@@ -69,6 +73,20 @@ export const retrieveIntakeContactByIntakeId = async (id: string) => {
                       .getMany();
   if (!res) {
     throw Error(`intakeContact not found for the id specified: ${id}`);
+  }
+  return res;
+};
+
+export const retrieveExistingProject = async (Name: string, contractValue: number) => {
+  const repo = projectRepo();
+  
+  const res = await repo
+                      .createQueryBuilder('p')
+                      .where('p."projectName" = :name AND p."contractValue" = :cValue', { name: Name, cValue: contractValue })
+                      .getMany();
+  console.log('res',res);
+  if (!res) {
+    throw Error(`intakeContact not found for the Project: ${Name}`);
   }
   return res;
 };
