@@ -66,6 +66,7 @@ const store = new Vuex.Store({
     activeIntakeRequest: {},
     intakeRequests: [],
     timesheetProjects: [],
+    timesheetProjectsOld:[],
     downloadedPdfs: [],
     // Projects component
     activeProjectId: null,
@@ -178,6 +179,9 @@ const store = new Vuex.Store({
     },
     fetchTimesheetProjects(state, data) {
       state.timesheetprojects = data;
+    },
+    fetchTimesheetProjectsOld(state, data) {
+      state.timesheetprojectsOld = data;
     },
     fetchExportedPdfs(state, data) {
       state.downloadedPdfs = data;
@@ -1260,6 +1264,19 @@ const store = new Vuex.Store({
         .then(res => {
           const content = res.data;
           ctx.commit("fetchTimesheetProjects", content);
+          return Promise.resolve(content);
+        })
+        .catch(err => Promise.reject(err.response));
+      return Promise.resolve(api);
+    },
+
+    async fetchTimesheetProjectsOld(ctx, req) {
+      const body = req;
+      const api = await $http
+        .post(`${API_URI}/project/timesheetprojectsOld`, body)
+        .then(res => {
+          const content = res.data;
+          ctx.commit("fetchTimesheetProjectsOld", content);
           return Promise.resolve(content);
         })
         .catch(err => Promise.reject(err.response));

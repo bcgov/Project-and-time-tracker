@@ -1016,6 +1016,36 @@ export const retrieveTimesheetProjects = async (obj) => {
   return res;
 };
 
+export const retrieveTimesheetProjectsOld = async (obj) => {
+  const repo = timesheetRepo();
+
+  const selectedDate = obj.selectedDate.split('-');
+
+  const year = parseInt(selectedDate[0], 10);
+  const month = parseInt(selectedDate[1], 10);
+
+  const startDate = new Date(year, month - 1, 1);
+  const endDate = new Date(year, month, 0);
+
+  const res = await repo
+    .createQueryBuilder('t')
+    .select(['cast(t.startDate as varchar(7)) as startDate','p.dateModified','p.completionDate','p.id as id','mo.name as mou','true as isOld',' CONCAT(p.id,cast(t.startDate as varchar(7))) as key'])
+    .addSelect('CASE WHEN cl.nonMinistryName IS null THEN mi.ministryName ELSE cl.nonMinistryName END','client')
+    .innerJoin('t.timesheetEntries', 'te')
+    .leftJoin(FinanceExport, 'fe', 't."documentNo" = fe.documentNo')
+    .innerJoin('t.project', 'p')
+    .innerJoin('p.mou', 'mo')
+    .innerJoin('p.client', 'cl')
+    .leftJoin('cl.ministry', 'mi')
+    .where('t.startDate < :startDate', { startDate})
+    .andWhere('(t.is_locked = false OR t.is_locked IS NULL)')
+    .andWhere('(fe.isDischarged = false OR fe.isDischarged IS NULL)')
+    .andWhere('(p.categoryId = :categoryId OR p.categoryId IS NULL)', { categoryId: ProjectCategory.CostRecoverable })
+    .getRawMany();
+
+  return res;
+};
+
 export const retrieveDischargedPdfs = async (obj) => {
   const repo = financeRepo();
 
