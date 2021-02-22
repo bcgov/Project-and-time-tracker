@@ -1029,7 +1029,7 @@ export const retrieveTimesheetProjectsOld = async (obj) => {
 
   const res = await repo
     .createQueryBuilder('t')
-    .select(['cast(t.startDate as varchar(7)) as startDate','p.dateModified','p.completionDate','p.id as id','mo.name as mou','true as isOld',' CONCAT(p.id,cast(t.startDate as varchar(7))) as key'])
+    .select(['cast(t.startDate as varchar(7)) as startDate','p.dateModified','p.completionDate','p.id as key','mo.name as mou','true as isOld',' CONCAT(p.id,cast(t.startDate as varchar(7))) as id'])
     .addSelect('CASE WHEN cl.nonMinistryName IS null THEN mi.ministryName ELSE cl.nonMinistryName END','client')
     .innerJoin('t.timesheetEntries', 'te')
     .leftJoin(FinanceExport, 'fe', 't."documentNo" = fe.documentNo')

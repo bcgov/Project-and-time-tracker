@@ -39,22 +39,22 @@
           class="elevation-0 tm-v-datatable project-export-table"
           disable-initial-sort
         >
-          <template slot="items" slot-scope="propsOld">
+          <template slot="items" slot-scope="data">
             <td class="text-xs-left">
               <v-checkbox
-                @change="updateSelectedProjectsOld($event, propsOld.item.key)"
+                @change="updateSelectedProjectsOld($event, data.item.id)"
               ></v-checkbox>
             </td>
 
-            <td class="text-xs-left">{{ propsOld.item.mou }}</td>
+            <td class="text-xs-left">{{ data.item.mou }}</td>
             <td class="text-xs-left">
               {{
-                propsOld.item.client
+                data.item.client
               }}
             </td>
-            <td class="text-xs-left">{{ propsOld.item.p_completionDate | formatDate }}</td>
-            <td class="text-xs-left">{{ propsOld.item.p_dateModified | formatDate }}</td>
-            <td class="text-xs-left">{{ propsOld.item.startdate }}</td>
+            <td class="text-xs-left">{{ data.item.p_completionDate | formatDate }}</td>
+            <td class="text-xs-left">{{ data.item.p_dateModified | formatDate }}</td>
+            <td class="text-xs-left">{{ data.item.startdate }}</td>
           </template>
         </v-data-table>
       </template>
@@ -160,18 +160,18 @@ export default {
         { text: " ", value: " ", align: "left", sortable: true },
         {
           text: "MOU Name",
-          value: "mou.name",
+          value: "mou",
           align: "left",
           sortable: true
         },
         {
           text: "Client",
-          value: "client.ministry.ministryName",
+          value: "client",
           sortable: true
         },
-        { text: "Project Deadline", value: "completionDate", sortable: true },
-        { text: "Last Updated", value: "dateModified", sortable: true },
-        { text: "Month", value: "month", align: "left", sortable: true }
+        { text: "Project Deadline", value: "p_completionDate", sortable: true },
+        { text: "Last Updated", value: "p_dateModified", sortable: true },
+        { text: "Month", value: "startdate", align: "left", sortable: true }
       ],
       projectsList: [],
       projectsListOld: []
