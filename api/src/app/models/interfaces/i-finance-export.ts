@@ -12,4 +12,6 @@ export interface IFinanceExport {
   billingCount: number;
   selectedMous: string;
   mouId: string;
+  isNonMinistry:boolean;
+  projectCreated:Date;
 }
