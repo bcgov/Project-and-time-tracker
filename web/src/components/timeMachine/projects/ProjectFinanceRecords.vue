@@ -786,7 +786,10 @@ export default {
                 "As per Procurement Service Agreement " +
                   pdfValuesNonMinistry[i].mouName +
                   " dated " +
-                  new Date(pdfValuesNonMinistry[i].projectCreated).toDateString().substring(4,15).replace(/([^\s]*\s[^\s]*)\s/, "$1,") +
+                  new Date(pdfValuesNonMinistry[i].projectCreated)
+                    .toDateString()
+                    .substring(4, 15)
+                    .replace(/([^\s]*\s[^\s]*)\s/, "$1,") +
                   " between",
                 leftValue + 10,
                 topValue + 80
@@ -1084,6 +1087,15 @@ export default {
                 // theme: 'striped'|'grid'|'plain'|'css'
               }
               // if (!(pdfValues[i].userFinanceCodes)) { break; }
+              const pCount = doc.internal.getNumberOfPages(); //Total Page Number
+              for (i = 1; i <= pCount; i++) {
+                doc.setPage(i);
+                let pageCurrent = doc.internal.getCurrentPageInfo().pageNumber; //Current Page
+                console.log('pagecurrent',pageCurrent);
+                doc.setFontSize(12);
+                doc.text("Page "+i+ " of " + pCount,  leftValue + 85, staticTextSettings + topValue + 250);
+
+              }
             }
             doc.save(pdfValuesNonMinistry[0].documentPath);
           }
