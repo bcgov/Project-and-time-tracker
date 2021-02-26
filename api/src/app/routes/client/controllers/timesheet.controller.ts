@@ -144,7 +144,14 @@ export const timeSheetLight = async (ctx: Koa.Context) => {
 export const createBatchTimesheet = async (ctx: Koa.Context) => {
   try {
     const auth = ctx.state.auth as IAuth;
-
+    ctx.request.body.forEach((timesheet) => {
+      timesheet.entries.forEach((timeEntry) => {
+      timeEntry.expenseAmount = timeEntry.expenseAmount==""?0:timeEntry.expenseAmount;
+      timeEntry.hoursBillable = timeEntry.hoursBillable==""?0:timeEntry.hoursBillable;
+      timeEntry.hoursUnBillable = timeEntry.hoursUnBillable==""?0:timeEntry.hoursUnBillable;
+      timeEntry.revenueHours = timeEntry.revenueHours==""?0:timeEntry.revenueHours;
+    });
+    });
     const timeSheetEnties = ctx.request.body as ITimesheet[];
 
     for (let index = 0; index < timeSheetEnties.length; index++) {
