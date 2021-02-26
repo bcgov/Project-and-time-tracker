@@ -177,7 +177,6 @@ export default {
     },
     async getAllProjectList() {
       const vm = this;
-      console.log('this.date: ',this.date);
       const postData = { selectedDate: this.date };
       if (vm.$refs.spinner) { vm.$refs.spinner.open(); }
       await this.$store.dispatch('fetchTimesheetProjects', postData).then(
@@ -260,7 +259,6 @@ export default {
             this.selectedProjects = [];
 
             if (vm.$store.state.financeExport[0]?vm.$store.state.financeExport[0].length:0 === 0) { vm.$refs.spinner.close(); }
-            console.log('finexport',vm.$store.state.financeExport);
             vm.$store.state.financeExport[0].forEach((entry) => {
               const exportData = JSON.parse(entry.exportData);
               pdfValues.push(exportData);
@@ -929,7 +927,6 @@ export default {
             }
             doc.save(pdfValuesNonMinistry[0].documentPath);
             this.getAllProjectList();
-            console.log('this is for non ministry projects');
             }
 
           });
