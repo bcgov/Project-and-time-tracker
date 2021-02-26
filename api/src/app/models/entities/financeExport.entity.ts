@@ -40,4 +40,7 @@ export class FinanceExport {
 
   @Column({ type: 'text', nullable: true })
   mouId: string;
+
+  @Column({ type: 'boolean', nullable: true })
+  isNonMinistry: boolean;
 }

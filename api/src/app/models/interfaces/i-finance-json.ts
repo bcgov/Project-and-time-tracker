@@ -16,6 +16,7 @@ export interface IFinanceJSON {
   documentNo: string;
   projectId: string;
   dateCreated: Date;
+  projectCreated: Date;
   createdUserId: string;
   lineDesc: string;
   sap: string;
