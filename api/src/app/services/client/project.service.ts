@@ -398,7 +398,9 @@ export const retrieveFinanceData = async (obj, userId) => {
       }
       let billingCount = 1;
       const exportData = {} as IFinanceJSON;
+      console.log('financeExport[index]',financeExport[index]);
       exportData.projectId = financeExport[index].projectId;
+      exportData.projectCreated = financeExport[index].projectCreated;
       const repo = projectRepo();
       const res = await repo
         .createQueryBuilder('p')
@@ -419,12 +421,14 @@ export const retrieveFinanceData = async (obj, userId) => {
           'm.id',
           'm.name',
           'm.billingCount',
+          'p.dateCreated'
         ])
         .where('p.id = :projectId', { projectId: exportData.projectId })
         .getOne();
   
       exportData.leadUser = '';
       exportData.financeName = '';
+      exportData.projectCreated = res.dateCreated;
       if (res.teamWideProject) {
         exportData.leadUser = 'Procurement and Supply Division';
       } else if (res.leadUserId) {
@@ -641,6 +645,8 @@ export const retrieveFinanceData = async (obj, userId) => {
       .where('f."documentNo" = :documentId ', { documentId: documentNo })
       .getMany();
       finalResult[0] = result;
+  } else {
+    finalResult[0] = [];
   }
   if(financeExportNonMinistry.length>0){
     console.log('entering here????')
@@ -684,12 +690,14 @@ export const retrieveFinanceData = async (obj, userId) => {
           'm.id',
           'm.name',
           'm.billingCount',
+          'p.dateCreated'
         ])
         .where('p.id = :projectId', { projectId: exportData.projectId })
         .getOne();
   
       exportData.leadUser = '';
       exportData.financeName = '';
+      exportData.projectCreated = res.dateCreated;
       if (res.teamWideProject) {
         exportData.leadUser = 'Procurement and Supply Division';
       } else if (res.leadUserId) {
@@ -883,6 +891,7 @@ export const retrieveFinanceData = async (obj, userId) => {
       model.billingCount = billingCount;
       model.isDischarged = false;
       model.mouId = res.mou.id;
+      model.isNonMinistry = true;
       await createFinanceExport(model);
   
       const repoMou = mouRepo();
@@ -906,8 +915,9 @@ export const retrieveFinanceData = async (obj, userId) => {
       .where('f."documentNo" = :documentId ', { documentId: documentNo })
       .getMany();
     finalResult[1]= result;
+  }else {
+    finalResult[1] = [];
   }
-  console.log('finalResult',finalResult);
   return finalResult;
 };
 

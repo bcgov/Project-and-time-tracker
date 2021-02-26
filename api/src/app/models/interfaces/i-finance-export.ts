@@ -13,4 +13,5 @@ export interface IFinanceExport {
   selectedMous: string;
   mouId: string;
   isNonMinistry:boolean;
+  projectCreated:Date;
 }
