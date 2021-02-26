@@ -23,8 +23,8 @@ export const validateToken = async (
 ) => {
   try {
     const url = `${keycloakConfig.url}/realms/${keycloakConfig.realmName}/protocol/openid-connect/userinfo`;
-
-    // console.log('validateToken URL: ', url);
+    const urlChecker = ctx.request.url;
+    //console.log('validateToken URL: ', ctx.request.url);
     // assumes bearer token is passed as an authorization header
     if (ctx.headers.authorization) {
       const options = {
@@ -82,6 +82,7 @@ export const validateToken = async (
         if (authorizationData.realm_access.roles.includes('manage_finances')) {
           authData.role.push('manage_finances');
         }
+        if(urlChecker == '/auth/verify')
         await verifyAndCreateOrUpdateUser(authData, data);
 
         ctx.state.auth = authData;
