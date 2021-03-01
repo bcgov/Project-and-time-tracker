@@ -727,6 +727,7 @@ export default {
               doc.save(pdfValues[0].documentPath);
               this.getAllProjectList();
             }
+            let pageNum =0;
             if (pdfValuesNonMinistry.length > 0) {
               const leftValue = 0;
               const topValue = 20;
@@ -1102,17 +1103,13 @@ export default {
                   );
                   // theme: 'striped'|'grid'|'plain'|'css'
                 }
-                const pCount = doc.internal.getNumberOfPages(); //Total Page Number
-                for (i = 1; i <= pCount; i++) {
-                  doc.setPage(i);
-                  let pageCurrent = doc.internal.getCurrentPageInfo().pageNumber; //Current Page
-                  doc.setFontSize(12);
-                  doc.text(
-                    "Page " + i + " of " + pCount,
-                    leftValue + 85,
-                    staticTextSettings + topValue + 250
-                  );
-                }
+                  const pCount = doc.internal.getNumberOfPages() - pageNum; //Total Page Number
+             for (let i = 1 + pageNum; i <= pCount + pageNum; i++) {
+                doc.setPage(i);
+                doc.setFontSize(12);
+                doc.text("Page "+(i - pageNum) + " of " + pCount,  leftValue + 85, 20 + topValue + 250);
+              }
+            pageNum = pageNum + pCount;
               }
               doc.save(pdfValuesNonMinistry[0].documentPath);
               this.getAllProjectList();
