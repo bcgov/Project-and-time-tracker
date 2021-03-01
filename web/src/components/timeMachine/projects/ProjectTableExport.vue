@@ -793,7 +793,7 @@ export default {
                     new Date(pdfValuesNonMinistry[i].projectCreated)
                       .toDateString()
                       .substring(4, 15)
-                      .replace(/([^\s]*\s[^\s]*)\s/, "$1,") +
+                      .replace(/([^\s]*\s[^\s]*)\s/, "$1,").replace(",",", ") +
                     " between",
                   leftValue + 10,
                   topValue + 80
@@ -1106,7 +1106,6 @@ export default {
                 for (i = 1; i <= pCount; i++) {
                   doc.setPage(i);
                   let pageCurrent = doc.internal.getCurrentPageInfo().pageNumber; //Current Page
-                  console.log("pagecurrent", pageCurrent);
                   doc.setFontSize(12);
                   doc.text(
                     "Page " + i + " of " + pCount,
