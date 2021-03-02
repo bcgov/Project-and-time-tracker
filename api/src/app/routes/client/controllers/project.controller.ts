@@ -14,6 +14,7 @@ import {
   retrieveAllProjects,
   retrieveMouProjectsByUserId,
   retrieveFinanceData,
+  retrieveFinanceDataOld,
   dischargeFinanceRecord,
   reinstateFinanceRecord,
   getProjectCategories
@@ -129,6 +130,15 @@ export const getfinanceExport = async (ctx: Koa.Context) => {
     const auth = ctx.state.auth as IAuth;
     const obj = ctx.request.body as any;
     ctx.body = await retrieveFinanceData(obj, auth.userId);
+  } catch (err) {
+    ctx.throw(err.message);
+  }
+};
+export const getfinanceExportOld = async (ctx: Koa.Context) => {
+  try {
+    const auth = ctx.state.auth as IAuth;
+    const obj = ctx.request.body as any;
+    ctx.body = await retrieveFinanceDataOld(obj, auth.userId);
   } catch (err) {
     ctx.throw(err.message);
   }
@@ -323,6 +333,7 @@ router.post('/dischargeFinanceRecord', authorize, dischargeFinancePdf);
 router.post('/reinstateFinanceRecord', authorize, reinstateFinancePdf);
 
 router.post('/finance', authorize, getfinanceExport);
+router.post('/financeOld', authorize, getfinanceExportOld);
 router.get('/:id', authorize, getProjectById);
 router.patch('/:id', authorize, updateProjectAction);
 router.patch('/:id/archive', authorize, archiveProjectAction);

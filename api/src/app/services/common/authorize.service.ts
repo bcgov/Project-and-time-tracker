@@ -101,6 +101,7 @@ const PSB_User = [
 const manage_finances = [
   ...PSB_User,
   'POST/project/finance',
+  'POST/project/financeOld',
   'POST/project/timesheetprojects',
   'POST/project/timesheetprojectsOld',
   'POST/project/exportedPdfs',
@@ -147,6 +148,7 @@ const permissions = {
     'PATCH/project-risk/:id',
     'PATCH/contact/:id/partial',
     'POST/project/finance',
+    'POST/project/financeOld',
     'POST/project/timesheetprojects',
     'POST/project/timesheetprojectsOld',
     'POST/project/exportedPdfs',
