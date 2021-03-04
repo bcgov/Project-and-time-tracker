@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/precache-manifest.2809783b1105c98100606f25d305f112.js"
+  "/precache-manifest.a4ea9792c4033d9f81755e74c039b5b3.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "aot-vue-starter"});
