@@ -921,266 +921,546 @@ export const retrieveFinanceData = async (obj, userId) => {
 };
 
 export const retrieveFinanceDataOld = async (obj, userId) => {
-  const financeExport = obj.selectedProjectsOld as IFinanceExport[];
-  const documentNo: string = uuidv4();
-  let mousSelected = [];
-  for (let index = 0; index < financeExport.length; index++) {
-    let model = financeExport[index];
-    if (!model) {
-      return [];
-    }
-  const selectedDate = obj.selectedProjectsOld[index].month.split('-');
-  const year = parseInt(selectedDate[0], 10);
-  const month = parseInt(selectedDate[1], 10);
-  const startDate = new Date(year, month - 1, 1);
-  const endDate = new Date(year, month, 0);
-  const documentPath: string = getPDFName(startDate, financeExport.length);
-    let billingCount = 1;
-    const exportData = {} as IFinanceJSON;
-    exportData.projectId = financeExport[index].projectId;
-    const repo = projectRepo();
-    const res = await repo
-      .createQueryBuilder('p')
-      .innerJoin('p.client', 'c')
-      .innerJoin('p.mou', 'm')
-      .select([
-        'p.id',
-        'p.projectName',
-        'p.leadUserId',
-        'p.teamWideProject',
-        'c.responsibilityCenter',
-        'p.mouAmount',
-        'c.clientNo',
-        'c.id',
-        'c.stob',
-        'c.projectCode',
-        'c.serviceCenter',
-        'm.id',
-        'm.name',
-        'm.billingCount',
-      ])
-      .where('p.id = :projectId', { projectId: exportData.projectId })
-      .getOne();
-
-    exportData.leadUser = '';
-    exportData.financeName = '';
-    if (res.teamWideProject) {
-      exportData.leadUser = 'Procurement and Supply Division';
-    } else if (res.leadUserId) {
-      const repoUser = userRepo();
-      const leadUser = await repoUser
-        .createQueryBuilder('u')
-        .innerJoinAndSelect('u.contact', 'c')
-        .where('u.id = :projectLeadId', { projectLeadId: res.leadUserId })
+  console.log('obj in retrieve',obj.selectedProjects);
+  const splitupProjects = await getMinistryNonMinistrySplitUp(obj);
+  console.log('splitupProjects',splitupProjects);
+  const ministryProjects = splitupProjects[0];
+  const nonMinistryProjects = splitupProjects[1];
+  const financeExport = ministryProjects as IFinanceExport[];
+  const financeExportNonMinistry = nonMinistryProjects as IFinanceExport[];
+  const finalResult=[];
+  if(financeExport.length>0) {
+    const documentNo: string = uuidv4();
+    let mousSelected = [];
+    for (let index = 0; index < financeExport.length; index++) {
+      let model = financeExport[index];
+      if (!model) {
+        return [];
+      }
+    const selectedDate = obj.selectedProjects[index].month.split('-');
+    const year = parseInt(selectedDate[0], 10);
+    const month = parseInt(selectedDate[1], 10);
+    const startDate = new Date(year, month - 1, 1);
+    const endDate = new Date(year, month, 0);
+    const documentPath: string = getPDFName(startDate, financeExport.length);
+      let billingCount = 1;
+      const exportData = {} as IFinanceJSON;
+      console.log('financeExport[index]',financeExport[index]);
+      exportData.projectId = financeExport[index].projectId;
+      exportData.projectCreated = financeExport[index].projectCreated;
+      const repo = projectRepo();
+      const res = await repo
+        .createQueryBuilder('p')
+        .innerJoin('p.client', 'c')
+        .innerJoin('p.mou', 'm')
+        .select([
+          'p.id',
+          'p.projectName',
+          'p.leadUserId',
+          'p.teamWideProject',
+          'c.responsibilityCenter',
+          'p.mouAmount',
+          'c.clientNo',
+          'c.id',
+          'c.stob',
+          'c.projectCode',
+          'c.serviceCenter',
+          'm.id',
+          'm.name',
+          'm.billingCount',
+          'p.dateCreated'
+        ])
+        .where('p.id = :projectId', { projectId: exportData.projectId })
         .getOne();
-      if (leadUser) {
-        const repo = contactRepo();
-        const contactRes = await repo
-          .createQueryBuilder('c')
-          .leftJoin('c.financeCodes', 'f')
-          .select(['c.fullName', 'f.financeName'])
-          .where('c."id" = :contactId', {
-            contactId: leadUser.contact.id,
-          })
+  
+      exportData.leadUser = '';
+      exportData.financeName = '';
+      exportData.projectCreated = res.dateCreated;
+      if (res.teamWideProject) {
+        exportData.leadUser = 'Procurement and Supply Division';
+      } else if (res.leadUserId) {
+        const repoUser = userRepo();
+        const leadUser = await repoUser
+          .createQueryBuilder('u')
+          .innerJoinAndSelect('u.contact', 'c')
+          .where('u.id = :projectLeadId', { projectLeadId: res.leadUserId })
           .getOne();
-
-        if (contactRes) {
-          exportData.leadUser = contactRes.fullName;
-          if (contactRes.financeCodes)
-            exportData.financeName = contactRes.financeCodes.financeName;
+        if (leadUser) {
+          const repo = contactRepo();
+          const contactRes = await repo
+            .createQueryBuilder('c')
+            .leftJoin('c.financeCodes', 'f')
+            .select(['c.fullName', 'f.financeName'])
+            .where('c."id" = :contactId', {
+              contactId: leadUser.contact.id,
+            })
+            .getOne();
+  
+          if (contactRes) {
+            exportData.leadUser = contactRes.fullName;
+            if (contactRes.financeCodes)
+              exportData.financeName = contactRes.financeCodes.financeName;
+          }
         }
+      } else {
+        exportData.leadUser = 'Procurement and Supply Division';
       }
-    } else {
-      exportData.leadUser = 'Procurement and Supply Division';
-    }
-
-    // Get previous Bill amount
-    const financeRep = financeRepo();
-
-    const prevBills = await financeRep
-      .createQueryBuilder('f')
-      .select(['f.projectId'])
-      .addSelect('SUM(f.totalAmount)', 'sum')
-      .where('f.projectId = :projectId  and f.isDischarged != :discharged', {
-        projectId: exportData.projectId,
-        discharged: true,
-      })
-      .groupBy('f.projectId ')
-      .getRawOne();
-
-    const contactproRepo = projectContactRepo();
-    const contactRes = await contactproRepo
-      .createQueryBuilder('pc')
-      .leftJoinAndSelect('pc.project', 'p')
-      .leftJoinAndSelect('pc.contact', 'c')
-      .where('c."contactType" = :contactType and pc."projectId" = :projectId', {
-        contactType: 'clientfinance',
-        projectId: exportData.projectId,
-      })
-      .getOne();
-    exportData.contact = contactRes.contact.fullName;
-    exportData.projectName = res.projectName;
-
-    let details = [] as IFinanceExportDetail[];
-    let userFinanceCodes = [] as IUserFinanceCodes[];
-    let projectFinance = {} as IUserFinanceCodes;
-    if (res.client) {
-      projectFinance.responsibilityCenter = res.client.responsibilityCenter;
-      projectFinance.clientNo = res.client.clientNo;
-      projectFinance.stob = res.client.stob;
-      projectFinance.projectCode = res.client.projectCode;
-      projectFinance.serviceCenter = res.client.serviceCenter;
-    }
-    if (res.mou) {
-      billingCount = res.mou.billingCount ? res.mou.billingCount + 1 : 1;
-    }
-    projectFinance.type = 'Project';
-    userFinanceCodes.push(projectFinance);
-
-    exportData.documentPath = documentPath;
-    exportData.documentNo = documentNo;
-    exportData.lineDesc = documentNo;
-    exportData.createdUserId = userId;
-    exportData.billingCount = billingCount;
-    exportData.mouName = res.mou.name;
-    mousSelected.push(exportData.mouName);
-    exportData.mouEstimate = res.mouAmount;
-    const timeSheet = await timesheetRepo()
-      .createQueryBuilder('t')
-      .innerJoinAndSelect('t.timesheetEntries', 'te')
-      .innerJoinAndSelect('t.user', 'u')
-      .innerJoinAndSelect('u.contact', 'c')
-      .where(
-        't."projectId" = :projectId and (t.is_locked = :is_locked or t.is_locked IS NULL) and (t.startDate >= :start and t.startDate <= :end) and t.documentNo is NULL',
-        {
+  
+      // Get previous Bill amount
+      const financeRep = financeRepo();
+  
+      const prevBills = await financeRep
+        .createQueryBuilder('f')
+        .select(['f.projectId'])
+        .addSelect('SUM(f.totalAmount)', 'sum')
+        .where('f.projectId = :projectId  and f.isDischarged != :discharged', {
           projectId: exportData.projectId,
-          is_locked: false,
-          start: startDate,
-          end: endDate,
-        }
-      )
-      .getMany();
-    if (timeSheet.length == 0) {
-      continue;
-    }
-
-    for (
-      let timeSheetIndex = 0;
-      timeSheetIndex < timeSheet.length;
-      timeSheetIndex++
-    ) {
-      let timeSheetId = timeSheet[timeSheetIndex].id;
-      const timesheetEntry: TimesheetEntry[] =
-        timeSheet[timeSheetIndex].timesheetEntries;
-      for (
-        let timeSheetEntryIndex = 0;
-        timeSheetEntryIndex < timeSheet[timeSheetIndex].timesheetEntries.length;
-        timeSheetEntryIndex++
-      ) {
-        await generateExportEntries(
-          timeSheet[timeSheetIndex],
-          timesheetEntry[timeSheetEntryIndex],
-          timeSheetId,
-          details,
-          userFinanceCodes
-        );
+          discharged: true,
+        })
+        .groupBy('f.projectId ')
+        .getRawOne();
+  
+      const contactproRepo = projectContactRepo();
+      const contactRes = await contactproRepo
+        .createQueryBuilder('pc')
+        .leftJoinAndSelect('pc.project', 'p')
+        .leftJoinAndSelect('pc.contact', 'c')
+        .where('c."contactType" = :contactType and pc."projectId" = :projectId', {
+          contactType: 'clientfinance',
+          projectId: exportData.projectId,
+        })
+        .getOne();
+      exportData.contact = contactRes.contact.fullName;
+      exportData.projectName = res.projectName;
+  
+      let details = [] as IFinanceExportDetail[];
+      let userFinanceCodes = [] as IUserFinanceCodes[];
+      let projectFinance = {} as IUserFinanceCodes;
+      if (res.client) {
+        projectFinance.responsibilityCenter = res.client.responsibilityCenter;
+        projectFinance.clientNo = res.client.clientNo;
+        projectFinance.stob = res.client.stob;
+        projectFinance.projectCode = res.client.projectCode;
+        projectFinance.serviceCenter = res.client.serviceCenter;
       }
-      exportData.details = details;
-
+      if (res.mou) {
+        billingCount = res.mou.billingCount ? res.mou.billingCount + 1 : 1;
+      }
+      projectFinance.type = 'Project';
+      userFinanceCodes.push(projectFinance);
+  
+      exportData.documentPath = documentPath;
+      exportData.documentNo = documentNo;
+      exportData.lineDesc = documentNo;
+      exportData.createdUserId = userId;
+      exportData.billingCount = billingCount;
+      exportData.mouName = res.mou.name;
+      mousSelected.push(exportData.mouName);
+      exportData.mouEstimate = res.mouAmount;
+      const timeSheet = await timesheetRepo()
+        .createQueryBuilder('t')
+        .innerJoinAndSelect('t.timesheetEntries', 'te')
+        .innerJoinAndSelect('t.user', 'u')
+        .innerJoinAndSelect('u.contact', 'c')
+        .where(
+          't."projectId" = :projectId and (t.is_locked = :is_locked or t.is_locked IS NULL) and (t.startDate >= :start and t.startDate <= :end) and t.documentNo is NULL',
+          {
+            projectId: exportData.projectId,
+            is_locked: false,
+            start: startDate,
+            end: endDate,
+          }
+        )
+        .getMany();
+      if (timeSheet.length == 0) {
+        continue;
+      }
+  
+      for (
+        let timeSheetIndex = 0;
+        timeSheetIndex < timeSheet.length;
+        timeSheetIndex++
+      ) {
+        let timeSheetId = timeSheet[timeSheetIndex].id;
+        const timesheetEntry: TimesheetEntry[] =
+          timeSheet[timeSheetIndex].timesheetEntries;
+        for (
+          let timeSheetEntryIndex = 0;
+          timeSheetEntryIndex < timeSheet[timeSheetIndex].timesheetEntries.length;
+          timeSheetEntryIndex++
+        ) {
+          await generateExportEntries(
+            timeSheet[timeSheetIndex],
+            timesheetEntry[timeSheetEntryIndex],
+            timeSheetId,
+            details,
+            userFinanceCodes
+          );
+        }
+        exportData.details = details;
+  
+        let fees = round(
+          exportData.details
+            .filter(
+              (item) =>
+                (item.type === 'Time' || item.type === 'Revenue') &&
+                item.id == timeSheetId
+            )
+            .reduce(function (prev, cur) {
+              return prev + Number(cur.amount);
+            }, 0)
+        );
+  
+        let expenses = round(
+          exportData.details
+            .filter((item) => item.type === 'Expense' && item.id == timeSheetId)
+            .reduce(function (prev, cur) {
+              return prev + Number(cur.amount);
+            }, 0)
+        );
+  
+        timeSheet[timeSheetIndex].documentNo = documentNo;
+        timeSheet[timeSheetIndex].amountBilled = round(fees + expenses);
+        timeSheet[timeSheetIndex].is_locked = true;
+        await timesheetRepo().save(timeSheet[timeSheetIndex]);
+      }
+  
       let fees = round(
         exportData.details
-          .filter(
-            (item) =>
-              (item.type === 'Time' || item.type === 'Revenue') &&
-              item.id == timeSheetId
-          )
+          .filter((item) => item.type === 'Time' || item.type === 'Revenue')
           .reduce(function (prev, cur) {
             return prev + Number(cur.amount);
           }, 0)
       );
-
+  
       let expenses = round(
         exportData.details
-          .filter((item) => item.type === 'Expense' && item.id == timeSheetId)
+          .filter((item) => item.type === 'Expense')
           .reduce(function (prev, cur) {
             return prev + Number(cur.amount);
           }, 0)
       );
-
-      timeSheet[timeSheetIndex].documentNo = documentNo;
-      timeSheet[timeSheetIndex].amountBilled = round(fees + expenses);
-      timeSheet[timeSheetIndex].is_locked = true;
-      await timesheetRepo().save(timeSheet[timeSheetIndex]);
+  
+      exportData.fees = fees;
+      exportData.expenses = expenses;
+      exportData.totalAmount = round(fees + expenses);
+      exportData.prevBillAmount = prevBills ? round(prevBills.sum) : 0;
+      exportData.totalBillingToDate = round(
+        exportData.prevBillAmount + exportData.totalAmount
+      );
+      exportData.balanceMou = round(
+        exportData.mouEstimate - exportData.totalBillingToDate
+      );
+      exportData.dateCreated = new Date();
+      model.createdUserId = userId;
+      model.documentNo = documentNo;
+      model.documentPath = documentPath;
+      model.totalAmount = exportData.totalAmount;
+      model.monthStartDate = startDate;
+  
+      let userItemEntry = userFinanceCodes.find((item) => {
+        return item.type === 'Project';
+      });
+      if (userItemEntry) {
+        userItemEntry.amount = exportData.totalAmount;
+      }
+      exportData.userFinanceCodes = userFinanceCodes;
+      model.exportData = JSON.stringify(exportData);
+      model.billingCount = billingCount;
+      model.isDischarged = false;
+      model.mouId = res.mou.id;
+      await createFinanceExport(model);
+  
+      const repoMou = mouRepo();
+      let mou = await repoMou.findOne(res.mou.id);
+      if (mou) {
+        mou.billingCount = billingCount;
+        await repoMou.save(mou);
+      }
     }
-
-    let fees = round(
-      exportData.details
-        .filter((item) => item.type === 'Time' || item.type === 'Revenue')
-        .reduce(function (prev, cur) {
-          return prev + Number(cur.amount);
-        }, 0)
-    );
-
-    let expenses = round(
-      exportData.details
-        .filter((item) => item.type === 'Expense')
-        .reduce(function (prev, cur) {
-          return prev + Number(cur.amount);
-        }, 0)
-    );
-
-    exportData.fees = fees;
-    exportData.expenses = expenses;
-    exportData.totalAmount = round(fees + expenses);
-    exportData.prevBillAmount = prevBills ? round(prevBills.sum) : 0;
-    exportData.totalBillingToDate = round(
-      exportData.prevBillAmount + exportData.totalAmount
-    );
-    exportData.balanceMou = round(
-      exportData.mouEstimate - exportData.totalBillingToDate
-    );
-    exportData.dateCreated = new Date();
-    model.createdUserId = userId;
-    model.documentNo = documentNo;
-    model.documentPath = documentPath;
-    model.totalAmount = exportData.totalAmount;
-    model.monthStartDate = startDate;
-
-    let userItemEntry = userFinanceCodes.find((item) => {
-      return item.type === 'Project';
-    });
-    if (userItemEntry) {
-      userItemEntry.amount = exportData.totalAmount;
-    }
-    exportData.userFinanceCodes = userFinanceCodes;
-    model.exportData = JSON.stringify(exportData);
-    model.billingCount = billingCount;
-    model.isDischarged = false;
-    model.mouId = res.mou.id;
-    await createFinanceExport(model);
-
-    const repoMou = mouRepo();
-    let mou = await repoMou.findOne(res.mou.id);
-    if (mou) {
-      mou.billingCount = billingCount;
-      await repoMou.save(mou);
-    }
+  
+    await getConnection()
+      .createQueryBuilder()
+      .update(FinanceExport)
+      .set({ selectedMous: mergeMous(mousSelected) })
+      .where('documentNo = :document', { document: documentNo })
+      .execute();
+    // await createFinanceExport(financeExport);
+    const repo = financeRepo();
+    const result = await repo
+      .createQueryBuilder('f')
+      .where('f."documentNo" = :documentId ', { documentId: documentNo })
+      .getMany();
+      finalResult[0] = result;
+  } else {
+    finalResult[0]=[];
   }
-
-  await getConnection()
-    .createQueryBuilder()
-    .update(FinanceExport)
-    .set({ selectedMous: mergeMous(mousSelected) })
-    .where('documentNo = :document', { document: documentNo })
-    .execute();
-  // await createFinanceExport(financeExport);
-  const repo = financeRepo();
-  const result = await repo
-    .createQueryBuilder('f')
-    .where('f."documentNo" = :documentId ', { documentId: documentNo })
-    .getMany();
-
-  return result;
+  if(financeExportNonMinistry.length>0) {
+    const documentNo: string = uuidv4();
+    let mousSelected = [];
+    for (let index = 0; index < financeExportNonMinistry.length; index++) {
+      let model = financeExportNonMinistry[index];
+      if (!model) {
+        return [];
+      }
+    const selectedDate = obj.selectedProjects[index].month.split('-');
+    const year = parseInt(selectedDate[0], 10);
+    const month = parseInt(selectedDate[1], 10);
+    const startDate = new Date(year, month - 1, 1);
+    const endDate = new Date(year, month, 0);
+    const documentPath: string = getPDFName(startDate, financeExportNonMinistry.length);
+      let billingCount = 1;
+      const exportData = {} as IFinanceJSON;
+      exportData.projectId = financeExportNonMinistry[index].projectId;
+      const repo = projectRepo();
+      const res = await repo
+        .createQueryBuilder('p')
+        .innerJoin('p.client', 'c')
+        .innerJoin('p.mou', 'm')
+        .select([
+          'p.id',
+          'p.projectName',
+          'p.leadUserId',
+          'p.teamWideProject',
+          'c.responsibilityCenter',
+          'p.mouAmount',
+          'c.clientNo',
+          'c.id',
+          'c.stob',
+          'c.projectCode',
+          'c.serviceCenter',
+          'm.id',
+          'm.name',
+          'm.billingCount',
+          'p.dateCreated'
+        ])
+        .where('p.id = :projectId', { projectId: exportData.projectId })
+        .getOne();
+  
+      exportData.leadUser = '';
+      exportData.financeName = '';
+      exportData.projectCreated = res.dateCreated;
+      if (res.teamWideProject) {
+        exportData.leadUser = 'Procurement and Supply Division';
+      } else if (res.leadUserId) {
+        const repoUser = userRepo();
+        const leadUser = await repoUser
+          .createQueryBuilder('u')
+          .innerJoinAndSelect('u.contact', 'c')
+          .where('u.id = :projectLeadId', { projectLeadId: res.leadUserId })
+          .getOne();
+        if (leadUser) {
+          const repo = contactRepo();
+          const contactRes = await repo
+            .createQueryBuilder('c')
+            .leftJoin('c.financeCodes', 'f')
+            .select(['c.fullName', 'f.financeName'])
+            .where('c."id" = :contactId', {
+              contactId: leadUser.contact.id,
+            })
+            .getOne();
+  
+          if (contactRes) {
+            exportData.leadUser = contactRes.fullName;
+            if (contactRes.financeCodes)
+              exportData.financeName = contactRes.financeCodes.financeName;
+          }
+        }
+      } else {
+        exportData.leadUser = 'Procurement and Supply Division';
+      }
+  
+      // Get previous Bill amount
+      const financeRep = financeRepo();
+  
+      const prevBills = await financeRep
+        .createQueryBuilder('f')
+        .select(['f.projectId'])
+        .addSelect('SUM(f.totalAmount)', 'sum')
+        .where('f.projectId = :projectId  and f.isDischarged != :discharged', {
+          projectId: exportData.projectId,
+          discharged: true,
+        })
+        .groupBy('f.projectId ')
+        .getRawOne();
+  
+      const contactproRepo = projectContactRepo();
+      const contactRes = await contactproRepo
+        .createQueryBuilder('pc')
+        .leftJoinAndSelect('pc.project', 'p')
+        .leftJoinAndSelect('pc.contact', 'c')
+        .where('c."contactType" = :contactType and pc."projectId" = :projectId', {
+          contactType: 'clientfinance',
+          projectId: exportData.projectId,
+        })
+        .getOne();
+      exportData.contact = contactRes.contact.fullName;
+      exportData.projectName = res.projectName;
+  
+      let details = [] as IFinanceExportDetail[];
+      let userFinanceCodes = [] as IUserFinanceCodes[];
+      let projectFinance = {} as IUserFinanceCodes;
+      if (res.client) {
+        projectFinance.responsibilityCenter = res.client.responsibilityCenter;
+        projectFinance.clientNo = res.client.clientNo;
+        projectFinance.stob = res.client.stob;
+        projectFinance.projectCode = res.client.projectCode;
+        projectFinance.serviceCenter = res.client.serviceCenter;
+      }
+      if (res.mou) {
+        billingCount = res.mou.billingCount ? res.mou.billingCount + 1 : 1;
+      }
+      projectFinance.type = 'Project';
+      userFinanceCodes.push(projectFinance);
+  
+      exportData.documentPath = documentPath;
+      exportData.documentNo = documentNo;
+      exportData.lineDesc = documentNo;
+      exportData.createdUserId = userId;
+      exportData.billingCount = billingCount;
+      exportData.mouName = res.mou.name;
+      mousSelected.push(exportData.mouName);
+      exportData.mouEstimate = res.mouAmount;
+      const timeSheet = await timesheetRepo()
+        .createQueryBuilder('t')
+        .innerJoinAndSelect('t.timesheetEntries', 'te')
+        .innerJoinAndSelect('t.user', 'u')
+        .innerJoinAndSelect('u.contact', 'c')
+        .where(
+          't."projectId" = :projectId and (t.is_locked = :is_locked or t.is_locked IS NULL) and (t.startDate >= :start and t.startDate <= :end) and t.documentNo is NULL',
+          {
+            projectId: exportData.projectId,
+            is_locked: false,
+            start: startDate,
+            end: endDate,
+          }
+        )
+        .getMany();
+      if (timeSheet.length == 0) {
+        continue;
+      }
+  
+      for (
+        let timeSheetIndex = 0;
+        timeSheetIndex < timeSheet.length;
+        timeSheetIndex++
+      ) {
+        let timeSheetId = timeSheet[timeSheetIndex].id;
+        const timesheetEntry: TimesheetEntry[] =
+          timeSheet[timeSheetIndex].timesheetEntries;
+        for (
+          let timeSheetEntryIndex = 0;
+          timeSheetEntryIndex < timeSheet[timeSheetIndex].timesheetEntries.length;
+          timeSheetEntryIndex++
+        ) {
+          await generateExportEntries(
+            timeSheet[timeSheetIndex],
+            timesheetEntry[timeSheetEntryIndex],
+            timeSheetId,
+            details,
+            userFinanceCodes
+          );
+        }
+        exportData.details = details;
+  
+        let fees = round(
+          exportData.details
+            .filter(
+              (item) =>
+                (item.type === 'Time' || item.type === 'Revenue') &&
+                item.id == timeSheetId
+            )
+            .reduce(function (prev, cur) {
+              return prev + Number(cur.amount);
+            }, 0)
+        );
+  
+        let expenses = round(
+          exportData.details
+            .filter((item) => item.type === 'Expense' && item.id == timeSheetId)
+            .reduce(function (prev, cur) {
+              return prev + Number(cur.amount);
+            }, 0)
+        );
+  
+        timeSheet[timeSheetIndex].documentNo = documentNo;
+        timeSheet[timeSheetIndex].amountBilled = round(fees + expenses);
+        timeSheet[timeSheetIndex].is_locked = true;
+        await timesheetRepo().save(timeSheet[timeSheetIndex]);
+      }
+  
+      let fees = round(
+        exportData.details
+          .filter((item) => item.type === 'Time' || item.type === 'Revenue')
+          .reduce(function (prev, cur) {
+            return prev + Number(cur.amount);
+          }, 0)
+      );
+  
+      let expenses = round(
+        exportData.details
+          .filter((item) => item.type === 'Expense')
+          .reduce(function (prev, cur) {
+            return prev + Number(cur.amount);
+          }, 0)
+      );
+  
+      exportData.fees = fees;
+      exportData.expenses = expenses;
+      exportData.totalAmount = round(fees + expenses);
+      exportData.prevBillAmount = prevBills ? round(prevBills.sum) : 0;
+      exportData.totalBillingToDate = round(
+        exportData.prevBillAmount + exportData.totalAmount
+      );
+      exportData.balanceMou = round(
+        exportData.mouEstimate - exportData.totalBillingToDate
+      );
+      exportData.dateCreated = new Date();
+      model.createdUserId = userId;
+      model.documentNo = documentNo;
+      model.documentPath = documentPath;
+      model.totalAmount = exportData.totalAmount;
+      model.monthStartDate = startDate;
+  
+      let userItemEntry = userFinanceCodes.find((item) => {
+        return item.type === 'Project';
+      });
+      if (userItemEntry) {
+        userItemEntry.amount = exportData.totalAmount;
+      }
+      exportData.userFinanceCodes = userFinanceCodes;
+      model.exportData = JSON.stringify(exportData);
+      model.billingCount = billingCount;
+      model.isDischarged = false;
+      model.mouId = res.mou.id;
+      model.isNonMinistry = true;
+      await createFinanceExport(model);
+  
+      const repoMou = mouRepo();
+      let mou = await repoMou.findOne(res.mou.id);
+      if (mou) {
+        mou.billingCount = billingCount;
+        await repoMou.save(mou);
+      }
+    }
+  
+    await getConnection()
+      .createQueryBuilder()
+      .update(FinanceExport)
+      .set({ selectedMous: mergeMous(mousSelected) })
+      .where('documentNo = :document', { document: documentNo })
+      .execute();
+    // await createFinanceExport(financeExport);
+    const repo = financeRepo();
+    const result = await repo
+      .createQueryBuilder('f')
+      .where('f."documentNo" = :documentId ', { documentId: documentNo })
+      .getMany();
+    finalResult[1]= result;
+  } else {
+    finalResult[1]=[];
+  }
+    return finalResult;
 };
 export const downloadpdf = async (obj) => {
   const repo = financeRepo();
