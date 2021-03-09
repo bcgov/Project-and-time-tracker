@@ -104,7 +104,7 @@ export default {
     getUserName(id) {
       if (id) {
         const value = this.$store.state.users.filter(el => el.id === id);
-        return value[0].contact.fullName;
+         return value.length>0 && value[0].contact?value[0].contact.fullName:'';
       }
       return '';
     },
