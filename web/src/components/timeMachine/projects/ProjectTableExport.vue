@@ -310,7 +310,6 @@ export default {
           const uniqueArray = Array.from(uniqueSet).map(JSON.parse);
           // console.log("after", uniqueArray);
           vm.projectsListOld = uniqueArray;
-          console.log('old',vm.projectsListOld);
           if (vm.$refs.spinner) {
             vm.$refs.spinner.close();
           }
@@ -736,7 +735,6 @@ export default {
                 // eslint-disable-next-line no-unused-vars
                 const billTotalPosition = billTable.autoTable.previous;
                 // eslint-disable-next-line no-console
-                console.log("pos:", billTotalPosition);
 
                 doc.setFontStyle("bold");
                 const finalTable = doc.autoTable({
@@ -854,6 +852,7 @@ export default {
               doc.save(pdfValues[0].documentPath);
               this.getAllProjectList();
             }
+                let pageNum =0;
             if (pdfValuesNonMinistry.length > 0) {
               const leftValue = 0;
               const topValue = 20;
@@ -920,7 +919,7 @@ export default {
                     new Date(pdfValuesNonMinistry[i].projectCreated)
                       .toDateString()
                       .substring(4, 15)
-                      .replace(/([^\s]*\s[^\s]*)\s/, "$1,") +
+                      .replace(/([^\s]*\s[^\s]*)\s/, "$1,").replace(",",", ") +
                     " between",
                   leftValue + 10,
                   topValue + 80
@@ -1229,18 +1228,13 @@ export default {
                   );
                   // theme: 'striped'|'grid'|'plain'|'css'
                 }
-                const pCount = doc.internal.getNumberOfPages(); //Total Page Number
-                for (i = 1; i <= pCount; i++) {
-                  doc.setPage(i);
-                  let pageCurrent = doc.internal.getCurrentPageInfo().pageNumber; //Current Page
-                  console.log("pagecurrent", pageCurrent);
-                  doc.setFontSize(12);
-                  doc.text(
-                    "Page " + i + " of " + pCount,
-                    leftValue + 85,
-                    staticTextSettings + topValue + 250
-                  );
-                }
+                   const pCount = doc.internal.getNumberOfPages() - pageNum; //Total Page Number
+             for (let i = 1 + pageNum; i <= pCount + pageNum; i++) {
+                doc.setPage(i);
+                doc.setFontSize(12);
+                doc.text("Page "+(i - pageNum) + " of " + pCount,  leftValue + 85, 20 + topValue + 250);
+              }
+            pageNum = pageNum + pCount;
               }
               doc.save(pdfValuesNonMinistry[0].documentPath);
               this.getAllProjectList();
@@ -1251,6 +1245,7 @@ export default {
     exportToPDFOld() {
       let totalPage = 0;
       let projects = this.getAllProjectIdsOld();
+
       const vm = this;
       console.log('before',projects);
       projects = projects.map(str => ({ projectId: str.key,month:str.startdate,isNonMinistry: str.isnonministry }));
@@ -1265,7 +1260,8 @@ export default {
             selectedDate: this.date
           })
           .then(() => {
-            this.selectedProjects = [];
+             this.selectedProjectsOld = [];
+             this.selectedProjects = [];
             if (
               vm.$store.state.financeExportOld[0] ? vm.$store.state.financeExportOld[0].length : 0 === 0
             ) {
@@ -1281,6 +1277,8 @@ export default {
               pdfValuesNonMinistry.push(exportData);
               vm.$refs.spinner.close();
             });
+            console.log('pdfValues:',pdfValues);
+            console.log('pdfValuesNonMinistry:',pdfValuesNonMinistry);
             if (pdfValues.length === 0 && pdfValuesNonMinistry.length === 0) {
               return;
             }
@@ -1718,6 +1716,7 @@ export default {
               doc.save(pdfValues[0].documentPath);
               this.getAllProjectList();
             }
+             let pageNum =0;
             if (pdfValuesNonMinistry.length > 0) {
               const leftValue = 0;
               const topValue = 20;
@@ -1784,7 +1783,7 @@ export default {
                     new Date(pdfValuesNonMinistry[i].projectCreated)
                       .toDateString()
                       .substring(4, 15)
-                      .replace(/([^\s]*\s[^\s]*)\s/, "$1,") +
+                      .replace(/([^\s]*\s[^\s]*)\s/, "$1,").replace(",",", ") +
                     " between",
                   leftValue + 10,
                   topValue + 80
@@ -2093,18 +2092,13 @@ export default {
                   );
                   // theme: 'striped'|'grid'|'plain'|'css'
                 }
-                const pCount = doc.internal.getNumberOfPages(); //Total Page Number
-                for (i = 1; i <= pCount; i++) {
-                  doc.setPage(i);
-                  let pageCurrent = doc.internal.getCurrentPageInfo().pageNumber; //Current Page
-                  console.log("pagecurrent", pageCurrent);
-                  doc.setFontSize(12);
-                  doc.text(
-                    "Page " + i + " of " + pCount,
-                    leftValue + 85,
-                    staticTextSettings + topValue + 250
-                  );
-                }
+                const pCount = doc.internal.getNumberOfPages() - pageNum; //Total Page Number
+             for (let i = 1 + pageNum; i <= pCount + pageNum; i++) {
+                doc.setPage(i);
+                doc.setFontSize(12);
+                doc.text("Page "+(i - pageNum) + " of " + pCount,  leftValue + 85, 20 + topValue + 250);
+              }
+            pageNum = pageNum + pCount;
               }
               doc.save(pdfValuesNonMinistry[0].documentPath);
               this.getAllProjectList();

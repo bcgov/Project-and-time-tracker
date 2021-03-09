@@ -189,6 +189,9 @@ function uuidv4() {
   });
 }
 function getPDFName(date, count) {
+  return createPDFName(date,count,0);
+}
+function createPDFName(date, count,type) {
   var month = new Array();
   month[0] = "Janu";
   month[1] = "Feb";
@@ -204,7 +207,17 @@ function getPDFName(date, count) {
   month[11] = "Dec";
 
   var newDate = new Date(date);
-  if (count === 1) {
+  if (count === 1 && type) {
+    return (
+      month[newDate.getMonth()] +
+      " - " +
+      newDate.getFullYear() +
+      " - NonMinistry - " +
+      count.toString() +
+      " Project.pdf"
+    );
+  }
+  if (count === 1 && !type) {
     return (
       month[newDate.getMonth()] +
       " - " +
@@ -214,6 +227,16 @@ function getPDFName(date, count) {
       " Project.pdf"
     );
   }
+  if(type)
+  return (
+    month[newDate.getMonth()] +
+    " - " +
+    newDate.getFullYear() +
+    " - NonMinistry - " +
+    count.toString() +
+    " Projects.pdf"
+  );
+  else
   return (
     month[newDate.getMonth()] +
     " - " +
@@ -223,6 +246,9 @@ function getPDFName(date, count) {
     " Projects.pdf"
   );
 }
+function getPDFNameNonMinistry(date, count) {
+  return createPDFName(date, count,1);
+ }
 function round(x) {
   return Number.parseFloat(Number.parseFloat(x).toFixed(2));
 }
@@ -398,7 +424,6 @@ export const retrieveFinanceData = async (obj, userId) => {
       }
       let billingCount = 1;
       const exportData = {} as IFinanceJSON;
-      console.log('financeExport[index]',financeExport[index]);
       exportData.projectId = financeExport[index].projectId;
       exportData.projectCreated = financeExport[index].projectCreated;
       const repo = projectRepo();
@@ -659,7 +684,7 @@ export const retrieveFinanceData = async (obj, userId) => {
     const startDate = new Date(year, month - 1, 1);
     const endDate = new Date(year, month, 0);
   
-    const documentPath: string = getPDFName(startDate, financeExportNonMinistry.length);
+    const documentPath: string = getPDFNameNonMinistry(startDate, financeExportNonMinistry.length);
     let mousSelected = [];
     for (let index = 0; index < financeExportNonMinistry.length; index++) {
       let model = financeExportNonMinistry[index];
@@ -921,9 +946,7 @@ export const retrieveFinanceData = async (obj, userId) => {
 };
 
 export const retrieveFinanceDataOld = async (obj, userId) => {
-  console.log('obj in retrieve',obj.selectedProjects);
   const splitupProjects = await getMinistryNonMinistrySplitUp(obj);
-  console.log('splitupProjects',splitupProjects);
   const ministryProjects = splitupProjects[0];
   const nonMinistryProjects = splitupProjects[1];
   const financeExport = ministryProjects as IFinanceExport[];
@@ -945,7 +968,6 @@ export const retrieveFinanceDataOld = async (obj, userId) => {
     const documentPath: string = getPDFName(startDate, financeExport.length);
       let billingCount = 1;
       const exportData = {} as IFinanceJSON;
-      console.log('financeExport[index]',financeExport[index]);
       exportData.projectId = financeExport[index].projectId;
       exportData.projectCreated = financeExport[index].projectCreated;
       const repo = projectRepo();
@@ -972,7 +994,6 @@ export const retrieveFinanceDataOld = async (obj, userId) => {
         ])
         .where('p.id = :projectId', { projectId: exportData.projectId })
         .getOne();
-  
       exportData.leadUser = '';
       exportData.financeName = '';
       exportData.projectCreated = res.dateCreated;
@@ -1005,7 +1026,6 @@ export const retrieveFinanceDataOld = async (obj, userId) => {
       } else {
         exportData.leadUser = 'Procurement and Supply Division';
       }
-  
       // Get previous Bill amount
       const financeRep = financeRepo();
   
@@ -1019,7 +1039,6 @@ export const retrieveFinanceDataOld = async (obj, userId) => {
         })
         .groupBy('f.projectId ')
         .getRawOne();
-  
       const contactproRepo = projectContactRepo();
       const contactRes = await contactproRepo
         .createQueryBuilder('pc')
@@ -1048,7 +1067,6 @@ export const retrieveFinanceDataOld = async (obj, userId) => {
       }
       projectFinance.type = 'Project';
       userFinanceCodes.push(projectFinance);
-  
       exportData.documentPath = documentPath;
       exportData.documentNo = documentNo;
       exportData.lineDesc = documentNo;
@@ -1075,7 +1093,6 @@ export const retrieveFinanceDataOld = async (obj, userId) => {
       if (timeSheet.length == 0) {
         continue;
       }
-  
       for (
         let timeSheetIndex = 0;
         timeSheetIndex < timeSheet.length;
@@ -1124,7 +1141,6 @@ export const retrieveFinanceDataOld = async (obj, userId) => {
         timeSheet[timeSheetIndex].is_locked = true;
         await timesheetRepo().save(timeSheet[timeSheetIndex]);
       }
-  
       let fees = round(
         exportData.details
           .filter((item) => item.type === 'Time' || item.type === 'Revenue')
@@ -1157,7 +1173,6 @@ export const retrieveFinanceDataOld = async (obj, userId) => {
       model.documentPath = documentPath;
       model.totalAmount = exportData.totalAmount;
       model.monthStartDate = startDate;
-  
       let userItemEntry = userFinanceCodes.find((item) => {
         return item.type === 'Project';
       });
@@ -1169,6 +1184,7 @@ export const retrieveFinanceDataOld = async (obj, userId) => {
       model.billingCount = billingCount;
       model.isDischarged = false;
       model.mouId = res.mou.id;
+      console.log('model ministry:',model);
       await createFinanceExport(model);
   
       const repoMou = mouRepo();
@@ -1191,6 +1207,7 @@ export const retrieveFinanceDataOld = async (obj, userId) => {
       .createQueryBuilder('f')
       .where('f."documentNo" = :documentId ', { documentId: documentNo })
       .getMany();
+      console.log('ministryresult',result);
       finalResult[0] = result;
   } else {
     finalResult[0]=[];
@@ -1208,7 +1225,7 @@ export const retrieveFinanceDataOld = async (obj, userId) => {
     const month = parseInt(selectedDate[1], 10);
     const startDate = new Date(year, month - 1, 1);
     const endDate = new Date(year, month, 0);
-    const documentPath: string = getPDFName(startDate, financeExportNonMinistry.length);
+    const documentPath: string = getPDFNameNonMinistry(startDate, financeExportNonMinistry.length);
       let billingCount = 1;
       const exportData = {} as IFinanceJSON;
       exportData.projectId = financeExportNonMinistry[index].projectId;
@@ -1434,6 +1451,7 @@ export const retrieveFinanceDataOld = async (obj, userId) => {
       model.isDischarged = false;
       model.mouId = res.mou.id;
       model.isNonMinistry = true;
+      console.log('model non-ministry:',model);
       await createFinanceExport(model);
   
       const repoMou = mouRepo();
@@ -1456,10 +1474,12 @@ export const retrieveFinanceDataOld = async (obj, userId) => {
       .createQueryBuilder('f')
       .where('f."documentNo" = :documentId ', { documentId: documentNo })
       .getMany();
+    console.log('finalResult',result);
     finalResult[1]= result;
   } else {
     finalResult[1]=[];
   }
+  
     return finalResult;
 };
 export const downloadpdf = async (obj) => {
