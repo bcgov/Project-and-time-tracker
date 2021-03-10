@@ -84,7 +84,8 @@ export const validateToken = async (
         }
         if(urlChecker == '/auth/verify')
         await verifyAndCreateOrUpdateUser(authData, data);
-
+        else
+        await updateAuthData(authData,data);
         ctx.state.auth = authData;
         await next();
       }
@@ -188,3 +189,8 @@ const verifyAndCreateOrUpdateUser = async (authData: IAuth, data: any) => {
     authData.userId = user.id;
   }
 };
+const updateAuthData = async (authData: IAuth, data: any) => {
+  const user = await retrieveUserByReferenceId(data.sub);
+    authData.userId = user.id;
+};
+
