@@ -644,6 +644,18 @@ const store = new Vuex.Store({
         .catch(err => Promise.reject(err.response));
       return Promise.resolve(api);
     },
+    async regenerateFinanceRecords(ctx, req) {
+      const body = req;
+      const api = await $http
+        .post(`${API_URI}/project/reGenerateFinanceRecord`, body)
+        .then(res => {
+          const content = res.data;
+          ctx.commit("downloadExportedPdf", content);
+          return Promise.resolve(content);
+        })
+        .catch(err => Promise.reject(err.response));
+      return Promise.resolve(api);
+    },
     async reinstateFinanceRecords(ctx, req) {
       const body = req;
       const api = await $http

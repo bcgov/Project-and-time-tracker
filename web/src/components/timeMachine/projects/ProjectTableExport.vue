@@ -19,7 +19,7 @@
     <v-divider></v-divider>
     <v-layout>
       <v-flex md-2>
-         <h2 class="reports-header">Out of Month Reports</h2>
+        <h2 class="reports-header">Out of Month Reports</h2>
         <!-- <ProjectCalendarMonth
           ref="TimeCalendarMonthly"
           @changedMonth="changedMonth"
@@ -27,10 +27,7 @@
       </v-flex>
       <v-flex md-10>
         <div class="start-button-div">
-          <v-btn
-            color="primary"
-            class="start-button-style"
-            @click="exportToPDFOld"
+          <v-btn color="primary" class="start-button-style" @click="exportToPDFOld"
             >Export Finances Old (PDF)</v-btn
           >
         </div>
@@ -49,16 +46,12 @@
         >
           <template slot="items" slot-scope="data">
             <td class="text-xs-left">
-              <v-checkbox
-                @change="updateSelectedProjectsOld($event, data.item.id)"
-              ></v-checkbox>
+              <v-checkbox @change="updateSelectedProjectsOld($event, data.item.id)"></v-checkbox>
             </td>
 
             <td class="text-xs-left">{{ data.item.mou }}</td>
             <td class="text-xs-left">
-              {{
-                data.item.client
-              }}
+              {{ data.item.client }}
             </td>
             <td class="text-xs-left">{{ data.item.p_completionDate | formatDate }}</td>
             <td class="text-xs-left">{{ data.item.p_dateModified | formatDate }}</td>
@@ -68,9 +61,9 @@
       </template>
       <v-divider></v-divider>
     </v-card-text>
-<v-layout>
+    <v-layout>
       <v-flex md-2>
-         <h2 class="reports-header">New Finance Report</h2>
+        <h2 class="reports-header">New Finance Report</h2>
         <!-- <ProjectCalendarMonth
           ref="TimeCalendarMonthly"
           @changedMonth="changedMonth"
@@ -125,7 +118,6 @@
       </template>
       <v-divider></v-divider>
     </v-card-text>
-
   </v-card>
 </template>
 
@@ -147,7 +139,7 @@ export default {
   props: {
     title: String,
     selectedItem: Number,
-    selectedItemOld:Number
+    selectedItemOld: Number
   },
   components: {
     Snackbar,
@@ -308,7 +300,9 @@ export default {
           const jsonObject = res.map(JSON.stringify);
           const uniqueSet = new Set(jsonObject);
           const uniqueArray = Array.from(uniqueSet).map(JSON.parse);
-          // console.log("after", uniqueArray);
+          console.log("before", uniqueArray);
+          const result = uniqueArray.filter(x => x.cnt == 7);
+          console.log("after", result);
           vm.projectsListOld = uniqueArray;
           if (vm.$refs.spinner) {
             vm.$refs.spinner.close();
@@ -389,7 +383,7 @@ export default {
         projectId: str.id,
         isNonMinistry: str.client.isNonMinistry
       }));
-       console.log('selected projects:',projects);
+      console.log("selected projects:", projects);
       const pdfValues = [];
       const pdfValuesNonMinistry = [];
       if (projects.length) {
@@ -852,7 +846,7 @@ export default {
               doc.save(pdfValues[0].documentPath);
               this.getAllProjectList();
             }
-                let pageNum =0;
+            let pageNum = 0;
             if (pdfValuesNonMinistry.length > 0) {
               const leftValue = 0;
               const topValue = 20;
@@ -919,7 +913,8 @@ export default {
                     new Date(pdfValuesNonMinistry[i].projectCreated)
                       .toDateString()
                       .substring(4, 15)
-                      .replace(/([^\s]*\s[^\s]*)\s/, "$1,").replace(",",", ") +
+                      .replace(/([^\s]*\s[^\s]*)\s/, "$1,")
+                      .replace(",", ", ") +
                     " between",
                   leftValue + 10,
                   topValue + 80
@@ -1228,13 +1223,17 @@ export default {
                   );
                   // theme: 'striped'|'grid'|'plain'|'css'
                 }
-                   const pCount = doc.internal.getNumberOfPages() - pageNum; //Total Page Number
-             for (let i = 1 + pageNum; i <= pCount + pageNum; i++) {
-                doc.setPage(i);
-                doc.setFontSize(12);
-                doc.text("Page "+(i - pageNum) + " of " + pCount,  leftValue + 85, 20 + topValue + 250);
-              }
-            pageNum = pageNum + pCount;
+                const pCount = doc.internal.getNumberOfPages() - pageNum; //Total Page Number
+                for (let i = 1 + pageNum; i <= pCount + pageNum; i++) {
+                  doc.setPage(i);
+                  doc.setFontSize(12);
+                  doc.text(
+                    "Page " + (i - pageNum) + " of " + pCount,
+                    leftValue + 85,
+                    20 + topValue + 250
+                  );
+                }
+                pageNum = pageNum + pCount;
               }
               doc.save(pdfValuesNonMinistry[0].documentPath);
               this.getAllProjectList();
@@ -1247,23 +1246,33 @@ export default {
       let projects = this.getAllProjectIdsOld();
 
       const vm = this;
-      console.log('before',projects);
-      projects = projects.map(str => ({ projectId: str.key,month:str.startdate,isNonMinistry: str.isnonministry }));
-      console.log('selected projects:',projects);
-         const pdfValues = [];
+      console.log("before", projects);
+      projects = projects.map(str => ({
+        projectId: str.key,
+        month: str.startdate,
+        isNonMinistry: str.isnonministry
+      }));
+      console.log("selected projects:", projects);
+      const result1 = projects.filter(x => x.isNonMinistry == false);
+      const result2 = projects.filter(x => x.isNonMinistry == true);
+      console.log("ministry projects:", result1);
+      console.log("non-ministry projects:", result2);
+      const pdfValues = [];
       const pdfValuesNonMinistry = [];
-      if (projects.length) {
+      if (result1.length) {
         vm.$refs.spinner.open();
         vm.$store
           .dispatch("financeExportOld", {
-            selectedProjects: projects,
+            selectedProjects: result1,
             selectedDate: this.date
           })
           .then(() => {
-             this.selectedProjectsOld = [];
-             this.selectedProjects = [];
+            this.selectedProjectsOld = [];
+            this.selectedProjects = [];
             if (
-              vm.$store.state.financeExportOld[0] ? vm.$store.state.financeExportOld[0].length : 0 === 0
+              vm.$store.state.financeExportOld[0]
+                ? vm.$store.state.financeExportOld[0].length
+                : 0 === 0
             ) {
               vm.$refs.spinner.close();
             }
@@ -1277,8 +1286,8 @@ export default {
               pdfValuesNonMinistry.push(exportData);
               vm.$refs.spinner.close();
             });
-            console.log('pdfValues:',pdfValues);
-            console.log('pdfValuesNonMinistry:',pdfValuesNonMinistry);
+            console.log("pdfValues:", pdfValues);
+            console.log("pdfValuesNonMinistry:", pdfValuesNonMinistry);
             if (pdfValues.length === 0 && pdfValuesNonMinistry.length === 0) {
               return;
             }
@@ -1716,7 +1725,42 @@ export default {
               doc.save(pdfValues[0].documentPath);
               this.getAllProjectList();
             }
-             let pageNum =0;
+
+          });
+      }
+      if (result2.length) {
+        vm.$refs.spinner.open();
+        vm.$store
+          .dispatch("financeExportOld", {
+            selectedProjects: result2,
+            selectedDate: this.date
+          })
+          .then(() => {
+            this.selectedProjectsOld = [];
+            this.selectedProjects = [];
+            if (
+              vm.$store.state.financeExportOld[0]
+                ? vm.$store.state.financeExportOld[0].length
+                : 0 === 0
+            ) {
+              vm.$refs.spinner.close();
+            }
+            vm.$store.state.financeExportOld[0].forEach(entry => {
+              const exportData = JSON.parse(entry.exportData);
+              pdfValues.push(exportData);
+              vm.$refs.spinner.close();
+            });
+            vm.$store.state.financeExportOld[1].forEach(entry => {
+              const exportData = JSON.parse(entry.exportData);
+              pdfValuesNonMinistry.push(exportData);
+              vm.$refs.spinner.close();
+            });
+            console.log("pdfValues:", pdfValues);
+            console.log("pdfValuesNonMinistry:", pdfValuesNonMinistry);
+            if (pdfValues.length === 0 && pdfValuesNonMinistry.length === 0) {
+              return;
+            }
+            let pageNum = 0;
             if (pdfValuesNonMinistry.length > 0) {
               const leftValue = 0;
               const topValue = 20;
@@ -1783,7 +1827,8 @@ export default {
                     new Date(pdfValuesNonMinistry[i].projectCreated)
                       .toDateString()
                       .substring(4, 15)
-                      .replace(/([^\s]*\s[^\s]*)\s/, "$1,").replace(",",", ") +
+                      .replace(/([^\s]*\s[^\s]*)\s/, "$1,")
+                      .replace(",", ", ") +
                     " between",
                   leftValue + 10,
                   topValue + 80
@@ -2093,12 +2138,16 @@ export default {
                   // theme: 'striped'|'grid'|'plain'|'css'
                 }
                 const pCount = doc.internal.getNumberOfPages() - pageNum; //Total Page Number
-             for (let i = 1 + pageNum; i <= pCount + pageNum; i++) {
-                doc.setPage(i);
-                doc.setFontSize(12);
-                doc.text("Page "+(i - pageNum) + " of " + pCount,  leftValue + 85, 20 + topValue + 250);
-              }
-            pageNum = pageNum + pCount;
+                for (let i = 1 + pageNum; i <= pCount + pageNum; i++) {
+                  doc.setPage(i);
+                  doc.setFontSize(12);
+                  doc.text(
+                    "Page " + (i - pageNum) + " of " + pCount,
+                    leftValue + 85,
+                    20 + topValue + 250
+                  );
+                }
+                pageNum = pageNum + pCount;
               }
               doc.save(pdfValuesNonMinistry[0].documentPath);
               this.getAllProjectList();
@@ -2128,7 +2177,7 @@ export default {
   margin-left: 15px;
 }
 .reports-header {
-      font-size: 20px;
-      margin-left: 1.5em;
+  font-size: 20px;
+  margin-left: 1.5em;
 }
 </style>

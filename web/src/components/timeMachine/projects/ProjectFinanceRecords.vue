@@ -61,6 +61,15 @@
                 >DISCHARGE</v-btn
               >
             </td>
+            <td class="text-xs-left">
+              <v-btn
+                small
+                color="btnPrimary"
+                class="white--text intake-table-approve-btn ma-0"
+                @click="regeneratePDF(props.item.t_documentNo)"
+                >NEWTEMP</v-btn
+              >
+            </td>
             <!-- <td class="text-xs-left">{{ props.item.dateModified | formatDate }}</td> -->
           </template>
         </v-data-table>
@@ -108,7 +117,8 @@ export default {
         { text: "PDF Name", value: "recordName", sortable: true },
         { text: "Export Month", value: "pdfdate", sortable: true },
         { text: "Download File", value: "download", sortable: true },
-        { text: "Discharge File", value: "discharge" }
+        { text: "Discharge File", value: "discharge" },
+        { text: "Regenerate File", value: "regenerate" }
       ],
       projectsList: []
     };
@@ -137,6 +147,23 @@ export default {
           vm.$store.dispatch("dischargeFinanceRecords", { documentNo: docNo }).then(res => {
             if (res.length === 0) {
               vm.$refs.snackbar.displaySnackbar("error", "Unable to discharge this record");
+              vm.$refs.spinner.close();
+            } else {
+              this.fetchData();
+            }
+          });
+        }
+      }
+    },
+    async regeneratePDF(docNo) {
+      console.log(docNo);
+      if (await this.$refs.confirm.open("info", "Are you sure to regenerate this pdf?")) {
+        const vm = this;
+        if (docNo.length) {
+          vm.$refs.spinner.open();
+          vm.$store.dispatch("regenerateFinanceRecords", { documentNo: docNo }).then(res => {
+            if (res.length === 0) {
+              vm.$refs.snackbar.displaySnackbar("error", "Unable to regenerate this record");
               vm.$refs.spinner.close();
             } else {
               this.fetchData();
