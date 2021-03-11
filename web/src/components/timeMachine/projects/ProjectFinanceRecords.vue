@@ -44,7 +44,7 @@
                     class="downloadButton"
                     color="grey"
                     v-on="on"
-                    @click="exportToPDF(props.item.t_documentNo)"
+                    @click="regeneratePDF(props.item.isNonMinistry,props.item.t_documentNo)"
                   >
                     <v-icon>save_alt</v-icon>
                   </v-btn>
@@ -108,7 +108,7 @@ export default {
         { text: "PDF Name", value: "recordName", sortable: true },
         { text: "Export Month", value: "pdfdate", sortable: true },
         { text: "Download File", value: "download", sortable: true },
-        { text: "Discharge File", value: "discharge" }
+        { text: "Discharge File", value: "discharge" },
       ],
       projectsList: []
     };
@@ -144,6 +144,23 @@ export default {
           });
         }
       }
+    },
+     async regeneratePDF(isNonMinistry,docNo) {
+        const vm = this;
+        if (docNo.length && isNonMinistry==null) {
+          vm.$refs.spinner.open();
+          vm.$store.dispatch("regenerateFinanceRecords", { documentNo: docNo }).then(res => {
+            if (res.length === 0) {
+              vm.$refs.snackbar.displaySnackbar("error", "Unable to download this record");
+              vm.$refs.spinner.close();
+            } else {
+               vm.exportToPDF(docNo);
+              this.fetchData();
+            }
+          });
+        } else if(docNo.length){
+          vm.exportToPDF(docNo);
+        }
     },
     getvalue(num) {
       const value =
@@ -723,6 +740,7 @@ export default {
             }
             doc.save(pdfValues[0].documentPath);
           }
+          let pageNum=0;
           if (pdfValuesNonMinistry.length > 0) {
             const leftValue = 0;
             const topValue = 20;
@@ -731,6 +749,7 @@ export default {
               putOnlyUsedFonts: true,
               orientation: "portrait"
             });
+
             for (let i = 0; i < pdfValuesNonMinistry.length; i++) {
               // eslint-disable-next-line eqeqeq
               if (i != 0) {
@@ -789,7 +808,7 @@ export default {
                   new Date(pdfValuesNonMinistry[i].projectCreated)
                     .toDateString()
                     .substring(4, 15)
-                    .replace(/([^\s]*\s[^\s]*)\s/, "$1,") +
+                    .replace(/([^\s]*\s[^\s]*)\s/, "$1,").replace(",",", ") +
                   " between",
                 leftValue + 10,
                 topValue + 80
@@ -1087,16 +1106,22 @@ export default {
                 // theme: 'striped'|'grid'|'plain'|'css'
               }
               // if (!(pdfValues[i].userFinanceCodes)) { break; }
-              const pCount = doc.internal.getNumberOfPages(); //Total Page Number
-              for (i = 1; i <= pCount; i++) {
+            const pCount = doc.internal.getNumberOfPages() - pageNum; //Total Page Number
+             for (let i = 1 + pageNum; i <= pCount + pageNum; i++) {
                 doc.setPage(i);
-                let pageCurrent = doc.internal.getCurrentPageInfo().pageNumber; //Current Page
-                console.log('pagecurrent',pageCurrent);
                 doc.setFontSize(12);
-                doc.text("Page "+i+ " of " + pCount,  leftValue + 85, staticTextSettings + topValue + 250);
-
+                doc.text("Page "+(i - pageNum) + " of " + pCount,  leftValue + 85, 20 + topValue + 250);
               }
+            pageNum = pageNum + pCount;
             }
+            // const pCount = doc.internal.getNumberOfPages(); //Total Page Number
+            //  for (let i = 1; i <= pCount; i++) {
+            //     doc.setPage(i);
+            //     let pageCurrent = doc.internal.getCurrentPageInfo().pageNumber; //Current Page
+            //     doc.setFontSize(12);
+            //     doc.text("Page "+i+ " of " + pCount,  leftValue + 85, 20 + topValue + 250);
+
+            //   }
             doc.save(pdfValuesNonMinistry[0].documentPath);
           }
         });
