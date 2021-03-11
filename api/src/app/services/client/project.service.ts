@@ -189,6 +189,9 @@ function uuidv4() {
   });
 }
 function getPDFName(date, count) {
+  return createPDFName(date,count,0);
+}
+function createPDFName(date,count,type) {
   var month = new Array();
   month[0] = "Janu";
   month[1] = "Feb";
@@ -204,7 +207,17 @@ function getPDFName(date, count) {
   month[11] = "Dec";
 
   var newDate = new Date(date);
-  if (count === 1) {
+  if (count === 1 && type) {
+    return (
+      month[newDate.getMonth()] +
+      " - " +
+      newDate.getFullYear() +
+      " - NonMinistry - " +
+      count.toString() +
+      " Project.pdf"
+    );
+  }
+  if (count === 1 && !type) {
     return (
       month[newDate.getMonth()] +
       " - " +
@@ -214,6 +227,16 @@ function getPDFName(date, count) {
       " Project.pdf"
     );
   }
+  if(type)
+  return (
+    month[newDate.getMonth()] +
+    " - " +
+    newDate.getFullYear() +
+    " - NonMinistry - " +
+    count.toString() +
+    " Projects.pdf"
+  );
+  else
   return (
     month[newDate.getMonth()] +
     " - " +
@@ -222,6 +245,9 @@ function getPDFName(date, count) {
     count.toString() +
     " Projects.pdf"
   );
+}
+function getPDFNameNonMinistry(date, count) {
+ return createPDFName(date, count,1);
 }
 function round(x) {
   return Number.parseFloat(Number.parseFloat(x).toFixed(2));
@@ -398,7 +424,6 @@ export const retrieveFinanceData = async (obj, userId) => {
       }
       let billingCount = 1;
       const exportData = {} as IFinanceJSON;
-      console.log('financeExport[index]',financeExport[index]);
       exportData.projectId = financeExport[index].projectId;
       exportData.projectCreated = financeExport[index].projectCreated;
       const repo = projectRepo();
@@ -649,7 +674,6 @@ export const retrieveFinanceData = async (obj, userId) => {
     finalResult[0] = [];
   }
   if(financeExportNonMinistry.length>0){
-    console.log('entering here????')
     const documentNo: string = uuidv4();
 
     const selectedDate = obj.selectedDate.split('-');
@@ -660,7 +684,7 @@ export const retrieveFinanceData = async (obj, userId) => {
     const startDate = new Date(year, month - 1, 1);
     const endDate = new Date(year, month, 0);
   
-    const documentPath: string = getPDFName(startDate, financeExportNonMinistry.length);
+    const documentPath: string = getPDFNameNonMinistry(startDate, financeExportNonMinistry.length);
     let mousSelected = [];
     for (let index = 0; index < financeExportNonMinistry.length; index++) {
       let model = financeExportNonMinistry[index];
