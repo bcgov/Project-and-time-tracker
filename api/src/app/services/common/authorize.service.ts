@@ -105,6 +105,7 @@ const manage_finances = [
   'POST/project/exportedPdfs',
   'POST/project/downloadFinancePdf',
   'POST/project/dischargeFinanceRecord',
+  'POST/project/reGenerateFinanceRecord',
   'POST/project/reinstateFinanceRecord',
   'POST/project/dischargedPdfs',
 ];

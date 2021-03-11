@@ -189,6 +189,9 @@ function uuidv4() {
   });
 }
 function getPDFName(date, count) {
+  return createPDFName(date,count,0);
+}
+function createPDFName(date,count,type) {
   var month = new Array();
   month[0] = "Janu";
   month[1] = "Feb";
@@ -204,7 +207,17 @@ function getPDFName(date, count) {
   month[11] = "Dec";
 
   var newDate = new Date(date);
-  if (count === 1) {
+  if (count === 1 && type) {
+    return (
+      month[newDate.getMonth()] +
+      " - " +
+      newDate.getFullYear() +
+      " - NonMinistry - " +
+      count.toString() +
+      " Project.pdf"
+    );
+  }
+  if (count === 1 && !type) {
     return (
       month[newDate.getMonth()] +
       " - " +
@@ -214,6 +227,16 @@ function getPDFName(date, count) {
       " Project.pdf"
     );
   }
+  if(type)
+  return (
+    month[newDate.getMonth()] +
+    " - " +
+    newDate.getFullYear() +
+    " - NonMinistry - " +
+    count.toString() +
+    " Projects.pdf"
+  );
+  else
   return (
     month[newDate.getMonth()] +
     " - " +
@@ -222,6 +245,9 @@ function getPDFName(date, count) {
     count.toString() +
     " Projects.pdf"
   );
+}
+function getPDFNameNonMinistry(date, count) {
+ return createPDFName(date, count,1);
 }
 function round(x) {
   return Number.parseFloat(Number.parseFloat(x).toFixed(2));
@@ -398,7 +424,6 @@ export const retrieveFinanceData = async (obj, userId) => {
       }
       let billingCount = 1;
       const exportData = {} as IFinanceJSON;
-      console.log('financeExport[index]',financeExport[index]);
       exportData.projectId = financeExport[index].projectId;
       exportData.projectCreated = financeExport[index].projectCreated;
       const repo = projectRepo();
@@ -649,7 +674,6 @@ export const retrieveFinanceData = async (obj, userId) => {
     finalResult[0] = [];
   }
   if(financeExportNonMinistry.length>0){
-    console.log('entering here????')
     const documentNo: string = uuidv4();
 
     const selectedDate = obj.selectedDate.split('-');
@@ -660,7 +684,7 @@ export const retrieveFinanceData = async (obj, userId) => {
     const startDate = new Date(year, month - 1, 1);
     const endDate = new Date(year, month, 0);
   
-    const documentPath: string = getPDFName(startDate, financeExportNonMinistry.length);
+    const documentPath: string = getPDFNameNonMinistry(startDate, financeExportNonMinistry.length);
     let mousSelected = [];
     for (let index = 0; index < financeExportNonMinistry.length; index++) {
       let model = financeExportNonMinistry[index];
@@ -967,6 +991,40 @@ export const dischargeFinanceRecord = async (obj) => {
   }
 
   return result;
+};
+export const reGenerateFinanceRecord = async (obj) => {
+  const frepo = financeRepo();
+  let financeResult = await frepo
+    .createQueryBuilder("f")
+    .where('f."documentNo" = :documentId ', { documentId: obj.documentNo })
+    .getMany();
+    
+    const repo = timesheetRepo();
+    const res = await repo
+    .createQueryBuilder("t")
+    .select(['p.id as key','cl.isNonMinistry as isNonMinistry'])
+    .addSelect('CASE WHEN cl.nonMinistryName IS null THEN mi.ministryName ELSE cl.nonMinistryName END','client')
+    .innerJoin('t.timesheetEntries', 'te')
+    .leftJoin(FinanceExport, 'fe', 't."documentNo" = fe.documentNo')
+    .innerJoin('t.project', 'p')
+    .innerJoin('p.mou', 'mo')
+    .innerJoin('p.client', 'cl')
+    .leftJoin('cl.ministry', 'mi')
+    .where('fe."documentNo" = :documentId ', { documentId: obj.documentNo })
+    .getRawMany();
+    
+    for (let index = 0; index < financeResult.length; index++) {
+    if(res[0].isnonministry){
+    let val = "-NonMinistry";
+    let position =11;
+    let oldPath =financeResult[index].documentPath;
+    financeResult[index].documentPath =[financeResult[index].documentPath.slice(0, position), val, financeResult[index].documentPath.slice(position)].join('');
+    financeResult[index].exportData = financeResult[index].exportData.replace(oldPath,financeResult[index].documentPath);
+    }
+    financeResult[index].isNonMinistry =res[0].isnonministry;
+    await financeRepo().save(financeResult[index]);
+    }
+  return financeResult;
 };
 export const reinstateFinanceRecord = async (obj) => {
   const repo = financeRepo();
@@ -1376,6 +1434,7 @@ export const retrieveExportedPdfs = async (obj) => {
   const res = await repo
     .createQueryBuilder("t")
     .select(["t.documentNo", "t.documentPath", "t.selectedMous"])
+    .addSelect('CASE WHEN t.isNonMinistry IS null THEN null ELSE t.isNonMinistry END','isNonMinistry')
     .addSelect("SUM(t.totalAmount)", "sum")
     .where(
       "(t.monthStartDate >= :start and t.monthStartDate <= :end) and (t.isDischarged = :discharged  OR t.isDischarged IS NULL)",
@@ -1388,8 +1447,9 @@ export const retrieveExportedPdfs = async (obj) => {
     .groupBy("t.documentNo")
     .addGroupBy("t.documentPath")
     .addGroupBy("t.selectedMous")
+    .addGroupBy("t.isNonMinistry")
     .getRawMany();
-
+  
   return res;
 };
 

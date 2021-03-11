@@ -15,6 +15,7 @@ import {
   retrieveFinanceData,
   dischargeFinanceRecord,
   reinstateFinanceRecord,
+  reGenerateFinanceRecord,
   getProjectCategories
 } from '../../../services/client/project.service';
 import { IProject } from '../../../models/interfaces/i-project';
@@ -104,6 +105,16 @@ export const dischargeFinancePdf = async (ctx: Koa.Context) => {
     ctx.throw(err.message);
   }
 };
+export const reGenerateFinancePdf = async (ctx: Koa.Context) => {
+  try {
+    const auth = ctx.state.auth as IAuth;
+    const obj = ctx.request.body as any;
+    ctx.body = await reGenerateFinanceRecord(obj);
+  } catch (err) {
+    ctx.throw(err.message);
+  }
+};
+
 export const reinstateFinancePdf = async (ctx: Koa.Context) => {
   try {
     const auth = ctx.state.auth as IAuth;
@@ -308,6 +319,7 @@ router.post('/exportedPdfs', authorize, exportedPdfs);
 router.post('/dischargedPdfs', authorize, dischargedPdfs);
 router.post('/downloadFinancePdf', authorize, downloadFinancePdf);
 router.post('/dischargeFinanceRecord', authorize, dischargeFinancePdf);
+router.post('/reGenerateFinanceRecord', authorize, reGenerateFinancePdf);
 router.post('/reinstateFinanceRecord', authorize, reinstateFinancePdf);
 
 router.post('/finance', authorize, getfinanceExport);
