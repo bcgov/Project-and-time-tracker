@@ -992,6 +992,33 @@ export const dischargeFinanceRecord = async (obj) => {
 
   return result;
 };
+export const reGenerateFinanceRecord = async (obj) => {
+  const frepo = financeRepo();
+  let financeResult = await frepo
+    .createQueryBuilder("f")
+    .where('f."documentNo" = :documentId ', { documentId: obj.documentNo })
+    .getMany();
+    
+    const repo = timesheetRepo();
+    const res = await repo
+    .createQueryBuilder("t")
+    .select(['p.id as key','cl.isNonMinistry as isNonMinistry'])
+    .addSelect('CASE WHEN cl.nonMinistryName IS null THEN mi.ministryName ELSE cl.nonMinistryName END','client')
+    .innerJoin('t.timesheetEntries', 'te')
+    .leftJoin(FinanceExport, 'fe', 't."documentNo" = fe.documentNo')
+    .innerJoin('t.project', 'p')
+    .innerJoin('p.mou', 'mo')
+    .innerJoin('p.client', 'cl')
+    .leftJoin('cl.ministry', 'mi')
+    .where('fe."documentNo" = :documentId ', { documentId: obj.documentNo })
+    .getRawMany();
+    
+    for (let index = 0; index < financeResult.length; index++) {
+    financeResult[index].isNonMinistry =res[0].isnonministry;
+    await financeRepo().save(financeResult[index]);
+    }
+  return financeResult;
+};
 export const reinstateFinanceRecord = async (obj) => {
   const repo = financeRepo();
   const result = await repo
@@ -1400,6 +1427,7 @@ export const retrieveExportedPdfs = async (obj) => {
   const res = await repo
     .createQueryBuilder("t")
     .select(["t.documentNo", "t.documentPath", "t.selectedMous"])
+    .addSelect('CASE WHEN t.isNonMinistry IS null THEN null ELSE t.isNonMinistry END','isNonMinistry')
     .addSelect("SUM(t.totalAmount)", "sum")
     .where(
       "(t.monthStartDate >= :start and t.monthStartDate <= :end) and (t.isDischarged = :discharged  OR t.isDischarged IS NULL)",
@@ -1412,8 +1440,9 @@ export const retrieveExportedPdfs = async (obj) => {
     .groupBy("t.documentNo")
     .addGroupBy("t.documentPath")
     .addGroupBy("t.selectedMous")
+    .addGroupBy("t.isNonMinistry")
     .getRawMany();
-
+  
   return res;
 };
 

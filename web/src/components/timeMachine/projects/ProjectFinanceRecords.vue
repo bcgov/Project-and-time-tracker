@@ -44,7 +44,7 @@
                     class="downloadButton"
                     color="grey"
                     v-on="on"
-                    @click="exportToPDF(props.item.t_documentNo)"
+                    @click="regeneratePDF(props.item.isNonMinistry,props.item.t_documentNo)"
                   >
                     <v-icon>save_alt</v-icon>
                   </v-btn>
@@ -108,7 +108,7 @@ export default {
         { text: "PDF Name", value: "recordName", sortable: true },
         { text: "Export Month", value: "pdfdate", sortable: true },
         { text: "Download File", value: "download", sortable: true },
-        { text: "Discharge File", value: "discharge" }
+        { text: "Discharge File", value: "discharge" },
       ],
       projectsList: []
     };
@@ -144,6 +144,23 @@ export default {
           });
         }
       }
+    },
+     async regeneratePDF(isNonMinistry,docNo) {
+        const vm = this;
+        if (docNo.length && isNonMinistry==null) {
+          vm.$refs.spinner.open();
+          vm.$store.dispatch("regenerateFinanceRecords", { documentNo: docNo }).then(res => {
+            if (res.length === 0) {
+              vm.$refs.snackbar.displaySnackbar("error", "Unable to download this record");
+              vm.$refs.spinner.close();
+            } else {
+               vm.exportToPDF(docNo);
+              this.fetchData();
+            }
+          });
+        } else if(docNo.length){
+          vm.exportToPDF(docNo);
+        }
     },
     getvalue(num) {
       const value =
