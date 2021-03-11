@@ -1014,6 +1014,13 @@ export const reGenerateFinanceRecord = async (obj) => {
     .getRawMany();
     
     for (let index = 0; index < financeResult.length; index++) {
+    if(res[0].isnonministry){
+    let val = "-NonMinistry";
+    let position =11;
+    let oldPath =financeResult[index].documentPath;
+    financeResult[index].documentPath =[financeResult[index].documentPath.slice(0, position), val, financeResult[index].documentPath.slice(position)].join('');
+    financeResult[index].exportData = financeResult[index].exportData.replace(oldPath,financeResult[index].documentPath);
+    }
     financeResult[index].isNonMinistry =res[0].isnonministry;
     await financeRepo().save(financeResult[index]);
     }
