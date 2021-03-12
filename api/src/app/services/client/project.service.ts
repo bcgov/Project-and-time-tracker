@@ -188,10 +188,10 @@ function uuidv4() {
     return v.toString(16);
   });
 }
-async function getPDFName(date, count) {
-  return await createPDFName(date,count,0);
+function getPDFName(date, count) {
+  return createPDFName(date,count,0);
 }
-function createPDFName(date, count,type) {
+function createPDFName(date,count,type) {
   var month = new Array();
   month[0] = "Janu";
   month[1] = "Feb";
@@ -246,9 +246,9 @@ function createPDFName(date, count,type) {
     " Projects.pdf"
   );
 }
-async function getPDFNameNonMinistry(date, count) {
-  return await createPDFName(date, count,1);
- }
+function getPDFNameNonMinistry(date, count) {
+ return createPDFName(date, count,1);
+}
 function round(x) {
   return Number.parseFloat(Number.parseFloat(x).toFixed(2));
 }
@@ -1548,8 +1548,15 @@ export const reGenerateFinanceRecord = async (obj) => {
     
     console.log('project',res[0].isnonministry);
     for (let index = 0; index < financeResult.length; index++) {
-    financeResult[index].isNonMinistry =res[0].isnonministry;
-    await financeRepo().save(financeResult[index]);
+      if(res[0].isnonministry){
+        let val = "-NonMinistry";
+        let position =11;
+        let oldPath =financeResult[index].documentPath;
+        financeResult[index].documentPath =[financeResult[index].documentPath.slice(0, position), val, financeResult[index].documentPath.slice(position)].join('');
+        financeResult[index].exportData = financeResult[index].exportData.replace(oldPath,financeResult[index].documentPath);
+        }
+        financeResult[index].isNonMinistry =res[0].isnonministry;
+        await financeRepo().save(financeResult[index]);
     }
   return financeResult;
 };
@@ -2000,6 +2007,7 @@ export const retrieveExportedPdfs = async (obj) => {
   const res = await repo
     .createQueryBuilder("t")
     .select(["t.documentNo", "t.documentPath", "t.selectedMous"])
+    .addSelect('CASE WHEN t.isNonMinistry IS null THEN null ELSE t.isNonMinistry END','isNonMinistry')
     .addSelect("SUM(t.totalAmount)", "sum")
     .where(
       "(t.monthStartDate >= :start and t.monthStartDate <= :end) and (t.isDischarged = :discharged  OR t.isDischarged IS NULL)",
@@ -2012,8 +2020,9 @@ export const retrieveExportedPdfs = async (obj) => {
     .groupBy("t.documentNo")
     .addGroupBy("t.documentPath")
     .addGroupBy("t.selectedMous")
+    .addGroupBy("t.isNonMinistry")
     .getRawMany();
-
+  
   return res;
 };
 

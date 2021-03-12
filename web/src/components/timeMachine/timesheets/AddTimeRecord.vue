@@ -432,7 +432,7 @@ export default {
       }
       // this.selectWeeklyProject(this.form.project, this.form.mou, this.form.rfx);
     },
-    onBatchEntry() {
+     onBatchEntry() {
       if (this.timesheet.length > 1) {
         this.timesheet = this.timesheet.filter(
           item => item.project !== '' && item.project !== undefined,
@@ -442,6 +442,7 @@ export default {
         }
       }
       this.selectWeeklyProject();
+      this.onChangeUser(this.form.userId);
     },
     onWeekEntry() {
       if (this.weeklyProjectIndex !== 0 && this.timesheet[this.weeklyProjectIndex].deleted) {

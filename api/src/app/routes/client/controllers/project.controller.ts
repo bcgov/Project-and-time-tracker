@@ -17,8 +17,8 @@ import {
   retrieveFinanceDataOld,
   dischargeFinanceRecord,
   reinstateFinanceRecord,
-  getProjectCategories,
-  reGenerateFinanceRecord
+  reGenerateFinanceRecord,
+  getProjectCategories
 } from '../../../services/client/project.service';
 import { IProject } from '../../../models/interfaces/i-project';
 import { retrieveClientByProjectId } from '../../../services/client/client.service';

@@ -846,7 +846,7 @@ export default {
               doc.save(pdfValues[0].documentPath);
               this.getAllProjectList();
             }
-            let pageNum = 0;
+            let pageNum =0;
             if (pdfValuesNonMinistry.length > 0) {
               const leftValue = 0;
               const topValue = 20;
@@ -913,8 +913,7 @@ export default {
                     new Date(pdfValuesNonMinistry[i].projectCreated)
                       .toDateString()
                       .substring(4, 15)
-                      .replace(/([^\s]*\s[^\s]*)\s/, "$1,")
-                      .replace(",", ", ") +
+                      .replace(/([^\s]*\s[^\s]*)\s/, "$1,").replace(",",", ") +
                     " between",
                   leftValue + 10,
                   topValue + 80
@@ -1223,17 +1222,13 @@ export default {
                   );
                   // theme: 'striped'|'grid'|'plain'|'css'
                 }
-                const pCount = doc.internal.getNumberOfPages() - pageNum; //Total Page Number
-                for (let i = 1 + pageNum; i <= pCount + pageNum; i++) {
-                  doc.setPage(i);
-                  doc.setFontSize(12);
-                  doc.text(
-                    "Page " + (i - pageNum) + " of " + pCount,
-                    leftValue + 85,
-                    20 + topValue + 250
-                  );
-                }
-                pageNum = pageNum + pCount;
+                  const pCount = doc.internal.getNumberOfPages() - pageNum; //Total Page Number
+             for (let i = 1 + pageNum; i <= pCount + pageNum; i++) {
+                doc.setPage(i);
+                doc.setFontSize(12);
+                doc.text("Page "+(i - pageNum) + " of " + pCount,  leftValue + 85, 20 + topValue + 250);
+              }
+            pageNum = pageNum + pCount;
               }
               doc.save(pdfValuesNonMinistry[0].documentPath);
               this.getAllProjectList();
