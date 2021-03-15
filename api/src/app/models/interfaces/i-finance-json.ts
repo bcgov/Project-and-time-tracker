@@ -11,6 +11,18 @@ export interface IUserFinanceCodes {
   type: string;
   amount: number;
 }
+
+export interface IClientAddress {
+  leadUserName:string;
+  orgName: string;
+  phoneNumber: string;
+  addressLine1: string;
+  addressLine2: string;
+  city: string;
+  province: string;
+  country: string;
+  postalCode: string;
+}
 export interface IFinanceJSON {
   id: string;
   documentNo: string;
@@ -43,4 +55,5 @@ export interface IFinanceJSON {
   financeName: string;
   details: IFinanceExportDetail[];
   userFinanceCodes: IUserFinanceCodes[];
+  clientAddress: IClientAddress[];
 }

@@ -300,9 +300,7 @@ export default {
           const jsonObject = res.map(JSON.stringify);
           const uniqueSet = new Set(jsonObject);
           const uniqueArray = Array.from(uniqueSet).map(JSON.parse);
-          console.log("before", uniqueArray);
           const result = uniqueArray.filter(x => x.cnt == 7);
-          console.log("after", result);
           vm.projectsListOld = uniqueArray;
           if (vm.$refs.spinner) {
             vm.$refs.spinner.close();
@@ -383,7 +381,6 @@ export default {
         projectId: str.id,
         isNonMinistry: str.client.isNonMinistry
       }));
-      console.log("selected projects:", projects);
       const pdfValues = [];
       const pdfValuesNonMinistry = [];
       if (projects.length) {
@@ -846,7 +843,7 @@ export default {
               doc.save(pdfValues[0].documentPath);
               this.getAllProjectList();
             }
-            let pageNum =0;
+            let pageNum = 0;
             if (pdfValuesNonMinistry.length > 0) {
               const leftValue = 0;
               const topValue = 20;
@@ -899,22 +896,37 @@ export default {
                 doc.text("IN ACCOUNT WITH", leftValue + 10, topValue + 50);
                 doc.setFontSize(12);
                 doc.setFontStyle("normal");
+                if (pdfValuesNonMinistry[i].clientAddress) {
+                  doc.text(
+                 (pdfValuesNonMinistry[i].clientAddress[0].orgName?pdfValuesNonMinistry[i].clientAddress[0].orgName:"").concat(pdfValuesNonMinistry[i].clientAddress[0].addressLine1?(", ").concat(pdfValuesNonMinistry[i].clientAddress[0].addressLine1?pdfValuesNonMinistry[i].clientAddress[0].addressLine1:""):""),
+                  leftValue + 10,
+                  topValue + 58
+                );
+
                 doc.text(
-                  pdfValuesNonMinistry[i].contact ? pdfValuesNonMinistry[i].contact : "",
+                 (pdfValuesNonMinistry[i].clientAddress[0].addressLine2?pdfValuesNonMinistry[i].clientAddress[0].addressLine2:"").concat(pdfValuesNonMinistry[i].clientAddress[0].city?(", ").concat(pdfValuesNonMinistry[i].clientAddress[0].city?pdfValuesNonMinistry[i].clientAddress[0].city:""):""),
+                  leftValue + 10,
+                  topValue + 62
+                );
+
+                doc.text(
+                  (pdfValuesNonMinistry[i].clientAddress[0].province?pdfValuesNonMinistry[i].clientAddress[0].province:"").concat(pdfValuesNonMinistry[i].clientAddress[0].postalCode?(", ").concat(pdfValuesNonMinistry[i].clientAddress[0].postalCode?pdfValuesNonMinistry[i].clientAddress[0].postalCode:""):""),
+                  leftValue + 10,
+                  topValue + 66
+                );
+                doc.text(
+                  pdfValuesNonMinistry[i].clientAddress[0].leadUserName
+                    ? pdfValuesNonMinistry[i].clientAddress[0].leadUserName
+                    : "",
                   leftValue + 10,
                   topValue + 54
                 );
-
+                }
                 doc.setFontSize(11);
                 doc.text(
                   "As per Procurement Service Agreement " +
                     pdfValuesNonMinistry[i].mouName +
-                    " dated " +
-                    new Date(pdfValuesNonMinistry[i].projectCreated)
-                      .toDateString()
-                      .substring(4, 15)
-                      .replace(/([^\s]*\s[^\s]*)\s/, "$1,").replace(",",", ") +
-                    " between",
+                    " dated between ",
                   leftValue + 10,
                   topValue + 80
                 );
@@ -925,11 +937,6 @@ export default {
                   topValue + 85
                 );
 
-                doc.text(
-                  "Specifically we are removing the part between the parentheses",
-                  leftValue + 10,
-                  topValue + 90
-                );
                 doc.text("Time:", leftValue + 145, topValue + 100);
                 doc.text("Expense:", leftValue + 145, topValue + 105);
                 doc.text(
@@ -1222,13 +1229,17 @@ export default {
                   );
                   // theme: 'striped'|'grid'|'plain'|'css'
                 }
-                  const pCount = doc.internal.getNumberOfPages() - pageNum; //Total Page Number
-             for (let i = 1 + pageNum; i <= pCount + pageNum; i++) {
-                doc.setPage(i);
-                doc.setFontSize(12);
-                doc.text("Page "+(i - pageNum) + " of " + pCount,  leftValue + 85, 20 + topValue + 250);
-              }
-            pageNum = pageNum + pCount;
+                const pCount = doc.internal.getNumberOfPages() - pageNum; //Total Page Number
+                for (let i = 1 + pageNum; i <= pCount + pageNum; i++) {
+                  doc.setPage(i);
+                  doc.setFontSize(12);
+                  doc.text(
+                    "Page " + (i - pageNum) + " of " + pCount,
+                    leftValue + 85,
+                    20 + topValue + 250
+                  );
+                }
+                pageNum = pageNum + pCount;
               }
               doc.save(pdfValuesNonMinistry[0].documentPath);
               this.getAllProjectList();
@@ -1241,17 +1252,13 @@ export default {
       let projects = this.getAllProjectIdsOld();
 
       const vm = this;
-      console.log("before", projects);
       projects = projects.map(str => ({
         projectId: str.key,
         month: str.startdate,
         isNonMinistry: str.isnonministry
       }));
-      console.log("selected projects:", projects);
       const result1 = projects.filter(x => x.isNonMinistry == false);
       const result2 = projects.filter(x => x.isNonMinistry == true);
-      console.log("ministry projects:", result1);
-      console.log("non-ministry projects:", result2);
       const pdfValues = [];
       const pdfValuesNonMinistry = [];
       if (result1.length) {
@@ -1281,8 +1288,6 @@ export default {
               pdfValuesNonMinistry.push(exportData);
               vm.$refs.spinner.close();
             });
-            console.log("pdfValues:", pdfValues);
-            console.log("pdfValuesNonMinistry:", pdfValuesNonMinistry);
             if (pdfValues.length === 0 && pdfValuesNonMinistry.length === 0) {
               return;
             }
@@ -1602,7 +1607,6 @@ export default {
                 // eslint-disable-next-line no-unused-vars
                 const billTotalPosition = billTable.autoTable.previous;
                 // eslint-disable-next-line no-console
-                console.log("pos:", billTotalPosition);
 
                 doc.setFontStyle("bold");
                 const finalTable = doc.autoTable({
@@ -1720,7 +1724,6 @@ export default {
               doc.save(pdfValues[0].documentPath);
               this.getAllProjectList();
             }
-
           });
       }
       if (result2.length) {
@@ -1750,8 +1753,6 @@ export default {
               pdfValuesNonMinistry.push(exportData);
               vm.$refs.spinner.close();
             });
-            console.log("pdfValues:", pdfValues);
-            console.log("pdfValuesNonMinistry:", pdfValuesNonMinistry);
             if (pdfValues.length === 0 && pdfValuesNonMinistry.length === 0) {
               return;
             }
@@ -1806,25 +1807,40 @@ export default {
                 doc.setFontStyle("bold");
                 // doc.text('Document # ', leftStartCoordinate, 20);
                 doc.text("IN ACCOUNT WITH", leftValue + 10, topValue + 50);
+
                 doc.setFontSize(12);
                 doc.setFontStyle("normal");
+                if (pdfValuesNonMinistry[i].clientAddress) {
+                   doc.text(
+                 (pdfValuesNonMinistry[i].clientAddress[0].orgName?pdfValuesNonMinistry[i].clientAddress[0].orgName:"").concat(pdfValuesNonMinistry[i].clientAddress[0].addressLine1?(", ").concat(pdfValuesNonMinistry[i].clientAddress[0].addressLine1?pdfValuesNonMinistry[i].clientAddress[0].addressLine1:""):""),
+                  leftValue + 10,
+                  topValue + 58
+                );
+
                 doc.text(
-                  pdfValuesNonMinistry[i].contact ? pdfValuesNonMinistry[i].contact : "",
+                 (pdfValuesNonMinistry[i].clientAddress[0].addressLine2?pdfValuesNonMinistry[i].clientAddress[0].addressLine2:"").concat(pdfValuesNonMinistry[i].clientAddress[0].city?(", ").concat(pdfValuesNonMinistry[i].clientAddress[0].city?pdfValuesNonMinistry[i].clientAddress[0].city:""):""),
+                  leftValue + 10,
+                  topValue + 62
+                );
+
+                doc.text(
+                  (pdfValuesNonMinistry[i].clientAddress[0].province?pdfValuesNonMinistry[i].clientAddress[0].province:"").concat(pdfValuesNonMinistry[i].clientAddress[0].postalCode?(", ").concat(pdfValuesNonMinistry[i].clientAddress[0].postalCode?pdfValuesNonMinistry[i].clientAddress[0].postalCode:""):""),
+                  leftValue + 10,
+                  topValue + 66
+                );
+                doc.text(
+                  pdfValuesNonMinistry[i].clientAddress[0].leadUserName
+                    ? pdfValuesNonMinistry[i].clientAddress[0].leadUserName
+                    : "",
                   leftValue + 10,
                   topValue + 54
                 );
-
+                }
                 doc.setFontSize(11);
                 doc.text(
                   "As per Procurement Service Agreement " +
                     pdfValuesNonMinistry[i].mouName +
-                    " dated " +
-                    new Date(pdfValuesNonMinistry[i].projectCreated)
-                      .toDateString()
-                      .substring(4, 15)
-                      .replace(/([^\s]*\s[^\s]*)\s/, "$1,")
-                      .replace(",", ", ") +
-                    " between",
+                    " dated between ",
                   leftValue + 10,
                   topValue + 80
                 );
@@ -1833,12 +1849,6 @@ export default {
                   pdfValuesNonMinistry[i].contact ? pdfValuesNonMinistry[i].contact : "",
                   leftValue + 65,
                   topValue + 85
-                );
-
-                doc.text(
-                  "Specifically we are removing the part between the parentheses",
-                  leftValue + 10,
-                  topValue + 90
                 );
                 doc.text("Time:", leftValue + 145, topValue + 100);
                 doc.text("Expense:", leftValue + 145, topValue + 105);

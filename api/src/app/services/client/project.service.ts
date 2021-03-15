@@ -21,6 +21,7 @@ import { IFinanceExportDetail } from "../../models/interfaces/i-finance-export-d
 import {
   IFinanceJSON,
   IUserFinanceCodes,
+  IClientAddress,
 } from "../../models/interfaces/i-finance-json";
 import { validateFinanceCodes } from "./client.service";
 
@@ -189,9 +190,9 @@ function uuidv4() {
   });
 }
 function getPDFName(date, count) {
-  return createPDFName(date,count,0);
+  return createPDFName(date, count, 0);
 }
-function createPDFName(date,count,type) {
+function createPDFName(date, count, type) {
   var month = new Array();
   month[0] = "Janu";
   month[1] = "Feb";
@@ -227,27 +228,27 @@ function createPDFName(date,count,type) {
       " Project.pdf"
     );
   }
-  if(type)
-  return (
-    month[newDate.getMonth()] +
-    " - " +
-    newDate.getFullYear() +
-    " - NonMinistry - " +
-    count.toString() +
-    " Projects.pdf"
-  );
+  if (type)
+    return (
+      month[newDate.getMonth()] +
+      " - " +
+      newDate.getFullYear() +
+      " - NonMinistry - " +
+      count.toString() +
+      " Projects.pdf"
+    );
   else
-  return (
-    month[newDate.getMonth()] +
-    " - " +
-    newDate.getFullYear() +
-    " - " +
-    count.toString() +
-    " Projects.pdf"
-  );
+    return (
+      month[newDate.getMonth()] +
+      " - " +
+      newDate.getFullYear() +
+      " - " +
+      count.toString() +
+      " Projects.pdf"
+    );
 }
 function getPDFNameNonMinistry(date, count) {
- return createPDFName(date, count,1);
+  return createPDFName(date, count, 1);
 }
 function round(x) {
   return Number.parseFloat(Number.parseFloat(x).toFixed(2));
@@ -403,19 +404,22 @@ export const retrieveFinanceData = async (obj, userId) => {
   const nonMinistryProjects = splitupProjects[1];
   const financeExport = ministryProjects as IFinanceExport[];
   const financeExportNonMinistry = nonMinistryProjects as IFinanceExport[];
-  const finalResult=[];
-  if(financeExport.length>0){
+  const finalResult = [];
+  if (financeExport.length > 0) {
     const documentNo: string = uuidv4();
 
-    const selectedDate = obj.selectedDate.split('-');
-  
+    const selectedDate = obj.selectedDate.split("-");
+
     const year = parseInt(selectedDate[0], 10);
     const month = parseInt(selectedDate[1], 10);
-  
+
     const startDate = new Date(year, month - 1, 1);
     const endDate = new Date(year, month, 0);
-  
-    const documentPath: string = await getPDFName(startDate, financeExport.length);
+
+    const documentPath: string = await getPDFName(
+      startDate,
+      financeExport.length
+    );
     let mousSelected = [];
     for (let index = 0; index < financeExport.length; index++) {
       let model = financeExport[index];
@@ -428,89 +432,105 @@ export const retrieveFinanceData = async (obj, userId) => {
       exportData.projectCreated = financeExport[index].projectCreated;
       const repo = projectRepo();
       const res = await repo
-        .createQueryBuilder('p')
-        .innerJoin('p.client', 'c')
-        .innerJoin('p.mou', 'm')
+        .createQueryBuilder("p")
+        .innerJoin("p.client", "c")
+        .innerJoin("p.mou", "m")
         .select([
-          'p.id',
-          'p.projectName',
-          'p.leadUserId',
-          'p.teamWideProject',
-          'c.responsibilityCenter',
-          'p.mouAmount',
-          'c.clientNo',
-          'c.id',
-          'c.stob',
-          'c.projectCode',
-          'c.serviceCenter',
-          'm.id',
-          'm.name',
-          'm.billingCount',
-          'p.dateCreated'
+          "p.id",
+          "p.projectName",
+          "p.leadUserId",
+          "p.teamWideProject",
+          "c.responsibilityCenter",
+          "p.mouAmount",
+          "c.clientNo",
+          "c.id",
+          "c.stob",
+          "c.projectCode",
+          "c.serviceCenter",
+          "m.id",
+          "m.name",
+          "m.billingCount",
+          "p.dateCreated",
         ])
-        .where('p.id = :projectId', { projectId: exportData.projectId })
+        .where("p.id = :projectId", { projectId: exportData.projectId })
         .getOne();
-  
-      exportData.leadUser = '';
-      exportData.financeName = '';
+
+      exportData.leadUser = "";
+      exportData.financeName = "";
       exportData.projectCreated = res.dateCreated;
       if (res.teamWideProject) {
-        exportData.leadUser = 'Procurement and Supply Division';
+        exportData.leadUser = "Procurement and Supply Division";
       } else if (res.leadUserId) {
         const repoUser = userRepo();
         const leadUser = await repoUser
-          .createQueryBuilder('u')
-          .innerJoinAndSelect('u.contact', 'c')
-          .where('u.id = :projectLeadId', { projectLeadId: res.leadUserId })
+          .createQueryBuilder("u")
+          .innerJoinAndSelect("u.contact", "c")
+          .where("u.id = :projectLeadId", { projectLeadId: res.leadUserId })
           .getOne();
         if (leadUser) {
           const repo = contactRepo();
           const contactRes = await repo
-            .createQueryBuilder('c')
-            .leftJoin('c.financeCodes', 'f')
-            .select(['c.fullName', 'f.financeName'])
+            .createQueryBuilder("c")
+            .leftJoin("c.financeCodes", "f")
+            .select(["c.fullName", "f.financeName"])
             .where('c."id" = :contactId', {
               contactId: leadUser.contact.id,
             })
             .getOne();
-  
+
           if (contactRes) {
             exportData.leadUser = contactRes.fullName;
             if (contactRes.financeCodes)
               exportData.financeName = contactRes.financeCodes.financeName;
           }
+          let userClientAddress = [] as IClientAddress[];
+          let leadClientAddress = {} as IClientAddress;
+          leadClientAddress.leadUserName = leadUser.contact.fullName;
+          leadClientAddress.orgName = leadUser.contact.orgName;
+          leadClientAddress.addressLine1 = leadUser.contact.addressLine1;
+          leadClientAddress.addressLine2 = leadUser.contact.addressLine2;
+          leadClientAddress.city = leadUser.contact.city;
+          leadClientAddress.country = leadUser.contact.country;
+          leadClientAddress.phoneNumber = leadUser.contact.phoneNumber;
+          leadClientAddress.postalCode = leadUser.contact.postalCode;
+          leadClientAddress.province = leadUser.contact.province;
+          userClientAddress.push(leadClientAddress);
+          exportData.clientAddress = userClientAddress;
         }
       } else {
-        exportData.leadUser = 'Procurement and Supply Division';
+        exportData.leadUser = "Procurement and Supply Division";
       }
-  
+
       // Get previous Bill amount
       const financeRep = financeRepo();
-  
+
       const prevBills = await financeRep
-        .createQueryBuilder('f')
-        .select(['f.projectId'])
-        .addSelect('SUM(f.totalAmount)', 'sum')
-        .where('f.projectId = :projectId  and f.isDischarged != :discharged', {
+        .createQueryBuilder("f")
+        .select(["f.projectId"])
+        .addSelect("SUM(f.totalAmount)", "sum")
+        .where("f.projectId = :projectId  and f.isDischarged != :discharged", {
           projectId: exportData.projectId,
           discharged: true,
         })
-        .groupBy('f.projectId ')
+        .groupBy("f.projectId ")
         .getRawOne();
-  
+
       const contactproRepo = projectContactRepo();
       const contactRes = await contactproRepo
-        .createQueryBuilder('pc')
-        .leftJoinAndSelect('pc.project', 'p')
-        .leftJoinAndSelect('pc.contact', 'c')
-        .where('c."contactType" = :contactType and pc."projectId" = :projectId', {
-          contactType: 'clientfinance',
-          projectId: exportData.projectId,
-        })
+        .createQueryBuilder("pc")
+        .leftJoinAndSelect("pc.project", "p")
+        .leftJoinAndSelect("pc.contact", "c")
+        .where(
+          'c."contactType" = :contactType and pc."projectId" = :projectId',
+          {
+            contactType: "clientfinance",
+            projectId: exportData.projectId,
+          }
+        )
         .getOne();
       exportData.contact = contactRes.contact.fullName;
       exportData.projectName = res.projectName;
-  
+
       let details = [] as IFinanceExportDetail[];
       let userFinanceCodes = [] as IUserFinanceCodes[];
       let projectFinance = {} as IUserFinanceCodes;
@@ -524,9 +544,9 @@ export const retrieveFinanceData = async (obj, userId) => {
       if (res.mou) {
         billingCount = res.mou.billingCount ? res.mou.billingCount + 1 : 1;
       }
-      projectFinance.type = 'Project';
+      projectFinance.type = "Project";
       userFinanceCodes.push(projectFinance);
-  
+
       exportData.documentPath = documentPath;
       exportData.documentNo = documentNo;
       exportData.lineDesc = documentNo;
@@ -536,10 +556,10 @@ export const retrieveFinanceData = async (obj, userId) => {
       mousSelected.push(exportData.mouName);
       exportData.mouEstimate = res.mouAmount;
       const timeSheet = await timesheetRepo()
-        .createQueryBuilder('t')
-        .innerJoinAndSelect('t.timesheetEntries', 'te')
-        .innerJoinAndSelect('t.user', 'u')
-        .innerJoinAndSelect('u.contact', 'c')
+        .createQueryBuilder("t")
+        .innerJoinAndSelect("t.timesheetEntries", "te")
+        .innerJoinAndSelect("t.user", "u")
+        .innerJoinAndSelect("u.contact", "c")
         .where(
           't."projectId" = :projectId and (t.is_locked = :is_locked or t.is_locked IS NULL) and (t.startDate >= :start and t.startDate <= :end) and t.documentNo is NULL',
           {
@@ -553,7 +573,7 @@ export const retrieveFinanceData = async (obj, userId) => {
       if (timeSheet.length == 0) {
         continue;
       }
-  
+
       for (
         let timeSheetIndex = 0;
         timeSheetIndex < timeSheet.length;
@@ -564,7 +584,8 @@ export const retrieveFinanceData = async (obj, userId) => {
           timeSheet[timeSheetIndex].timesheetEntries;
         for (
           let timeSheetEntryIndex = 0;
-          timeSheetEntryIndex < timeSheet[timeSheetIndex].timesheetEntries.length;
+          timeSheetEntryIndex <
+          timeSheet[timeSheetIndex].timesheetEntries.length;
           timeSheetEntryIndex++
         ) {
           await generateExportEntries(
@@ -576,49 +597,49 @@ export const retrieveFinanceData = async (obj, userId) => {
           );
         }
         exportData.details = details;
-  
+
         let fees = round(
           exportData.details
             .filter(
               (item) =>
-                (item.type === 'Time' || item.type === 'Revenue') &&
+                (item.type === "Time" || item.type === "Revenue") &&
                 item.id == timeSheetId
             )
             .reduce(function (prev, cur) {
               return prev + Number(cur.amount);
             }, 0)
         );
-  
+
         let expenses = round(
           exportData.details
-            .filter((item) => item.type === 'Expense' && item.id == timeSheetId)
+            .filter((item) => item.type === "Expense" && item.id == timeSheetId)
             .reduce(function (prev, cur) {
               return prev + Number(cur.amount);
             }, 0)
         );
-  
+
         timeSheet[timeSheetIndex].documentNo = documentNo;
         timeSheet[timeSheetIndex].amountBilled = round(fees + expenses);
         timeSheet[timeSheetIndex].is_locked = true;
         await timesheetRepo().save(timeSheet[timeSheetIndex]);
       }
-  
+
       let fees = round(
         exportData.details
-          .filter((item) => item.type === 'Time' || item.type === 'Revenue')
+          .filter((item) => item.type === "Time" || item.type === "Revenue")
           .reduce(function (prev, cur) {
             return prev + Number(cur.amount);
           }, 0)
       );
-  
+
       let expenses = round(
         exportData.details
-          .filter((item) => item.type === 'Expense')
+          .filter((item) => item.type === "Expense")
           .reduce(function (prev, cur) {
             return prev + Number(cur.amount);
           }, 0)
       );
-  
+
       exportData.fees = fees;
       exportData.expenses = expenses;
       exportData.totalAmount = round(fees + expenses);
@@ -635,9 +656,9 @@ export const retrieveFinanceData = async (obj, userId) => {
       model.documentPath = documentPath;
       model.totalAmount = exportData.totalAmount;
       model.monthStartDate = startDate;
-  
+
       let userItemEntry = userFinanceCodes.find((item) => {
-        return item.type === 'Project';
+        return item.type === "Project";
       });
       if (userItemEntry) {
         userItemEntry.amount = exportData.totalAmount;
@@ -648,7 +669,7 @@ export const retrieveFinanceData = async (obj, userId) => {
       model.isDischarged = false;
       model.mouId = res.mou.id;
       await createFinanceExport(model);
-  
+
       const repoMou = mouRepo();
       let mou = await repoMou.findOne(res.mou.id);
       if (mou) {
@@ -656,35 +677,38 @@ export const retrieveFinanceData = async (obj, userId) => {
         await repoMou.save(mou);
       }
     }
-  
+
     await getConnection()
       .createQueryBuilder()
       .update(FinanceExport)
       .set({ selectedMous: mergeMous(mousSelected) })
-      .where('documentNo = :document', { document: documentNo })
+      .where("documentNo = :document", { document: documentNo })
       .execute();
     // await createFinanceExport(financeExport);
     const repo = financeRepo();
     const result = await repo
-      .createQueryBuilder('f')
+      .createQueryBuilder("f")
       .where('f."documentNo" = :documentId ', { documentId: documentNo })
       .getMany();
-      finalResult[0] = result;
+    finalResult[0] = result;
   } else {
     finalResult[0] = [];
   }
-  if(financeExportNonMinistry.length>0){
+  if (financeExportNonMinistry.length > 0) {
     const documentNo: string = uuidv4();
 
-    const selectedDate = obj.selectedDate.split('-');
-  
+    const selectedDate = obj.selectedDate.split("-");
+
     const year = parseInt(selectedDate[0], 10);
     const month = parseInt(selectedDate[1], 10);
-  
+
     const startDate = new Date(year, month - 1, 1);
     const endDate = new Date(year, month, 0);
-  
-    const documentPath: string = await getPDFNameNonMinistry(startDate, financeExportNonMinistry.length);
+
+    const documentPath: string = await getPDFNameNonMinistry(
+      startDate,
+      financeExportNonMinistry.length
+    );
     let mousSelected = [];
     for (let index = 0; index < financeExportNonMinistry.length; index++) {
       let model = financeExportNonMinistry[index];
@@ -696,89 +720,105 @@ export const retrieveFinanceData = async (obj, userId) => {
       exportData.projectId = financeExportNonMinistry[index].projectId;
       const repo = projectRepo();
       const res = await repo
-        .createQueryBuilder('p')
-        .innerJoin('p.client', 'c')
-        .innerJoin('p.mou', 'm')
+        .createQueryBuilder("p")
+        .innerJoin("p.client", "c")
+        .innerJoin("p.mou", "m")
         .select([
-          'p.id',
-          'p.projectName',
-          'p.leadUserId',
-          'p.teamWideProject',
-          'c.responsibilityCenter',
-          'p.mouAmount',
-          'c.clientNo',
-          'c.id',
-          'c.stob',
-          'c.projectCode',
-          'c.serviceCenter',
-          'm.id',
-          'm.name',
-          'm.billingCount',
-          'p.dateCreated'
+          "p.id",
+          "p.projectName",
+          "p.leadUserId",
+          "p.teamWideProject",
+          "c.responsibilityCenter",
+          "p.mouAmount",
+          "c.clientNo",
+          "c.id",
+          "c.stob",
+          "c.projectCode",
+          "c.serviceCenter",
+          "m.id",
+          "m.name",
+          "m.billingCount",
+          "p.dateCreated",
         ])
-        .where('p.id = :projectId', { projectId: exportData.projectId })
+        .where("p.id = :projectId", { projectId: exportData.projectId })
         .getOne();
-  
-      exportData.leadUser = '';
-      exportData.financeName = '';
+
+      exportData.leadUser = "";
+      exportData.financeName = "";
       exportData.projectCreated = res.dateCreated;
       if (res.teamWideProject) {
-        exportData.leadUser = 'Procurement and Supply Division';
+        exportData.leadUser = "Procurement and Supply Division";
       } else if (res.leadUserId) {
         const repoUser = userRepo();
         const leadUser = await repoUser
-          .createQueryBuilder('u')
-          .innerJoinAndSelect('u.contact', 'c')
-          .where('u.id = :projectLeadId', { projectLeadId: res.leadUserId })
+          .createQueryBuilder("u")
+          .innerJoinAndSelect("u.contact", "c")
+          .where("u.id = :projectLeadId", { projectLeadId: res.leadUserId })
           .getOne();
         if (leadUser) {
           const repo = contactRepo();
           const contactRes = await repo
-            .createQueryBuilder('c')
-            .leftJoin('c.financeCodes', 'f')
-            .select(['c.fullName', 'f.financeName'])
+            .createQueryBuilder("c")
+            .leftJoin("c.financeCodes", "f")
+            .select(["c.fullName", "f.financeName"])
             .where('c."id" = :contactId', {
               contactId: leadUser.contact.id,
             })
             .getOne();
-  
+
           if (contactRes) {
             exportData.leadUser = contactRes.fullName;
             if (contactRes.financeCodes)
               exportData.financeName = contactRes.financeCodes.financeName;
           }
+          let userClientAddress = [] as IClientAddress[];
+          let leadClientAddress = {} as IClientAddress;
+          leadClientAddress.leadUserName = leadUser.contact.fullName;
+          leadClientAddress.orgName = leadUser.contact.orgName;
+          leadClientAddress.addressLine1 = leadUser.contact.addressLine1;
+          leadClientAddress.addressLine2 = leadUser.contact.addressLine2;
+          leadClientAddress.city = leadUser.contact.city;
+          leadClientAddress.country = leadUser.contact.country;
+          leadClientAddress.phoneNumber = leadUser.contact.phoneNumber;
+          leadClientAddress.postalCode = leadUser.contact.postalCode;
+          leadClientAddress.province = leadUser.contact.province;
+          userClientAddress.push(leadClientAddress);
+          exportData.clientAddress = userClientAddress;
         }
       } else {
-        exportData.leadUser = 'Procurement and Supply Division';
+        exportData.leadUser = "Procurement and Supply Division";
       }
-  
+
       // Get previous Bill amount
       const financeRep = financeRepo();
-  
+
       const prevBills = await financeRep
-        .createQueryBuilder('f')
-        .select(['f.projectId'])
-        .addSelect('SUM(f.totalAmount)', 'sum')
-        .where('f.projectId = :projectId  and f.isDischarged != :discharged', {
+        .createQueryBuilder("f")
+        .select(["f.projectId"])
+        .addSelect("SUM(f.totalAmount)", "sum")
+        .where("f.projectId = :projectId  and f.isDischarged != :discharged", {
           projectId: exportData.projectId,
           discharged: true,
         })
-        .groupBy('f.projectId ')
+        .groupBy("f.projectId ")
         .getRawOne();
-  
+
       const contactproRepo = projectContactRepo();
       const contactRes = await contactproRepo
-        .createQueryBuilder('pc')
-        .leftJoinAndSelect('pc.project', 'p')
-        .leftJoinAndSelect('pc.contact', 'c')
-        .where('c."contactType" = :contactType and pc."projectId" = :projectId', {
-          contactType: 'clientfinance',
-          projectId: exportData.projectId,
-        })
+        .createQueryBuilder("pc")
+        .leftJoinAndSelect("pc.project", "p")
+        .leftJoinAndSelect("pc.contact", "c")
+        .where(
+          'c."contactType" = :contactType and pc."projectId" = :projectId',
+          {
+            contactType: "clientfinance",
+            projectId: exportData.projectId,
+          }
+        )
         .getOne();
       exportData.contact = contactRes.contact.fullName;
       exportData.projectName = res.projectName;
-  
+
       let details = [] as IFinanceExportDetail[];
       let userFinanceCodes = [] as IUserFinanceCodes[];
       let projectFinance = {} as IUserFinanceCodes;
@@ -792,9 +832,9 @@ export const retrieveFinanceData = async (obj, userId) => {
       if (res.mou) {
         billingCount = res.mou.billingCount ? res.mou.billingCount + 1 : 1;
       }
-      projectFinance.type = 'Project';
+      projectFinance.type = "Project";
       userFinanceCodes.push(projectFinance);
-  
+
       exportData.documentPath = documentPath;
       exportData.documentNo = documentNo;
       exportData.lineDesc = documentNo;
@@ -804,10 +844,10 @@ export const retrieveFinanceData = async (obj, userId) => {
       mousSelected.push(exportData.mouName);
       exportData.mouEstimate = res.mouAmount;
       const timeSheet = await timesheetRepo()
-        .createQueryBuilder('t')
-        .innerJoinAndSelect('t.timesheetEntries', 'te')
-        .innerJoinAndSelect('t.user', 'u')
-        .innerJoinAndSelect('u.contact', 'c')
+        .createQueryBuilder("t")
+        .innerJoinAndSelect("t.timesheetEntries", "te")
+        .innerJoinAndSelect("t.user", "u")
+        .innerJoinAndSelect("u.contact", "c")
         .where(
           't."projectId" = :projectId and (t.is_locked = :is_locked or t.is_locked IS NULL) and (t.startDate >= :start and t.startDate <= :end) and t.documentNo is NULL',
           {
@@ -821,7 +861,7 @@ export const retrieveFinanceData = async (obj, userId) => {
       if (timeSheet.length == 0) {
         continue;
       }
-  
+
       for (
         let timeSheetIndex = 0;
         timeSheetIndex < timeSheet.length;
@@ -832,7 +872,8 @@ export const retrieveFinanceData = async (obj, userId) => {
           timeSheet[timeSheetIndex].timesheetEntries;
         for (
           let timeSheetEntryIndex = 0;
-          timeSheetEntryIndex < timeSheet[timeSheetIndex].timesheetEntries.length;
+          timeSheetEntryIndex <
+          timeSheet[timeSheetIndex].timesheetEntries.length;
           timeSheetEntryIndex++
         ) {
           await generateExportEntries(
@@ -844,49 +885,49 @@ export const retrieveFinanceData = async (obj, userId) => {
           );
         }
         exportData.details = details;
-  
+
         let fees = round(
           exportData.details
             .filter(
               (item) =>
-                (item.type === 'Time' || item.type === 'Revenue') &&
+                (item.type === "Time" || item.type === "Revenue") &&
                 item.id == timeSheetId
             )
             .reduce(function (prev, cur) {
               return prev + Number(cur.amount);
             }, 0)
         );
-  
+
         let expenses = round(
           exportData.details
-            .filter((item) => item.type === 'Expense' && item.id == timeSheetId)
+            .filter((item) => item.type === "Expense" && item.id == timeSheetId)
             .reduce(function (prev, cur) {
               return prev + Number(cur.amount);
             }, 0)
         );
-  
+
         timeSheet[timeSheetIndex].documentNo = documentNo;
         timeSheet[timeSheetIndex].amountBilled = round(fees + expenses);
         timeSheet[timeSheetIndex].is_locked = true;
         await timesheetRepo().save(timeSheet[timeSheetIndex]);
       }
-  
+
       let fees = round(
         exportData.details
-          .filter((item) => item.type === 'Time' || item.type === 'Revenue')
+          .filter((item) => item.type === "Time" || item.type === "Revenue")
           .reduce(function (prev, cur) {
             return prev + Number(cur.amount);
           }, 0)
       );
-  
+
       let expenses = round(
         exportData.details
-          .filter((item) => item.type === 'Expense')
+          .filter((item) => item.type === "Expense")
           .reduce(function (prev, cur) {
             return prev + Number(cur.amount);
           }, 0)
       );
-  
+
       exportData.fees = fees;
       exportData.expenses = expenses;
       exportData.totalAmount = round(fees + expenses);
@@ -903,9 +944,9 @@ export const retrieveFinanceData = async (obj, userId) => {
       model.documentPath = documentPath;
       model.totalAmount = exportData.totalAmount;
       model.monthStartDate = startDate;
-  
+
       let userItemEntry = userFinanceCodes.find((item) => {
-        return item.type === 'Project';
+        return item.type === "Project";
       });
       if (userItemEntry) {
         userItemEntry.amount = exportData.totalAmount;
@@ -917,7 +958,7 @@ export const retrieveFinanceData = async (obj, userId) => {
       model.mouId = res.mou.id;
       model.isNonMinistry = true;
       await createFinanceExport(model);
-  
+
       const repoMou = mouRepo();
       let mou = await repoMou.findOne(res.mou.id);
       if (mou) {
@@ -925,21 +966,21 @@ export const retrieveFinanceData = async (obj, userId) => {
         await repoMou.save(mou);
       }
     }
-  
+
     await getConnection()
       .createQueryBuilder()
       .update(FinanceExport)
       .set({ selectedMous: mergeMous(mousSelected) })
-      .where('documentNo = :document', { document: documentNo })
+      .where("documentNo = :document", { document: documentNo })
       .execute();
     // await createFinanceExport(financeExport);
     const repo = financeRepo();
     const result = await repo
-      .createQueryBuilder('f')
+      .createQueryBuilder("f")
       .where('f."documentNo" = :documentId ', { documentId: documentNo })
       .getMany();
-    finalResult[1]= result;
-  }else {
+    finalResult[1] = result;
+  } else {
     finalResult[1] = [];
   }
   return finalResult;
@@ -951,13 +992,25 @@ export const retrieveFinanceDataOld = async (obj, userId) => {
   const nonMinistryProjects = splitupProjects[1];
   const financeExport = ministryProjects as IFinanceExport[];
   const financeExportNonMinistry = nonMinistryProjects as IFinanceExport[];
-  const finalResult=[];
-  finalResult[0] = await getMinistryFinanceExportResult(obj,financeExport,userId);
-  finalResult[1] = await getNonMinistryFinanceExportResult(obj,financeExportNonMinistry,userId);
+  const finalResult = [];
+  finalResult[0] = await getMinistryFinanceExportResult(
+    obj,
+    financeExport,
+    userId
+  );
+  finalResult[1] = await getNonMinistryFinanceExportResult(
+    obj,
+    financeExportNonMinistry,
+    userId
+  );
   return finalResult;
 };
-export const getNonMinistryFinanceExportResult = async(obj,financeExportNonMinistry,userId) =>{
-  if(financeExportNonMinistry.length>0) {
+export const getNonMinistryFinanceExportResult = async (
+  obj,
+  financeExportNonMinistry,
+  userId
+) => {
+  if (financeExportNonMinistry.length > 0) {
     const documentNo: string = uuidv4();
     let mousSelected = [];
     for (let index = 0; index < financeExportNonMinistry.length; index++) {
@@ -965,99 +1018,117 @@ export const getNonMinistryFinanceExportResult = async(obj,financeExportNonMinis
       if (!model) {
         return [];
       }
-    const selectedDate = obj.selectedProjects[index].month.split('-');
-    const year = parseInt(selectedDate[0], 10);
-    const month = parseInt(selectedDate[1], 10);
-    const startDate = new Date(year, month-1, 1);
-    const endDate = new Date(year, month, 0);
-    console.log('non-ministry',startDate,endDate,financeExportNonMinistry[index].projectId);
-    const documentPath: string = await getPDFNameNonMinistry(startDate, financeExportNonMinistry.length);
+      const selectedDate = obj.selectedProjects[index].month.split("-");
+      const year = parseInt(selectedDate[0], 10);
+      const month = parseInt(selectedDate[1], 10);
+      const startDate = new Date(year, month - 1, 1);
+      const endDate = new Date(year, month, 0);
+      const documentPath: string = await getPDFNameNonMinistry(
+        startDate,
+        financeExportNonMinistry.length
+      );
       let billingCount = 1;
       const exportData = {} as IFinanceJSON;
       exportData.projectId = financeExportNonMinistry[index].projectId;
       const repo = projectRepo();
       const res = await repo
-        .createQueryBuilder('p')
-        .innerJoin('p.client', 'c')
-        .innerJoin('p.mou', 'm')
+        .createQueryBuilder("p")
+        .innerJoin("p.client", "c")
+        .innerJoin("p.mou", "m")
         .select([
-          'p.id',
-          'p.projectName',
-          'p.leadUserId',
-          'p.teamWideProject',
-          'c.responsibilityCenter',
-          'p.mouAmount',
-          'c.clientNo',
-          'c.id',
-          'c.stob',
-          'c.projectCode',
-          'c.serviceCenter',
-          'm.id',
-          'm.name',
-          'm.billingCount',
-          'p.dateCreated'
+          "p.id",
+          "p.projectName",
+          "p.leadUserId",
+          "p.teamWideProject",
+          "c.responsibilityCenter",
+          "p.mouAmount",
+          "c.clientNo",
+          "c.id",
+          "c.stob",
+          "c.projectCode",
+          "c.serviceCenter",
+          "m.id",
+          "m.name",
+          "m.billingCount",
+          "p.dateCreated",
         ])
-        .where('p.id = :projectId', { projectId: exportData.projectId })
+        .where("p.id = :projectId", { projectId: exportData.projectId })
         .getOne();
-      exportData.leadUser = '';
-      exportData.financeName = '';
+      exportData.leadUser = "";
+      exportData.financeName = "";
       exportData.projectCreated = res.dateCreated;
       if (res.teamWideProject) {
-        exportData.leadUser = 'Procurement and Supply Division';
+        exportData.leadUser = "Procurement and Supply Division";
       } else if (res.leadUserId) {
         const repoUser = userRepo();
         const leadUser = await repoUser
-          .createQueryBuilder('u')
-          .innerJoinAndSelect('u.contact', 'c')
-          .where('u.id = :projectLeadId', { projectLeadId: res.leadUserId })
+          .createQueryBuilder("u")
+          .innerJoinAndSelect("u.contact", "c")
+          .where("u.id = :projectLeadId", { projectLeadId: res.leadUserId })
           .getOne();
         if (leadUser) {
           const repo = contactRepo();
           const contactRes = await repo
-            .createQueryBuilder('c')
-            .leftJoin('c.financeCodes', 'f')
-            .select(['c.fullName', 'f.financeName'])
+            .createQueryBuilder("c")
+            .leftJoin("c.financeCodes", "f")
+            .select(["c.fullName", "f.financeName"])
             .where('c."id" = :contactId', {
               contactId: leadUser.contact.id,
             })
             .getOne();
-  
+
           if (contactRes) {
             exportData.leadUser = contactRes.fullName;
             if (contactRes.financeCodes)
               exportData.financeName = contactRes.financeCodes.financeName;
           }
+          let userClientAddress = [] as IClientAddress[];
+          let leadClientAddress = {} as IClientAddress;
+          leadClientAddress.leadUserName = leadUser.contact.fullName;
+          leadClientAddress.orgName = leadUser.contact.orgName;
+          leadClientAddress.addressLine1 = leadUser.contact.addressLine1;
+          leadClientAddress.addressLine2 = leadUser.contact.addressLine2;
+          leadClientAddress.city = leadUser.contact.city;
+          leadClientAddress.country = leadUser.contact.country;
+          leadClientAddress.phoneNumber = leadUser.contact.phoneNumber;
+          leadClientAddress.postalCode = leadUser.contact.postalCode;
+          leadClientAddress.province = leadUser.contact.province;
+          userClientAddress.push(leadClientAddress);
+          exportData.clientAddress = userClientAddress;
         }
       } else {
-        exportData.leadUser = 'Procurement and Supply Division';
+        exportData.leadUser = "Procurement and Supply Division";
       }
-  
+
       // Get previous Bill amount
       const financeRep = financeRepo();
-  
+
       const prevBills = await financeRep
-        .createQueryBuilder('f')
-        .select(['f.projectId'])
-        .addSelect('SUM(f.totalAmount)', 'sum')
-        .where('f.projectId = :projectId  and f.isDischarged != :discharged', {
+        .createQueryBuilder("f")
+        .select(["f.projectId"])
+        .addSelect("SUM(f.totalAmount)", "sum")
+        .where("f.projectId = :projectId  and f.isDischarged != :discharged", {
           projectId: exportData.projectId,
           discharged: true,
         })
-        .groupBy('f.projectId ')
+        .groupBy("f.projectId ")
         .getRawOne();
       const contactproRepo = projectContactRepo();
       const contactRes = await contactproRepo
-        .createQueryBuilder('pc')
-        .leftJoinAndSelect('pc.project', 'p')
-        .leftJoinAndSelect('pc.contact', 'c')
-        .where('c."contactType" = :contactType and pc."projectId" = :projectId', {
-          contactType: 'clientfinance',
-          projectId: exportData.projectId,
-        })
+        .createQueryBuilder("pc")
+        .leftJoinAndSelect("pc.project", "p")
+        .leftJoinAndSelect("pc.contact", "c")
+        .where(
+          'c."contactType" = :contactType and pc."projectId" = :projectId',
+          {
+            contactType: "clientfinance",
+            projectId: exportData.projectId,
+          }
+        )
         .getOne();
       exportData.contact = contactRes.contact.fullName;
       exportData.projectName = res.projectName;
-  
+
       let details = [] as IFinanceExportDetail[];
       let userFinanceCodes = [] as IUserFinanceCodes[];
       let projectFinance = {} as IUserFinanceCodes;
@@ -1071,9 +1142,9 @@ export const getNonMinistryFinanceExportResult = async(obj,financeExportNonMinis
       if (res.mou) {
         billingCount = res.mou.billingCount ? res.mou.billingCount + 1 : 1;
       }
-      projectFinance.type = 'Project';
+      projectFinance.type = "Project";
       userFinanceCodes.push(projectFinance);
-  
+
       exportData.documentPath = documentPath;
       exportData.documentNo = documentNo;
       exportData.lineDesc = documentNo;
@@ -1082,13 +1153,14 @@ export const getNonMinistryFinanceExportResult = async(obj,financeExportNonMinis
       exportData.mouName = res.mou.name;
       mousSelected.push(exportData.mouName);
       exportData.mouEstimate = res.mouAmount;
-      console.log('check this non ministry project:',exportData.projectId);
-      const timeSheet = await getTimesheets(exportData.projectId,startDate,endDate);
+      const timeSheet = await getTimesheets(
+        exportData.projectId,
+        startDate,
+        endDate
+      );
       if (timeSheet.length == 0) {
-        console.log('exitted');
         continue;
       }
-      console.log('not exitted');
       for (
         let timeSheetIndex = 0;
         timeSheetIndex < timeSheet.length;
@@ -1099,7 +1171,8 @@ export const getNonMinistryFinanceExportResult = async(obj,financeExportNonMinis
           timeSheet[timeSheetIndex].timesheetEntries;
         for (
           let timeSheetEntryIndex = 0;
-          timeSheetEntryIndex < timeSheet[timeSheetIndex].timesheetEntries.length;
+          timeSheetEntryIndex <
+          timeSheet[timeSheetIndex].timesheetEntries.length;
           timeSheetEntryIndex++
         ) {
           await generateExportEntries(
@@ -1115,44 +1188,44 @@ export const getNonMinistryFinanceExportResult = async(obj,financeExportNonMinis
           exportData.details
             .filter(
               (item) =>
-                (item.type === 'Time' || item.type === 'Revenue') &&
+                (item.type === "Time" || item.type === "Revenue") &&
                 item.id == timeSheetId
             )
             .reduce(function (prev, cur) {
               return prev + Number(cur.amount);
             }, 0)
         );
-  
+
         let expenses = round(
           exportData.details
-            .filter((item) => item.type === 'Expense' && item.id == timeSheetId)
+            .filter((item) => item.type === "Expense" && item.id == timeSheetId)
             .reduce(function (prev, cur) {
               return prev + Number(cur.amount);
             }, 0)
         );
-  
+
         timeSheet[timeSheetIndex].documentNo = documentNo;
         timeSheet[timeSheetIndex].amountBilled = round(fees + expenses);
         timeSheet[timeSheetIndex].is_locked = true;
         await timesheetRepo().save(timeSheet[timeSheetIndex]);
       }
-  
+
       let fees = round(
         exportData.details
-          .filter((item) => item.type === 'Time' || item.type === 'Revenue')
+          .filter((item) => item.type === "Time" || item.type === "Revenue")
           .reduce(function (prev, cur) {
             return prev + Number(cur.amount);
           }, 0)
       );
-  
+
       let expenses = round(
         exportData.details
-          .filter((item) => item.type === 'Expense')
+          .filter((item) => item.type === "Expense")
           .reduce(function (prev, cur) {
             return prev + Number(cur.amount);
           }, 0)
       );
-  
+
       exportData.fees = fees;
       exportData.expenses = expenses;
       exportData.totalAmount = round(fees + expenses);
@@ -1170,7 +1243,7 @@ export const getNonMinistryFinanceExportResult = async(obj,financeExportNonMinis
       model.totalAmount = exportData.totalAmount;
       model.monthStartDate = startDate;
       let userItemEntry = userFinanceCodes.find((item) => {
-        return item.type === 'Project';
+        return item.type === "Project";
       });
       if (userItemEntry) {
         userItemEntry.amount = exportData.totalAmount;
@@ -1181,14 +1254,9 @@ export const getNonMinistryFinanceExportResult = async(obj,financeExportNonMinis
       model.isDischarged = false;
       model.mouId = res.mou.id;
       model.isNonMinistry = true;
-      await getConnection()
-      .createQueryBuilder()
-      .update(FinanceExport)
-      .set({ selectedMous: mergeMous(mousSelected) })
-      .where('documentNo = :document', { document: documentNo })
-      .execute();
+      
       await createFinanceExport(model);
-  
+
       const repoMou = mouRepo();
       let mou = await repoMou.findOne(res.mou.id);
       if (mou) {
@@ -1196,12 +1264,16 @@ export const getNonMinistryFinanceExportResult = async(obj,financeExportNonMinis
         await repoMou.save(mou);
       }
     }
-  
-   
+    await getConnection()
+    .createQueryBuilder()
+    .update(FinanceExport)
+    .set({ selectedMous: mergeMous(mousSelected) })
+    .where("documentNo = :document", { document: documentNo })
+    .execute();
     // await createFinanceExport(financeExport);
     const repo = financeRepo();
     const result = await repo
-      .createQueryBuilder('f')
+      .createQueryBuilder("f")
       .where('f."documentNo" = :documentId ', { documentId: documentNo })
       .getMany();
     return result;
@@ -1210,8 +1282,12 @@ export const getNonMinistryFinanceExportResult = async(obj,financeExportNonMinis
   }
 };
 
-export const getMinistryFinanceExportResult = async(obj,financeExport,userId)=>{
-  if(financeExport.length>0) {
+export const getMinistryFinanceExportResult = async (
+  obj,
+  financeExport,
+  userId
+) => {
+  if (financeExport.length > 0) {
     const documentNo: string = uuidv4();
     let mousSelected = [];
     for (let index = 0; index < financeExport.length; index++) {
@@ -1219,99 +1295,117 @@ export const getMinistryFinanceExportResult = async(obj,financeExport,userId)=>{
       if (!model) {
         return [];
       }
-    const selectedDate = obj.selectedProjects[index].month.split('-');
-    const year = parseInt(selectedDate[0], 10);
-    const month = parseInt(selectedDate[1], 10);
-    const startDate = new Date(year, month-1, 1);
-    const endDate = new Date(year, month, 0);
-    console.log('ministry',startDate,endDate,financeExport[index].projectId);
-    const documentPath: string =await getPDFName(startDate, financeExport.length);
+      const selectedDate = obj.selectedProjects[index].month.split("-");
+      const year = parseInt(selectedDate[0], 10);
+      const month = parseInt(selectedDate[1], 10);
+      const startDate = new Date(year, month - 1, 1);
+      const endDate = new Date(year, month, 0);
+      const documentPath: string = await getPDFName(
+        startDate,
+        financeExport.length
+      );
       let billingCount = 1;
       const exportData = {} as IFinanceJSON;
       exportData.projectId = financeExport[index].projectId;
       exportData.projectCreated = financeExport[index].projectCreated;
       const repo = projectRepo();
       const res = await repo
-        .createQueryBuilder('p')
-        .innerJoin('p.client', 'c')
-        .innerJoin('p.mou', 'm')
+        .createQueryBuilder("p")
+        .innerJoin("p.client", "c")
+        .innerJoin("p.mou", "m")
         .select([
-          'p.id',
-          'p.projectName',
-          'p.leadUserId',
-          'p.teamWideProject',
-          'c.responsibilityCenter',
-          'p.mouAmount',
-          'c.clientNo',
-          'c.id',
-          'c.stob',
-          'c.projectCode',
-          'c.serviceCenter',
-          'm.id',
-          'm.name',
-          'm.billingCount',
-          'p.dateCreated'
+          "p.id",
+          "p.projectName",
+          "p.leadUserId",
+          "p.teamWideProject",
+          "c.responsibilityCenter",
+          "p.mouAmount",
+          "c.clientNo",
+          "c.id",
+          "c.stob",
+          "c.projectCode",
+          "c.serviceCenter",
+          "m.id",
+          "m.name",
+          "m.billingCount",
+          "p.dateCreated",
         ])
-        .where('p.id = :projectId', { projectId: exportData.projectId })
+        .where("p.id = :projectId", { projectId: exportData.projectId })
         .getOne();
-      exportData.leadUser = '';
-      exportData.financeName = '';
+      exportData.leadUser = "";
+      exportData.financeName = "";
       exportData.projectCreated = res.dateCreated;
       if (res.teamWideProject) {
-        exportData.leadUser = 'Procurement and Supply Division';
+        exportData.leadUser = "Procurement and Supply Division";
       } else if (res.leadUserId) {
         const repoUser = userRepo();
         const leadUser = await repoUser
-          .createQueryBuilder('u')
-          .innerJoinAndSelect('u.contact', 'c')
-          .where('u.id = :projectLeadId', { projectLeadId: res.leadUserId })
+          .createQueryBuilder("u")
+          .innerJoinAndSelect("u.contact", "c")
+          .where("u.id = :projectLeadId", { projectLeadId: res.leadUserId })
           .getOne();
         if (leadUser) {
           const repo = contactRepo();
           const contactRes = await repo
-            .createQueryBuilder('c')
-            .leftJoin('c.financeCodes', 'f')
-            .select(['c.fullName', 'f.financeName'])
+            .createQueryBuilder("c")
+            .leftJoin("c.financeCodes", "f")
+            .select(["c.fullName", "f.financeName"])
             .where('c."id" = :contactId', {
               contactId: leadUser.contact.id,
             })
             .getOne();
-  
+
           if (contactRes) {
             exportData.leadUser = contactRes.fullName;
             if (contactRes.financeCodes)
               exportData.financeName = contactRes.financeCodes.financeName;
           }
+          let userClientAddress = [] as IClientAddress[];
+          let leadClientAddress = {} as IClientAddress;
+          leadClientAddress.leadUserName = leadUser.contact.fullName;
+          leadClientAddress.orgName = leadUser.contact.orgName;
+          leadClientAddress.addressLine1 = leadUser.contact.addressLine1;
+          leadClientAddress.addressLine2 = leadUser.contact.addressLine2;
+          leadClientAddress.city = leadUser.contact.city;
+          leadClientAddress.country = leadUser.contact.country;
+          leadClientAddress.phoneNumber = leadUser.contact.phoneNumber;
+          leadClientAddress.postalCode = leadUser.contact.postalCode;
+          leadClientAddress.province = leadUser.contact.province;
+          userClientAddress.push(leadClientAddress);
+          exportData.clientAddress = userClientAddress;
         }
       } else {
-        exportData.leadUser = 'Procurement and Supply Division';
+        exportData.leadUser = "Procurement and Supply Division";
       }
       // Get previous Bill amount
       const financeRep = financeRepo();
-  
+
       const prevBills = await financeRep
-        .createQueryBuilder('f')
-        .select(['f.projectId'])
-        .addSelect('SUM(f.totalAmount)', 'sum')
-        .where('f.projectId = :projectId  and f.isDischarged != :discharged', {
+        .createQueryBuilder("f")
+        .select(["f.projectId"])
+        .addSelect("SUM(f.totalAmount)", "sum")
+        .where("f.projectId = :projectId  and f.isDischarged != :discharged", {
           projectId: exportData.projectId,
           discharged: true,
         })
-        .groupBy('f.projectId ')
+        .groupBy("f.projectId ")
         .getRawOne();
       const contactproRepo = projectContactRepo();
       const contactRes = await contactproRepo
-        .createQueryBuilder('pc')
-        .leftJoinAndSelect('pc.project', 'p')
-        .leftJoinAndSelect('pc.contact', 'c')
-        .where('c."contactType" = :contactType and pc."projectId" = :projectId', {
-          contactType: 'clientfinance',
-          projectId: exportData.projectId,
-        })
+        .createQueryBuilder("pc")
+        .leftJoinAndSelect("pc.project", "p")
+        .leftJoinAndSelect("pc.contact", "c")
+        .where(
+          'c."contactType" = :contactType and pc."projectId" = :projectId',
+          {
+            contactType: "clientfinance",
+            projectId: exportData.projectId,
+          }
+        )
         .getOne();
       exportData.contact = contactRes.contact.fullName;
       exportData.projectName = res.projectName;
-  
+
       let details = [] as IFinanceExportDetail[];
       let userFinanceCodes = [] as IUserFinanceCodes[];
       let projectFinance = {} as IUserFinanceCodes;
@@ -1325,7 +1419,7 @@ export const getMinistryFinanceExportResult = async(obj,financeExport,userId)=>{
       if (res.mou) {
         billingCount = res.mou.billingCount ? res.mou.billingCount + 1 : 1;
       }
-      projectFinance.type = 'Project';
+      projectFinance.type = "Project";
       userFinanceCodes.push(projectFinance);
       exportData.documentPath = documentPath;
       exportData.documentNo = documentNo;
@@ -1335,13 +1429,14 @@ export const getMinistryFinanceExportResult = async(obj,financeExport,userId)=>{
       exportData.mouName = res.mou.name;
       mousSelected.push(exportData.mouName);
       exportData.mouEstimate = res.mouAmount;
-      console.log('check this project:',exportData.projectId);
-      const timeSheet = await getTimesheets(exportData.projectId,startDate,endDate);
+      const timeSheet = await getTimesheets(
+        exportData.projectId,
+        startDate,
+        endDate
+      );
       if (timeSheet.length == 0) {
-        console.log('exitted');
         continue;
       }
-      console.log('not exitted');
       for (
         let timeSheetIndex = 0;
         timeSheetIndex < timeSheet.length;
@@ -1352,7 +1447,8 @@ export const getMinistryFinanceExportResult = async(obj,financeExport,userId)=>{
           timeSheet[timeSheetIndex].timesheetEntries;
         for (
           let timeSheetEntryIndex = 0;
-          timeSheetEntryIndex < timeSheet[timeSheetIndex].timesheetEntries.length;
+          timeSheetEntryIndex <
+          timeSheet[timeSheetIndex].timesheetEntries.length;
           timeSheetEntryIndex++
         ) {
           await generateExportEntries(
@@ -1364,27 +1460,27 @@ export const getMinistryFinanceExportResult = async(obj,financeExport,userId)=>{
           );
         }
         exportData.details = details;
-  
+
         let fees = round(
           exportData.details
             .filter(
               (item) =>
-                (item.type === 'Time' || item.type === 'Revenue') &&
+                (item.type === "Time" || item.type === "Revenue") &&
                 item.id == timeSheetId
             )
             .reduce(function (prev, cur) {
               return prev + Number(cur.amount);
             }, 0)
         );
-  
+
         let expenses = round(
           exportData.details
-            .filter((item) => item.type === 'Expense' && item.id == timeSheetId)
+            .filter((item) => item.type === "Expense" && item.id == timeSheetId)
             .reduce(function (prev, cur) {
               return prev + Number(cur.amount);
             }, 0)
         );
-  
+
         timeSheet[timeSheetIndex].documentNo = documentNo;
         timeSheet[timeSheetIndex].amountBilled = round(fees + expenses);
         timeSheet[timeSheetIndex].is_locked = true;
@@ -1392,20 +1488,20 @@ export const getMinistryFinanceExportResult = async(obj,financeExport,userId)=>{
       }
       let fees = round(
         exportData.details
-          .filter((item) => item.type === 'Time' || item.type === 'Revenue')
+          .filter((item) => item.type === "Time" || item.type === "Revenue")
           .reduce(function (prev, cur) {
             return prev + Number(cur.amount);
           }, 0)
       );
-  
+
       let expenses = round(
         exportData.details
-          .filter((item) => item.type === 'Expense')
+          .filter((item) => item.type === "Expense")
           .reduce(function (prev, cur) {
             return prev + Number(cur.amount);
           }, 0)
       );
-  
+
       exportData.fees = fees;
       exportData.expenses = expenses;
       exportData.totalAmount = round(fees + expenses);
@@ -1423,7 +1519,7 @@ export const getMinistryFinanceExportResult = async(obj,financeExport,userId)=>{
       model.totalAmount = exportData.totalAmount;
       model.monthStartDate = startDate;
       let userItemEntry = userFinanceCodes.find((item) => {
-        return item.type === 'Project';
+        return item.type === "Project";
       });
       if (userItemEntry) {
         userItemEntry.amount = exportData.totalAmount;
@@ -1433,14 +1529,9 @@ export const getMinistryFinanceExportResult = async(obj,financeExport,userId)=>{
       model.billingCount = billingCount;
       model.isDischarged = false;
       model.mouId = res.mou.id;
-      await getConnection()
-      .createQueryBuilder()
-      .update(FinanceExport)
-      .set({ selectedMous: mergeMous(mousSelected) })
-      .where('documentNo = :document', { document: documentNo })
-      .execute();
+   
       await createFinanceExport(model);
-  
+
       const repoMou = mouRepo();
       let mou = await repoMou.findOne(res.mou.id);
       if (mou) {
@@ -1448,35 +1539,39 @@ export const getMinistryFinanceExportResult = async(obj,financeExport,userId)=>{
         await repoMou.save(mou);
       }
     }
-  
-   
+    await getConnection()
+    .createQueryBuilder()
+    .update(FinanceExport)
+    .set({ selectedMous: mergeMous(mousSelected) })
+    .where("documentNo = :document", { document: documentNo })
+    .execute();
     // await createFinanceExport(financeExport);
     const repo = financeRepo();
     const result = await repo
-      .createQueryBuilder('f')
+      .createQueryBuilder("f")
       .where('f."documentNo" = :documentId ', { documentId: documentNo })
       .getMany();
-      return result;
+    return result;
   } else {
     return [];
   }
 };
-export const getTimesheets = async(projectId,startDate,endDate) =>{
-  return  timesheetRepo()
-  .createQueryBuilder('t')
-  .innerJoinAndSelect('t.timesheetEntries', 'te')
-  .innerJoinAndSelect('t.user', 'u')
-  .innerJoinAndSelect('u.contact', 'c')
-  .where(
-    't."projectId" = :projectId and (t.is_locked = :is_locked or t.is_locked IS NULL) and (t.startDate >= :start and t.startDate <= :end) and t.documentNo is NULL',
-    {
-      projectId: projectId,
-      is_locked: false,
-      start: startDate,
-      end: endDate,
-    }
-  )
-  .getMany();
+export const getTimesheets = async (projectId, startDate, endDate) => {
+  return timesheetRepo()
+    .createQueryBuilder("t")
+    .innerJoinAndSelect("t.timesheetEntries", "te")
+    .innerJoinAndSelect("t.user", "u")
+    .innerJoinAndSelect("u.contact", "c")
+    .where(
+      't."projectId" = :projectId and (t.is_locked = :is_locked or t.is_locked IS NULL) and (t.startDate >= :start and t.startDate <= :end) and t.documentNo is NULL',
+      {
+        projectId: projectId,
+        is_locked: false,
+        start: startDate,
+        end: endDate,
+      }
+    )
+    .getMany();
 };
 export const downloadpdf = async (obj) => {
   const repo = financeRepo();
@@ -1531,33 +1626,42 @@ export const reGenerateFinanceRecord = async (obj) => {
     .createQueryBuilder("f")
     .where('f."documentNo" = :documentId ', { documentId: obj.documentNo })
     .getMany();
-    
-    const repo = timesheetRepo();
-    const res = await repo
+
+  const repo = timesheetRepo();
+  const res = await repo
     .createQueryBuilder("t")
-    .select(['p.id as key','cl.isNonMinistry as isNonMinistry'])
-    .addSelect('CASE WHEN cl.nonMinistryName IS null THEN mi.ministryName ELSE cl.nonMinistryName END','client')
-    .innerJoin('t.timesheetEntries', 'te')
-    .leftJoin(FinanceExport, 'fe', 't."documentNo" = fe.documentNo')
-    .innerJoin('t.project', 'p')
-    .innerJoin('p.mou', 'mo')
-    .innerJoin('p.client', 'cl')
-    .leftJoin('cl.ministry', 'mi')
+    .select(["p.id as key", "cl.isNonMinistry as isNonMinistry"])
+    .addSelect(
+      "CASE WHEN cl.nonMinistryName IS null THEN mi.ministryName ELSE cl.nonMinistryName END",
+      "client"
+    )
+    .innerJoin("t.timesheetEntries", "te")
+    .leftJoin(FinanceExport, "fe", 't."documentNo" = fe.documentNo')
+    .innerJoin("t.project", "p")
+    .innerJoin("p.mou", "mo")
+    .innerJoin("p.client", "cl")
+    .leftJoin("cl.ministry", "mi")
     .where('fe."documentNo" = :documentId ', { documentId: obj.documentNo })
     .getRawMany();
-    
-    console.log('project',res[0].isnonministry);
-    for (let index = 0; index < financeResult.length; index++) {
-      if(res[0].isnonministry){
-        let val = "-NonMinistry";
-        let position =11;
-        let oldPath =financeResult[index].documentPath;
-        financeResult[index].documentPath =[financeResult[index].documentPath.slice(0, position), val, financeResult[index].documentPath.slice(position)].join('');
-        financeResult[index].exportData = financeResult[index].exportData.replace(oldPath,financeResult[index].documentPath);
-        }
-        financeResult[index].isNonMinistry =res[0].isnonministry;
-        await financeRepo().save(financeResult[index]);
+
+  for (let index = 0; index < financeResult.length; index++) {
+    if (res[0].isnonministry) {
+      let val = "-NonMinistry";
+      let position = 11;
+      let oldPath = financeResult[index].documentPath;
+      financeResult[index].documentPath = [
+        financeResult[index].documentPath.slice(0, position),
+        val,
+        financeResult[index].documentPath.slice(position),
+      ].join("");
+      financeResult[index].exportData = financeResult[index].exportData.replace(
+        oldPath,
+        financeResult[index].documentPath
+      );
     }
+    financeResult[index].isNonMinistry = res[0].isnonministry;
+    await financeRepo().save(financeResult[index]);
+  }
   return financeResult;
 };
 export const reinstateFinanceRecord = async (obj) => {
@@ -1637,6 +1741,19 @@ export const reinstateFinanceRecord = async (obj) => {
           if (contactRes.financeCodes)
             exportData.financeName = contactRes.financeCodes.financeName;
         }
+        let userClientAddress = [] as IClientAddress[];
+        let leadClientAddress = {} as IClientAddress;
+        leadClientAddress.leadUserName = leadUser.contact.fullName;
+        leadClientAddress.orgName = leadUser.contact.orgName;
+        leadClientAddress.addressLine1 = leadUser.contact.addressLine1;
+        leadClientAddress.addressLine2 = leadUser.contact.addressLine2;
+        leadClientAddress.city = leadUser.contact.city;
+        leadClientAddress.country = leadUser.contact.country;
+        leadClientAddress.phoneNumber = leadUser.contact.phoneNumber;
+        leadClientAddress.postalCode = leadUser.contact.postalCode;
+        leadClientAddress.province = leadUser.contact.province;
+        userClientAddress.push(leadClientAddress);
+        exportData.clientAddress = userClientAddress;
       }
     } else {
       exportData.leadUser = "Procurement and Supply Division";
@@ -1831,18 +1948,19 @@ export const createFinanceExport = async (obj: IFinanceExport) => {
   return obj;
 };
 export const getMinistryNonMinistrySplitUp = async (financeProjects) => {
-  
   const ministryProjects = [];
   const nonMinistryProjects = [];
-  const loopResult = await financeProjects.selectedProjects.forEach(async (project) => {
-    if(project.isNonMinistry){
-      nonMinistryProjects.push(project)
-    } else {
-      ministryProjects.push(project);
+  const loopResult = await financeProjects.selectedProjects.forEach(
+    async (project) => {
+      if (project.isNonMinistry) {
+        nonMinistryProjects.push(project);
+      } else {
+        ministryProjects.push(project);
+      }
     }
-});
+  );
   let res = [];
-  res[0] =ministryProjects;
+  res[0] = ministryProjects;
   res[1] = nonMinistryProjects;
   return res;
 };
@@ -1855,7 +1973,7 @@ export const getMinistryNonMinistrySplitUp = async (financeProjects) => {
 //       .where('p."id" = :id', { id: project.projectId })
 //       .getOne();
 //     return ministryres.client.isNonMinistry;
-  
+
 // }
 
 export const retrieveArchivedProjects = async () => {
@@ -1926,7 +2044,7 @@ export const retrieveTimesheetProjects = async (obj) => {
 export const retrieveTimesheetProjectsOld = async (obj) => {
   const repo = timesheetRepo();
 
-  const selectedDate = obj.selectedDate.split('-');
+  const selectedDate = obj.selectedDate.split("-");
 
   const year = parseInt(selectedDate[0], 10);
   const month = parseInt(selectedDate[1], 10);
@@ -1935,19 +2053,36 @@ export const retrieveTimesheetProjectsOld = async (obj) => {
   const endDate = new Date(year, month, 0);
 
   const res = await repo
-    .createQueryBuilder('t')
-    .select(['cast(t.startDate as varchar(7)) as startDate','p.dateModified','p.completionDate','p.id as key','mo.name as mou','true as isOld',' CONCAT(p.id,cast(t.startDate as varchar(7))) as id','cl.isNonMinistry as isNonMinistry','t.is_locked as locked'])
-    .addSelect('CASE WHEN cl.nonMinistryName IS null THEN mi.ministryName ELSE cl.nonMinistryName END','client')
-    .innerJoin('t.timesheetEntries', 'te','t."id"=te."timesheetId"')
-    .leftJoin(FinanceExport, 'fe', 't."documentNo" = fe.documentNo')
-    .innerJoin('t.project', 'p')
-    .innerJoin('p.mou', 'mo')
-    .innerJoin('p.client', 'cl')
-    .leftJoin('cl.ministry', 'mi')
-    .where('t.startDate < :startDate', { startDate})
-    .andWhere('(t.is_locked = :is_locked OR t.is_locked IS NULL)',{is_locked: false})
-    .andWhere('(fe.isDischarged = false OR fe.isDischarged IS NULL)')
-    .andWhere('(p.categoryId = :categoryId OR p.categoryId IS NULL)', { categoryId: ProjectCategory.CostRecoverable })
+    .createQueryBuilder("t")
+    .select([
+      "cast(t.startDate as varchar(7)) as startDate",
+      "p.dateModified",
+      "p.completionDate",
+      "p.id as key",
+      "mo.name as mou",
+      "true as isOld",
+      " CONCAT(p.id,cast(t.startDate as varchar(7))) as id",
+      "cl.isNonMinistry as isNonMinistry",
+      "t.is_locked as locked",
+    ])
+    .addSelect(
+      "CASE WHEN cl.nonMinistryName IS null THEN mi.ministryName ELSE cl.nonMinistryName END",
+      "client"
+    )
+    .innerJoin("t.timesheetEntries", "te", 't."id"=te."timesheetId"')
+    .leftJoin(FinanceExport, "fe", 't."documentNo" = fe.documentNo')
+    .innerJoin("t.project", "p")
+    .innerJoin("p.mou", "mo")
+    .innerJoin("p.client", "cl")
+    .leftJoin("cl.ministry", "mi")
+    .where("t.startDate < :startDate", { startDate })
+    .andWhere("(t.is_locked = :is_locked OR t.is_locked IS NULL)", {
+      is_locked: false,
+    })
+    .andWhere("(fe.isDischarged = false OR fe.isDischarged IS NULL)")
+    .andWhere("(p.categoryId = :categoryId OR p.categoryId IS NULL)", {
+      categoryId: ProjectCategory.CostRecoverable,
+    })
     // .groupBy('p.completionDate')
     // .addGroupBy('p.dateModified')
     // .addGroupBy('t.startDate')
@@ -2007,7 +2142,10 @@ export const retrieveExportedPdfs = async (obj) => {
   const res = await repo
     .createQueryBuilder("t")
     .select(["t.documentNo", "t.documentPath", "t.selectedMous"])
-    .addSelect('CASE WHEN t.isNonMinistry IS null THEN null ELSE t.isNonMinistry END','isNonMinistry')
+    .addSelect(
+      "CASE WHEN t.isNonMinistry IS null THEN null ELSE t.isNonMinistry END",
+      "isNonMinistry"
+    )
     .addSelect("SUM(t.totalAmount)", "sum")
     .where(
       "(t.monthStartDate >= :start and t.monthStartDate <= :end) and (t.isDischarged = :discharged  OR t.isDischarged IS NULL)",
@@ -2022,7 +2160,7 @@ export const retrieveExportedPdfs = async (obj) => {
     .addGroupBy("t.selectedMous")
     .addGroupBy("t.isNonMinistry")
     .getRawMany();
-  
+
   return res;
 };
 
