@@ -1229,17 +1229,13 @@ export default {
                   );
                   // theme: 'striped'|'grid'|'plain'|'css'
                 }
-                const pCount = doc.internal.getNumberOfPages() - pageNum; //Total Page Number
-                for (let i = 1 + pageNum; i <= pCount + pageNum; i++) {
-                  doc.setPage(i);
-                  doc.setFontSize(12);
-                  doc.text(
-                    "Page " + (i - pageNum) + " of " + pCount,
-                    leftValue + 85,
-                    20 + topValue + 250
-                  );
-                }
-                pageNum = pageNum + pCount;
+                  const pCount = doc.internal.getNumberOfPages() - pageNum; //Total Page Number
+             for (let i = 1 + pageNum; i <= pCount + pageNum; i++) {
+                doc.setPage(i);
+                doc.setFontSize(12);
+                doc.text("Page "+(i - pageNum) + " of " + pCount,  leftValue + 85, 20 + topValue + 250);
+              }
+            pageNum = pageNum + pCount;
               }
               doc.save(pdfValuesNonMinistry[0].documentPath);
               this.getAllProjectList();

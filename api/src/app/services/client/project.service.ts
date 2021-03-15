@@ -190,9 +190,9 @@ function uuidv4() {
   });
 }
 function getPDFName(date, count) {
-  return createPDFName(date, count, 0);
+  return createPDFName(date,count,0);
 }
-function createPDFName(date, count, type) {
+function createPDFName(date,count,type) {
   var month = new Array();
   month[0] = "Janu";
   month[1] = "Feb";
@@ -228,27 +228,27 @@ function createPDFName(date, count, type) {
       " Project.pdf"
     );
   }
-  if (type)
-    return (
-      month[newDate.getMonth()] +
-      " - " +
-      newDate.getFullYear() +
-      " - NonMinistry - " +
-      count.toString() +
-      " Projects.pdf"
-    );
+  if(type)
+  return (
+    month[newDate.getMonth()] +
+    " - " +
+    newDate.getFullYear() +
+    " - NonMinistry - " +
+    count.toString() +
+    " Projects.pdf"
+  );
   else
-    return (
-      month[newDate.getMonth()] +
-      " - " +
-      newDate.getFullYear() +
-      " - " +
-      count.toString() +
-      " Projects.pdf"
-    );
+  return (
+    month[newDate.getMonth()] +
+    " - " +
+    newDate.getFullYear() +
+    " - " +
+    count.toString() +
+    " Projects.pdf"
+  );
 }
 function getPDFNameNonMinistry(date, count) {
-  return createPDFName(date, count, 1);
+ return createPDFName(date, count,1);
 }
 function round(x) {
   return Number.parseFloat(Number.parseFloat(x).toFixed(2));
@@ -2160,7 +2160,7 @@ export const retrieveExportedPdfs = async (obj) => {
     .addGroupBy("t.selectedMous")
     .addGroupBy("t.isNonMinistry")
     .getRawMany();
-
+  
   return res;
 };
 
