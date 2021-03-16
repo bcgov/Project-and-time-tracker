@@ -794,22 +794,37 @@ export default {
               doc.text("IN ACCOUNT WITH", leftValue + 10, topValue + 50);
               doc.setFontSize(12);
               doc.setFontStyle("normal");
+              if(pdfValuesNonMinistry[i].clientAddress){
               doc.text(
-                pdfValuesNonMinistry[i].contact ? pdfValuesNonMinistry[i].contact : "",
-                leftValue + 10,
-                topValue + 54
-              );
+                 (pdfValuesNonMinistry[i].clientAddress[0].orgName?pdfValuesNonMinistry[i].clientAddress[0].orgName:"").concat(pdfValuesNonMinistry[i].clientAddress[0].addressLine1?(", ").concat(pdfValuesNonMinistry[i].clientAddress[0].addressLine1?pdfValuesNonMinistry[i].clientAddress[0].addressLine1:""):""),
+                  leftValue + 10,
+                  topValue + 58
+                );
 
+                doc.text(
+                 (pdfValuesNonMinistry[i].clientAddress[0].addressLine2?pdfValuesNonMinistry[i].clientAddress[0].addressLine2:"").concat(pdfValuesNonMinistry[i].clientAddress[0].city?(", ").concat(pdfValuesNonMinistry[i].clientAddress[0].city?pdfValuesNonMinistry[i].clientAddress[0].city:""):""),
+                  leftValue + 10,
+                  topValue + 62
+                );
+
+                doc.text(
+                  (pdfValuesNonMinistry[i].clientAddress[0].province?pdfValuesNonMinistry[i].clientAddress[0].province:"").concat(pdfValuesNonMinistry[i].clientAddress[0].postalCode?(", ").concat(pdfValuesNonMinistry[i].clientAddress[0].postalCode?pdfValuesNonMinistry[i].clientAddress[0].postalCode:""):""),
+                  leftValue + 10,
+                  topValue + 66
+                );
+                doc.text(
+                  pdfValuesNonMinistry[i].clientAddress[0].leadUserName
+                    ? pdfValuesNonMinistry[i].clientAddress[0].leadUserName
+                    : "",
+                  leftValue + 10,
+                  topValue + 54
+                );
+              }
               doc.setFontSize(11);
               doc.text(
                 "As per Procurement Service Agreement " +
                   pdfValuesNonMinistry[i].mouName +
-                  " dated " +
-                  new Date(pdfValuesNonMinistry[i].projectCreated)
-                    .toDateString()
-                    .substring(4, 15)
-                    .replace(/([^\s]*\s[^\s]*)\s/, "$1,").replace(",",", ") +
-                  " between",
+                  " dated between ",
                 leftValue + 10,
                 topValue + 80
               );
@@ -818,12 +833,6 @@ export default {
                 pdfValuesNonMinistry[i].contact ? pdfValuesNonMinistry[i].contact : "",
                 leftValue + 65,
                 topValue + 85
-              );
-
-              doc.text(
-                "Specifically we are removing the part between the parentheses",
-                leftValue + 10,
-                topValue + 90
               );
               doc.text("Time:", leftValue + 145, topValue + 100);
               doc.text("Expense:", leftValue + 145, topValue + 105);
