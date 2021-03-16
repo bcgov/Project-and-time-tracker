@@ -7,12 +7,14 @@ import {
   retrieveProjectsByUserId,
   retrieveArchivedProjects,
   retrieveTimesheetProjects,
+  retrieveTimesheetProjectsOld,
   retrieveExportedPdfs,
   retrieveDischargedPdfs,
   downloadpdf,
   retrieveAllProjects,
   retrieveMouProjectsByUserId,
   retrieveFinanceData,
+  retrieveFinanceDataOld,
   dischargeFinanceRecord,
   reinstateFinanceRecord,
   reGenerateFinanceRecord,
@@ -68,6 +70,16 @@ export const timesheetProjects = async (ctx: Koa.Context) => {
     ctx.throw(err.message);
   }
 };
+export const timesheetProjectsOld = async (ctx: Koa.Context) => {
+  try {
+    const auth = ctx.state.auth as IAuth;
+    const obj = ctx.request.body as any;
+    const result = await retrieveTimesheetProjectsOld(obj);
+    ctx.body = result;
+  } catch (err) {
+    ctx.throw(err.message);
+  }
+};
 export const exportedPdfs = async (ctx: Koa.Context) => {
   try {
     const auth = ctx.state.auth as IAuth;
@@ -114,7 +126,6 @@ export const reGenerateFinancePdf = async (ctx: Koa.Context) => {
     ctx.throw(err.message);
   }
 };
-
 export const reinstateFinancePdf = async (ctx: Koa.Context) => {
   try {
     const auth = ctx.state.auth as IAuth;
@@ -129,6 +140,15 @@ export const getfinanceExport = async (ctx: Koa.Context) => {
     const auth = ctx.state.auth as IAuth;
     const obj = ctx.request.body as any;
     ctx.body = await retrieveFinanceData(obj, auth.userId);
+  } catch (err) {
+    ctx.throw(err.message);
+  }
+};
+export const getfinanceExportOld = async (ctx: Koa.Context) => {
+  try {
+    const auth = ctx.state.auth as IAuth;
+    const obj = ctx.request.body as any;
+    ctx.body = await retrieveFinanceDataOld(obj, auth.userId);
   } catch (err) {
     ctx.throw(err.message);
   }
@@ -315,6 +335,7 @@ router.get('/:id/by-user-id', authorize, getmouProjects);
 router.get('/archived', authorize, getArchivedProjects);
 router.get('/categories', authorize, getCategories);
 router.post('/timesheetprojects', authorize, timesheetProjects);
+router.post('/timesheetprojectsOld', authorize, timesheetProjectsOld);
 router.post('/exportedPdfs', authorize, exportedPdfs);
 router.post('/dischargedPdfs', authorize, dischargedPdfs);
 router.post('/downloadFinancePdf', authorize, downloadFinancePdf);
@@ -323,6 +344,7 @@ router.post('/reGenerateFinanceRecord', authorize, reGenerateFinancePdf);
 router.post('/reinstateFinanceRecord', authorize, reinstateFinancePdf);
 
 router.post('/finance', authorize, getfinanceExport);
+router.post('/financeOld', authorize, getfinanceExportOld);
 router.get('/:id', authorize, getProjectById);
 router.patch('/:id', authorize, updateProjectAction);
 router.patch('/:id/archive', authorize, archiveProjectAction);

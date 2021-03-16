@@ -8,13 +8,66 @@
         <h1 class="projects-header"></h1>
       </v-toolbar-title>
     </v-toolbar>
-    <v-divider></v-divider>
     <v-layout>
-      <v-flex md-2>
+      <v-flex md-12>
         <ProjectCalendarMonth
           ref="TimeCalendarMonthly"
           @changedMonth="changedMonth"
         ></ProjectCalendarMonth>
+      </v-flex>
+    </v-layout>
+    <v-divider></v-divider>
+    <v-layout>
+      <v-flex md-2>
+        <h2 class="reports-header">Out of Month Reports</h2>
+        <!-- <ProjectCalendarMonth
+          ref="TimeCalendarMonthly"
+          @changedMonth="changedMonth"
+        ></ProjectCalendarMonth> -->
+      </v-flex>
+      <v-flex md-10>
+        <div class="start-button-div">
+          <v-btn color="primary" class="start-button-style" @click="exportToPDFOld"
+            >Export Finances Old (PDF)</v-btn
+          >
+        </div>
+      </v-flex>
+    </v-layout>
+    <v-card-text class="pa-0">
+      <template>
+        <v-data-table
+          v-model="selectedOld"
+          :headers="headersOld"
+          :items="projectsOld"
+          hide-actions
+          :multiple-select="singleSelectOld"
+          class="elevation-0 tm-v-datatable project-export-table"
+          disable-initial-sort
+        >
+          <template slot="items" slot-scope="data">
+            <td class="text-xs-left">
+              <v-checkbox @change="updateSelectedProjectsOld($event, data.item.id)"></v-checkbox>
+            </td>
+
+            <td class="text-xs-left">{{ data.item.mou }}</td>
+            <td class="text-xs-left">
+              {{ data.item.client }}
+            </td>
+            <td class="text-xs-left">{{ data.item.p_completionDate | formatDate }}</td>
+            <td class="text-xs-left">{{ data.item.p_dateModified | formatDate }}</td>
+            <td class="text-xs-left">{{ data.item.startdate }}</td>
+          </template>
+        </v-data-table>
+      </template>
+      <v-divider></v-divider>
+    </v-card-text>
+    <v-layout>
+      <v-flex md-2>
+        <h2 class="reports-header">New Finance Report</h2>
+        <!-- <ProjectCalendarMonth
+          ref="TimeCalendarMonthly"
+          @changedMonth="changedMonth"
+        ></ProjectCalendarMonth> -->
       </v-flex>
       <v-flex md-10>
         <div class="start-button-div">
@@ -85,7 +138,8 @@ import "jspdf-autotable";
 export default {
   props: {
     title: String,
-    selectedItem: Number
+    selectedItem: Number,
+    selectedItemOld: Number
   },
   components: {
     Snackbar,
@@ -96,8 +150,11 @@ export default {
   data() {
     return {
       singleSelect: false,
+      singleSelectOld: false,
       selected: [],
+      selectedOld: [],
       selectedProjects: [],
+      selectedProjectsOld: [],
       date: new Date().toISOString().substr(0, 7),
       menu: false,
       modal: false,
@@ -118,15 +175,33 @@ export default {
         { text: "Project Deadline", value: "completionDate", sortable: true },
         { text: "Last Updated", value: "dateModified", sortable: true }
       ],
-      projectsList: []
+      headersOld: [
+        { text: " ", value: " ", align: "left", sortable: true },
+        {
+          text: "MOU Name",
+          value: "mou",
+          align: "left",
+          sortable: true
+        },
+        {
+          text: "Client",
+          value: "client",
+          sortable: true
+        },
+        { text: "Project Deadline", value: "p_completionDate", sortable: true },
+        { text: "Last Updated", value: "p_dateModified", sortable: true },
+        { text: "Month", value: "startdate", align: "left", sortable: true }
+      ],
+      projectsList: [],
+      projectsListOld: []
     };
   },
   computed: {
     projects() {
-      // if (this.projectsList.length === 0) {
-      //   this.fetchData();
-      // }
       return this.projectsList;
+    },
+    projectsOld() {
+      return this.projectsListOld;
     },
     userList() {
       return this.$store.state.users;
@@ -145,6 +220,16 @@ export default {
         });
       } else {
         this.selectedProjects = this.selectedProjects.filter(f => f.key !== key);
+      }
+    },
+    updateSelectedProjectsOld(event, key) {
+      if (event) {
+        const selectedItems = this.projectsListOld.filter(f => f.id === key);
+        selectedItems.forEach(item => {
+          this.selectedProjectsOld.push(item);
+        });
+      } else {
+        this.selectedProjectsOld = this.selectedProjectsOld.filter(f => f.id !== key);
       }
     },
     groupBy(list, keyGetter) {
@@ -207,12 +292,45 @@ export default {
           }
         }
       );
-    },
 
+      await this.$store.dispatch("fetchTimesheetProjectsOld", postData).then(
+        res => {
+          //const timeSheetProjects = vm.$store.state.allProjects.filter(el => res.some(f => f.id === el.id));
+          //vm.projectsListOld = this.groupBy(timeSheetProjects, timesheetProject => timesheetProject.mou.id);
+          const jsonObject = res.map(JSON.stringify);
+          const uniqueSet = new Set(jsonObject);
+          const uniqueArray = Array.from(uniqueSet).map(JSON.parse);
+          const result = uniqueArray.filter(x => x.cnt == 7);
+          vm.projectsListOld = uniqueArray;
+          if (vm.$refs.spinner) {
+            vm.$refs.spinner.close();
+          }
+        },
+        err => {
+          try {
+            const { message } = err.response.data.error;
+            vm.$refs.snackbar.displaySnackbar("error", message);
+          } catch (ex) {
+            // vm.$refs.snackbar.displaySnackbar('error', 'Failed to update');
+          }
+          if (vm.$refs.spinner) {
+            vm.$refs.spinner.close();
+          }
+        }
+      );
+    },
+    arrUnique(arr) {
+      const data = arr.filter((obj, pos, arr) => {
+        return arr.map(mapObj => mapObj.name).indexOf(obj.name) == pos;
+      });
+      return data;
+    },
     getAllProjectIds() {
       return this.selectedProjects;
     },
-
+    getAllProjectIdsOld() {
+      return this.selectedProjectsOld;
+    },
     getDateInYYYYMMDD(date) {
       // year
       const yyyy = `${date.getFullYear()}`;
@@ -274,7 +392,6 @@ export default {
           })
           .then(() => {
             this.selectedProjects = [];
-
             if (
               vm.$store.state.financeExport[0] ? vm.$store.state.financeExport[0].length : 0 === 0
             ) {
@@ -609,7 +726,6 @@ export default {
                 // eslint-disable-next-line no-unused-vars
                 const billTotalPosition = billTable.autoTable.previous;
                 // eslint-disable-next-line no-console
-                console.log("pos:", billTotalPosition);
 
                 doc.setFontStyle("bold");
                 const finalTable = doc.autoTable({
@@ -727,7 +843,7 @@ export default {
               doc.save(pdfValues[0].documentPath);
               this.getAllProjectList();
             }
-            let pageNum =0;
+            let pageNum = 0;
             if (pdfValuesNonMinistry.length > 0) {
               const leftValue = 0;
               const topValue = 20;
@@ -780,22 +896,37 @@ export default {
                 doc.text("IN ACCOUNT WITH", leftValue + 10, topValue + 50);
                 doc.setFontSize(12);
                 doc.setFontStyle("normal");
+                if (pdfValuesNonMinistry[i].clientAddress) {
+                  doc.text(
+                 (pdfValuesNonMinistry[i].clientAddress[0].orgName?pdfValuesNonMinistry[i].clientAddress[0].orgName:"").concat(pdfValuesNonMinistry[i].clientAddress[0].addressLine1?(", ").concat(pdfValuesNonMinistry[i].clientAddress[0].addressLine1?pdfValuesNonMinistry[i].clientAddress[0].addressLine1:""):""),
+                  leftValue + 10,
+                  topValue + 58
+                );
+
                 doc.text(
-                  pdfValuesNonMinistry[i].contact ? pdfValuesNonMinistry[i].contact : "",
+                 (pdfValuesNonMinistry[i].clientAddress[0].addressLine2?pdfValuesNonMinistry[i].clientAddress[0].addressLine2:"").concat(pdfValuesNonMinistry[i].clientAddress[0].city?(", ").concat(pdfValuesNonMinistry[i].clientAddress[0].city?pdfValuesNonMinistry[i].clientAddress[0].city:""):""),
+                  leftValue + 10,
+                  topValue + 62
+                );
+
+                doc.text(
+                  (pdfValuesNonMinistry[i].clientAddress[0].province?pdfValuesNonMinistry[i].clientAddress[0].province:"").concat(pdfValuesNonMinistry[i].clientAddress[0].postalCode?(", ").concat(pdfValuesNonMinistry[i].clientAddress[0].postalCode?pdfValuesNonMinistry[i].clientAddress[0].postalCode:""):""),
+                  leftValue + 10,
+                  topValue + 66
+                );
+                doc.text(
+                  pdfValuesNonMinistry[i].clientAddress[0].leadUserName
+                    ? pdfValuesNonMinistry[i].clientAddress[0].leadUserName
+                    : "",
                   leftValue + 10,
                   topValue + 54
                 );
-
+                }
                 doc.setFontSize(11);
                 doc.text(
                   "As per Procurement Service Agreement " +
                     pdfValuesNonMinistry[i].mouName +
-                    " dated " +
-                    new Date(pdfValuesNonMinistry[i].projectCreated)
-                      .toDateString()
-                      .substring(4, 15)
-                      .replace(/([^\s]*\s[^\s]*)\s/, "$1,").replace(",",", ") +
-                    " between",
+                    " dated between ",
                   leftValue + 10,
                   topValue + 80
                 );
@@ -806,11 +937,6 @@ export default {
                   topValue + 85
                 );
 
-                doc.text(
-                  "Specifically we are removing the part between the parentheses",
-                  leftValue + 10,
-                  topValue + 90
-                );
                 doc.text("Time:", leftValue + 145, topValue + 100);
                 doc.text("Expense:", leftValue + 145, topValue + 105);
                 doc.text(
@@ -1116,6 +1242,919 @@ export default {
             }
           });
       }
+    },
+    exportToPDFOld() {
+      let totalPage = 0;
+      let projects = this.getAllProjectIdsOld();
+
+      const vm = this;
+      projects = projects.map(str => ({
+        projectId: str.key,
+        month: str.startdate,
+        isNonMinistry: str.isnonministry
+      }));
+      const result1 = projects.filter(x => x.isNonMinistry == false);
+      const result2 = projects.filter(x => x.isNonMinistry == true);
+      const pdfValues = [];
+      const pdfValuesNonMinistry = [];
+      if (result1.length) {
+        vm.$refs.spinner.open();
+        vm.$store
+          .dispatch("financeExportOld", {
+            selectedProjects: result1,
+            selectedDate: this.date
+          })
+          .then(() => {
+            this.selectedProjectsOld = [];
+            this.selectedProjects = [];
+            if (
+              vm.$store.state.financeExportOld[0]
+                ? vm.$store.state.financeExportOld[0].length
+                : 0 === 0
+            ) {
+              vm.$refs.spinner.close();
+            }
+            vm.$store.state.financeExportOld[0].forEach(entry => {
+              const exportData = JSON.parse(entry.exportData);
+              pdfValues.push(exportData);
+              vm.$refs.spinner.close();
+            });
+            vm.$store.state.financeExportOld[1].forEach(entry => {
+              const exportData = JSON.parse(entry.exportData);
+              pdfValuesNonMinistry.push(exportData);
+              vm.$refs.spinner.close();
+            });
+            if (pdfValues.length === 0 && pdfValuesNonMinistry.length === 0) {
+              return;
+            }
+            if (pdfValues.length > 0) {
+              // ///////////// PDF FIRST PAGE START /////////////////////////////////////////////
+              const doc = new jsPDF({
+                putOnlyUsedFonts: true,
+                orientation: "portrait"
+              });
+              const tableHeaders = [
+                "Client",
+                "Responsibility",
+                "Service Line",
+                "STOB",
+                "Project",
+                "Amount"
+              ];
+              // const finalRow = { amount: '$0.00', clientNo: '', projectCode: 'Amount Check', responsibilityCenter: '', serviceCenter: '', stob: '' };
+              // doc.text('Amount Check', leftStartCoordinate + 110, 100);
+              // doc.setFontSize(12);
+              // doc.text('$0.00', leftStartCoordinate + 150, 100);
+
+              // ///////////// PDF First PAGE END /////////////////////////////////////////////
+
+              // pdfValues[i].userFinanceCodes.push(finalRow);
+              for (let i = 0; i < pdfValues.length; i++) {
+                // eslint-disable-next-line eqeqeq
+                if (i != 0) doc.addPage();
+                const tableRowsFormatted = pdfValues[i].userFinanceCodes.map(proj => [
+                  proj.clientNo ? proj.clientNo : "",
+                  proj.responsibilityCenter ? proj.responsibilityCenter : "",
+                  proj.serviceCenter ? proj.serviceCenter : "",
+                  proj.stob ? proj.stob : "",
+                  proj.projectCode ? proj.projectCode : "",
+                  // eslint-disable-next-line max-len
+                  proj.type !== "Project"
+                    ? `-$${proj.amount
+                        .toFixed(2)
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`
+                    : `$${proj.amount
+                        .toFixed(2)
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`
+                ]);
+
+                const pdfSinglePageHeight = doc.internal.pageSize.height;
+                // eslint-disable-next-line no-unused-vars
+                const firstPageInitialCoordinate = 0;
+                // eslint-disable-next-line no-unused-vars
+                const secondPageInitialCoordinate = pdfSinglePageHeight + 100;
+                const leftStartCoordinate = 20;
+                // eslint-disable-next-line no-unused-vars
+                const topStartCoordinate = 20;
+
+                doc.setFontSize(11);
+                doc.setFontStyle("bold");
+                doc.text("MOU ", leftStartCoordinate, 20);
+                doc.text(
+                  `${pdfValues[i].mouName}-${pdfValues[i].billingCount}`,
+                  leftStartCoordinate + 35,
+                  20
+                );
+                doc.text("SAP", leftStartCoordinate + 150, 20);
+                doc.setFontSize(18);
+                doc.setFontStyle("normal");
+                const prevAutoTable = doc.autoTable(tableHeaders, tableRowsFormatted, {
+                  theme: "plain",
+                  tableWidth: "auto",
+                  margin: { top: 60 },
+                  styles: {
+                    overflow: "linebreak",
+                    fontSize: 12,
+                    overflowColumns: "linebreak"
+                  },
+                  columnStyles: { 5: { halign: "right" } },
+                  didParseCell(table) {
+                    if (table.section === "head" && table.cell.raw === "Amount") {
+                      table.cell.styles.halign = "right";
+                    }
+                  }
+                });
+                doc.setFontSize(11);
+                doc.setFontStyle("bold");
+                const { previous } = prevAutoTable.autoTable;
+                doc.text("Amount Check", leftStartCoordinate + 117, previous.finalY + 10);
+                doc.setFontSize(12);
+                doc.text("$0.00", leftStartCoordinate + 163, previous.finalY + 10);
+
+                doc.addPage();
+                doc.setFontStyle("normal");
+                doc.setFontSize(11);
+
+                // /// PDF SECOND PAGE HEADER //////
+                doc.text("Ministry of Citizens' Services", leftStartCoordinate + 50, 15);
+                doc.text(
+                  "Procurement and Supply, Procurement Services Branch(Stategic and Advisory Services)",
+                  30,
+                  21
+                );
+                doc.text("PO Box 9476 Stn Prov Govt", leftStartCoordinate + 50, 27);
+                doc.text("Victoria BC V8W 9W6", leftStartCoordinate + 55, 33);
+
+                // /// PDF SECOND PAGE HEADER END//////
+
+                doc.text("Ministry of Citizens' Services", 15, 55);
+                doc.text("OCIO - Technology Solutions", 15, 61);
+
+                doc.text(
+                  pdfValues[i].dateCreated.toString().slice(0, 10),
+                  leftStartCoordinate + 125,
+                  55
+                );
+                doc.text(
+                  `${pdfValues[i].mouName}-${pdfValues[i].billingCount}`,
+                  leftStartCoordinate + 125,
+                  61
+                );
+                doc.text(
+                  pdfValues[i].userFinanceCodes[0].clientNo
+                    ? pdfValues[i].userFinanceCodes[0].clientNo
+                    : "",
+                  leftStartCoordinate + 125,
+                  70
+                );
+                doc.text(
+                  pdfValues[i].userFinanceCodes[0].responsibilityCenter
+                    ? pdfValues[i].userFinanceCodes[0].responsibilityCenter
+                    : "",
+                  leftStartCoordinate + 125,
+                  76
+                );
+                doc.text(
+                  pdfValues[i].userFinanceCodes[0].serviceCenter
+                    ? pdfValues[i].userFinanceCodes[0].serviceCenter
+                    : "",
+                  leftStartCoordinate + 125,
+                  82
+                );
+                doc.text(
+                  pdfValues[i].userFinanceCodes[0].stob
+                    ? pdfValues[i].userFinanceCodes[0].stob
+                    : "",
+                  leftStartCoordinate + 125,
+                  88
+                );
+                doc.text(
+                  pdfValues[i].userFinanceCodes[0].projectCode
+                    ? pdfValues[i].userFinanceCodes[0].projectCode
+                    : "",
+                  leftStartCoordinate + 125,
+                  94
+                );
+
+                doc.setFontSize(12);
+                doc.setFontStyle("bold");
+                doc.text("Notification of Charges", leftStartCoordinate + 50, 105);
+                doc.setFontStyle("normal");
+                doc.setFontSize(11);
+                doc.text(pdfValues[i].financeName ? pdfValues[i].financeName : "", 40, 115);
+                doc.text(pdfValues[i].mouName ? pdfValues[i].mouName : "", 40, 122);
+                doc.text(pdfValues[i].leadUser ? pdfValues[i].leadUser : "", 40, 129);
+
+                doc.setFontStyle("bold");
+                doc.text("Date", leftStartCoordinate + 110, 55);
+                doc.text("MOU", leftStartCoordinate + 110, 61);
+                doc.text("Client  ", leftStartCoordinate + 108, 70);
+                doc.text("Responsibility", leftStartCoordinate + 93, 76);
+                doc.text("ServiceLine", leftStartCoordinate + 97, 82);
+                doc.text("STOB", leftStartCoordinate + 107, 88);
+                doc.text("ProjectsCode", leftStartCoordinate + 93, 94);
+                doc.text("Program", 15, 115);
+                doc.text("Reference", 15, 122);
+                doc.text("Contact", 15, 129);
+                // doc.text('Fees', leftStartCoordinate + 106, 160);
+                // doc.text('Expenses', leftStartCoordinate + 106, 169);
+                // doc.text('Total', leftStartCoordinate + 106, 178);
+                doc.text("Contact", 15, 200);
+                doc.text("Number of Pages", 15, 220);
+
+                doc.setFontStyle("normal");
+                // doc.text(
+                //   `$${pdfValues[i].fees.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`,
+                //   leftStartCoordinate + 136,
+                //   160,
+                // );
+                // doc.text(
+                //   `$${pdfValues[i].expenses.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`,
+                //   leftStartCoordinate + 136,
+                //   169,
+                // );
+                // doc.text(
+                //   `$${pdfValues[i].totalAmount.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`,
+                //   leftStartCoordinate + 136,
+                //   178,
+                // );
+                doc.autoTable({
+                  margin: { top: 150, left: 120, right: 40 },
+                  theme: "plain",
+                  colSpan: 2,
+                  tableWidth: "auto",
+                  cellWidth: "wrap",
+                  columnStyles: {
+                    0: { cellWidth: "auto", halign: "right" },
+                    1: { cellWidth: "auto", halign: "right" }
+                  },
+                  styles: {
+                    fontSize: 11,
+                    fontStyle: "bold"
+                  },
+                  body: [
+                    [
+                      "Fees:",
+                      `$${pdfValues[i].fees
+                        .toFixed(2)
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`
+                    ],
+                    [
+                      "Expenses:",
+                      `$${pdfValues[i].expenses
+                        .toFixed(2)
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`
+                    ],
+                    [
+                      "Total:",
+                      `$${pdfValues[i].totalAmount
+                        .toFixed(2)
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`
+                    ]
+                  ]
+                });
+                doc.text(
+                  pdfValues[i].contact ? pdfValues[i].contact : "",
+                  leftStartCoordinate + 38,
+                  200
+                );
+                doc.text("Ministry of Citizens' Services", leftStartCoordinate + 38, 205);
+
+                const res = this.date.split("-");
+                const valdate = this.getDateInYYYYMMDD(
+                  new Date(parseInt(res[0], 10), parseInt(res[1], 10), 0)
+                );
+                doc.text(
+                  `Includes Time and Expenses up to ${new Date(valdate).toString().slice(4, 15)}`,
+                  leftStartCoordinate + 35,
+                  230
+                );
+                doc.setFontStyle("italic");
+                doc.text(
+                  "Processed by Inter-Ministry Electronic Chargeback System. Charges have already been made to ",
+                  15,
+                  260
+                );
+                doc.text(
+                  "your account and, unless you disagree with the charges no further action required by you",
+                  15,
+                  265
+                );
+                doc.addPage();
+                doc.setFontStyle("normal");
+                doc.setFontStyle("bold");
+                doc.text("Billing Details", 15, 15);
+                doc.setFontStyle("normal");
+                const tableBillingDetailsHeaders = [
+                  "Date",
+                  "Description",
+                  "Type",
+                  "Resource",
+                  "Hours",
+                  "Rate",
+                  "Amount"
+                ];
+                const tableRowsBillingFormatted = pdfValues[i].details.map(proj => [
+                  proj.entryDate,
+                  proj.description ? proj.description : "",
+                  proj.type,
+                  proj.resource ? proj.resource : "",
+                  proj.hours ? proj.hours : "",
+                  proj.type === "Expense"
+                    ? proj.rate
+                      ? proj.rate
+                      : ""
+                    : proj.rate
+                    ? proj.rate
+                    : "0",
+                  proj.amount
+                    ? `$${proj.amount
+                        .toFixed(2)
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`
+                    : "$0"
+                ]);
+                const billTable = doc.autoTable(
+                  tableBillingDetailsHeaders,
+                  tableRowsBillingFormatted,
+                  {
+                    theme: "plain",
+                    tableWidth: "auto",
+                    margin: { top: 30 },
+                    styles: {
+                      overflow: "linebreak",
+                      fontSize: 12,
+                      overflowColumns: "linebreak"
+                    },
+                    columnStyles: { 6: { halign: "right" } },
+                    didParseCell(table) {
+                      if (table.section === "head" && table.cell.raw === "Amount") {
+                        table.cell.styles.halign = "right";
+                      }
+                    }
+                  }
+                );
+                doc.setFontStyle("normal");
+                // eslint-disable-next-line no-unused-vars
+                const billTotalPosition = billTable.autoTable.previous;
+                // eslint-disable-next-line no-console
+
+                doc.setFontStyle("bold");
+                const finalTable = doc.autoTable({
+                  margin: { top: 10, left: 96 },
+                  theme: "plain",
+                  colSpan: 2,
+                  tableWidth: "auto",
+                  cellWidth: "wrap",
+                  columnStyles: {
+                    0: { cellWidth: "auto" },
+                    1: { cellWidth: "auto", halign: "right" }
+                  },
+                  styles: {
+                    fontSize: 11,
+                    fontStyle: "bold"
+                  },
+                  body: [
+                    [
+                      "Total Current Fees:",
+                      `$${
+                        pdfValues[i].fees
+                          ? pdfValues[i].fees
+                              .toFixed(2)
+                              .toString()
+                              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                          : "0"
+                      }`
+                    ],
+                    [
+                      "Total Current Expenses:",
+                      `$${
+                        pdfValues[i].expenses
+                          ? pdfValues[i].expenses
+                              .toFixed(2)
+                              .toString()
+                              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                          : "0"
+                      }`
+                    ],
+                    [
+                      "Total Current Billing:",
+                      `$${
+                        pdfValues[i].totalAmount
+                          ? pdfValues[i].totalAmount
+                              .toFixed(2)
+                              .toString()
+                              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                          : "0"
+                      }`
+                    ],
+                    [
+                      "Total Previous Billings:",
+                      `$${
+                        pdfValues[i].prevBillAmount
+                          ? pdfValues[i].prevBillAmount
+                              .toFixed(2)
+                              .toString()
+                              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                          : "0"
+                      }`
+                    ],
+                    [
+                      "Total Billings to Date:",
+                      `$${
+                        pdfValues[i].totalBillingToDate
+                          ? pdfValues[i].totalBillingToDate
+                              .toFixed(2)
+                              .toString()
+                              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                          : "0"
+                      }`
+                    ],
+                    [
+                      "MOU Estimate:",
+                      `$${
+                        pdfValues[i].mouEstimate
+                          ? pdfValues[i].mouEstimate
+                              .toFixed(2)
+                              .toString()
+                              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                          : "0"
+                      }`
+                    ],
+                    [
+                      "Balance Remaining on MOU:",
+                      `$${
+                        pdfValues[i].balanceMou
+                          ? pdfValues[i].balanceMou
+                              .toFixed(2)
+                              .toString()
+                              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                          : "0"
+                      }`
+                    ]
+                  ]
+                });
+                // eslint-disable-next-line radix
+                const finalTablePosition = finalTable.autoTable.previous;
+                doc.setPage(billTotalPosition.startPageNumber - 1);
+                doc.setFontStyle("normal");
+                const totalPages =
+                  totalPage === 0
+                    ? parseInt(finalTablePosition.startPageNumber.toString()) +
+                      parseInt(finalTablePosition.pageCount.toString()) -
+                      1
+                    : parseInt(finalTablePosition.startPageNumber.toString()) +
+                      parseInt(finalTablePosition.pageCount.toString()) -
+                      1 -
+                      totalPage;
+                totalPage = parseInt(totalPage.toString()) + parseInt(totalPages.toString());
+                doc.text(totalPages.toString(), 58, 220);
+              }
+
+              // doc.text('Total Pages', 117, billTotalPosition.finalY + 10);
+              doc.save(pdfValues[0].documentPath);
+              this.getAllProjectList();
+            }
+          });
+      }
+      if (result2.length) {
+        vm.$refs.spinner.open();
+        vm.$store
+          .dispatch("financeExportOld", {
+            selectedProjects: result2,
+            selectedDate: this.date
+          })
+          .then(() => {
+            this.selectedProjectsOld = [];
+            this.selectedProjects = [];
+            if (
+              vm.$store.state.financeExportOld[0]
+                ? vm.$store.state.financeExportOld[0].length
+                : 0 === 0
+            ) {
+              vm.$refs.spinner.close();
+            }
+            vm.$store.state.financeExportOld[0].forEach(entry => {
+              const exportData = JSON.parse(entry.exportData);
+              pdfValues.push(exportData);
+              vm.$refs.spinner.close();
+            });
+            vm.$store.state.financeExportOld[1].forEach(entry => {
+              const exportData = JSON.parse(entry.exportData);
+              pdfValuesNonMinistry.push(exportData);
+              vm.$refs.spinner.close();
+            });
+            if (pdfValues.length === 0 && pdfValuesNonMinistry.length === 0) {
+              return;
+            }
+            let pageNum = 0;
+            if (pdfValuesNonMinistry.length > 0) {
+              const leftValue = 0;
+              const topValue = 20;
+              // ///////////// PDF FIRST PAGE START /////////////////////////////////////////////
+              const doc = new jsPDF({
+                putOnlyUsedFonts: true,
+                orientation: "portrait"
+              });
+              for (let i = 0; i < pdfValuesNonMinistry.length; i++) {
+                // eslint-disable-next-line eqeqeq
+                if (i != 0) {
+                  doc.addPage();
+                } else doc.setFontStyle("bold");
+                doc.setFontSize(44);
+                doc.setFont("Times New Roman");
+                doc.text("INVOICE", leftValue + 70, topValue + 15);
+
+                doc.setFontSize(9);
+                doc.line(leftValue + 37, topValue + 25, 37, topValue + 45);
+                doc.line(leftValue + 65, topValue + 25, 65, topValue + 45);
+                doc.line(leftValue + 90, topValue + 25, 90, topValue + 45); //vertical line
+                doc.line(leftValue + 140, topValue + 25, 140, topValue + 45);
+                doc.line(leftValue + 10, topValue + 25, 180, topValue + 25);
+                doc.text("INVOICE DATE", leftValue + 10, topValue + 30);
+                doc.text("CUSTOMER #", leftValue + 38, topValue + 30);
+                doc.text("INVOICE #", leftValue + 66, topValue + 30);
+                doc.text("HST REGISTRATION #", leftValue + 91, topValue + 30);
+                doc.text("TERMS OF PAYMENT", leftValue + 141, topValue + 30);
+                doc.setFontStyle("normal");
+                doc.text(
+                  pdfValuesNonMinistry[i].dateCreated.toString().slice(0, 10),
+                  leftValue + 10,
+                  topValue + 40
+                );
+                doc.text("", leftValue + 38, topValue + 40);
+                doc.text("", leftValue + 93, topValue + 40);
+                doc.text("NET CASH 30 DAYS", leftValue + 143, topValue + 40);
+                doc.line(leftValue + 10, topValue + 45, 180, topValue + 45);
+
+                const pdfSinglePageHeight = doc.internal.pageSize.height;
+                // eslint-disable-next-line no-unused-vars
+                const firstPageInitialCoordinate = 0;
+                // eslint-disable-next-line no-unused-vars
+                const secondPageInitialCoordinate = pdfSinglePageHeight + 100;
+                const leftStartCoordinate = 20;
+                // eslint-disable-next-line no-unused-vars
+                const topStartCoordinate = 20;
+                doc.setFontStyle("bold");
+                // doc.text('Document # ', leftStartCoordinate, 20);
+                doc.text("IN ACCOUNT WITH", leftValue + 10, topValue + 50);
+
+                doc.setFontSize(12);
+                doc.setFontStyle("normal");
+                if (pdfValuesNonMinistry[i].clientAddress) {
+                   doc.text(
+                 (pdfValuesNonMinistry[i].clientAddress[0].orgName?pdfValuesNonMinistry[i].clientAddress[0].orgName:"").concat(pdfValuesNonMinistry[i].clientAddress[0].addressLine1?(", ").concat(pdfValuesNonMinistry[i].clientAddress[0].addressLine1?pdfValuesNonMinistry[i].clientAddress[0].addressLine1:""):""),
+                  leftValue + 10,
+                  topValue + 58
+                );
+
+                doc.text(
+                 (pdfValuesNonMinistry[i].clientAddress[0].addressLine2?pdfValuesNonMinistry[i].clientAddress[0].addressLine2:"").concat(pdfValuesNonMinistry[i].clientAddress[0].city?(", ").concat(pdfValuesNonMinistry[i].clientAddress[0].city?pdfValuesNonMinistry[i].clientAddress[0].city:""):""),
+                  leftValue + 10,
+                  topValue + 62
+                );
+
+                doc.text(
+                  (pdfValuesNonMinistry[i].clientAddress[0].province?pdfValuesNonMinistry[i].clientAddress[0].province:"").concat(pdfValuesNonMinistry[i].clientAddress[0].postalCode?(", ").concat(pdfValuesNonMinistry[i].clientAddress[0].postalCode?pdfValuesNonMinistry[i].clientAddress[0].postalCode:""):""),
+                  leftValue + 10,
+                  topValue + 66
+                );
+                doc.text(
+                  pdfValuesNonMinistry[i].clientAddress[0].leadUserName
+                    ? pdfValuesNonMinistry[i].clientAddress[0].leadUserName
+                    : "",
+                  leftValue + 10,
+                  topValue + 54
+                );
+                }
+                doc.setFontSize(11);
+                doc.text(
+                  "As per Procurement Service Agreement " +
+                    pdfValuesNonMinistry[i].mouName +
+                    " dated between ",
+                  leftValue + 10,
+                  topValue + 80
+                );
+                doc.text("Procurement Services Branch and ", leftValue + 10, topValue + 85);
+                doc.text(
+                  pdfValuesNonMinistry[i].contact ? pdfValuesNonMinistry[i].contact : "",
+                  leftValue + 65,
+                  topValue + 85
+                );
+                doc.text("Time:", leftValue + 145, topValue + 100);
+                doc.text("Expense:", leftValue + 145, topValue + 105);
+                doc.text(
+                  `$${pdfValuesNonMinistry[i].fees
+                    .toFixed(2)
+                    .toString()
+                    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`,
+                  leftValue + 160,
+                  topValue + 100
+                );
+
+                doc.text(
+                  `$${pdfValuesNonMinistry[i].expenses
+                    .toFixed(2)
+                    .toString()
+                    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`,
+                  leftValue + 160,
+                  topValue + 105
+                );
+                doc.setFontSize(10);
+                const staticTextSettings = 20;
+                doc.line(
+                  leftValue + 10,
+                  staticTextSettings + topValue + 195,
+                  180,
+                  staticTextSettings + topValue + 195
+                );
+
+                doc.setFontSize(9);
+                doc.text(
+                  "Ministry of Citizens Services",
+                  leftValue + 10,
+                  staticTextSettings + topValue + 205
+                );
+                doc.text(
+                  "Procurement and Supply,procurement",
+                  leftValue + 10,
+                  staticTextSettings + topValue + 210
+                );
+                doc.text(
+                  "PO Box 9452 Stn Prov Govt",
+                  leftValue + 10,
+                  staticTextSettings + topValue + 215
+                );
+                doc.text(
+                  "Victoria BC V8W 9V7",
+                  leftValue + 10,
+                  staticTextSettings + topValue + 220
+                );
+                doc.text(
+                  "\u2022 " + "Make cheque payable to Ministry of Finance",
+                  leftValue + 70,
+                  staticTextSettings + topValue + 205
+                );
+                doc.text(
+                  "\u2022 " + "Interest will be charged on overdue accounts in",
+                  leftValue + 70,
+                  staticTextSettings + topValue + 210
+                );
+                doc.text(
+                  "accordance with applicable regulations",
+                  leftValue + 70,
+                  staticTextSettings + topValue + 215
+                );
+                doc.text(
+                  "\u2022 " + "Do not mail cash",
+                  leftValue + 70,
+                  staticTextSettings + topValue + 220
+                );
+                doc.text(
+                  "\u2022 " + "A Service fee of $20 minimum will be charged for",
+                  leftValue + 70,
+                  staticTextSettings + topValue + 225
+                );
+                doc.text(
+                  "dishonoured cheques",
+                  leftValue + 70,
+                  staticTextSettings + topValue + 230
+                );
+                doc.text(
+                  "\u2022 " + "Please quote invoice number",
+                  leftValue + 70,
+                  staticTextSettings + topValue + 235
+                );
+                doc.text(
+                  "\u2022 " + "Do not alter invoice amounts",
+                  leftValue + 70,
+                  staticTextSettings + topValue + 240
+                );
+                doc.text(
+                  "\u2022 " + "Inquiries: (250)-952-4435 OR QPInvoices@gov.bc.ca",
+                  leftValue + 70,
+                  staticTextSettings + topValue + 245
+                );
+
+                doc.setFontStyle("bold");
+                doc.text("MAIL CHEQUE TO", leftValue + 10, staticTextSettings + topValue + 200);
+                doc.text("NOTICE", leftValue + 70, staticTextSettings + topValue + 200);
+                doc.text("TOTAL", leftValue + 157, staticTextSettings + topValue + 230);
+                doc.text("SUBTOTAL", leftValue + 150, staticTextSettings + topValue + 200);
+                doc.text(
+                  `$${pdfValuesNonMinistry[i].totalAmount
+                    .toFixed(2)
+                    .toString()
+                    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`,
+                  leftValue + 173,
+                  staticTextSettings + topValue + 230
+                );
+                doc.text(
+                  `$${pdfValuesNonMinistry[i].totalAmount
+                    .toFixed(2)
+                    .toString()
+                    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`,
+                  leftValue + 173,
+                  staticTextSettings + topValue + 200
+                );
+                let mouWithBillCount;
+                if (pdfValuesNonMinistry[i].billingCount) {
+                  mouWithBillCount = pdfValuesNonMinistry[i].billingCount
+                    ? `${pdfValuesNonMinistry[i].mouName}-${pdfValuesNonMinistry[i].billingCount}`
+                    : pdfValuesNonMinistry[i].mouName;
+                } else {
+                  mouWithBillCount = pdfValuesNonMinistry[i].mouName
+                    ? pdfValuesNonMinistry[i].mouName
+                    : "";
+                }
+                if (i == 0) doc.text(mouWithBillCount, leftValue + 66, topValue + 40);
+                // doc.text(mouWithBillCount, leftStartCoordinate + 35, 20);
+                // doc.text('SAP', leftStartCoordinate + 150, 20);
+                doc.setFontSize(18);
+                doc.addPage();
+                doc.setFontSize(11);
+                doc.setFontStyle("bold");
+                doc.text("Billing Details", 15, 15);
+                doc.setFontStyle("normal");
+                const tableBillingDetailsHeaders = [
+                  "Date",
+                  "Description",
+                  "Type",
+                  "Resource",
+                  "Hours",
+                  "Rate",
+                  "Amount"
+                ];
+                const tableRowsBillingFormatted = pdfValuesNonMinistry[i].details.map(proj => [
+                  proj.entryDate,
+                  proj.description ? proj.description : "",
+                  proj.type,
+                  proj.resource ? proj.resource : "",
+                  proj.hours ? proj.hours : "",
+                  proj.type === "Expense"
+                    ? proj.rate
+                      ? proj.rate
+                      : ""
+                    : proj.rate
+                    ? proj.rate
+                    : "0",
+                  proj.amount
+                    ? `$${proj.amount
+                        .toFixed(2)
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`
+                    : "$0"
+                ]);
+                const billTable = doc.autoTable(
+                  tableBillingDetailsHeaders,
+                  tableRowsBillingFormatted,
+                  {
+                    theme: "plain",
+                    tableWidth: "auto",
+                    margin: { top: 30 },
+                    styles: {
+                      overflow: "linebreak",
+                      fontSize: 12,
+                      overflowColumns: "linebreak"
+                    },
+                    columnStyles: { 6: { halign: "right" } },
+                    didParseCell(table) {
+                      if (table.section === "head" && table.cell.raw === "Amount") {
+                        table.cell.styles.halign = "right";
+                      }
+                    }
+                  }
+                );
+                // doc.setFontStyle('bold');
+                const billTotalPosition = billTable.autoTable.previous;
+                doc.setFontStyle("bold");
+                // this if-else condition to support old pdf version
+                if (pdfValuesNonMinistry[i].mouEstimate !== undefined) {
+                  const finalTable = doc.autoTable({
+                    margin: { top: 10, left: 96 },
+                    theme: "plain",
+                    colSpan: 2,
+                    tableWidth: "auto",
+                    cellWidth: "wrap",
+                    columnStyles: {
+                      0: { cellWidth: "auto" },
+                      1: { cellWidth: "auto", halign: "right" }
+                    },
+                    styles: {
+                      fontSize: 11,
+                      fontStyle: "bold"
+                    },
+                    body: [
+                      [
+                        "Total Current Fees:",
+                        `$${
+                          pdfValuesNonMinistry[i].fees
+                            ? pdfValuesNonMinistry[i].fees
+                                .toFixed(2)
+                                .toString()
+                                .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                            : "0"
+                        }`
+                      ],
+                      [
+                        "Total Current Expenses:",
+                        `$${
+                          pdfValuesNonMinistry[i].expenses
+                            ? pdfValuesNonMinistry[i].expenses
+                                .toFixed(2)
+                                .toString()
+                                .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                            : "0"
+                        }`
+                      ],
+                      [
+                        "Total Current Billing:",
+                        `$${
+                          pdfValuesNonMinistry[i].totalAmount
+                            ? pdfValuesNonMinistry[i].totalAmount
+                                .toFixed(2)
+                                .toString()
+                                .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                            : "0"
+                        }`
+                      ],
+                      [
+                        "Total Previous Billings:",
+                        `$${
+                          pdfValuesNonMinistry[i].prevBillAmount
+                            ? pdfValuesNonMinistry[i].prevBillAmount
+                                .toFixed(2)
+                                .toString()
+                                .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                            : "0"
+                        }`
+                      ],
+                      [
+                        "Total Billings to Date:",
+                        `$${
+                          pdfValuesNonMinistry[i].totalBillingToDate
+                            ? pdfValuesNonMinistry[i].totalBillingToDate
+                                .toFixed(2)
+                                .toString()
+                                .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                            : "0"
+                        }`
+                      ]
+                    ]
+                  });
+                  const finalTablePosition = finalTable.autoTable.previous;
+                  doc.setPage(billTotalPosition.startPageNumber - 1);
+                  doc.setFontStyle("normal");
+                  const totalPages =
+                    totalPage === 0
+                      ? parseInt(finalTablePosition.startPageNumber.toString()) +
+                        parseInt(finalTablePosition.pageCount.toString()) -
+                        1
+                      : parseInt(finalTablePosition.startPageNumber.toString()) +
+                        parseInt(finalTablePosition.pageCount.toString()) -
+                        1 -
+                        totalPage;
+                  totalPage = parseInt(totalPage.toString()) + parseInt(totalPages.toString());
+                  //doc.text(totalPages.toString(), 58, 220);
+                } else {
+                  doc.text(
+                    "Total Amount",
+                    leftStartCoordinate + 117,
+                    billTotalPosition.finalY + 10
+                  );
+                  doc.setFontSize(12);
+                  doc.text(
+                    `$${pdfValuesNonMinistry[i].totalAmount
+                      .toFixed(2)
+                      .toString()
+                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`,
+                    leftStartCoordinate + 155,
+                    billTotalPosition.finalY + 10
+                  );
+                  // theme: 'striped'|'grid'|'plain'|'css'
+                }
+                const pCount = doc.internal.getNumberOfPages() - pageNum; //Total Page Number
+                for (let i = 1 + pageNum; i <= pCount + pageNum; i++) {
+                  doc.setPage(i);
+                  doc.setFontSize(12);
+                  doc.text(
+                    "Page " + (i - pageNum) + " of " + pCount,
+                    leftValue + 85,
+                    20 + topValue + 250
+                  );
+                }
+                pageNum = pageNum + pCount;
+              }
+              doc.save(pdfValuesNonMinistry[0].documentPath);
+              this.getAllProjectList();
+            }
+          });
+      }
     }
   },
   created() {
@@ -1137,5 +2176,9 @@ export default {
 .calender-box {
   width: 242px;
   margin-left: 15px;
+}
+.reports-header {
+  font-size: 20px;
+  margin-left: 1.5em;
 }
 </style>
