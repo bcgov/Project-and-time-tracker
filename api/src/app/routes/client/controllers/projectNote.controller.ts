@@ -29,16 +29,6 @@ export const saveProjectNotes = async (ctx: Koa.Context) => {
   }
 };
 
-// export const updateProcurementLog = async (ctx: Koa.Context) => {
-//   try {
-//     const body = ctx.request.body;
-//     console.log(body);
-//     ctx.body = await updateProcLog(body.procurementlog.id, body.procurementlog);
-//   } catch (err) {
-//     ctx.throw(err.message);
-//   }
-// };
-
 export const getAllProjectNotes = async (ctx: Koa.Context) => {
   try {
     // TODO - If user is NOT admin, return only the sheets by user id?

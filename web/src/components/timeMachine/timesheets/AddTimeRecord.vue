@@ -330,7 +330,6 @@ export default {
       return sum;
     },
     selectedProject() {
-      console.log("selectedProject");
       if (this.form && this.form.mou && this.form.project) {
         const selectedProject = this.userMouProjects.filter(item => item.id === this.form.project);
         if (selectedProject[0]) {

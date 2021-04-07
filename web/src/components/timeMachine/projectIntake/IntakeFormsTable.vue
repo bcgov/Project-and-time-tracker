@@ -219,8 +219,6 @@ export default {
   },
   computed: {
     intakeRequests() {
-      // console.log('intakeRequests', this.$store.state.intakeRequests);
-
       return this.$store.state.intakeRequests;
     },
     userList() {
@@ -250,7 +248,7 @@ export default {
       this.dialog = true;
     },
     async approveRequest(id) {
-      const selectedCategory = await this.$refs.selectCategory.open();     
+      const selectedCategory = await this.$refs.selectCategory.open();
       if (selectedCategory) {
           this.$store.dispatch('approveIntakeRequest', { id, categoryId: selectedCategory }).then(() => {
             this.$store.dispatch('fetchIntakeRequests');
@@ -405,7 +403,6 @@ export default {
         const project = this.mouProject;
         project.mou = { id: mouID, name: this.mou };
         const projResponse = await this.$store.dispatch('updateIntakeRequest', project);
-        // console.log('assignMOU projResponse', {projResponse});
 
         this.fetchData();
         this.mouDialog = false;

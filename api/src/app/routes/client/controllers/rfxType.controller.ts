@@ -42,7 +42,6 @@ export const saveRfxType = async (ctx: Koa.Context) => {
 export const rfxTypeUpdate = async (ctx: Koa.Context) => {
   try {
     const body = ctx.request.body;
-    console.log(body);
     ctx.body = await updateRfxType(body.RfxType.id, body.RfxType);
   } catch (err) {
     ctx.throw(err.message);

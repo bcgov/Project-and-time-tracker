@@ -72,7 +72,6 @@ export default {
   },
   methods: {
     reset() {
-      console.log('hi its working');
     },
     disableWeekPicker(flag = false) {
       this.disabledatepicker = flag;

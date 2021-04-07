@@ -24,7 +24,6 @@ export const saveFinanceCodes = async (ctx: Koa.Context) => {
 export const updateFinanceCode = async (ctx: Koa.Context) => {
   try {
     const body = ctx.request.body;
-    console.log(body);
     ctx.body = await updatFinanceCodes(body.FinanceCodes.id, body.FinanceCodes);
   } catch (err) {
     ctx.throw(err.message);

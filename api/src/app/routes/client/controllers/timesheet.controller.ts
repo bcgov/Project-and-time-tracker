@@ -58,7 +58,6 @@ export const timesheetEntries = async (ctx: Koa.Context) => {
       ctx.throw('no data Found');
       return;
     }
-    console.log(model);
     ctx.body = await retrieveTimesheetByUserAndDate(model);
   } catch (err) {
     ctx.throw(err.message);
@@ -72,7 +71,6 @@ export const timeEntryByUser = async (ctx: Koa.Context) => {
       ctx.throw('no data Found');
       return;
     }
-    console.log(model);
     ctx.body = await retrieveForLightTimesheetByUser(model);
   } catch (err) {
     ctx.throw(err.message);
@@ -167,8 +165,6 @@ export const createBatchTimesheet = async (ctx: Koa.Context) => {
       }
       let timesheet = await retrieveForLightTimesheet(model);
 
-      console.log('createLightTimesheet, does timesheet exist?', { timesheet });
-
       let timesheetId: string;
       if (timesheet) {
         timesheetId = timesheet.id;
@@ -178,9 +174,6 @@ export const createBatchTimesheet = async (ctx: Koa.Context) => {
         model.createdUserId = auth.userId;
 
         timesheet = await createTimesheet(model);
-        console.log('createLightTimesheet, CREATED new timesheet', {
-          timesheet
-        });
         timesheetId = timesheet.id;
         model.id = timesheetId;
       }
@@ -270,8 +263,6 @@ export const createLightTimesheet = async (ctx: Koa.Context) => {
 
     let timesheet = await retrieveForLightTimesheet(model);
 
-    console.log('createLightTimesheet, does timesheet exist?', { timesheet });
-
     let timesheetId: string;
     if (timesheet) {
       timesheetId = timesheet.id;
@@ -281,7 +272,6 @@ export const createLightTimesheet = async (ctx: Koa.Context) => {
       model.createdUserId = auth.userId;
 
       timesheet = await createTimesheet(model);
-      console.log('createLightTimesheet, CREATED new timesheet', { timesheet });
       timesheetId = timesheet.id;
       model.id = timesheetId;
     }

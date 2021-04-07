@@ -42,7 +42,6 @@ export const saveRfxPhase = async (ctx: Koa.Context) => {
 export const rfxPhaseUpdate = async (ctx: Koa.Context) => {
   try {
     const body = ctx.request.body;
-    console.log(body);
     ctx.body = await updateRfxPhase(body.RfxPhase.id, body.RfxPhase);
   } catch (err) {
     ctx.throw(err.message);

@@ -39,9 +39,7 @@ export const getMinistryById = async (ctx: Koa.Context) => {
 export const updateMinistryActionById = async (ctx: Koa.Context) => {
   try {
     const ministry = ctx.request.body;
-    console.log('updateMinistryAction called', { ministry });
     const ret = await updateMinistry(ministry);
-    console.log('updateMinistryAction done', {ret})
     ctx.body = 'success';
   } catch (err) {
     ctx.throw(err.message)

@@ -42,7 +42,6 @@ export const saveContactAction = async (ctx: Koa.Context) => {
       if (contacts[index].contactType === 'clientcontact') {
         isClientContactExist = true;
       }
-      console.log(contacts[index].id);
       if (!contacts[index].id || contacts[index].id === undefined) {
         contacts[index].id = undefined;
         contacts[index].contactType = 'clientcontact';
