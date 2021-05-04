@@ -114,7 +114,7 @@ parameters:
   displayName: Image Namespace
   name: IMAGE_NAMESPACE
   required: true
-  value: aifsul-tools
+  value: ed57f0-tools
 - description: The TAG name for this environment, e.g., dev, test, prod
   displayName: Env TAG name
   name: TAG_NAME
