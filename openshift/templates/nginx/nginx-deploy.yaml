@@ -119,7 +119,7 @@ parameters:
   displayName: Env TAG name
   name: TAG_NAME
   value: dev
-- description: The public URL to access this deployment (incldue `pathfinder.gov.bc.ca`)
+- description: The public URL to access this deployment (incldue `apps.silver.devops.gov.bc.ca`)
   displayName: Env TAG name
   name: HOSTNAME
-  value: timemachine-web-dev.pathfinder.gov.bc.ca
+  value: timemachine-web-dev.apps.silver.devops.gov.bc.ca
