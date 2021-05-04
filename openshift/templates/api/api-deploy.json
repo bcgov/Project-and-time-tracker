@@ -168,7 +168,7 @@
       "description": "The exposed hostname that will route to the service, e.g., myappname.pathfinder.gov.bc.ca, if left blank a value will be defaulted.",
       "displayName": "Application Hostname",
       "name": "APPLICATION_DOMAIN",
-      "value": "timemachine-api-aifsul-dev.pathfinder.gov.bc.ca"
+      "value": "timemachine-api-ed57f0-dev.pathfinder.gov.bc.ca"
     },
 
     {
@@ -176,7 +176,7 @@
       "displayName": "Image Namespace",
       "name": "IMAGE_NAMESPACE",
       "required": true,
-      "value": "aifsul-tools"
+      "value": "ed57f0-tools"
     },
     {
       "description": "The TAG name for this environment, e.g., dev, test, prod",

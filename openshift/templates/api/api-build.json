@@ -3,7 +3,7 @@
     "apiVersion": "v1",
     "metadata": {
       "name": "timemachine-api",
-      "namespace": "aifsul-tools",
+      "namespace": "ed57f0-tools",
       "creationTimestamp": null
     },
     "objects": [
