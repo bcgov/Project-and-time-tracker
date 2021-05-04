@@ -1,4 +1,4 @@
-FROM nginx:stable
+FROM docker-remote.artifacts.developer.gov.bc.ca/nginx:1.18.0
 # support running as arbitrary user which belogs to the root group
 RUN chmod g+rwx /var/cache/nginx /var/run /var/log/nginx
 # users are not allowed to listen on priviliged ports
