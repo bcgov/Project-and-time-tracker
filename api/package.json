@@ -74,7 +74,7 @@
     "supertest": "^4.0.0",
     "tape": "^4.10.1",
     "test": "^0.6.0",
-    "typeorm": "^0.2.14",
+    "typeorm": "^0.2.25",
     "uuid-validate": "0.0.3"
   }
 }
