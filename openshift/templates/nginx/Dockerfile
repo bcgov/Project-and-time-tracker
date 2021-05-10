@@ -40,8 +40,14 @@ FROM registry.access.redhat.com/ubi8/nginx-118
 # CMD /usr/libexec/s2i/run
 
 # Add application sources
-ADD ./nginx.conf "${NGINX_CONF_PATH}"
-ADD ./dist .
+# ADD ./nginx.conf "${NGINX_CONF_PATH}"
+
+
+# TODO - Choose between one of copy/add
+ADD ./dist .    
+COPY dist /opt/app-root/src
+
+
 # ADD test-app/*.html .
 
 # Run script uses standard ways to run the application
