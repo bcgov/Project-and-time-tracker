@@ -38,7 +38,7 @@ objects:
           imagePullPolicy: Always
           name: "${NAME}"
           ports:
-          - containerPort: 8081
+          - containerPort: 8080
             protocol: TCP
           resources:
             requests:
@@ -72,10 +72,10 @@ objects:
     name: "${NAME}"
   spec:
     ports:
-    - name: 8081-tcp
-      port: 8081
+    - name: 8080-tcp
+      port: 8080
       protocol: TCP
-      targetPort: 8081
+      targetPort: 8080
     selector:
       app: "${NAME}"
       deploymentconfig: "${NAME}"
@@ -90,7 +90,7 @@ objects:
   spec:
     host: "${HOSTNAME}"
     port:
-      targetPort: 8081-tcp
+      targetPort: 8080-tcp
     tls:
       insecureEdgeTerminationPolicy: Redirect
       terminationc: edge
