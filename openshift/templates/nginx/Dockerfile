@@ -28,29 +28,29 @@ FROM registry.access.redhat.com/ubi8/nginx-118
 # https://catalog.redhat.com/software/containers/ubi8/nginx-118/5f521a6f9dd2d5ca7158e5dc?gti-tabs=get-the-source&container-tabs=overview
 # Add application sources to a directory that the assemble script expects them
 # and set permissions so that the container runs without root access
-# USER 0
-# ADD ./dist /tmp/src/
-# RUN chown -R 1001:0 /tmp/src
-# USER 1001
+USER 0
+ADD ./dist /tmp/src/
+RUN chown -R 1001:0 /tmp/src
+USER 1001
 
-# # Let the assemble script to install the dependencies
-# RUN /usr/libexec/s2i/assemble
+# Let the assemble script to install the dependencies
+RUN /usr/libexec/s2i/assemble
 
-# # Run script uses standard ways to run the application
-# CMD /usr/libexec/s2i/run
+# Run script uses standard ways to run the application
+CMD /usr/libexec/s2i/run
 
 # Add application sources
 # ADD ./nginx.conf "${NGINX_CONF_PATH}"
 
 
 # TODO - Choose between one of copy/add
-ADD ./dist .    
-COPY dist /opt/app-root/src
+# ADD ./dist .    
+# COPY dist /opt/app-root/src
 
 
-# ADD test-app/*.html .
+# # ADD test-app/*.html .
 
-# Run script uses standard ways to run the application
-CMD nginx -g "daemon off;"
+# # Run script uses standard ways to run the application
+# CMD nginx -g "daemon off;"
 
 
