@@ -44,7 +44,9 @@ FROM registry.access.redhat.com/ubi8/nginx-118
 
 
 # TODO - Choose between one of copy/add
-ADD ./dist .    
+# TODO - SHOULD ONLY NEED ONE
+# ADD ./dist .    
+ADD ./dist /usr/share/nginx/html/timemachine    
 # COPY dist /opt/app-root/src
 
 ADD nginx.conf "${NGINX_CONF_PATH}"
