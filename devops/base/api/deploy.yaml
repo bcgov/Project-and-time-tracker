@@ -1,0 +1,80 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: timemachine
+  name: timemachine-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels: 
+      app: timemachine
+  strategy:
+    type: RollingUpdate
+    rollingParams:
+      intervalSeconds: 1
+      maxSurge: 25%
+      maxUnavailable: 25%
+      timeoutSeconds: 600
+      updatePeriodSeconds: 1
+  template:
+    metadata:
+      labels:
+        app: timemachine
+    spec:
+      containers:
+      - name: timemachine-api
+        image: image-registry.openshift-image-registry.svc:5000/ed57f0-tools/timemachine-api
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 250m
+            memory: 200Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        envFrom:
+          - configMapRef:
+              name: api-env
+          - secretRef:
+              name: api-creds
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: timemachine
+  name: timemachine-api
+spec:
+  ports:
+  - name: 8080-tcp
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: timemachine
+  sessionAffinity: None
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Route
+metadata:
+  labels:
+    app: timemachine
+  name: timemachine-api
+spec:
+  port:
+    targetPort: 8080-tcp
+  tls:
+    insecureEdgeTerminationPolicy: Redirect
+    terminationc: edge
+  to:
+    kind: Service
+    name: timemachine-api
+    weight: 100
