@@ -42,16 +42,16 @@ spec:
           startupProbe:
             httpGet:
               path: /
-              port: 8080
+              port: 2015
             failureThreshold: 11
             periodSeconds: 3
           readinessProbe:
             httpGet:
               path: /
-              port: 8080
+              port: 2015
             timeoutSeconds: 3
           ports:
-            - containerPort: 8080
+            - containerPort: 2015
           resources:
             limits:
               cpu: 50m
@@ -80,10 +80,10 @@ spec:
     app: timemachine
     component: web
   ports:
-    - name: 8080-tcp
-      port: 8080
+    - name: 2015-tcp
+      port: 2015
       protocol: TCP
-      targetPort: 8080
+      targetPort: 2015
 ---
 apiVersion: v1
 kind: Route
@@ -94,7 +94,7 @@ metadata:
   name: timemachine-web
 spec:
   port:
-    targetPort: 8080-tcp
+    targetPort: 2015-tcp
   tls:
     insecureEdgeTerminationPolicy: Redirect
     terminationc: edge
