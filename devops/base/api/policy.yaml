@@ -13,7 +13,21 @@
 # limitations under the License.
 #
 ---
-apiVersion: kustomize.config.k8s.io/v1beta1
-kind: Kustomization
-resources:
-  - deploy.yaml
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: allow-api-to-patroni
+spec:
+  # Allow the API to talk to the patroni
+  # database cluster on the given port.
+  podSelector:
+    matchLabels:
+      statefulset: timemachine-patroni
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              role: api
+      ports:
+        - protocol: TCP
+          port: 5432
