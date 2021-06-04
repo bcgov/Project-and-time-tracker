@@ -59,14 +59,14 @@ spec:
             requests:
               cpu: 20m
               memory: 64Mi
-      #     volumeMounts:
-      #         - name: config-vol
-      #           mountPath: /opt/app-root/etc/Caddyfile
-      #           subPath: Caddyfile
-      # volumes:
-      #   - name: config-vol
-      #     configMap:
-      #       name: timemachine-web-config
+          volumeMounts:
+              - name: config-vol
+                mountPath: /opt/app-root/etc/Caddyfile
+                subPath: Caddyfile
+      volumes:
+        - name: config-vol
+          configMap:
+            name: timemachine-web-config
 ---
 apiVersion: v1
 kind: Service
