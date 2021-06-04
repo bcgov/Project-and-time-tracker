@@ -91,21 +91,16 @@ spec:
               cpu: 250m
               memory: 512Mi
           env:
-            #TODO: Remove POD_IP in favor of PATRONI_KUBERNETES_POD_IP
             - name: POD_IP
               valueFrom:
                 fieldRef:
                   apiVersion: v1
                   fieldPath: status.podIP
-            # - name: PATRONI_KUBERNETES_USE_ENDPOINTS
-            #   value: 'true'
-            # - name: PATRONI_KUBERNETES_POD_IP
-            #   valueFrom:
-            #     fieldRef:
-            #       apiVersion: v1
-            #       fieldPath: status.podIP
-            # - name: PATRONI_KUBERNETES_PORTS
-            #   value: '{[{"name": "postgresql", "port": 5432}]}'
+            - name: PATRONI_KUBERNETES_POD_IP
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: status.podIP
             - name: PATRONI_KUBERNETES_NAMESPACE
               valueFrom:
                 fieldRef:
@@ -133,6 +128,8 @@ spec:
       schedulerName: default-scheduler
       serviceAccountName: patroni
       terminationGracePeriodSeconds: 10
+      # nodeSelector:
+      #   name: "mcs-silver-app-03.dmz"
   updateStrategy:
     type: RollingUpdate
   volumeClaimTemplates:
