@@ -15,30 +15,5 @@
 ---
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: ed57f0-dev
-bases:
-  - ../../base/db
-  - ../../base/api
-  - ../../base/web
-  - ../../base/policy
-generatorOptions:
-  labels:
-    app: timemachine
-    type: generated
-configMapGenerator:
-  - name: api-env
-    env: api-env.properties
-secretGenerator:
-  - name: api-creds
-    behavior: create
-    type: Opaque
-    env: api-secret.properties
-  - name: patroni-creds
-    behavior: create
-    type: Opaque
-    env: db-secret.properties
-images:
-  - name: image-registry.openshift-image-registry.svc:5000/ed57f0-tools/timemachine-api
-    newTag: "latest"
-  - name: image-registry.openshift-image-registry.svc:5000/bcgov/patroni-postgres
-    newTag: "12.4-latest"
+resources:
+  - allow-ingress.yaml

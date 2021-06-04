@@ -13,12 +13,16 @@
 # limitations under the License.
 #
 ---
-apiVersion: kustomize.config.k8s.io/v1beta1
-kind: Kustomization
-resources:
-  - rbac.yaml
-  - statefulset.yaml
-  - policy.yaml
-configMapGenerator:
-  - name: patroni-env
-    env: patroni-env.properties
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-from-openshift-ingress
+spec:
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              network.openshift.io/policy-group: ingress
+  podSelector: {}
+  policyTypes:
+    - Ingress

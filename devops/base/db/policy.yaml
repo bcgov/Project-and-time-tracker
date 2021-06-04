@@ -13,12 +13,22 @@
 # limitations under the License.
 #
 ---
-apiVersion: kustomize.config.k8s.io/v1beta1
-kind: Kustomization
-resources:
-  - rbac.yaml
-  - statefulset.yaml
-  - policy.yaml
-configMapGenerator:
-  - name: patroni-env
-    env: patroni-env.properties
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: allow-patroni-replication
+spec:
+  # Allow the patroni pods to replicate
+  podSelector:
+    matchLabels:
+      statefulset: timemachine-patroni
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              statefulset: timemachine-patroni
+      ports:
+        - protocol: TCP
+          port: 5432
+        - protocol: TCP
+          port: 8008
