@@ -23,7 +23,13 @@ import IntakeRequestDto from "@/domain/models/Intake.dto";
 import HashTable from "@/utils/HashTable";
 import RFxDto from "@/domain/models/RFx.dto";
 
-const API_URI = process.env.VUE_APP_API_URI || "http://localhost:3000";
+// For non-local dev get the API from the window location and
+// add /api. This assumes OCP is using a path based route. This way
+// it does not need to be changed for dev/test/prod.
+const API_URI = process.env.NODE_ENV === 'development'
+? (process.env.VUE_APP_API_URI || "http://localhost:3000")
+: `${window.location.origin}/api`;
+
 console.log("API URL:", { API_URI });
 
 Vue.use(Vuex);
