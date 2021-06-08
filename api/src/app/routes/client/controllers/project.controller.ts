@@ -324,7 +324,7 @@ const validateProject = (project: IProject) => {
 };
 
 const routerOpts: Router.IRouterOptions = {
-  prefix: '/project',
+  prefix: 'api/project',
 };
 
 const router: Router = new Router(routerOpts);

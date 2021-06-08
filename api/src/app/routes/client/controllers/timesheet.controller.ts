@@ -552,7 +552,7 @@ const validateTimesheetEntries = async (timesheet: ITimesheet) => {
 };
 
 const routerOpts: Router.IRouterOptions = {
-  prefix: '/timesheet'
+  prefix: 'api/timesheet'
 };
 
 const router: Router = new Router(routerOpts);

@@ -9,7 +9,7 @@ export const verify = async (ctx: Koa.Context) => {
 };
 
 const routerOpts: Router.IRouterOptions = {
-  prefix: '/auth'
+  prefix: 'api/auth'
 };
 
 const router: Router = new Router(routerOpts);

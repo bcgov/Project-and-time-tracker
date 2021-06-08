@@ -312,7 +312,7 @@ const validateIntakeForm = (intake: IProjectIntake) => {
 };
 
 const routerOpts: Router.IRouterOptions = {
-  prefix: '/intake'
+  prefix: 'api/intake'
 };
 
 const router: Router = new Router(routerOpts);

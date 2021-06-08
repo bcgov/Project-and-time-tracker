@@ -87,7 +87,7 @@ export const getAllProcurementLog = async (ctx: Koa.Context) => {
 // };
 
 const routerOpts: Router.IRouterOptions = {
-  prefix: '/procurement'
+  prefix: 'api/procurement'
 };
 
 const router: Router = new Router(routerOpts);

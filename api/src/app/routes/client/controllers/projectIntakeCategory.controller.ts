@@ -24,7 +24,7 @@ export const getProjectIntakeCategoryById = async (ctx: Koa.Context) => {
 };
 
 const routerOpts: Router.IRouterOptions = {
-  prefix: '/project-intake-category'
+  prefix: 'api/project-intake-category'
 };
 
 const router: Router = new Router(routerOpts);
