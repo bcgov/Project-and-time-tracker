@@ -38,7 +38,7 @@ export const updateProjectRiskAnalysis = async (ctx: Koa.Context) => {
 };
 
 const routerOpts: Router.IRouterOptions = {
-  prefix: 'api/project-risk'
+  prefix: '/api/project-risk'
 };
 
 const router: Router = new Router(routerOpts);

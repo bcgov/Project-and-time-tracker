@@ -59,7 +59,7 @@ export const addMinistry = async (ctx: Koa.Context) => {
 }
 
 const routerOpts: Router.IRouterOptions = {
-  prefix: 'api/ministry'
+  prefix: '/api/ministry'
 };
 
 const router: Router = new Router(routerOpts);

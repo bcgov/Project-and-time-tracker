@@ -49,7 +49,7 @@ export const deleteFinanceCode = async (ctx: Koa.Context) => {
 };
 
 const routerOpts: Router.IRouterOptions = {
-  prefix: 'api/financecode'
+  prefix: '/api/financecode'
 };
 
 const router: Router = new Router(routerOpts);

@@ -96,7 +96,7 @@ const validateProjectRfx = (projectRfx: IProjectRfx) => {
 };
 
 const routerOpts: Router.IRouterOptions = {
-  prefix: 'api/project-rfx'
+  prefix: '/api/project-rfx'
 };
 
 const router: Router = new Router(routerOpts);

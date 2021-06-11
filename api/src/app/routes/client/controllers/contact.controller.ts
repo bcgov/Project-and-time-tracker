@@ -130,7 +130,7 @@ const validateContacts = (contacts: IContact[]) => {
 };
 
 const routerOpts: Router.IRouterOptions = {
-  prefix: 'api/contact'
+  prefix: '/api/contact'
 };
 
 const router: Router = new Router(routerOpts);

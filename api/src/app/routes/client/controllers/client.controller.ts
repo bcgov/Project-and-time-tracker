@@ -46,7 +46,7 @@ export const updateFinanceCodes = async (ctx: Koa.Context) => {
 };
 
 const routerOpts: Router.IRouterOptions = {
-  prefix: 'api/client'
+  prefix: '/api/client'
 };
 
 const router: Router = new Router(routerOpts);

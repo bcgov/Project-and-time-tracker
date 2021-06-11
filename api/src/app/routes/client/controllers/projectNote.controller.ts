@@ -51,7 +51,7 @@ export const getAllProjectNotes = async (ctx: Koa.Context) => {
 
 
 const routerOpts: Router.IRouterOptions = {
-  prefix: 'api/projectnotes'
+  prefix: '/api/projectnotes'
 };
 
 const router: Router = new Router(routerOpts);

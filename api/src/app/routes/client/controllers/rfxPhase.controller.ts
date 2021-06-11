@@ -64,7 +64,7 @@ export const rfxPhaseDelete = async (ctx: Koa.Context) => {
 };
 
 const routerOpts: Router.IRouterOptions = {
-  prefix: 'api/rfx-phase',
+  prefix: '/api/rfx-phase',
 };
 
 const router: Router = new Router(routerOpts);

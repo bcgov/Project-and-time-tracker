@@ -24,7 +24,7 @@ export const getProjectSectorById = async (ctx: Koa.Context) => {
 };
 
 const routerOpts: Router.IRouterOptions = {
-  prefix: 'api/project-sector'
+  prefix: '/api/project-sector'
 };
 
 const router: Router = new Router(routerOpts);

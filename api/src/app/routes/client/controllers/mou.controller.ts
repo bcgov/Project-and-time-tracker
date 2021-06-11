@@ -31,7 +31,7 @@ export const deleteMOUByAction = async (ctx: Koa.Context) => {
 
 
 const routerOpts: Router.IRouterOptions = {
-    prefix: 'api/MOU'
+    prefix: '/api/MOU'
 };
 
 const router: Router = new Router(routerOpts);
