@@ -190,9 +190,7 @@ const verifyAndCreateOrUpdateUser = async (authData: IAuth, data: any) => {
   }
 };
 const updateAuthData = async (authData: IAuth, data: any) => {
-  console.log(authData, data);
   const user = await retrieveUserByReferenceId(data.sub);
-  console.log(user);
   authData.userId = user.id;
 };
 
