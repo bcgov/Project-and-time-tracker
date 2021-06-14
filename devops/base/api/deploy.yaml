@@ -50,10 +50,10 @@ spec:
         resources:
           limits:
             cpu: 60m
-            memory: 256Mi
+            memory: 384Mi
           requests:
             cpu: 20m
-            memory: 128Mi
+            memory: 288Mi
         envFrom:
           - configMapRef:
               name: api-env
@@ -76,6 +76,7 @@ spec:
     targetPort: 8080
   selector:
     app: timemachine
+    component: api
   sessionAffinity: None
   type: ClusterIP
 ---
