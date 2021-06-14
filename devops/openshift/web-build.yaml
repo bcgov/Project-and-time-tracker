@@ -1,3 +1,18 @@
+# Copyright 2020 The Province of British Columbia
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+---
 apiVersion: template.openshift.io/v1
 kind: Template
 metadata:
@@ -8,21 +23,29 @@ objects:
 - apiVersion: v1
   kind: ImageStream
   metadata:
+    name: timemachine-web-artifacts
+    labels:
+      app: timemachine-web
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
     name: timemachine-web
     labels:
       app: timemachine-web
 - apiVersion: v1
   kind: BuildConfig
   metadata:
-    name: timemachine-web-${GIT_REF}-build
+    name: timemachine-web-artifact-build
     labels:
       app: timemachine-web
-      name: timemachine-web-${GIT_REF}-build
+      name: timemachine-web-artifact-build
   spec:
+    successfulBuildsHistoryLimit: 1
+    failedBuildsHistoryLimit: 1
     output:
       to:
         kind: ImageStreamTag 
-        name: timemachine-web:${OUTPUT_IMAGE_TAG}
+        name: timemachine-web-artifacts:${OUTPUT_IMAGE_TAG}
     resources:
       limits:
         cpu: ${CPU_LIMIT}
@@ -48,8 +71,54 @@ objects:
           namespace: ${SOURCE_IMAGE_NAMESPACE}
         incremental: false
       type: Source
-    triggers:
-    - type: ConfigChange
+    # triggers:
+    # - type: ConfigChange
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    name: timemachine-web-image-build
+    labels:
+      app: timemachine-web
+      name: timemachine-web-image-build
+  spec:
+    successfulBuildsHistoryLimit: 3
+    failedBuildsHistoryLimit: 3
+    output:
+      to:
+        kind: ImageStreamTag 
+        name: timemachine-web:${OUTPUT_IMAGE_TAG}
+    resources:
+      limits:
+        cpu: ${CPU_LIMIT}
+        memory: ${MEMORY_LIMIT}
+      requests:
+        cpu: ${CPU_REQUEST}
+        memory: ${MEMORY_REQUEST}
+    runPolicy: Serial
+    source:
+      type: Dockerfile
+      dockerfile: |-
+        FROM docker-remote.artifacts.developer.gov.bc.ca/caddy:2.3.0-alpine
+        COPY dist /opt/app-root/src
+        EXPOSE 2015
+      images:
+      - from: 
+          kind: ImageStreamTag
+          name: timemachine-web-artifacts:latest
+        paths: 
+        - sourcePath: /opt/app-root/src/dist/
+          destinationDir: "."
+    strategy:
+      dockerStrategy:
+        from: 
+          kind: DockerImage
+          name: docker-remote.artifacts.developer.gov.bc.ca/caddy:2.3.0-alpine
+      type: Docker
+      # triggers:
+      #   - imageChange: {}
+      #     type: ImageChange
+    imagePullSecrets:
+    - name: artifactory-creds
 parameters:
 - description: |
     The URL to your GIT repo, don't use the this default unless
@@ -67,7 +136,7 @@ parameters:
   displayName: Source Context Directory
   name: SOURCE_CONTEXT_DIR
   required: false
-  value: "web"
+  value: web
 - description: The tag given to the built image.
   displayName: Output Image Tag
   name: OUTPUT_IMAGE_TAG
@@ -76,17 +145,17 @@ parameters:
 - description: The openshift project where builds and target images are stored.
   displayName: Build Project
   name: SOURCE_IMAGE_NAMESPACE
-  value: ed57f0-tools
+  value: 'openshift'
   required: true
 - description: The name of the source image.
   displayName: Source Image Name
   name: SOURCE_IMAGE_NAME
-  value: 'caddy-s2i-builder'
+  value: 'nodejs'
   required: true
 - description: The tag of the source image.
   displayName: Source Image Tag
   name: SOURCE_IMAGE_TAG
-  value: "latest"
+  value: "10"
   required: true
 - description: The resources CPU limit (in cores) for this build.
   displayName: Resources CPU Limit
@@ -97,7 +166,7 @@ parameters:
   displayName: Resources Memory Limit
   name: MEMORY_LIMIT
   required: true
-  value: 2Gi
+  value: 4Gi
 - description: The resources CPU request (in cores) for this build.
   displayName: Resources CPU Request
   name: CPU_REQUEST
