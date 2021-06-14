@@ -26,9 +26,9 @@ data:
 
     # Turn on the Web/file server
     file_server
-    templates {
-      mime  "text/javascript" "application/javascript"
-    }
+    #templates {
+    #  mime  "text/javascript" "application/javascript"
+    #}
 
     # The site root
     root * /opt/app-root/src
