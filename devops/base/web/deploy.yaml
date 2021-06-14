@@ -54,14 +54,14 @@ spec:
             - containerPort: 2015
           resources:
             limits:
-              cpu: 50m
-              memory: 128Mi
+              cpu: 30m
+              memory: 48Mi
             requests:
-              cpu: 20m
-              memory: 64Mi
+              cpu: 10m
+              memory: 32Mi
           volumeMounts:
               - name: config-vol
-                mountPath: /opt/app-root/etc/Caddyfile
+                mountPath: /etc/caddy/Caddyfile
                 subPath: Caddyfile
       volumes:
         - name: config-vol
