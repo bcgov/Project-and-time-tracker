@@ -85,10 +85,10 @@ spec:
                 name: patroni-creds
           resources:
             requests:
-              cpu: 100m
-              memory: 512Mi
+              cpu: 60m
+              memory: 256Mi
             limits:
-              cpu: 250m
+              cpu: 100m
               memory: 512Mi
           env:
             - name: POD_IP
