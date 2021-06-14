@@ -21,6 +21,12 @@ bases:
   - ../../base/api
   - ../../base/web
   - ../../base/policy
+patches:
+  - api-resource-patch.yaml
+  - api-replica-patch.yaml
+  - web-replica-patch.yaml
+  - db-replica-patch.yaml
+  - db-pvc-patch.yaml
 generatorOptions:
   labels:
     app: timemachine
