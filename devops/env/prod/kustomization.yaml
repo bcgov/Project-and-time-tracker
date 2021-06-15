@@ -21,6 +21,8 @@ bases:
   - ../../base/api
   - ../../base/web
   - ../../base/policy
+resources:
+  - web-to-api-route.yaml
 patches:
   - api-resource-patch.yaml
   - api-replica-patch.yaml

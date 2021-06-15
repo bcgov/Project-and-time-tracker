@@ -16,7 +16,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: timemachine-web-config
+  name: web-config
   labels:
     app: timemachine
 data:

@@ -18,7 +18,7 @@ kind: Deployment
 metadata:
   labels:
     app: timemachine
-  name: timemachine-api
+  name: api
 spec:
   replicas: 1
   selector:
@@ -67,7 +67,7 @@ kind: Service
 metadata:
   labels:
     app: timemachine
-  name: timemachine-api
+  name: api
 spec:
   ports:
   - name: 8080-tcp
@@ -86,9 +86,8 @@ metadata:
   labels:
     app: timemachine
     component: api
-  name: timemachine-api
+  name: api
 spec:
-  # path: /api
   port:
     targetPort: 8080-tcp
   tls:
@@ -96,5 +95,5 @@ spec:
     terminationc: edge
   to:
     kind: Service
-    name: timemachine-api
+    name: api
     weight: 100
