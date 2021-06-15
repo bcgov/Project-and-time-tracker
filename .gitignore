@@ -7,3 +7,4 @@ sql/
 *-secret.*
 *-secrets.*
 dev_db/
+backup/
