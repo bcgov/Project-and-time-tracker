@@ -1,0 +1,111 @@
+# Copyright 2021 The Province of British Columbia
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    app: timemachine
+  name: db-backup
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: netapp-file-backup
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    app: timemachine
+  name: db-backup-verification
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: netapp-file-standard
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    description: |
+      Defines how to deploy the patroni backup 
+      container is deployed.
+  labels:
+    app: timemachine
+  name: db-backup
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: db-backup
+      role: backup
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        name: db-backup
+        role: backup
+      name: db-backup
+    spec:
+      containers:
+        - name: db-backup
+          image: image-registry.openshift-image-registry.svc:5000/ed57f0-tools/backup-container:latest
+          envFrom: 
+            - configMapRef:
+                name: backup-env
+          env:
+            - name: DATABASE_USER
+              valueFrom:
+                secretKeyRef:
+                  key: PATRONI_SUPERUSER_USERNAME
+                  name: patroni-creds
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: PATRONI_SUPERUSER_PASSWORD
+                  name: patroni-creds
+          resources:
+            limits:
+              cpu: 200m
+              memory: 1024Mi
+            requests:
+              cpu: 60m
+              memory: 512Mi
+          volumeMounts:
+          - name: backup-vol
+            mountPath: /backups/
+          - name: verification-vol
+            mountPath: /var/lib/pgsql/data
+          - name: config-vol
+            mountPath: /backup.conf
+            subPath: backup.conf
+      volumes:
+        - name: backup-vol
+          persistentVolumeClaim:
+            claimName: db-backup
+        - name: verification-vol
+          persistentVolumeClaim:
+            claimName: db-backup-verification
+        - name: config-vol
+          configMap:
+            name: backup-config
+            defaultMode: 420
