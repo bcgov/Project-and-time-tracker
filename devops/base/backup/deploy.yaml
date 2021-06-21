@@ -85,11 +85,11 @@ spec:
                   name: patroni-creds
           resources:
             limits:
-              cpu: 200m
-              memory: 1024Mi
-            requests:
-              cpu: 60m
+              cpu: 100m
               memory: 512Mi
+            requests:
+              cpu: 10m
+              memory: 256Mi
           volumeMounts:
           - name: backup-vol
             mountPath: /backups/

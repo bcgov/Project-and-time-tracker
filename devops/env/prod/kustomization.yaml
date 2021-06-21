@@ -28,8 +28,10 @@ patches:
   - api-resource-patch.yaml
   - api-replica-patch.yaml
   - web-replica-patch.yaml
+  - web-resource-patch.yaml
   - db-replica-patch.yaml
   - db-pvc-patch.yaml
+  - db-resoure-patch.yaml
 generatorOptions:
   labels:
     app: timemachine
