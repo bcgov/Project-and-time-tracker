@@ -73,6 +73,21 @@ spec:
             - configMapRef:
                 name: backup-env
           env:
+            - name: POSTGRESQL_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: patroni-creds
+                  key: APP_DATABASE
+            - name: POSTGRESQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: patroni-creds
+                  key: APP_USER
+            - name: POSTGRESQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: patroni-creds
+                  key: APP_PASSWORD
             - name: DATABASE_USER
               valueFrom:
                 secretKeyRef:
