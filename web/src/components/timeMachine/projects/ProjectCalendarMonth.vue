@@ -45,6 +45,7 @@
 import { mapState } from 'vuex';
 import moment from 'moment';
 
+const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 export default {
   props: {
     title: String,
@@ -72,137 +73,79 @@ export default {
   },
   methods: {
     reset() {
-      console.log('hi its working');
+      this.setCalendarText();
     },
     disableWeekPicker(flag = false) {
       this.disabledatepicker = flag;
     },
+    emitChangedMonth() {
+      const formattedMonth = (this.calendarMonth + 1).toString().padStart(2, '0');
+      this.$emit('changedMonth', `${this.calendarYear}-${formattedMonth}`);
+    },
     getCalendarText() {
-      const months = [];
-      months[1] = 'Jan';
-      months[2] = 'Feb';
-      months[3] = 'Mar';
-      months[4] = 'Apr';
-      months[5] = 'May';
-      months[6] = 'Jun';
-      months[7] = 'Jul';
-      months[8] = 'Aug';
-      months[9] = 'Sep';
-      months[10] = 'Oct';
-      months[11] = 'Nov';
-      months[12] = 'Dec';
-
-
       // eslint-disable-next-line radix
-      this.calendarMonth = parseInt(new Date().getMonth()) === '0' ? 12 : parseInt(new Date().getMonth());
-      this.calendarYear = new Date().getFullYear();
-
-      this.$emit('changedMonth', `${this.calendarYear}-${this.calendarMonth}`);
-      // eslint-disable-next-line radix
-      return `${months[parseInt(new Date().getMonth()) === '0' ? 12 : parseInt(new Date().getMonth())]} ${new Date().getFullYear()}`;
+      const currentDate = new Date();
+      this.calendarMonth = currentDate.getMonth();
+      this.calendarYear = currentDate.getFullYear();
+      this.emitChangedMonth();
+      return `${months[this.calendarMonth]} ${this.calendarYear}`;
     },
     setCalendarText() {
       this.calendarText = this.getCalendarText();
     },
     setPreviousMonth(value) {
-      const months = {
-        Jan: '01',
-        Feb: '02',
-        Mar: '03',
-        Apr: '04',
-        May: '05',
-        Jun: '06',
-        Jul: '07',
-        Aug: '08',
-        Sep: '09',
-        Oct: '10',
-        Nov: '11',
-        Dec: '12',
-      };
       const yearAndMonth = value.split(' ');
+      const month = yearAndMonth[0];
       // eslint-disable-next-line radix
-      const monthNumber = yearAndMonth[0] === 'Jan' ? 12 : parseInt(months[yearAndMonth[0]]) - 1;
-      this.calendarMonth = `0${monthNumber}`.slice(-2);
-      // eslint-disable-next-line prefer-destructuring
-      // eslint-disable-next-line radix
-      this.calendarYear = yearAndMonth[0] === 'Jan' ? parseInt(yearAndMonth[1]) - 1 : yearAndMonth[1];
+      const year = parseInt(yearAndMonth[1]);
+      const monthNumber = months.findIndex(v => v === month);
+      this.calendarMonth = monthNumber === 0 ? 11 : monthNumber - 1;
+      this.calendarYear = monthNumber === 0 ? year - 1 : year;
       this.hideDatePicker();
-      const monthName = this.getMonthName(monthNumber);
+      const monthName = this.getMonthName(this.calendarMonth);
       this.calendarText = `${monthName} ${this.calendarYear}`;
-      this.$emit('changedMonth', `${this.calendarYear}-${this.calendarMonth}`);
+      this.emitChangedMonth();
     },
     setNextMonth(value) {
-      const months = {
-        Jan: '01',
-        Feb: '02',
-        Mar: '03',
-        Apr: '04',
-        May: '05',
-        Jun: '06',
-        Jul: '07',
-        Aug: '08',
-        Sep: '09',
-        Oct: '10',
-        Nov: '11',
-        Dec: '12',
-      };
       const yearAndMonth = value.split(' ');
+      const month = yearAndMonth[0];
       // eslint-disable-next-line radix
-      const monthNumber = yearAndMonth[0] === 'Dec' ? 1 : parseInt(months[yearAndMonth[0]]) + 1;
-      this.calendarMonth = `0${monthNumber}`.slice(-2);
+      const year = parseInt(yearAndMonth[1]);
+      const monthNumber = months.findIndex(v => v === month);
+      this.calendarMonth = monthNumber === 11 ? 0 : monthNumber + 1;
       // eslint-disable-next-line prefer-destructuring
       // eslint-disable-next-line radix
-      this.calendarYear = yearAndMonth[0] === 'Dec' ? parseInt(yearAndMonth[1]) + 1 : yearAndMonth[1];
+      this.calendarYear = monthNumber === 11 ? year + 1 : year;
       this.hideDatePicker();
-      const monthName = this.getMonthName(monthNumber);
+      const monthName = this.getMonthName(this.calendarMonth);
       this.calendarText = `${monthName} ${this.calendarYear}`;
-      this.$emit('changedMonth', `${this.calendarYear}-${this.calendarMonth}`);
+      this.emitChangedMonth();
     },
     getMonthName(monthNum) {
-      const months = [];
-      months[1] = 'Jan';
-      months[2] = 'Feb';
-      months[3] = 'Mar';
-      months[4] = 'Apr';
-      months[5] = 'May';
-      months[6] = 'Jun';
-      months[7] = 'Jul';
-      months[8] = 'Aug';
-      months[9] = 'Sep';
-      months[10] = 'Oct';
-      months[11] = 'Nov';
-      months[12] = 'Dec';
       return months[monthNum];
     },
     setTimesheetsWeek(dateString, isToggle = true) {
       // Set start day to start of week, which in our case is Monday
       const startDate = moment(dateString).day(1);
-      dateString = dateString.slice(0, -3);
-      const yearAndMonth = dateString.split('-');
-      const months = [];
-      months[1] = 'Jan';
-      months[2] = 'Feb';
-      months[3] = 'Mar';
-      months[4] = 'Apr';
-      months[5] = 'May';
-      months[6] = 'Jun';
-      months[7] = 'Jul';
-      months[8] = 'Aug';
-      months[9] = 'Sep';
-      months[10] = 'Oct';
-      months[11] = 'Nov';
-      months[12] = 'Dec';
-
       if (!startDate) {
         return 'Change Week';
       }
+      dateString = dateString.slice(0, -3);
+      const yearAndMonth = dateString.split('-');
+      // eslint-disable-next-line radix
+      const year = parseInt(yearAndMonth[0]);
+      // eslint-disable-next-line radix
+      const monthNumber = parseInt(yearAndMonth[1]) - 1;
+
       if (isToggle) {
         this.toggleDatePicker();
       }
 
-      // eslint-disable-next-line radix
-      this.calendarText = `${months[parseInt(yearAndMonth[1])]} ${yearAndMonth[0]}`;
-      this.$emit('changedMonth', `${yearAndMonth[0]}-${yearAndMonth[1]}`);
+      this.calendarMonth = monthNumber;
+      this.calendarYear = year;
+      this.calendarText = `${months[monthNumber]} ${year}`;
+      this.emitChangedMonth();
+      return this.calendarText;
     },
     toggleDatePicker() {
       this.showDatePicker = !this.showDatePicker;
