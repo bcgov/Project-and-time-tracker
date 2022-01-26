@@ -72,6 +72,7 @@ const store = new Vuex.Store({
     activeIntakeRequestId: null,
     activeIntakeRequest: {},
     intakeRequests: [],
+    intakeLoading: false,
     timesheetProjects: [],
     timesheetProjectsOld:[],
     downloadedPdfs: [],
@@ -83,6 +84,7 @@ const store = new Vuex.Store({
     projects: [],
     archivedProjects: [],
     allProjects: [],
+    projectsLoading: false,
     projectsRfx: new HashTable(),
     projectCategories: [],
     // Timesheets component
@@ -867,6 +869,7 @@ const store = new Vuex.Store({
     },
     // Intake requests
     fetchIntakeRequests(ctx) {
+      ctx.intakeLoading = true;
       $http.get(`${API_URI}/intake`).then(res => {
         const content = res.data;
         content.forEach(contentdata => {
@@ -879,6 +882,8 @@ const store = new Vuex.Store({
           ).format("YYYY-MM-DD");
         });
         ctx.commit("fetchIntakeRequests", content);
+      }).finally(() => {
+        this.intakeLoading = false;
       });
     },
     fetchIntakeRequest(ctx, req) {
@@ -1047,10 +1052,13 @@ const store = new Vuex.Store({
       });
     },
     async fetchAllProjects(ctx) {
+      ctx.projectsLoading = true;
       await $http.get(`${API_URI}/project/all`).then(res => {
         let content = res.data;
         content = res.data.map(project => project);
         ctx.commit("fetchAllProjects", content);
+      }).finally(() => {
+        ctx.projectsLoading = false;
       });
     },
     archiveProject(ctx, { id, is_archived }) {

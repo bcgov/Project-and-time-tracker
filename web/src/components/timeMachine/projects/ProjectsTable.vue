@@ -8,12 +8,24 @@
       </v-toolbar-title>
     </v-toolbar>
     <v-divider></v-divider>
+    <v-card-title>
+      <v-text-field
+        v-model="search"
+        append-icon="mdi-magnify"
+        label="Search"
+        single-line
+        hide-details
+      ></v-text-field>
+      <v-spacer></v-spacer>
+    </v-card-title>
     <v-card-text class="pa-0">
       <template>
         <v-data-table
           :headers="headers"
           :items="projects"
-          hide-actions
+          :search="search"
+          :loading="isLoading"
+          :pagination.sync="pagination"
           class="elevation-0 tm-v-datatable"
           disable-initial-sort
         >
@@ -133,6 +145,10 @@ export default {
       ],
       selectedLeadUser: '',
       selectedProjectBackup: '',
+      search: '',
+      pagination: {
+        rowsPerPage: 10,
+      }, 
     };
   },
   computed: {
@@ -144,6 +160,9 @@ export default {
     },
     userList() {
       return this.$store.state.users;
+    },
+    isLoading() {
+      return this.$store.state.projectsLoading;
     },
   },
   methods: {
