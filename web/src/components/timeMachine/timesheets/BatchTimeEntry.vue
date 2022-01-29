@@ -31,179 +31,197 @@
         </template>
         <template v-slot:items="props">
           <template v-if="!props.item.deleted">
-            <td>
-              <v-select
-                :items="userProjects"
-                v-model="props.item.project"
-                item-value="id"
-                item-text="projectName"
-                :disabled="editMode || props.item.is_locked || props.item.id !=undefined"
-                label="Project Name"
-              ></v-select>
+            <tr>
+              <td>
+                <v-select
+                  :items="userProjects"
+                  v-model="props.item.project"
+                  item-value="id"
+                  item-text="projectName"
+                  :disabled="editMode || props.item.is_locked || props.item.id !=undefined"
+                  label="Project Name"
+                ></v-select>
 
-              <!-- TODO - Truncate name if Proj name too long -->
-              <!-- <template v-slot:selection='{item}'>
-                        {{ item.projectName }}
-              </template>-->
-            </td>
-            <td>
-              <v-select
-                :items="getRfxList(props.item.project)"
-                @click.native="getRfx(props.item.projectRfx, props.item.project)"
-                @change="
-                  onChangeProjectRfxBatchEntry(
-                    props.index,
-                    props.item,
-                    props.item.project,
-                    props.item.projectRfx
-                  )
-                "
-                v-model="props.item.projectRfx"
-                item-value="id"
-                item-text="rfxName"
-                :rules="validateRfx(props.item.project, props.item.projectRfx)"
-                :disabled="editMode || props.item.is_locked || props.item.id !=undefined"
-                label="Project Rfx"
-                return-object
-                validate-on-blur
-              ></v-select>
-              <!-- TODO - Truncate name if Proj name too long -->
-              <!-- <template v-slot:selection='{item}'>
-                        {{ item.projectName }}
-              </template>-->
-            </td>
-            <td v-for="index in 5" :key="index">
-              <v-flex style="float:left" v-if="selectedItem == 1">
-                <v-text-field
-                  style="float:left;width:70px"
-                  type="number"
-                  max="24"
-                  step="0.01"
-                  min="0"
-                  :disabled="props.item.is_locked"
-                  oninput="validity.valid||(value=0);"
-                  v-model="props.item.entries[index - 1].hoursBillable"
-                ></v-text-field>
+                <!-- TODO - Truncate name if Proj name too long -->
+                <!-- <template v-slot:selection='{item}'>
+                          {{ item.projectName }}
+                </template>-->
+              </td>
+              <td>
+                <v-select
+                  :items="getRfxList(props.item.project)"
+                  @click.native="getRfx(props.item.projectRfx, props.item.project)"
+                  @change="
+                    onChangeProjectRfxBatchEntry(
+                      props.index,
+                      props.item,
+                      props.item.project,
+                      props.item.projectRfx
+                    )
+                  "
+                  v-model="props.item.projectRfx"
+                  item-value="id"
+                  item-text="rfxName"
+                  :rules="validateRfx(props.item.project, props.item.projectRfx)"
+                  :disabled="editMode || props.item.is_locked || props.item.id !=undefined"
+                  label="Project Rfx"
+                  return-object
+                  validate-on-blur
+                ></v-select>
+                <!-- TODO - Truncate name if Proj name too long -->
+                <!-- <template v-slot:selection='{item}'>
+                          {{ item.projectName }}
+                </template>-->
+              </td>
+              <td v-for="index in 5" :key="index">
+                <v-flex style="float:left" v-if="selectedItem == 1">
+                  <v-text-field
+                    style="float:left;width:70px"
+                    type="number"
+                    max="24"
+                    step="0.01"
+                    min="0"
+                    :disabled="props.item.is_locked"
+                    oninput="validity.valid||(value=0);"
+                    v-model="props.item.entries[index - 1].hoursBillable"
+                  ></v-text-field>
 
-                <v-tooltip
-                  v-if="!props.item.entries[index - 1].commentsBillable"
-                  top
-                  open-delay="500"
-                >
-                  <template v-slot:activator="{ on }">
-                    <v-btn
-                      :disabled="props.item.is_locked"
-                      style="width:0px;margin-top: 13px;"
-                      @click="
-                        addcomment(
-                          props.item.entries[index - 1].commentsBillable,
-                          index - 1,
-                          props.index,
-                          'billable'
-                        )
-                      "
-                      flat
-                      icon
-                      v-on="on"
-                    >
-                      <v-icon>note_add</v-icon>
-                    </v-btn>
-                  </template>
-                  <span>add comment</span>
-                </v-tooltip>
-                <v-tooltip
-                  v-if="props.item.entries[index - 1].commentsBillable"
-                  top
-                  open-delay="500"
-                >
-                  <template v-slot:activator="{ on }">
-                    <v-btn
-                      :disabled="props.item.is_locked"
-                      style="width:0px;margin-top: 13px;"
-                      @click="
-                        addcomment(
-                          props.item.entries[index - 1].commentsBillable,
-                          index - 1,
-                          props.index,
-                          'billable'
-                        )
-                      "
-                      flat
-                      icon
-                      v-on="on"
-                    >
-                      <v-icon>create</v-icon>
-                    </v-btn>
-                  </template>
-                  <span>edit comment</span>
-                </v-tooltip>
-              </v-flex>
-              <v-flex style="float:left" v-else>
-                <v-text-field
-                  style="float:left;width:70px"
-                  type="number"
-                  max="24"
-                  step="0.01"
-                  :disabled="props.item.is_locked"
-                  min="0"
-                  oninput="validity.valid||(value=0);"
-                  v-model="props.item.entries[index - 1].hoursUnBillable"
-                ></v-text-field>
-                <v-tooltip
-                  v-if="!props.item.entries[index - 1].commentsUnBillable"
-                  top
-                  open-delay="500"
-                >
-                  <template v-slot:activator="{ on }">
-                    <v-btn
-                      :disabled="props.item.is_locked"
-                      style="width:0px;margin-top: 13px;"
-                      @click="
-                        addcomment(
-                          props.item.entries[index - 1].commentsUnBillable,
-                          index - 1,
-                          props.index,
-                          'unbillable'
-                        )
-                      "
-                      flat
-                      icon
-                      v-on="on"
-                    >
-                      <v-icon>note_add</v-icon>
-                    </v-btn>
-                  </template>
-                  <span>add comment</span>
-                </v-tooltip>
-                <v-tooltip
-                  v-if="props.item.entries[index - 1].commentsUnBillable"
-                  top
-                  open-delay="500"
-                >
-                  <template v-slot:activator="{ on }">
-                    <v-btn
-                      :disabled="props.item.is_locked"
-                      style="width:0px;margin-top: 13px;"
-                      @click="
-                        addcomment(
-                          props.item.entries[index - 1].commentsUnBillable,
-                          index - 1,
-                          props.index,
-                          'unbillable'
-                        )
-                      "
-                      flat
-                      icon
-                      v-on="on"
-                    >
-                      <v-icon>create</v-icon>
-                    </v-btn>
-                  </template>
-                  <span>edit comment</span>
-                </v-tooltip>
-              </v-flex>
-            </td>
-          </template>
+                  <v-tooltip
+                    v-if="!props.item.entries[index - 1].commentsBillable"
+                    top
+                    open-delay="500"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-btn
+                        :disabled="props.item.is_locked"
+                        style="width:0px;margin-top: 13px;"
+                        @click="
+                          addcomment(
+                            props.item.entries[index - 1].commentsBillable,
+                            index - 1,
+                            props.index,
+                            'billable'
+                          )
+                        "
+                        flat
+                        icon
+                        v-on="on"
+                      >
+                        <v-icon>note_add</v-icon>
+                      </v-btn>
+                    </template>
+                    <span>add comment</span>
+                  </v-tooltip>
+                  <v-tooltip
+                    v-if="props.item.entries[index - 1].commentsBillable"
+                    top
+                    open-delay="500"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-btn
+                        :disabled="props.item.is_locked"
+                        style="width:0px;margin-top: 13px;"
+                        @click="
+                          addcomment(
+                            props.item.entries[index - 1].commentsBillable,
+                            index - 1,
+                            props.index,
+                            'billable'
+                          )
+                        "
+                        flat
+                        icon
+                        v-on="on"
+                      >
+                        <v-icon>create</v-icon>
+                      </v-btn>
+                    </template>
+                    <span>edit comment</span>
+                  </v-tooltip>
+                </v-flex>
+                <v-flex style="float:left" v-else>
+                  <v-text-field
+                    style="float:left;width:70px"
+                    type="number"
+                    max="24"
+                    step="0.01"
+                    :disabled="props.item.is_locked"
+                    min="0"
+                    oninput="validity.valid||(value=0);"
+                    v-model="props.item.entries[index - 1].hoursUnBillable"
+                  ></v-text-field>
+                  <v-tooltip
+                    v-if="!props.item.entries[index - 1].commentsUnBillable"
+                    top
+                    open-delay="500"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-btn
+                        :disabled="props.item.is_locked"
+                        style="width:0px;margin-top: 13px;"
+                        @click="
+                          addcomment(
+                            props.item.entries[index - 1].commentsUnBillable,
+                            index - 1,
+                            props.index,
+                            'unbillable'
+                          )
+                        "
+                        flat
+                        icon
+                        v-on="on"
+                      >
+                        <v-icon>note_add</v-icon>
+                      </v-btn>
+                    </template>
+                    <span>add comment</span>
+                  </v-tooltip>
+                  <v-tooltip
+                    v-if="props.item.entries[index - 1].commentsUnBillable"
+                    top
+                    open-delay="500"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-btn
+                        :disabled="props.item.is_locked"
+                        style="width:0px;margin-top: 13px;"
+                        @click="
+                          addcomment(
+                            props.item.entries[index - 1].commentsUnBillable,
+                            index - 1,
+                            props.index,
+                            'unbillable'
+                          )
+                        "
+                        flat
+                        icon
+                        v-on="on"
+                      >
+                        <v-icon>create</v-icon>
+                      </v-btn>
+                    </template>
+                    <span>edit comment</span>
+                  </v-tooltip>
+                </v-flex>
+              </td>
+            </tr>
+            <tr v-if="preCalculateMouUsedAmount(props.item, props.item.calculatedAmountBilled) > MOU_USED_AMOUNT_LEVELS.DANGER">
+              <td colspan="7">                
+                <v-system-bar  dark color="red" class="pa-3">
+                  <v-icon dark medium>error</v-icon>
+                  <span class="pl-1"><b>MOU value is overdrawn and a new MOU amendment would be needed.</b></span>
+                </v-system-bar>
+              </td>
+            </tr>
+            <tr v-else-if="preCalculateMouUsedAmount(props.item, props.item.calculatedAmountBilled) > MOU_USED_AMOUNT_LEVELS.WARNING">
+              <td colspan="7">                
+                <v-system-bar dark color="orange" class="pa-3">
+                  <v-icon dark medium>warning</v-icon>
+                  <span class="pl-1"><b>MOU is within 10% of its remaining value.</b></span>
+                </v-system-bar>
+              </td>
+            </tr>
+          </template>          
         </template>
       </v-data-table>
     </v-flex>
@@ -282,6 +300,12 @@ export default {
     projectList: Array,
   },
   watch: {},
+  created() {
+    this.MOU_USED_AMOUNT_LEVELS = {
+      WARNING: 0.9,
+      DANGER: 1
+    };
+  },
   methods: {
     validateRfx(project, rfx) {
       if (project === undefined || project === '') {
@@ -381,10 +405,36 @@ export default {
         selectedItem.project = selProject.id;
         selectedItem.mou = selProject.mouId;
       }
-      this.previousSelection = undefined;
+      this.previousSelection = undefined;      
     },
     addRow() {
       this.$emit('add-row');
+    },
+    preCalculateMouUsedAmount(item) {
+      const user = this.$store.state.users.find(u => u.id === item.userId);
+      let hourlyRate = 0;
+      if (user && user.contact && user.contact.hourlyRate) {
+        // eslint-disable-next-line prefer-destructuring
+        hourlyRate = user.contact.hourlyRate;
+      }
+
+      let timesheetBilledAmount = 0;
+      let mouAmount = 0;
+      const projects = this.projectList.filter(project => project.id == item.project);
+      if (!projects == projects.length > 0)
+      {
+        return;
+      }
+      timesheetBilledAmount = projects[0].totalAmountBilled;
+      mouAmount = projects[0].mouAmount;
+
+      item.entries.forEach((timeEntry) => {
+        timesheetBilledAmount += hourlyRate * (!timeEntry.hoursBillable ? 0 : timeEntry.hoursBillable);
+        timesheetBilledAmount += hourlyRate * (!timeEntry.revenueHours ? 0 : timeEntry.revenueHours);
+        timesheetBilledAmount += !timeEntry.expenseAmount ? 0 : timeEntry.expenseAmount;
+      });
+      timesheetBilledAmount -= item.calculatedAmountBilled ? item.calculatedAmountBilled : 0;
+      return timesheetBilledAmount / mouAmount;
     },
   },
 };
