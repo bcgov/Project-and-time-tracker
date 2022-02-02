@@ -6,7 +6,7 @@ export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'text' })
+  @Column({ type: 'text', unique: true })
   referenceId: string;
   
   @ManyToOne(type => Contact, { nullable: true })
