@@ -85,6 +85,7 @@ export default {
     getCalendarText() {
       // eslint-disable-next-line radix
       const currentDate = new Date();
+      currentDate.setMonth(currentDate.getMonth()-1);
       this.calendarMonth = currentDate.getMonth();
       this.calendarYear = currentDate.getFullYear();
       this.emitChangedMonth();
