@@ -7,8 +7,6 @@ import { DB_CONFIG } from '../config/settings';
 
 const dbConfig = DB_CONFIG;
 
-console.log(dbConfig);
-
 const connectionOpts: ConnectionOptions = {
   type: dbConfig.type,
   host: dbConfig.host,
