@@ -82,7 +82,7 @@ export const validateToken = async (
         if (authorizationData.realm_access.roles.includes('manage_finances')) {
           authData.role.push('manage_finances');
         }
-        if(urlChecker == 'api/auth/verify') 
+        if(urlChecker && urlChecker.endsWith('api/auth/verify')) 
           await verifyAndCreateOrUpdateUser(authData, data);
         else
         await updateAuthData(authData,data);
