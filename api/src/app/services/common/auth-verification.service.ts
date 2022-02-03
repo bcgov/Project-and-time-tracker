@@ -15,6 +15,15 @@ import { createContact } from '../client/contact.service';
 import { IContact } from '../../models/interfaces/i-contact';
 import { IAuth } from '../../models/interfaces/i-auth';
 import { IKeycloakUserByRole } from '../../models/interfaces/i-keycloak-user-fetch-by-role';
+import { Agent } from 'https';
+
+const agentOptions = {
+  host: 'iam.aot-technologies.com',
+  port: 443,
+  path: '/',
+  rejectUnauthorized: false
+};
+const agent = new Agent(agentOptions);
 
 // Token validation done in the app.ts file. all the requests go through this function
 export const validateToken = async (
@@ -29,6 +38,7 @@ export const validateToken = async (
     if (ctx.headers.authorization) {
       const options = {
         method: 'GET',
+        agent: agent,
         headers: {
           // add the token you received to the userinfo request, sent to keycloak
           Authorization: ctx.headers.authorization,
@@ -38,7 +48,7 @@ export const validateToken = async (
 
       const response = await fetch(url, options);
 
-      // console.log('validateToken response', { response });
+      console.log('validateToken response', { response });
 
       if (response.status !== 200) {
         // if the request status isn't "OK", the token is invalid
@@ -67,26 +77,24 @@ export const validateToken = async (
         ) {
           throw Error('realm roles are not configured.');
         }
-        if (authorizationData.realm_access.roles.includes('PSB_Admin')) {
-          authData.role.push('PSB_Admin');
-        }
-        if (authorizationData.realm_access.roles.includes('PSB_Intake_User')) {
-          authData.role.push('PSB_Intake_User');
-        }
-        if (authorizationData.realm_access.roles.includes('PSB_User')) {
-          authData.role.push('PSB_User');
-        }
-        if (authorizationData.realm_access.roles.includes('User')) {
-          authData.role.push('User');
-        }
-        if (authorizationData.realm_access.roles.includes('manage_finances')) {
-          authData.role.push('manage_finances');
-        }
-        if(urlChecker && urlChecker.endsWith('api/auth/verify')) 
+        const roles = ['PSB_Admin', 'PSB_Intake_User', 'PSB_User', 'User', 'manage_finances'];
+        roles.forEach((role) => 
+        {
+          if (authorizationData.realm_access.roles.includes(role)) {
+            authData.role.push(role);
+          }
+        });
+        
+        if (urlChecker.endsWith('/auth/verify'))
+        {
           await verifyAndCreateOrUpdateUser(authData, data);
+        }
         else
-        await updateAuthData(authData,data);
+        {
+          await updateAuthData(authData,data);
+        }
         ctx.state.auth = authData;
+        console.log('state.auth', ctx.state.auth)
         await next();
       }
     } else {
@@ -119,6 +127,7 @@ export const retrieveKeycloakAdminToken = async () => {
 
     const response = await fetch(tokenUrl, {
       method: 'POST',
+      agent: agent,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
@@ -145,6 +154,7 @@ export const retrieveKeycloakUsersByRole = async (
     const url = `${keycloakConfig.url}/admin/realms/${keycloakConfig.realmName}/roles/${role}/users`;
     const response = await fetch(url, {
       method: 'GET',
+      agent: agent,
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
