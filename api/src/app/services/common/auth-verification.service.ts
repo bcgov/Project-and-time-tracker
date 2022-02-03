@@ -117,7 +117,6 @@ export const retrieveKeycloakAdminToken = async () => {
 
     const response = await fetch(tokenUrl, {
       method: 'POST',
-      agent: agent,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
@@ -144,7 +143,6 @@ export const retrieveKeycloakUsersByRole = async (
     const url = `${keycloakConfig.url}/admin/realms/${keycloakConfig.realmName}/roles/${role}/users`;
     const response = await fetch(url, {
       method: 'GET',
-      agent: agent,
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
