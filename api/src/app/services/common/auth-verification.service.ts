@@ -15,15 +15,6 @@ import { createContact } from '../client/contact.service';
 import { IContact } from '../../models/interfaces/i-contact';
 import { IAuth } from '../../models/interfaces/i-auth';
 import { IKeycloakUserByRole } from '../../models/interfaces/i-keycloak-user-fetch-by-role';
-import { Agent } from 'https';
-
-const agentOptions = {
-  host: 'iam.aot-technologies.com',
-  port: 443,
-  path: '/',
-  rejectUnauthorized: false
-};
-const agent = new Agent(agentOptions);
 
 // Token validation done in the app.ts file. all the requests go through this function
 export const validateToken = async (
@@ -38,7 +29,6 @@ export const validateToken = async (
     if (ctx.headers.authorization) {
       const options = {
         method: 'GET',
-        agent: agent,
         headers: {
           // add the token you received to the userinfo request, sent to keycloak
           Authorization: ctx.headers.authorization,
