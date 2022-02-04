@@ -15,13 +15,13 @@ const pageBasedOnRole = role => {
       page = "timemachineIntakeIntroduction";
       break;
     case "PSB_User":
-      page = "projects";
+      page = "timeMachineProjects";
       break;
     case "PSB_Intake_User":
-      page = "projects";
+      page = "timeMachineProjects";
       break;
     case "PSB_Admin":
-      page = "projects";
+      page = "timeMachineProjects";
       break;
     case "manage_finances":
       page = "timemachineFinance";
