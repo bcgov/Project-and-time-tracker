@@ -1,12 +1,13 @@
 import * as Koa from 'koa';
 import * as HttpStatus from 'http-status-codes';
 import { IAuth } from '../../models/interfaces/i-auth';
-import { timesheetEntries } from '../../routes/client/controllers/timesheet.controller';
 
 export const authorize = async (ctx: Koa.Context, next: () => Promise<any>) => {
   const auth = ctx.state.auth as IAuth;
 
   const path = `${ctx.method}${ctx._matchedRoute}`;
+  console.log(`authoring path ${path}`);
+  console.log(permissions);
   let permitted = false;
   for (let index = 0; index < auth.role.length; index++) {
     if (permissions[auth.role[index]].includes(path)) {
