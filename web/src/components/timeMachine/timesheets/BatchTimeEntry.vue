@@ -423,9 +423,9 @@ export default {
       let timesheetBilledAmount = 0;
       let mouAmount = 0;
       const projects = this.projectList.filter(project => project.id == item.project);
-      if (!projects == projects.length > 0)
+      if (!projects || projects.length == 0 || projects[0].mouAmount == 0)
       {
-        return;
+        return 0;
       }
       timesheetBilledAmount = projects[0].totalAmountBilled;
       mouAmount = projects[0].mouAmount;
