@@ -338,7 +338,7 @@ export default {
           return {
             mouAmount: project.mouAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','),
             totalBilledAmount: totalAmountBilled.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','),
-            mouUsedAmount: project.mouAmount > 0 ? totalAmountBilled / project.mouAmount : 0,
+            mouUsedAmount: project.isCostRecoverable && project.mouAmount > 0 ? totalAmountBilled / project.mouAmount : 0,
             hasValidFinanceCodes: project.hasValidFinanceCodes || !project.isCostRecoverable
           }
         }
