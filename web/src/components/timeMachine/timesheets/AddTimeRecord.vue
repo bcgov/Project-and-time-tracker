@@ -330,7 +330,6 @@ export default {
       return sum;
     },
     selectedProject() {
-      console.log("selectedProject");
       if (this.form && this.form.mou && this.form.project) {
         const selectedProject = this.userMouProjects.filter(item => item.id === this.form.project);
         if (selectedProject[0]) {
@@ -922,14 +921,16 @@ export default {
     calculateEntriesAmountBilled(timesheet) {
       const user = this.$store.state.users.find(item => item.id === this.form.userId);
       let hourlyRate = 0;
-      if (user && user.contact && user.contact.hourlyRate) {
+      let revenueRate = 0;
+      if (user && user.contact) {
         // eslint-disable-next-line prefer-destructuring
-        hourlyRate = user.contact.hourlyRate;
+        hourlyRate = !user.contact.hourlyRate ? 0 : user.contact.hourlyRate;
+        revenueRate = !user.contact.revenueRate ? 0 : user.contact.revenueRate;
       }
       let timesheetBilledAmount = 0;
       timesheet.entries.forEach((timeEntry) => {
-        timesheetBilledAmount += hourlyRate * (timeEntry.hoursBillable = timeEntry.hoursBillable==""?0:timeEntry.hoursBillable);
-        timesheetBilledAmount += hourlyRate * (timeEntry.revenueHours==""?0:timeEntry.revenueHours);
+        timesheetBilledAmount += hourlyRate * (!timeEntry.hoursBillable ? 0 : timeEntry.hoursBillable);
+        timesheetBilledAmount += revenueRate * (!timeEntry.revenueHours ? 0 : timeEntry.revenueHours);
         timesheetBilledAmount += !timeEntry.expenseAmount ? 0 : timeEntry.expenseAmount;
       });
       timesheet.calculatedAmountBilled = timesheetBilledAmount;
@@ -937,16 +938,18 @@ export default {
     preCalculateAmountBilled() {
       const user = this.$store.state.users.find(item => item.id === this.form.userId);
       let hourlyRate = 0;
-      if (user && user.contact && user.contact.hourlyRate) {
+      let revenueRate = 0;
+      if (user && user.contact) {
         // eslint-disable-next-line prefer-destructuring
-        hourlyRate = user.contact.hourlyRate;
+        hourlyRate = !user.contact.hourlyRate ? 0 : user.contact.hourlyRate;
+        revenueRate = !user.contact.revenueRate ? 0 : user.contact.revenueRate;
       }
 
       let timesheetBilledAmount = 0;
       this.timesheet.forEach((timesheet) => {
         timesheet.entries.forEach((timeEntry) => {
           timesheetBilledAmount += hourlyRate * (!timeEntry.hoursBillable ? 0 : timeEntry.hoursBillable);
-          timesheetBilledAmount += hourlyRate * (!timeEntry.revenueHours ? 0 : timeEntry.revenueHours);
+          timesheetBilledAmount += revenueRate * (!timeEntry.revenueHours ? 0 : timeEntry.revenueHours);
           timesheetBilledAmount += !timeEntry.expenseAmount ? 0 : timeEntry.expenseAmount;
         });
         timesheetBilledAmount -= timesheet.calculatedAmountBilled ? timesheet.calculatedAmountBilled : 0;

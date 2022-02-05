@@ -413,9 +413,11 @@ export default {
     preCalculateMouUsedAmount(item) {
       const user = this.$store.state.users.find(u => u.id === item.userId);
       let hourlyRate = 0;
-      if (user && user.contact && user.contact.hourlyRate) {
+      let revenueRate = 0;
+      if (user && user.contact) {
         // eslint-disable-next-line prefer-destructuring
-        hourlyRate = user.contact.hourlyRate;
+        hourlyRate = !user.contact.hourlyRate ? 0 : user.contact.hourlyRate;
+        revenueRate = !user.contact.revenueRate ? 0 : user.contact.revenueRate;
       }
 
       let timesheetBilledAmount = 0;
@@ -430,7 +432,7 @@ export default {
 
       item.entries.forEach((timeEntry) => {
         timesheetBilledAmount += hourlyRate * (!timeEntry.hoursBillable ? 0 : timeEntry.hoursBillable);
-        timesheetBilledAmount += hourlyRate * (!timeEntry.revenueHours ? 0 : timeEntry.revenueHours);
+        timesheetBilledAmount += revenueRate * (!timeEntry.revenueHours ? 0 : timeEntry.revenueHours);
         timesheetBilledAmount += !timeEntry.expenseAmount ? 0 : timeEntry.expenseAmount;
       });
       timesheetBilledAmount -= item.calculatedAmountBilled ? item.calculatedAmountBilled : 0;
