@@ -38,7 +38,7 @@
                   <v-flex md7>
                     <v-select
                       class="currentuser"
-                      v-model="form.userId"
+                      v-model="form.userId" 
                       :rules="requiredRule"
                       @input="onChangeUser(form.userId)"
                       :items="userList"
@@ -330,20 +330,20 @@ export default {
       return sum;
     },
     selectedProject() {
-      console.log("selectedProject");
       if (this.form && this.form.mou && this.form.project) {
         const selectedProject = this.userMouProjects.filter(item => item.id === this.form.project);
         if (selectedProject[0]) {
           const project = selectedProject[0];
-          return{
+          const totalAmountBilled = project.totalAmountBilled + this.preCalculateAmountBilled();
+          return {
             mouAmount: project.mouAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','),
-            totalBilledAmount: project.totalAmountBilled.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','),
-            mouUsedAmount: project.totalAmountBilled / project.mouAmount,
+            totalBilledAmount: totalAmountBilled.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','),
+            mouUsedAmount: project.isCostRecoverable && project.mouAmount > 0 ? totalAmountBilled / project.mouAmount : 0,
             hasValidFinanceCodes: project.hasValidFinanceCodes || !project.isCostRecoverable
           }
         }
       }
-      return{
+      return {
         mouAmount: 0,
         totalBilledAmount: 0,
         mouUsedAmount: 0,
@@ -432,7 +432,7 @@ export default {
       }
       // this.selectWeeklyProject(this.form.project, this.form.mou, this.form.rfx);
     },
-     onBatchEntry() {
+    onBatchEntry() {
       if (this.timesheet.length > 1) {
         this.timesheet = this.timesheet.filter(
           item => item.project !== '' && item.project !== undefined,
@@ -546,6 +546,7 @@ export default {
             timesheetItem.entries = obj[index].timesheetEntries;
             timesheetItem.is_locked = obj[index].is_locked;
             timesheetItem.amountBilled = obj[index].amountBilled ? obj[index].amountBilled : 0;
+            this.calculateEntriesAmountBilled(timesheetItem);
             vm.timesheet.push(timesheetItem);
           }
           vm.$refs.TimeCalenderWeekly.setCalendarText();
@@ -585,7 +586,10 @@ export default {
           vm.blankTimesheet = [];
           vm.addTimeSheetRow(true);
         }
+
       });
+
+      this.calculateTimesheetAmountBilled();
     },
 
     async editTimeEntries(timeSheetId) {
@@ -632,6 +636,7 @@ export default {
         vm.$refs.nonBillableBatchEntry.editMode = true;
         this.blankTimesheet = [];
         this.addTimeSheetRow(true);
+        this.calculateTimesheetAmountBilled();
       });
     },
 
@@ -701,7 +706,7 @@ export default {
           timeEntry.hoursUnBillable = timeEntry.hoursUnBillable==""?0:timeEntry.hoursUnBillable;
           timeEntry.revenueHours = timeEntry.revenueHours==""?0:timeEntry.revenueHours;
         });
-        });
+      });
       this.$refs.spinner.open();
       this.$store.dispatch('addBatchTimesheet', submitItems).then(
         () => {
@@ -908,6 +913,50 @@ export default {
         else this.$refs.snackbar.displaySnackbarTop('info', 'No Records Found');
       });
     },
+    calculateTimesheetAmountBilled() {
+      this.timesheet.forEach((timesheet) => {
+        this.calculateEntriesAmountBilled(timesheet);
+      });
+    },
+    calculateEntriesAmountBilled(timesheet) {
+      const user = this.$store.state.users.find(item => item.id === this.form.userId);
+      let hourlyRate = 0;
+      let revenueRate = 0;
+      if (user && user.contact) {
+        // eslint-disable-next-line prefer-destructuring
+        hourlyRate = !user.contact.hourlyRate ? 0 : user.contact.hourlyRate;
+        revenueRate = !user.contact.revenueRate ? 0 : user.contact.revenueRate;
+      }
+      let timesheetBilledAmount = 0;
+      timesheet.entries.forEach((timeEntry) => {
+        timesheetBilledAmount += hourlyRate * (!timeEntry.hoursBillable ? 0 : timeEntry.hoursBillable);
+        timesheetBilledAmount += revenueRate * (!timeEntry.revenueHours ? 0 : timeEntry.revenueHours);
+        timesheetBilledAmount += !timeEntry.expenseAmount ? 0 : timeEntry.expenseAmount;
+      });
+      timesheet.calculatedAmountBilled = timesheetBilledAmount;
+    },
+    preCalculateAmountBilled() {
+      const user = this.$store.state.users.find(item => item.id === this.form.userId);
+      let hourlyRate = 0;
+      let revenueRate = 0;
+      if (user && user.contact) {
+        // eslint-disable-next-line prefer-destructuring
+        hourlyRate = !user.contact.hourlyRate ? 0 : user.contact.hourlyRate;
+        revenueRate = !user.contact.revenueRate ? 0 : user.contact.revenueRate;
+      }
+
+      let timesheetBilledAmount = 0;
+      this.timesheet.forEach((timesheet) => {
+        timesheet.entries.forEach((timeEntry) => {
+          timesheetBilledAmount += hourlyRate * (!timeEntry.hoursBillable ? 0 : timeEntry.hoursBillable);
+          timesheetBilledAmount += revenueRate * (!timeEntry.revenueHours ? 0 : timeEntry.revenueHours);
+          timesheetBilledAmount += !timeEntry.expenseAmount ? 0 : timeEntry.expenseAmount;
+        });
+        timesheetBilledAmount -= timesheet.calculatedAmountBilled ? timesheet.calculatedAmountBilled : 0;
+      });
+
+      return timesheetBilledAmount;
+    }
   },
 };
 </script>

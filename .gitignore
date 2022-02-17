@@ -1,7 +1,10 @@
-db/
+# db/
 deploy.sh
 deploy-api.sh
 node_modules
 sql/
 *.private.*
+*-secret.*
+*-secrets.*
 dev_db/
+backup/*.sql

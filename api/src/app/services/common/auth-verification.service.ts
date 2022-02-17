@@ -38,7 +38,7 @@ export const validateToken = async (
 
       const response = await fetch(url, options);
 
-      // console.log('validateToken response', { response });
+      console.log('validateToken response', { response });
 
       if (response.status !== 200) {
         // if the request status isn't "OK", the token is invalid
@@ -67,26 +67,24 @@ export const validateToken = async (
         ) {
           throw Error('realm roles are not configured.');
         }
-        if (authorizationData.realm_access.roles.includes('PSB_Admin')) {
-          authData.role.push('PSB_Admin');
+        const roles = ['PSB_Admin', 'PSB_Intake_User', 'PSB_User', 'User', 'manage_finances'];
+        roles.forEach((role) => 
+        {
+          if (authorizationData.realm_access.roles.includes(role)) {
+            authData.role.push(role);
+          }
+        });
+        
+        if (urlChecker.endsWith('/auth/verify'))
+        {
+          await verifyAndCreateOrUpdateUser(authData, data);
         }
-        if (authorizationData.realm_access.roles.includes('PSB_Intake_User')) {
-          authData.role.push('PSB_Intake_User');
-        }
-        if (authorizationData.realm_access.roles.includes('PSB_User')) {
-          authData.role.push('PSB_User');
-        }
-        if (authorizationData.realm_access.roles.includes('User')) {
-          authData.role.push('User');
-        }
-        if (authorizationData.realm_access.roles.includes('manage_finances')) {
-          authData.role.push('manage_finances');
-        }
-        if(urlChecker == '/auth/verify')
-        await verifyAndCreateOrUpdateUser(authData, data);
         else
-        await updateAuthData(authData,data);
+        {
+          await updateAuthData(authData,data);
+        }
         ctx.state.auth = authData;
+        console.log('state.auth', ctx.state.auth)
         await next();
       }
     } else {
@@ -191,6 +189,6 @@ const verifyAndCreateOrUpdateUser = async (authData: IAuth, data: any) => {
 };
 const updateAuthData = async (authData: IAuth, data: any) => {
   const user = await retrieveUserByReferenceId(data.sub);
-    authData.userId = user.id;
+  authData.userId = user.id;
 };
 

@@ -19,7 +19,7 @@ export const getUsersByRole = async (ctx: Koa.Context) => {
 };
 
 const routerOpts: Router.IRouterOptions = {
-  prefix: '/user'
+  prefix: '/api/user'
 };
 
 const router: Router = new Router(routerOpts);

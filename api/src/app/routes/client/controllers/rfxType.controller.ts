@@ -64,7 +64,7 @@ export const rfxTypeDelete = async (ctx: Koa.Context) => {
 };
 
 const routerOpts: Router.IRouterOptions = {
-  prefix: '/rfx-type',
+  prefix: '/api/rfx-type',
 };
 
 const router: Router = new Router(routerOpts);
