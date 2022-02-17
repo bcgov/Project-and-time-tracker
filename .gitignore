@@ -1,4 +1,4 @@
-# db/
+db/
 deploy.sh
 deploy-api.sh
 node_modules
