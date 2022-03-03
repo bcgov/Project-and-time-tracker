@@ -2065,6 +2065,7 @@ export const retrieveTimesheetProjects = async (obj) => {
 };
 
 export const retrieveTimesheetProjectsOld = async (obj) => {
+  console.log('retrieveTimesheetProjectsOld() called')
   const repo = timesheetRepo();
 
   const selectedDate = obj.selectedDate.split("-");
@@ -2115,9 +2116,12 @@ export const retrieveTimesheetProjectsOld = async (obj) => {
     // .addGroupBy('cl.nonMinistryName')
     // .addGroupBy('mi.ministryName')
     // .having('count(te.id)=7')
-    .getRawMany();
+  //   .getRawMany();
 
-  return res;
+  // return res;
+
+  console.log('retrieveTimesheetProjectsOld query:', { query: res.getQuery(), sql: res.getSql() })
+  return res.getMany()
 };
 
 export const retrieveDischargedPdfs = async (obj) => {
