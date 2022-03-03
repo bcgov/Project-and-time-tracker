@@ -987,6 +987,8 @@ export const retrieveFinanceData = async (obj, userId) => {
 };
 
 export const retrieveFinanceDataOld = async (obj, userId) => {
+  // TODO - Only show one selected month even if date splits across two months (eg Jan 28-Feb 2nd)
+  // This will require updates to getTimesheets()
   const splitupProjects = await getMinistryNonMinistrySplitUp(obj);
   const ministryProjects = splitupProjects[0];
   const nonMinistryProjects = splitupProjects[1];
@@ -1158,6 +1160,7 @@ export const getNonMinistryFinanceExportResult = async (
         startDate,
         endDate
       );
+      console.log('after getTimesheets() -- getNonMinistryFinanceExportResult')
       if (timeSheet.length == 0) {
         continue;
       }
@@ -1434,6 +1437,7 @@ export const getMinistryFinanceExportResult = async (
         startDate,
         endDate
       );
+      console.log('after getTimesheets() -- getMinistryFinanceExportResult')
       if (timeSheet.length == 0) {
         continue;
       }
@@ -1557,11 +1561,17 @@ export const getMinistryFinanceExportResult = async (
   }
 };
 export const getTimesheets = async (projectId, startDate, endDate) => {
+  // ARC - Problem.  Is startDate and endDate working?
+  // Log query and compare.
+
+  console.log('getTimesheets() called -----\n', {projectId, startDate, endDate})
+
   return timesheetRepo()
     .createQueryBuilder("t")
     .innerJoinAndSelect("t.timesheetEntries", "te")
     .innerJoinAndSelect("t.user", "u")
     .innerJoinAndSelect("u.contact", "c")
+    // Adam - looks like this WHERE clause isn't being appended?
     .where(
       't."projectId" = :projectId and (t.is_locked = :is_locked or t.is_locked IS NULL) and (t.startDate >= :start and t.startDate <= :end) and t.documentNo is NULL',
       {
