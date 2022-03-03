@@ -991,6 +991,7 @@ export const retrieveFinanceData = async (obj, userId) => {
 export const retrieveFinanceDataOld = async (obj, userId) => {
   // TODO - Only show one selected month even if date splits across two months (eg Jan 28-Feb 2nd)
   // This will require updates to getTimesheets()
+  console.log('retrieveFinanceDataOld() start')
   const splitupProjects = await getMinistryNonMinistrySplitUp(obj);
   const ministryProjects = splitupProjects[0];
   const nonMinistryProjects = splitupProjects[1];
@@ -1014,6 +1015,7 @@ export const getNonMinistryFinanceExportResult = async (
   financeExportNonMinistry,
   userId
 ) => {
+  console.log('getNonMinistryFinanceExportResult() start')
   if (financeExportNonMinistry.length > 0) {
     const documentNo: string = uuidv4();
     let mousSelected = [];
@@ -1588,7 +1590,7 @@ export const getTimesheets = async (projectId, startDate, endDate) => {
       }
     )
 
-    console.log('getTimesheets() query: ', {query: query.getQuery(), sql: query.getSql() })
+    console.log('getTimesheets() query: ', {query: query.getQuery(), sql: query.getSql(), startDate, endDate })
 
 
     return query.getMany();
