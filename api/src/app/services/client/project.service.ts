@@ -1432,6 +1432,7 @@ export const getMinistryFinanceExportResult = async (
       exportData.mouName = res.mou.name;
       mousSelected.push(exportData.mouName);
       exportData.mouEstimate = res.mouAmount;
+      console.log('before getTimesheets() -- getMinistryFinanceExportResult')
       const timeSheet = await getTimesheets(
         exportData.projectId,
         startDate,
@@ -1563,15 +1564,17 @@ export const getMinistryFinanceExportResult = async (
 export const getTimesheets = async (projectId, startDate, endDate) => {
   // ARC - Problem.  Is startDate and endDate working?
   // Log query and compare.
+  // Note: this is not called when unisntating/reinstating. That calls a custom timesheet query which does not look at date.
+
 
   console.log('getTimesheets() called -----\n', {projectId, startDate, endDate})
 
-  return timesheetRepo()
+  const query = timesheetRepo()
     .createQueryBuilder("t")
     .innerJoinAndSelect("t.timesheetEntries", "te")
     .innerJoinAndSelect("t.user", "u")
     .innerJoinAndSelect("u.contact", "c")
-    // Adam - looks like this WHERE clause isn't being appended?
+    // Verify WHERE is being appended when generating new reports (not just for reinstating)
     .where(
       't."projectId" = :projectId and (t.is_locked = :is_locked or t.is_locked IS NULL) and (t.startDate >= :start and t.startDate <= :end) and t.documentNo is NULL',
       {
@@ -1581,7 +1584,11 @@ export const getTimesheets = async (projectId, startDate, endDate) => {
         end: endDate,
       }
     )
-    .getMany();
+
+    console.log('getTimesheets() query: ', {query: query.getQuery(), sql: query.getSql() })
+
+
+    return query.getMany();
 };
 export const downloadpdf = async (obj) => {
   const repo = financeRepo();
@@ -1675,6 +1682,7 @@ export const reGenerateFinanceRecord = async (obj) => {
   return financeResult;
 };
 export const reinstateFinanceRecord = async (obj) => {
+  // Question: Does reinstateFinanceRecord() call getTimesheets() or does it take persisted data?
   const repo = financeRepo();
   const result = await repo
     .createQueryBuilder("f")
@@ -1828,6 +1836,11 @@ export const reinstateFinanceRecord = async (obj) => {
     exportData.mouName = res.mou.name;
     mousSelected.push(exportData.mouName);
     exportData.mouEstimate = res.mouAmount;
+
+    // NOTE: THIS IS NOT CALLING getTimesheets().  Why?
+    // It's setting documentNo (getTimesheets() uses null, this has value)
+    // Can't just swap in.
+    // But could add date where clause?  Unless that breaks logic. 
     const timeSheet = await timesheetRepo()
       .createQueryBuilder("t")
       .innerJoinAndSelect("t.timesheetEntries", "te")
