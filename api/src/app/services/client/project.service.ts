@@ -1590,7 +1590,7 @@ export const getTimesheets = async (projectId, startDate, endDate) => {
       }
     )
 
-    console.log('getTimesheets() query: ', {query: query.getQuery(), sql: query.getSql(), startDate, endDate })
+    console.log('getTimesheets() query: ', {query: query.getQuery(), sql: query.getSql(), projectId, startDate, endDate })
 
 
     return query.getMany();
