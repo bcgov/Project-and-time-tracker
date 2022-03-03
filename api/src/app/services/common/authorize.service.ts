@@ -6,8 +6,8 @@ export const authorize = async (ctx: Koa.Context, next: () => Promise<any>) => {
   const auth = ctx.state.auth as IAuth;
 
   const path = `${ctx.method}${ctx._matchedRoute}`;
-  console.log(`authoring path ${path}`);
-  console.log(permissions);
+  // console.log(`authoring path ${path}`);
+  // console.log(permissions);
   let permitted = false;
   for (let index = 0; index < auth.role.length; index++) {
     if (permissions[auth.role[index]].includes(path)) {
