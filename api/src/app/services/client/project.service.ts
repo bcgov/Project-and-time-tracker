@@ -399,6 +399,7 @@ function mergeMous(mouList) {
 }
 
 export const retrieveFinanceData = async (obj, userId) => {
+  console.log('retrieveFinanceData() start')
   const splitupProjects = await getMinistryNonMinistrySplitUp(obj);
   const ministryProjects = splitupProjects[0];
   const nonMinistryProjects = splitupProjects[1];
@@ -555,6 +556,7 @@ export const retrieveFinanceData = async (obj, userId) => {
       exportData.mouName = res.mou.name;
       mousSelected.push(exportData.mouName);
       exportData.mouEstimate = res.mouAmount;
+      console.log('retrieveFinancialData() midway before timeSheet query', {startDate, endDate})
       const timeSheet = await timesheetRepo()
         .createQueryBuilder("t")
         .innerJoinAndSelect("t.timesheetEntries", "te")
@@ -1290,6 +1292,7 @@ export const getMinistryFinanceExportResult = async (
   financeExport,
   userId
 ) => {
+  console.log('getMinistryFinanceExportResult() start')
   if (financeExport.length > 0) {
     const documentNo: string = uuidv4();
     let mousSelected = [];
@@ -1591,6 +1594,7 @@ export const getTimesheets = async (projectId, startDate, endDate) => {
     return query.getMany();
 };
 export const downloadpdf = async (obj) => {
+  console.log('downloadpdf() start')
   const repo = financeRepo();
   const result = await repo
     .createQueryBuilder("f")
