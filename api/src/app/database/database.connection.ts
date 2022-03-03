@@ -18,6 +18,8 @@ const connectionOpts: ConnectionOptions = {
   entities: [
     `${parentDir}/**/**{.entity.ts,.entity.js}`,
   ],
+
+  logging: ['query']
 };
 
 const connection: Promise<Connection> = createConnection(connectionOpts);
