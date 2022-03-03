@@ -38,7 +38,7 @@ export const validateToken = async (
 
       const response = await fetch(url, options);
 
-      console.log('validateToken response', { response });
+      // console.log('validateToken response', { response });
 
       if (response.status !== 200) {
         // if the request status isn't "OK", the token is invalid
