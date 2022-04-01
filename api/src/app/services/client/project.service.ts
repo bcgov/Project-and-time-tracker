@@ -563,7 +563,7 @@ export const retrieveFinanceData = async (obj, userId) => {
         .innerJoinAndSelect("t.user", "u")
         .innerJoinAndSelect("u.contact", "c")
         .where(
-          't."projectId" = :projectId and (t.is_locked = :is_locked or t.is_locked IS NULL) and (t.startDate >= :start and t.startDate <= :end) and t.documentNo is NULL',
+          't."projectId" = :projectId and (t.is_locked = :is_locked or t.is_locked IS NULL) and (te.entryDate >= :start and te.entryDate <= :end) and t.documentNo is NULL',
           {
             projectId: exportData.projectId,
             is_locked: false,
@@ -851,7 +851,7 @@ export const retrieveFinanceData = async (obj, userId) => {
         .innerJoinAndSelect("t.user", "u")
         .innerJoinAndSelect("u.contact", "c")
         .where(
-          't."projectId" = :projectId and (t.is_locked = :is_locked or t.is_locked IS NULL) and (t.startDate >= :start and t.startDate <= :end) and t.documentNo is NULL',
+          't."projectId" = :projectId and (t.is_locked = :is_locked or t.is_locked IS NULL) and (te.entryDate >= :start and te.entryDate <= :end) and t.documentNo is NULL',
           {
             projectId: exportData.projectId,
             is_locked: false,
@@ -1581,7 +1581,7 @@ export const getTimesheets = async (projectId, startDate, endDate) => {
     .innerJoinAndSelect("u.contact", "c")
     // Verify WHERE is being appended when generating new reports (not just for reinstating)
     .where(
-      't."projectId" = :projectId and (t.is_locked = :is_locked or t.is_locked IS NULL) and (t.startDate >= :start and t.startDate <= :end) and t.documentNo is NULL',
+      't."projectId" = :projectId and (t.is_locked = :is_locked or t.is_locked IS NULL) and (te.entryDate >= :start and te.entryDate <= :end) and t.documentNo is NULL',
       {
         projectId: projectId,
         is_locked: false,
@@ -2056,7 +2056,7 @@ export const retrieveTimesheetProjects = async (obj) => {
     .innerJoin("t.timesheetEntries", "te")
     .leftJoin(FinanceExport, "fe", 't."documentNo" = fe.documentNo')
     .innerJoin("t.project", "p")
-    .where("t.startDate >= :startDate AND t.startDate <= :endDate", {
+    .where("te.entryDate >= :startDate AND te.entryDate <= :endDate", {
       startDate,
       endDate,
     })
@@ -2085,7 +2085,7 @@ export const retrieveTimesheetProjectsOld = async (obj) => {
   const res = await repo
     .createQueryBuilder("t")
     .select([
-      "cast(t.startDate as varchar(7)) as startDate",
+      "cast(te.entryDate as varchar(7)) as startDate",
       "p.dateModified",
       "p.completionDate",
       "p.id as key",
@@ -2105,7 +2105,7 @@ export const retrieveTimesheetProjectsOld = async (obj) => {
     .innerJoin("p.mou", "mo")
     .innerJoin("p.client", "cl")
     .leftJoin("cl.ministry", "mi")
-    .where("t.startDate < :startDate", { startDate })
+    .where("te.entryDate < :startDate", { startDate })
     .andWhere("(t.is_locked = :is_locked OR t.is_locked IS NULL)", {
       is_locked: false,
     })
