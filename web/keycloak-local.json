@@ -1,6 +1,6 @@
 {
-  "realm": "b9xip88d",
-  "auth-server-url": "https://oidc.gov.bc.ca/auth",
+  "realm": "Time_Tracker_dev",
+  "auth-server-url": "https://iam.aot-technologies.com/auth",
   "ssl-required": "none",
   "resource": "timeMachineApp",
   "clientId": "timeMachineApp",
