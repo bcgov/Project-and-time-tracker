@@ -12,8 +12,8 @@ RUN npm install
 
 # build app for production with minification
 # RUN npm run build
-CMD npm run build
+#CMD npm run build
 
-# EXPOSE 8080
+EXPOSE 8080
 
-# CMD [ "npm", "run", "serve" ]
+CMD [ "npm", "run", "serve" ]
