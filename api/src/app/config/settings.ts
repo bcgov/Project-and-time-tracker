@@ -24,9 +24,7 @@ export const DB_CONFIG = process.env.environment ? {
 export const keycloakConfig = {
     url: process.env.kc_authServerUrl || ENVIRONMENT_CONFIG.keyCloak.authServerUrl,
     realmName: process.env.kc_realm || ENVIRONMENT_CONFIG.keyCloak.realm,
-    resourceName: process.env.kc_resource || ENVIRONMENT_CONFIG.keyCloak.resource,
-    adminUserName: process.env.kc_adminUserName || ENVIRONMENT_CONFIG.keyCloak.adminUserName,
-    adminPassword: process.env.kc_adminPassword || ENVIRONMENT_CONFIG.keyCloak.adminPassword
+    resourceName: process.env.kc_resource || ENVIRONMENT_CONFIG.keyCloak.resource
 };
 
 // console.log('Keycloak config', {keycloakConfig});

@@ -99,7 +99,7 @@ const PSB_User = [
   'POST/api/project/:id/assign-lead', // should be removed on 2nd phase based on the new requirement.
 ];
 
-const manage_finances = [
+const Manage_Finances = [
   ...PSB_User,
   'POST/api/project/finance',
   'POST/api/project/financeOld',
@@ -160,5 +160,5 @@ const permissions = {
   PSB_User,
   User,
   PSB_Intake_User,
-  manage_finances,
+  Manage_Finances,
 };

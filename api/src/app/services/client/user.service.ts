@@ -2,10 +2,6 @@ import { Repository, getRepository } from 'typeorm';
 import { User } from '../../models/entities/user.entity';
 import { IUser } from '../../models/interfaces/i-user';
 import { IKeycloakUserByRole } from '../../models/interfaces/i-keycloak-user-fetch-by-role';
-import {
-  retrieveKeycloakAdminToken,
-  retrieveKeycloakUsersByRole,
-} from '../common/auth-verification.service';
 import { Contact } from '../../models/entities/contact.entity';
 
 const contactRepo = (): Repository<Contact> => {
@@ -58,18 +54,9 @@ export const retrieveUsersNameAndIdByRole = async (roles: string[]) => {
     .orderBy('c.fullName', 'ASC')
     .getMany();
 
-  // console.log('retrieveUsersNameAndIdByRole B -', { repo, users })
-  // console.log('retrieveUsersNameAndIdByRole B -')
 
-  const kcAdminToken = await retrieveKeycloakAdminToken();
-  // ARC - ERROR OCCURS ABOVE
-  // console.log('retrieveUsersNameAndIdByRole C - after adminToken', { kcAdminToken })
   const keycloakUsers: IKeycloakUserByRole[] = [];
-  for (let index = 0; index < roles.length; index++) {
-    keycloakUsers.push(
-      ...(await retrieveKeycloakUsersByRole(roles[index], kcAdminToken))
-    );
-  }
+
 
   // console.log('retrieveUsersNameAndIdByRole D - have users', { keycloakUsers })
 

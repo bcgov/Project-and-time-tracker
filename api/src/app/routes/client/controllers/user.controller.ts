@@ -10,7 +10,7 @@ export const getUsersByRole = async (ctx: Koa.Context) => {
       Role.PSB_Admin,
       Role.PSB_User,
       Role.PSB_Intake_User,
-      Role.manage_finances
+      Role.Manage_Finances
     ]);
     ctx.body = users;
   } catch (err) {

@@ -23,7 +23,7 @@ const pageBasedOnRole = role => {
     case "PSB_Admin":
       page = "timeMachineProjects";
       break;
-    case "manage_finances":
+    case "Manage_Finances":
       page = "timemachineFinance";
       break;
     default:
@@ -34,8 +34,8 @@ const pageBasedOnRole = role => {
 
 export default (next, roles, isLoggedIn = false) => {
   keycloakAuth
-    .init({ onLoad: "login-required", responseMode: "query", checkLoginIframe: false })
-    .success(() => {
+    .init({ onLoad: "login-required", responseMode: "query", checkLoginIframe: false, pkceMethod: 'S256' })
+    .then(() => {
       keycloakAuth.logoutUrl =
         `${keycloakAuth.authServerUrl}/realms/${keycloakAuth.realm}` +
         `/protocol/openid-connect/logout?redirect_uri=${document.baseURI}`;
@@ -69,18 +69,19 @@ export default (next, roles, isLoggedIn = false) => {
       setInterval(() => {
         keycloakAuth
           .updateToken(70)
-          .success(refreshed => {
+          .then(refreshed => {
             if (refreshed) {
               store.dispatch("authLogin", keycloakAuth);
             }
           })
-          .error(() => {
+          .catch(() => {
             console.error("Failed to refresh token");
           });
       }, 60000);
     })
-    .error(() => {
+    .catch((e) => {
       console.log("failed to login");
+      console.log(e);
     });
 };
 export function getRoles() {

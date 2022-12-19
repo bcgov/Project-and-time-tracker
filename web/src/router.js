@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import security from '@/modules/security';
 import store from '@/store';
-import Dashboard from './components/dashboard/Dashboard.vue';
+/* import Dashboard from './components/dashboard/Dashboard.vue'; */
 import Authorize from './components/login/Authorize.vue';
 import Project from './components/timeMachine/projects/Project.vue';
 import TimeMachineIntakeForm from './components/timeMachine/projectIntake/IntakeForm.vue';
@@ -18,8 +18,8 @@ import AdminFinanceCodes from './components/timeMachine/admin/AdminFinanceCodes.
 import AdminHourlyRates from './components/timeMachine/admin/HourlyRates.vue';
 import AdminRevenueRates from './components/timeMachine/admin/RevenueRates.vue';
 import AdminRemoveMOU from './components/timeMachine/admin/RemoveMOU.vue';
-import AdminRfxType from './components/timeMachine/admin/AdminRfxType';
-import AdminRfxPhase from './components/timeMachine/admin/AdminRfxPhase';
+import AdminRfxType from './components/timeMachine/admin/AdminRfxType.vue';
+import AdminRfxPhase from './components/timeMachine/admin/AdminRfxPhase.vue';
 import Unauthorized from './components/error/Unauthorized.vue';
 
 Vue.use(Router);
@@ -106,7 +106,7 @@ const routes = [
   {
     exact: true,
     path: '/archived',
-    name: 'timeMachineProjects',
+    name: 'archived',
     component: TimeMachineProjects,
     meta: { requiresAuth: true, roles: ['PSB_User', 'PSB_Admin', 'PSB_Intake_User'] },
   },
