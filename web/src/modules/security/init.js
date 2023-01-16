@@ -10,6 +10,7 @@ const keycloakAuth = new Keycloak(`/${keycloakFileName}.json`);
 let userRoles = [];
 const pageBasedOnRole = role => {
   let page = "Unauthorized";
+  console.log("Page based on role");
   switch (role) {
     case "User":
       page = "timemachineIntakeIntroduction";
@@ -24,7 +25,7 @@ const pageBasedOnRole = role => {
       page = "timeMachineProjects";
       break;
     case "Manage_Finances":
-      page = "timemachineFinance";
+      page = "timeMachineFinance";
       break;
     default:
       break;
@@ -41,10 +42,15 @@ export default (next, roles, isLoggedIn = false) => {
         `/protocol/openid-connect/logout?redirect_uri=${document.baseURI}`;
       store.dispatch("authLogin", keycloakAuth);
       if (roles) {
+        console.log("ROLES:");
+        console.log(roles);
         let hasAccess = false;
         let keycloakRole;
+
+        console.log(keycloakAuth.tokenParsed.client_roles)
         roles.forEach(role => {
-          if (keycloakAuth.hasRealmRole(role)) {
+          if (keycloakAuth.tokenParsed.client_roles.includes(role)) {
+            console.log('Has Role:'+role);
             hasAccess = true;
             keycloakRole = role;
             userRoles.push(role);
@@ -88,6 +94,6 @@ export function getRoles() {
   return userRoles;
 }
 /** Returns link to Keycloak server, useful for admins to login */
-export function getAuthURL() {
+/*export function getAuthURL() {
   return `${keycloakAuth.authServerUrl}/admin/${keycloakAuth.realm}/console`;
-}
+}*/

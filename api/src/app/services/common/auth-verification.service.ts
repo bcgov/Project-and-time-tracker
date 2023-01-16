@@ -14,7 +14,6 @@ import { IUser } from '../../models/interfaces/i-user';
 import { createContact } from '../client/contact.service';
 import { IContact } from '../../models/interfaces/i-contact';
 import { IAuth } from '../../models/interfaces/i-auth';
-import { IKeycloakUserByRole } from '../../models/interfaces/i-keycloak-user-fetch-by-role';
 
 // Token validation done in the app.ts file. all the requests go through this function
 export const validateToken = async (
@@ -37,8 +36,8 @@ export const validateToken = async (
       };
 
       const response = await fetch(url, options);
-
-      // console.log('validateToken response', { response });
+      console.log('Validate Token');
+      //console.log('validateToken response', { response });
 
       if (response.status !== 200) {
         // if the request status isn't "OK", the token is invalid
@@ -47,10 +46,11 @@ export const validateToken = async (
       } else {
         // the token is valid pass request onto your next function
         const data: any = await response.json();
-
+        console.log(data);
         const authorizationData: any = decodeKeycloakToken(
           ctx.headers.authorization
         );
+        console.log(authorizationData);
         // const permissions = authorizationData.resource_access[keycloakConfig.resourceName].roles;
         const authData = <IAuth>{
           fullName: data.name,
@@ -59,18 +59,22 @@ export const validateToken = async (
           // permissions: permissions
         };
 
+        console.log("authData: ");
+        console.log(authData);
+
         if (
           !(
-            authorizationData.realm_access &&
-            authorizationData.realm_access.roles
+           /*authorizationData.realm_access &&
+            authorizationData.realm_access.roles*/
+            authorizationData.client_roles
           )
         ) {
-          throw Error('realm roles are not configured.');
+          throw Error('roles are not configured.');
         }
         const roles = ['PSB_Admin', 'PSB_Intake_User', 'PSB_User', 'User', 'Manage_Finances'];
         roles.forEach((role) => 
         {
-          if (authorizationData.realm_access.roles.includes(role)) {
+          if (authorizationData.client_roles.includes(role)) {
             authData.role.push(role);
           }
         });
@@ -84,7 +88,7 @@ export const validateToken = async (
           await updateAuthData(authData,data);
         }
         ctx.state.auth = authData;
-        console.log('state.auth', ctx.state.auth)
+        //console.log('state.auth', ctx.state.auth)
         await next();
       }
     } else {
@@ -101,10 +105,11 @@ export const validateToken = async (
 
 
 const verifyAndCreateOrUpdateUser = async (authData: IAuth, data: any) => {
+  // console.log("verifyAndCreateOrUpdateUser");
   const user = await retrieveUserByReferenceId(data.sub);
   if (!user) {
     console.log(
-      'ARC - User does not exist, creating contact with nam: ',
+      'ARC - User does not exist, creating contact with name: ',
       authData.fullName
     );
     const contact: any = await createContact(<IContact>{

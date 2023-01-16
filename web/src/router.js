@@ -43,7 +43,7 @@ const routes = [
     component: Authorize,
     meta: {
       requiresAuth: true,
-      roles: ['PSB_User', 'PSB_Admin', 'User', 'PSB_Intake_User', 'manage_finances'],
+      roles: ['PSB_User', 'PSB_Admin', 'User', 'PSB_Intake_User', 'Manage_Finances'],
     },
   },
   // {
@@ -63,9 +63,9 @@ const routes = [
   {
     exact: true,
     path: '/finance',
-    name: 'timemachineFinance',
+    name: 'timeMachineFinance',
     component: TimeMachineFinanceExport,
-    meta: { requiresAuth: true, roles: ['manage_finances'] },
+    meta: { requiresAuth: true, roles: ['Manage_Finances'] },
     // Uncomment this for adding finance role to admin
     // meta: { requiresAuth: true, roles: ["PSB_Admin", "manage_finances"] }
   },

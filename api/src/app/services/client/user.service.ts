@@ -1,7 +1,6 @@
 import { Repository, getRepository } from 'typeorm';
 import { User } from '../../models/entities/user.entity';
 import { IUser } from '../../models/interfaces/i-user';
-import { IKeycloakUserByRole } from '../../models/interfaces/i-keycloak-user-fetch-by-role';
 import { Contact } from '../../models/entities/contact.entity';
 
 const contactRepo = (): Repository<Contact> => {
@@ -35,9 +34,7 @@ export const retrieveUserByReferenceId = async (id: string) => {
     .getOne();
 };
 
-export const retrieveUsersNameAndIdByRole = async (roles: string[]) => {
-  // console.log('retrieveUsersNameAndIdByRole start - ', roles)
-
+export const retrieveUsersWithFinanceCodes = async () => {
   const repo = userRepo();
   const users = await repo
     .createQueryBuilder('u')
@@ -54,19 +51,9 @@ export const retrieveUsersNameAndIdByRole = async (roles: string[]) => {
     .orderBy('c.fullName', 'ASC')
     .getMany();
 
+  
 
-  const keycloakUsers: IKeycloakUserByRole[] = [];
-
-
-  // console.log('retrieveUsersNameAndIdByRole D - have users', { keycloakUsers })
-
-  const filteredUsers = users.filter((element, index, array) => {
-    return keycloakUsers.find((value, i, arr) => {
-      return value.id === element.referenceId;
-    });
-  });
-
-  for (let i = 0; i < filteredUsers.length; i++) {
+  for (let i = 0; i < users.length; i++) {
     const contactRep = contactRepo();
     const contactRes = await contactRep
       .createQueryBuilder('c')
@@ -80,17 +67,15 @@ export const retrieveUsersNameAndIdByRole = async (roles: string[]) => {
         'f.financeName',
       ])
       .where('c."id" = :contactId', {
-        contactId: filteredUsers[i].contact.id,
+        contactId: users[i].contact.id,
       })
       .getOne();
     if (contactRes) {
-      filteredUsers[i].contact.financeCodes = contactRes.financeCodes;
+      users[i].contact.financeCodes = contactRes.financeCodes;
     }
   }
 
-  // console.log('retrieveUsersNameAndIdByRole E - filtered users', { filteredUsers })
-
-  return filteredUsers;
+  return users;
 };
 
 export const createUser = async (obj: IUser) => {

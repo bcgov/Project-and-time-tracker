@@ -283,6 +283,9 @@ export default {
         await this.fetchData();
       }
     },
+    async fetchAllTimesheets() {
+      await this.$store.dispatch('fetchAllTimesheets');
+    },
     async initalfetch() {
       await this.$store.dispatch('fetchAllProjects'); // Needed in AddTimeRecord
       await this.$store.dispatch('fetchUserTimesheets');
