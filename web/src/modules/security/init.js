@@ -42,15 +42,15 @@ export default (next, roles, isLoggedIn = false) => {
         `/protocol/openid-connect/logout?redirect_uri=${document.baseURI}`;
       store.dispatch("authLogin", keycloakAuth);
       if (roles) {
-        console.log("ROLES:");
-        console.log(roles);
+        /* console.log("ROLES:");
+        console.log(roles); */
         let hasAccess = false;
         let keycloakRole;
 
-        console.log(keycloakAuth.tokenParsed.client_roles)
+        // console.log(keycloakAuth.tokenParsed.client_roles)
         roles.forEach(role => {
           if (keycloakAuth.tokenParsed.client_roles.includes(role)) {
-            console.log('Has Role:'+role);
+            // console.log('Has Role:'+role);
             hasAccess = true;
             keycloakRole = role;
             userRoles.push(role);
