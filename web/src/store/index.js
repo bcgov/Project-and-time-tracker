@@ -525,18 +525,18 @@ const store = new Vuex.Store({
     },
     // Verification
     async verifyTokenServer(ctx) {
-      console.log('verifyTokenServer()');
-      console.log(API_URI);
+      /* console.log('verifyTokenServer()');
+      console.log(API_URI); */
       const api = await $http
         .get(`${API_URI}/auth/verify`)
         .then(res => {
           const content = res.data;
-          console.log(res);
+          // console.log(res);
           ctx.commit("verifyTokenServer", content);
           return Promise.resolve(content);
         })
         .catch(err => Promise.reject(err.response));
-      console.log(api);
+      // console.log(api);
       return Promise.resolve(api);
     },
     // Master data

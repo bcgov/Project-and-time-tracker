@@ -36,7 +36,7 @@ export const validateToken = async (
       };
 
       const response = await fetch(url, options);
-      console.log('Validate Token');
+      //console.log('Validate Token');
       //console.log('validateToken response', { response });
 
       if (response.status !== 200) {
@@ -46,11 +46,11 @@ export const validateToken = async (
       } else {
         // the token is valid pass request onto your next function
         const data: any = await response.json();
-        console.log(data);
+        //console.log(data);
         const authorizationData: any = decodeKeycloakToken(
           ctx.headers.authorization
         );
-        console.log(authorizationData);
+        //console.log(authorizationData);
         // const permissions = authorizationData.resource_access[keycloakConfig.resourceName].roles;
         const authData = <IAuth>{
           fullName: data.name,
@@ -59,13 +59,11 @@ export const validateToken = async (
           // permissions: permissions
         };
 
-        console.log("authData: ");
-        console.log(authData);
+        /* console.log("authData: ");
+        console.log(authData); */
 
         if (
           !(
-           /*authorizationData.realm_access &&
-            authorizationData.realm_access.roles*/
             authorizationData.client_roles
           )
         ) {
