@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { FinanceCodes } from './financeCodes.entity';
 
 @Entity()
 export class Contact {
@@ -54,6 +55,16 @@ export class Contact {
   // Client contacts will not have a rate.
   @Column({ type: 'int', nullable: true })
   hourlyRate: number;
+
+  @Column({ type: 'int', nullable: true })
+  revenueRate: number;
+
+  @ManyToOne((type) => FinanceCodes)
+  financeCodes: FinanceCodes;
 }
 
-export type ContactType = 'clientlead' | 'clientsponsor' | 'clientcontact' | 'user';
+export type ContactType =
+  | 'clientlead'
+  | 'clientsponsor'
+  | 'clientcontact'
+  | 'user';

@@ -13,7 +13,9 @@
         <v-icon>{{icon}}</v-icon>
         <v-toolbar-title class="white--text">{{ title }}</v-toolbar-title>
       </v-toolbar>
-      <v-card-text v-show="!!message">{{ message }}</v-card-text>
+      <v-card-text v-show="!!message">
+        <div>{{ message }}</div>
+      </v-card-text>
       <v-card-actions class="pt-0 clear-margin">
         <v-spacer></v-spacer>
         <v-btn color="primary darken-1" flat="flat" @click.native="agree">Yes</v-btn>

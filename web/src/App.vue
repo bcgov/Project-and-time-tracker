@@ -92,9 +92,8 @@
 <script>
 import { mapState } from 'vuex';
 import { shouldDisplayItem } from './menu';
-
-
 import './App.styl';
+import { getRoles } from './modules/security/init';
 
 export default {
   name: 'App',
@@ -111,9 +110,9 @@ export default {
       if (this.$store.state.collapseNavigationBar) this.mini = this.$store.state.collapseNavigationBar;
     },
     shouldDisplayMenuItem(item) {
-      return shouldDisplayItem(item, this.$router, this.$store.getters.SECURITY_AUTH);
+      return shouldDisplayItem(item, this.$router, this.$store.getters.SECURITY_AUTH, getRoles());
     },
-    fetchInitialData() {
+    async fetchInitialData() {
       this.$store.dispatch('fetchintakeRiskQuestions');
       this.$store.dispatch('fetchMinistries');
       this.$store.dispatch('fetchRFxPhases');
@@ -126,6 +125,7 @@ export default {
       this.initialLoadDone = true;
       this.userName = JSON.parse(localStorage.getItem('keycloak_user')).name;
       this.$store.state.activeUser.refId = JSON.parse(localStorage.getItem('keycloak_user')).sub;
+      this.$store.state.activeRoles.role = getRoles();
     },
   },
   created() {
@@ -157,7 +157,7 @@ export default {
       this.$store.state.collapseNavigationBar = false;
     },
     fetchToken(newValue, oldValue) {
-      console.log('fetchToken', {newValue, oldValue})
+      console.log('fetchToken', { newValue, oldValue });
       if (newValue !== oldValue) {
         this.$store.dispatch('verifyTokenServer')
           .then(() => {

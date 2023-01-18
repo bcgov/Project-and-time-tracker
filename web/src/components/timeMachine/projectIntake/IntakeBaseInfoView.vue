@@ -36,14 +36,14 @@
       </v-flex>
     </v-layout>
 
-    <v-layout>
+    <!-- <v-layout>
       <v-flex md6>
         <div class="body-1">MOU Amount:</div>
       </v-flex>
       <v-flex md6 justify-center>
         <div class="body-2">{{ form.mouAmount }}</div>
       </v-flex>
-    </v-layout>
+    </v-layout> -->
 
     <v-layout>
       <v-flex md6>

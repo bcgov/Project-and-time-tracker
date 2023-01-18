@@ -1,8 +1,11 @@
 import { Repository, getRepository } from 'typeorm';
 import { User } from '../../models/entities/user.entity';
 import { IUser } from '../../models/interfaces/i-user';
-import { IKeycloakUserByRole } from '../../models/interfaces/i-keycloak-user-fetch-by-role';
-import { retrieveKeycloakAdminToken, retrieveKeycloakUsersByRole } from '../common/auth-verification.service';
+import { Contact } from '../../models/entities/contact.entity';
+
+const contactRepo = (): Repository<Contact> => {
+  return getRepository(Contact);
+};
 
 const userRepo = (): Repository<User> => {
   return getRepository(User);
@@ -16,7 +19,9 @@ export const retrieveUsers = async () => {
 export const retrieveUserById = async (id: string) => {
   const repo = userRepo();
   const res = await repo.findOne(id);
-  if (!res) { throw Error(`user not found for the id specified: ${id}`); }
+  if (!res) {
+    throw Error(`user not found for the id specified: ${id}`);
+  }
   return res;
 };
 
@@ -24,19 +29,12 @@ export const retrieveUserByReferenceId = async (id: string) => {
   const repo = userRepo();
   return await repo
     .createQueryBuilder('u')
-    .select([
-      'u.id',
-      'u.referenceId',
-      'u.role',
-    ])
+    .select(['u.id', 'u.referenceId', 'u.role'])
     .where('u."referenceId" = :referenceId', { referenceId: id })
     .getOne();
 };
 
-export const retrieveUsersNameAndIdByRole = async (roles: string[]) => {
-
-  // console.log('retrieveUsersNameAndIdByRole start - ', roles)
-
+export const retrieveUsersWithFinanceCodes = async () => {
   const repo = userRepo();
   const users = await repo
     .createQueryBuilder('u')
@@ -47,32 +45,37 @@ export const retrieveUsersNameAndIdByRole = async (roles: string[]) => {
       'u.role',
       'c.fullName',
       'c.hourlyRate',
-      'c.id'
+      'c.revenueRate',
+      'c.id',
     ])
+    .orderBy('c.fullName', 'ASC')
     .getMany();
+
   
-  // console.log('retrieveUsersNameAndIdByRole B -', { repo, users })
-  // console.log('retrieveUsersNameAndIdByRole B -')
-                      
-  const kcAdminToken = await retrieveKeycloakAdminToken();
-  // ARC - ERROR OCCURS ABOVE
-  // console.log('retrieveUsersNameAndIdByRole C - after adminToken', { kcAdminToken })
-  const keycloakUsers: IKeycloakUserByRole[] = [];
-  for (let index = 0; index < roles.length; index++) {
-    keycloakUsers.push(...await retrieveKeycloakUsersByRole(roles[index], kcAdminToken));      
+
+  for (let i = 0; i < users.length; i++) {
+    const contactRep = contactRepo();
+    const contactRes = await contactRep
+      .createQueryBuilder('c')
+      .innerJoin('c.financeCodes', 'f')
+      .select([
+        'c.fullName',
+        'c.hourlyRate',
+        'c.revenueRate',
+        'f.id',
+        'c.id',
+        'f.financeName',
+      ])
+      .where('c."id" = :contactId', {
+        contactId: users[i].contact.id,
+      })
+      .getOne();
+    if (contactRes) {
+      users[i].contact.financeCodes = contactRes.financeCodes;
+    }
   }
 
-  // console.log('retrieveUsersNameAndIdByRole D - have users', { keycloakUsers })
-
-  const filteredUsers = users.filter((element, index, array) => {
-    return keycloakUsers.find((value, i, arr) => {
-      return value.id === element.referenceId;
-    });
-  });
-
-  // console.log('retrieveUsersNameAndIdByRole E - filtered users', { filteredUsers })
-
-  return filteredUsers;
+  return users;
 };
 
 export const createUser = async (obj: IUser) => {

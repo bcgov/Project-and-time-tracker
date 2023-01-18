@@ -132,7 +132,7 @@ export const createIntakeAction = async (ctx: Koa.Context) => {
 export const updateApproveStatus = async (ctx: Koa.Context) => {
   try {
     const auth = ctx.state.auth as IAuth;
-
+    const body = ctx.request.body as { categoryId: number };
     const intake = await retrieveIntakeById(ctx.params.id);
     const newProject: IProject = {
       id: undefined,
@@ -154,7 +154,8 @@ export const updateApproveStatus = async (ctx: Koa.Context) => {
       projectFailImpact: intake.projectFailImpact,
       projectSuccess: intake.projectSuccess,
       mou: intake.mou,
-      teamWideProject: false
+      teamWideProject: false,
+      categoryId: body.categoryId
     };
     const projectData = await createProject(newProject);
 
@@ -311,7 +312,7 @@ const validateIntakeForm = (intake: IProjectIntake) => {
 };
 
 const routerOpts: Router.IRouterOptions = {
-  prefix: '/intake'
+  prefix: '/api/intake'
 };
 
 const router: Router = new Router(routerOpts);

@@ -2,18 +2,31 @@
   <v-card>
     <snackbar ref="snackbar"></snackbar>
     <confirm ref="confirm"></confirm>
+    <selectProjectCategory ref="selectCategory"></selectProjectCategory>
     <v-toolbar v-if="title" card dense color="transparent">
       <v-toolbar-title>
         <h4>{{ title }}</h4>
       </v-toolbar-title>
     </v-toolbar>
     <v-divider></v-divider>
+    <v-card-title>
+      <v-text-field
+        v-model="search"
+        append-icon="mdi-magnify"
+        label="Search"
+        single-line
+        hide-details
+      ></v-text-field>
+      <v-spacer></v-spacer>
+    </v-card-title>
     <v-card-text class="pa-0">
       <template>
         <v-data-table
           :headers="headers"
           :items="intakeRequests"
-          hide-actions
+          :search="search"
+          :loading="isLoading"
+          :pagination.sync="pagination"
           class="elevation-0 tm-v-datatable"
           disable-initial-sort
         >
@@ -177,6 +190,7 @@ import './intakeformtable.styl';
 import IntakeFormView from './IntakeFormView.vue';
 import Snackbar from '../common/Snackbar.vue';
 import Confirm from '../common/Confirm.vue';
+import SelectProjectCategory from './SelectProjectCategory.vue';
 
 export default {
   props: {
@@ -186,6 +200,7 @@ export default {
     Snackbar,
     Confirm,
     IntakeFormView,
+    SelectProjectCategory,
   },
 
   data() {
@@ -203,8 +218,10 @@ export default {
       ],
       selectedLeadUser: '',
       selectedProjectBackup: '',
+      search: '',
       pagination: {
         sortBy: 'name',
+        rowsPerPage: 10,
       },
       dialog: false,
       mouDialog: false,
@@ -221,13 +238,15 @@ export default {
       return this.$store.state.intakeRequests;
     },
     userList() {
-      console.log('userList called', this.$store.state.users);
       // ARC - UserList doesn't seem to come back with names? What?
       // potentially issue is 'contact' is null. How to get it non-null?
       return this.$store.state.users;
     },
     mouList() {
       return this.$store.state.mouList;
+    },
+    isLoading() {
+      return this.$store.state.intakeLoading;
     },
   },
   methods: {
@@ -248,16 +267,12 @@ export default {
       this.dialog = true;
     },
     async approveRequest(id) {
-      if (
-        await this.$refs.confirm.open(
-          'info',
-          'Are you sure to approve this request?',
-        )
-      ) {
-        this.$store.dispatch('approveIntakeRequest', { id }).then(() => {
-          this.$store.dispatch('fetchIntakeRequests');
-          this.$refs.snackbar.displaySnackbar('success', 'Request Approved.');
-        });
+      const selectedCategory = await this.$refs.selectCategory.open();     
+      if (selectedCategory) {
+          this.$store.dispatch('approveIntakeRequest', { id, categoryId: selectedCategory }).then(() => {
+            this.$store.dispatch('fetchIntakeRequests');
+            this.$refs.snackbar.displaySnackbar('success', 'Request Approved.');
+          });
       }
     },
     getProjectLead(projectLeadUserId) {
@@ -386,7 +401,6 @@ export default {
       this.mouProject = item;
 
       if (item.mouName) {
-        console.log('has mou!', item);
         this.mou = { id: item.mouId, name: item.mouName };
       }
 
@@ -398,12 +412,10 @@ export default {
       this.$refs.mouCombobox.blur();
       this.$nextTick(async () => {
         if (!this.mou || this.mou === '') return;
-        console.log('assignMOU', { project: this.mouProject, mou: this.mou });
         let mouID = this.mou.id;
 
         // Create MOU if does not exist.
         if (!mouID && this.mou) {
-          console.log('creating mou', { mouID, mou: this.mou });
           mouID = await this.$store.dispatch('createMOU', { name: this.mou });
         }
 
@@ -419,7 +431,6 @@ export default {
       });
     },
     toggleNewMou(event) {
-      console.log('toggle called');
       // this.isNewMOU = !this.isNewMOU;
       this.mou = undefined;
     },

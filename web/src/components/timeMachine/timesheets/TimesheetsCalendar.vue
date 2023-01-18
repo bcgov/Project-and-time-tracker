@@ -16,13 +16,13 @@
         <v-flex my1 justify-center>
           <div class="date-picker-container">
             <v-btn-toggle class="v-btn-toggle--selected" style="flex: 0 0 auto !important;">
-              <v-btn @click="setPreviousTimesheetsWeek" flat :disabled='disabledatepicker' >
+              <v-btn @click="setPreviousTimesheetsWeek" flat :disabled="disabledatepicker">
                 <v-icon>arrow_left</v-icon>
               </v-btn>
-              <v-btn @click="toggleDatePicker" flat :disabled='disabledatepicker' >
+              <v-btn @click="toggleDatePicker" flat :disabled="disabledatepicker">
                 <span style="padding-left: 1rem; padding-right: 1rem;">{{ calendarText }}</span>
               </v-btn>
-              <v-btn @click="setNextTimesheetsWeek" flat :disabled='disabledatepicker' >
+              <v-btn @click="setNextTimesheetsWeek" flat :disabled="disabledatepicker">
                 <v-icon>arrow_right</v-icon>
               </v-btn>
             </v-btn-toggle>
@@ -95,7 +95,8 @@ export default {
       }
 
       return `${months[startDate.get('month')]} ${startDate.get('date')} - ${
-        months[endDate.get('month')]} ${endDate.get('date')}`;
+        months[endDate.get('month')]
+      } ${endDate.get('date')}`;
     },
     setCalendarText() {
       this.calendarText = this.getCalendarText();
@@ -148,6 +149,7 @@ export default {
         startDate: startDate.format('YYYY-MM-DD'),
         endDate: endDate.format('YYYY-MM-DD'),
       });
+      this.$emit('next');
     },
     toggleDatePicker() {
       this.showDatePicker = !this.showDatePicker;

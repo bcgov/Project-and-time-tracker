@@ -80,3 +80,28 @@ export const retrieveClients = async () => {
   const repo = clientRepo();
   return await repo.find();
 };
+
+export const validateFinanceCodes = (client: IClient) => {
+  
+  const validationErrors = [];
+
+  // Business validation: Start.
+  if (client.clientNo?.toString().length !== 3) {
+    validationErrors.push('Client No should be exactly 3 characters.');
+  }
+  if (client.responsibilityCenter?.toString().length !== 5) {
+    validationErrors.push('Responsibility Center should be exactly 5 characters.');
+  }
+  if (client.serviceCenter?.toString().length !== 5) {
+    validationErrors.push('Service Center should be exactly 5 characters.');
+  }
+  if (client.stob?.toString().length !== 4) {
+    validationErrors.push('STOB should be exactly 4 characters.');
+  }
+  if (client.projectCode?.toString().length !== 7) {
+    validationErrors.push('Project Code should be exactly 7 characters.');
+  }
+  // Business validation: End.
+
+  return validationErrors;
+};

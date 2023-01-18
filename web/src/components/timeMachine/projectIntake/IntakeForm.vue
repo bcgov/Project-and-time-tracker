@@ -13,7 +13,7 @@
         <v-stepper v-model="e1" alt-labels>
           <v-stepper-header>
             <v-stepper-step
-              @click="checkedit(e1)"
+              @click="checkedit(1)"
               :editable="isEditPInnfo"
               edit-icon="1"
               :complete="e1 > 1"
@@ -26,22 +26,23 @@
             <v-divider class="first-divider"></v-divider>
             <v-divider class="second-divider"></v-divider>
             <v-stepper-step
-              @click="checkedit(e1)"
+              @click="checkedit(2)"
               :editable="isEditMBInfo"
               edit-icon="2"
               :complete="e1 > 2"
-              :step='2'
+              :step="2"
               :class="editall ? 'stepper-color' : ''"
-            >Ministry/Branch Information</v-stepper-step>
+              >Ministry/Branch Information</v-stepper-step
+            >
             <v-divider class="first-divider"></v-divider>
             <v-divider class="second-divider"></v-divider>
             <v-stepper-step
-              @click="checkedit(e1)"
+              @click="checkedit(3)"
               :editable="isEditRiskInfo"
               edit-icon="3"
               :complete="e1 > 3"
-               :step="3"
-               :class="editall ? 'stepper-color' : ''"
+              :step="3"
+              :class="editall ? 'stepper-color' : ''"
             >
               Risk
               <br />Assessment
@@ -49,7 +50,7 @@
             <v-divider class="first-divider"></v-divider>
             <v-divider class="second-divider"></v-divider>
             <v-stepper-step
-              @click="checkedit(e1)"
+              @click="checkedit(4)"
               :editable="isEditContactInfo"
               edit-icon="4"
               :complete="e1 > 4"
@@ -61,7 +62,14 @@
             </v-stepper-step>
             <v-divider class="first-divider"></v-divider>
             <v-divider class="second-divider"></v-divider>
-            <v-stepper-step @click="checkedit(e1)" :editable="isEditContactInfo"  edit-icon="5" :complete="e1 > 4" step="5" :class="editall ? 'stepper-color' : ''">
+            <v-stepper-step
+              @click="checkedit(5)"
+              :editable="isEditContactInfo"
+              edit-icon="5"
+              :complete="e1 > 4"
+              step="5"
+              :class="editall ? 'stepper-color' : ''"
+            >
               Review
               <br />& Submit
             </v-stepper-step>
@@ -93,13 +101,9 @@
                   <label class="sub-header-large">Ministry / Branch Information</label>
                 </div>
               </template>
-              <v-btn
-                @click="backfn(1)"
-                flat
-                large
-                color="primary"
-                class="back-link"
-              >&lt; Project Information</v-btn>
+              <v-btn @click="backfn(1)" flat large color="primary" class="back-link"
+                >&lt; Project Information</v-btn
+              >
               <v-card>
                 <v-card-text>
                   <!-- Only one client on the form for now, but there will be multiple in the future -->
@@ -119,13 +123,9 @@
                   <label class="sub-header-large">Risk Assessment</label>
                 </div>
               </template>
-              <v-btn
-                @click="backfn(2)"
-                flat
-                large
-                color="primary"
-                class="back-link"
-              >&lt; Ministry / Branch Information</v-btn>
+              <v-btn @click="backfn(2)" flat large color="primary" class="back-link"
+                >&lt; Ministry / Branch Information</v-btn
+              >
               <v-card>
                 <v-card-text>
                   <!-- Only one client on the form for now, but there will be multiple in the future -->
@@ -144,13 +144,9 @@
                   <label class="sub-header-large">Contact Information</label>
                 </div>
               </template>
-              <v-btn
-                @click="backfn(3)"
-                flat
-                large
-                color="primary"
-                class="back-link"
-              >&lt; Risk Assessment</v-btn>
+              <v-btn @click="backfn(3)" flat large color="primary" class="back-link"
+                >&lt; Risk Assessment</v-btn
+              >
               <div class="intake-contact-layout">
                 <v-flex md12 class="intake-base-info-header">
                   <span class="intake-base-info-header-content">Contact Information</span>
@@ -199,9 +195,7 @@
                           <template v-slot:header>
                             <div class="primary-heading">
                               <!-- <img src="@/assets/bulb.svg"> -->
-                              <v-flex xs11>
-
-                              </v-flex>
+                              <v-flex xs11></v-flex>
                             </div>
                           </template>
                           <v-card>
@@ -230,20 +224,16 @@
                                 </template>
                               </v-checkbox>
                         </div>-->
-
-
                       </v-layout>
-                        <v-card>
-                          <v-flex xs12>
-                            <div class="contact-button-div">
-
-                                <v-btn color="primary" @click="addNewContact">
-                                  <v-icon left dark>add</v-icon>Add Contact
-                                </v-btn>
-
-                            </div>
-                          </v-flex>
-                        </v-card>
+                      <v-card>
+                        <v-flex xs12>
+                          <div class="contact-button-div">
+                            <v-btn color="primary" @click="addNewContact">
+                              <v-icon left dark>add</v-icon>Add Contact
+                            </v-btn>
+                          </div>
+                        </v-flex>
+                      </v-card>
                       <v-layout>
                         <v-flex xs12>
                           <div class="v-form-container">
@@ -251,15 +241,16 @@
                               <v-flex md-12 mt-4>
                                 <v-btn
                                   :disabled="
-                                  !(
-                                    $store.state.projectInformation &&
-                                    $store.state.ministryInformation &&
-                                    this.$store.state.intakeRiskQuestions
-                                  )
-                                "
+                                    !(
+                                      $store.state.projectInformation &&
+                                      $store.state.ministryInformation &&
+                                      this.$store.state.intakeRiskQuestions
+                                    )
+                                  "
                                   color="primary"
                                   @click="nextButtonClick(5)"
-                                >Next</v-btn>
+                                  >Next</v-btn
+                                >
                               </v-flex>
                             </div>
                           </div>
@@ -271,13 +262,9 @@
               </div>
             </v-stepper-content>
             <v-stepper-content step="5">
-              <v-btn
-                @click="backfn(4)"
-                flat
-                large
-                color="primary"
-                class="back-link"
-              >&lt; Contact Information</v-btn>
+              <v-btn @click="backfn(4)" flat large color="primary" class="back-link"
+                >&lt; Contact Information</v-btn
+              >
               <v-card class="mb-12" color="grey lighten-1" height="200px">
                 <intake-review
                   ref="intakeReview"
@@ -303,7 +290,8 @@
                   "
                   color="primary"
                   @click="submitForm"
-                >Submit</v-btn>
+                  >Submit</v-btn
+                >
               </v-flex>
             </div>
           </div>
@@ -399,6 +387,9 @@ export default {
       this.checkedit(item, true);
     },
     checkedit(msg, flag = false) {
+      if (!flag && this.e1 < msg && !this.editall) {
+        msg = this.e1;
+      }
       if (!this.editall) {
         if (msg === 1 || msg === '1') {
           this.e1 = 1;
@@ -424,10 +415,10 @@ export default {
           this.isEditRiskInfo = true;
         } else {
           this.e1 = 5;
-        //   this.isEditPInnfo = false;
-        // this.isEditMBInfo = false;
-        // this.isEditContactInfo = false;
-        // this.isEditRiskInfo = false;
+          //   this.isEditPInnfo = false;
+          // this.isEditMBInfo = false;
+          // this.isEditContactInfo = false;
+          // this.isEditRiskInfo = false;
         }
       } else {
         this.isEditMBInfo = true;
@@ -458,10 +449,7 @@ export default {
         scoreValue = 0;
         selectedanswerTxt = '';
         const question = this.$store.state.intakeRiskQuestions[i];
-        if (
-          typeof question.selectedAnswerId !== 'undefined'
-          || question.selectedAnswerId
-        ) {
+        if (typeof question.selectedAnswerId !== 'undefined' || question.selectedAnswerId) {
           const selectedAnswer = question.answer.filter(
             answer => answer.id === question.selectedAnswerId,
           );
@@ -502,8 +490,13 @@ export default {
 
       const riskResult = this.$refs.intakeRiskAssessment.calculateRiskScore();
       let riskLevel = 0;
-      if (riskResult.level === 'High') { riskLevel = 1; } else if (riskResult.level === 'Medium') { riskLevel = 2; } else if (riskResult.level === 'Low') { riskLevel = 3; }
-
+      if (riskResult.level === 'High') {
+        riskLevel = 1;
+      } else if (riskResult.level === 'Medium') {
+        riskLevel = 2;
+      } else if (riskResult.level === 'Low') {
+        riskLevel = 3;
+      }
 
       const formData = assign({}, this.$refs.intakeBaseInfo.form, {
         client: this.$refs.intakeClientInfo.form,
@@ -539,13 +532,17 @@ export default {
         projectContact.contactType = CLIENT_INFO_TYPES.CLIENT_CONTACT;
       }
 
-      let contacts = [
-        projectLead,
-        projectSponsor,
-        projectFinance,
-        projectContact,
-      ].filter(contact => contact !== undefined);
-      contacts = contacts.concat(this.allContacts);
+      let contacts = [projectLead, projectSponsor, projectFinance, projectContact].filter(
+        contact => contact !== undefined,
+      );
+
+      const proContacts = [];
+      for (let i = 0; i < this.allContacts.length; i++) {
+        if (this.allContacts[i].email != '') {
+          proContacts.push(this.allContacts[i]);
+        }
+      }
+      contacts = contacts.concat(proContacts);
       if (contacts instanceof Array && contacts.length > 0) {
         if (formData.contacts instanceof Array) {
           formData.contacts = formData.contacts.concat(contacts);
@@ -563,10 +560,7 @@ export default {
         formData.estimatedContractValue = formData.estimatedContractValue;
         this.$store.dispatch('addIntakeRequest', formData).then(
           () => {
-            this.$refs.snackbar.displaySnackbar(
-              'success',
-              'Project Intake Form Submited.',
-            );
+            this.$refs.snackbar.displaySnackbar('success', 'Project Intake Form Submited.');
             this.$refs.spinner.close();
             this.$router.push('intake-success');
           },
@@ -576,10 +570,7 @@ export default {
               const { message } = err.response.data.error;
               this.$refs.snackbar.displaySnackbar('error', message);
             } else {
-              this.$refs.snackbar.displaySnackbar(
-                'error',
-                'Intake Request Error',
-              );
+              this.$refs.snackbar.displaySnackbar('error', 'Intake Request Error');
             }
           },
         );
@@ -596,9 +587,7 @@ export default {
     },
     getClientInfo(infoType) {
       const contacts = this.$store.state.activeIntakeRequest.contacts || [];
-      const clientInfo = contacts.find(
-        contact => contact.contactType === infoType,
-      );
+      const clientInfo = contacts.find(contact => contact.contactType === infoType);
       return clientInfo;
     },
     backfn(step) {
@@ -627,6 +616,7 @@ export default {
     },
     nextButtonClick(step) {
       if (step === 5) {
+        this.allContacts = [];
         for (let i = 0; i < this.contactCount; i++) {
           const res = `additionalcontactinfo${i.toString()}`;
           this.$refs.additionalcontactinfo[i].form.contactType = 'clientcontact';
@@ -678,12 +668,9 @@ export default {
           projectContact.contactType = CLIENT_INFO_TYPES.CLIENT_CONTACT;
         }
 
-        let contacts = [
-          projectLead,
-          projectSponsor,
-          projectFinance,
-          projectContact,
-        ].filter(contact => contact !== undefined);
+        let contacts = [projectLead, projectSponsor, projectFinance, projectContact].filter(
+          contact => contact !== undefined,
+        );
         contacts = contacts.concat(this.allContacts);
         if (contacts instanceof Array && contacts.length > 0) {
           if (formData.contacts instanceof Array) {
@@ -745,9 +732,9 @@ legend {
   box-shadow: none !important;
 }
 .v-card__text {
-padding: 0px;
+  padding: 0px;
 }
 .contact-button-div {
-    margin-left: 2%;
+  margin-left: 2%;
 }
 </style>

@@ -4,7 +4,17 @@
       <v-container grid-list-xl>
         <v-layout row wrap class="list-header">
           <v-flex md1>Day</v-flex>
-          <v-flex md2>Amount</v-flex>
+          <v-flex md2>
+            <v-tooltip bottom>
+              <span slot="activator">
+                Hours
+                <v-icon size="20">info</v-icon>
+              </span>
+              <span>
+                Hours (15min = 0.25)
+              </span>
+            </v-tooltip></v-flex
+          >
           <v-flex md7>Description</v-flex>
           <v-flex md2></v-flex>
         </v-layout>
@@ -16,24 +26,28 @@
           <v-flex md1>{{ days[index] }}</v-flex>
           <v-flex md2>
             <v-text-field
-            :disabled="timesheet[projectIndex].is_locked"
-              :rules="amountRule"
-              prepend-inner-icon="attach_money"
-              oninput="validity.valid||(value='');"
-              :value="item.revenueAmount | withCommas"
-              @blur="v => (item.revenueAmount = parseFloat(v.target.value))"
+              :disabled="timesheet[projectIndex].is_locked"
+              type="number"
+              max="24"
+              step="0.01"
+              min="0"
+              oninput="validity.valid||(value=0);"
+              v-model="item.revenueHours"
             ></v-text-field>
           </v-flex>
           <v-flex md7>
-            <v-text-field v-model="item.revenueComment" :disabled="timesheet[projectIndex].is_locked"></v-text-field>
+            <v-text-field
+              v-model="item.revenueComment"
+              :disabled="timesheet[projectIndex].is_locked"
+            ></v-text-field>
           </v-flex>
-          <v-flex md2>
+          <v-flex md2 style=" text-align: right;">
             <v-tooltip top open-delay="500">
               <template v-slot:activator="{ on }">
                 <v-btn
                   flat
                   icon
-                  @click="copyfunc(item.revenueAmount, item.revenueComment)"
+                  @click="copyfunc(item.revenueHours, item.revenueComment)"
                   v-on="on"
                   :disabled="timesheet[projectIndex].is_locked"
                 >
@@ -43,13 +57,25 @@
               <span>Copy</span>
             </v-tooltip>
 
-            <v-tooltip top open-delay="500">
+            <v-tooltip top open-delay="500" v-if="isCopy">
               <template v-slot:activator="{ on }">
-                <v-btn flat icon @click="pastefunc(index)" v-on="on" :disabled="timesheet[projectIndex].is_locked">
+                <v-btn
+                  flat
+                  icon
+                  @click="pastefunc(index)"
+                  v-on="on"
+                  :disabled="timesheet[projectIndex].is_locked"
+                >
                   <v-icon>post_add</v-icon>
                 </v-btn>
               </template>
               <span>Paste</span>
+            </v-tooltip>
+            <v-tooltip v-else>
+              <template v-slot:activator="{ on }">
+                <v-btn flat icon v-on="on" :disabled="!isCopy"> </v-btn>
+              </template>
+              <span></span>
             </v-tooltip>
           </v-flex>
         </v-layout>
@@ -65,6 +91,7 @@ export default {
   components: {},
   data() {
     return {
+      isCopy: false,
       valid: true,
       amountRule: [
         (v) => {
@@ -72,8 +99,8 @@ export default {
           if (!v) {
             return true;
           }
-          const anyNonNumbers = v.toString().match(/[^\d,]+/g, '');
-          if (anyNonNumbers) {
+          const anyNonNumbers = v.toString().match(/[1-9]\d*(?:\.\d{0,2})?/, '');
+          if (!anyNonNumbers) {
             return 'Field must just be a number.';
           }
           return true;
@@ -92,12 +119,13 @@ export default {
     validate() {
       return this.$refs.form.validate();
     },
-    copyfunc(revenueAmount, revenueComment) {
-      this.revenueAmount = revenueAmount;
+    copyfunc(revenueHours, revenueComment) {
+      this.isCopy = true;
+      this.revenueHours = revenueHours;
       this.revenueComment = revenueComment;
     },
     pastefunc(index) {
-      this.timesheet[this.projectIndex].entries[index].revenueAmount = this.revenueAmount;
+      this.timesheet[this.projectIndex].entries[index].revenueHours = this.revenueHours;
       this.timesheet[this.projectIndex].entries[index].revenueComment = this.revenueComment;
     },
   },

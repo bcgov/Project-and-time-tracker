@@ -123,11 +123,9 @@ export default {
       }
     },
     createMinistryPrompt() {
-      console.log("create ministry!");
       this.dialog = true;
     },
     async createMinistry(name) {
-      console.log("createMinistry", { name });
       await this.$store.dispatch("addMinistry", { ministryName: name });
       this.dialog = false; // Close window
       this.$store.dispatch("fetchAllMinistries");

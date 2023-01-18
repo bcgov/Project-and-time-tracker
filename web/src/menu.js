@@ -1,4 +1,4 @@
-const shouldDisplayItem = (item, router, auth) => {
+const shouldDisplayItem = (item, router, auth, userRoles) => {
   // If the menu item has no URL just render it
   if (!(Object.prototype.hasOwnProperty.call(item, 'href'))) return true;
 
@@ -26,9 +26,8 @@ const shouldDisplayItem = (item, router, auth) => {
     if (itemRoute === undefined) return true; // It's okay to display, no secured route was referenced
 
     let isAuthorized = false;
-    // Check realm roles
     for (let idx = 0; idx < itemRoute.meta.roles.length; idx++) {
-      if (auth.hasRealmRole && auth.hasRealmRole(itemRoute.meta.roles[idx])) {
+      if (userRoles.includes(itemRoute.meta.roles[idx])) {
         isAuthorized = true;
         break;
       }
@@ -81,7 +80,6 @@ const menuItems = [
     title: 'Admin',
     icon: 'lock_open',
   },
- 
   {
     header: 'System',
   },

@@ -105,7 +105,7 @@
             style="padding:0px !important"
           >
              <v-flex md3> <label class="v-label theme--light" style="margin-left: 2%;">Non-Ministry</label>  </v-flex>
-            <v-flex md1><v-checkbox v-model="form.client.isNonMinistry"></v-checkbox></v-flex>
+            <v-flex md1><v-checkbox v-model="form.client.isNonMinistry" @change="ministryCheck($event)"></v-checkbox></v-flex>
            <v-flex md8> <v-text-field
               :rules="requiredRule"
               v-if="form.client.isNonMinistry"
@@ -146,20 +146,19 @@
             label="Contract Amount"
             oninput="validity.valid||(value='');"
             :value='form.contractValue | withCommas'
-            @blur='v => form.contractValue = parseFloat(v.target.value)'
+            @blur="v => (form.contractValue = parseFloat(v.target.value.toString().replace(/,/g, '')))"
           ></v-text-field>
         </div>
       </v-flex>
       <v-flex md6>
         <div class="v-form-container">
           <v-text-field
+            :rules="mouRule"
             prepend-inner-icon="attach_money"
             label="MOU Amount"
-            type="number"
-            :min="0"
-            step="any"
             oninput="validity.valid||(value='');"
-            v-model="form.mouAmount"
+            :value='form.mouAmount | withCommas'
+            @blur="v => (form.mouAmount = parseFloat(v.target.value.toString().replace(/,/g, '')))"
           ></v-text-field>
         </div>
       </v-flex>
@@ -187,6 +186,18 @@
             item-value="id"
             item-text="contact.fullName"
             v-model="form.backupUserId"
+          ></v-select>
+        </div>
+      </v-flex>
+      <v-flex xs12>
+        <div class="v-form-container">
+          <v-select
+            :disabled="!canEditProjectCategories"
+            :items="projectCategories"
+            label="Project Category"
+            item-value="id"
+            item-text="description"
+            v-model="form.categoryId"
           ></v-select>
         </div>
       </v-flex>
@@ -303,6 +314,9 @@ export default {
     mouList() {
       return this.$store.state.mouList;
     },
+    projectCategories() {
+      return this.$store.state.projectCategories;
+    }, 
   },
   data() {
     const form = Object.assign({}, this.$props.project);
@@ -316,6 +330,9 @@ export default {
     if (!inputClient) {
       form.client = new ClientDto();
     }
+
+    const EDIT_CATEGORY_ROLES = ['psb_admin', 'psb_intake_user'];
+    const canEditProjectCategories = this.$store.state.activeRoles.role.some(role => EDIT_CATEGORY_ROLES.includes(role.toLowerCase()));
 
     return {
       valid: true,
@@ -339,14 +356,28 @@ export default {
       saveProjectLoading: false,
       ministryInformation: this.$store.state.ministryInformation,
       mouSearch: null,
-      amountRule: [(v) => {
-        if (!v) return 'This field is required';
-        const anyNonNumbers = v.toString().match(/[^\d,]+/g, '');
-        if (anyNonNumbers) {
-          return 'Field must just be a number.';
-        }
-        return true;
-      }],
+      amountRule: [
+        (v) => {
+          if (!v) return 'This field is required';
+          if (v === 0 || v === '0') return 'Field cannot be zero';
+          const anyNonNumbers = v.toString().match(/^[0-9,_.-]*$/g, '');
+          if (!anyNonNumbers) {
+            return 'Field must just be a number.';
+          }
+          return true;
+        },
+      ],
+      mouRule: [
+        (v) => {
+          if (!v) return true;
+          const anyNonNumbers = v.toString().match(/^[0-9,_.-]*$/g, '');
+          if (!anyNonNumbers) {
+            return 'Field must just be a number.';
+          }
+          return true;
+        },
+      ],
+      canEditProjectCategories,
     };
   },
   watch: {
@@ -358,7 +389,6 @@ export default {
     },
     project(value) {
       this.form = value;
-
       const inputProjectSector = this.form.projectSector || null;
       if (!inputProjectSector) {
         this.form.projectSector = new ProjectSectorDto();
@@ -366,7 +396,6 @@ export default {
     },
     ministry(value) {
       this.form = value;
-
       const inputMinistry = this.form.client.ministry || null;
       if (!inputMinistry) {
         this.form.client.ministry = new MinistryDto();
@@ -374,6 +403,24 @@ export default {
     },
   },
   methods: {
+    ministryCheck(e) {
+		 const inputMinistry = this.form.client.ministry || null;
+      if (!inputMinistry) {
+        this.form.client.ministry = new MinistryDto();
+      }
+    },
+    thousandSeprator(amount) {
+      if (
+        amount !== ''
+        || amount !== undefined
+        || amount !== 0
+        || amount !== '0'
+        || amount !== null
+      ) {
+        return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      }
+      return amount;
+    },
     onTeamWideProject() {
       if (this.form.teamWideProject) {
         this.oldLeadUserID = this.form.leadUserId;
@@ -443,6 +490,7 @@ export default {
             // scope.$store.dispatch('updateProject', projectData);
             scope.$refs.snackbar.displaySnackbar('success', 'Updated');
             scope.$store.dispatch('fetchProjects');
+            scope.$store.dispatch("fetchAllProjects");
           },
           (err) => {
             this.saveProjectLoading = false;
@@ -468,13 +516,19 @@ export default {
     },
     async createMOU() {
       // TODO - Check that pre-existing MOU doesn't already exist
+      if (this.project.mou === '' || this.project.mou === ' ') { return; }
       if (this.project.mou) {
-        const newMouID = await this.$store.dispatch('createMOU', { name: this.project.mou });
+        let mouItem = this.$store.state.mouList.find(item => item.name === this.project.mou);
+        if (typeof mouItem === 'undefined') {
+          mouItem = this.$store.state.mouList.find(item => item.name === this.project.mou.name);
+          if (typeof mouItem === 'undefined') { await this.$store.dispatch('createMOU', { name: this.project.mou }); }
+        }
       }
     },
     fetchData() {
       // Fetching all the users for now
       this.$store.dispatch('fetchUsers');
+      this.$store.dispatch('fetchProjectCategories');
     },
   },
   created() {

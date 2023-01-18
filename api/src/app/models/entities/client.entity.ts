@@ -21,7 +21,7 @@ export class Client {
   @Column({ type: 'text', nullable: true })
   projectCode: string;
 
-  @ManyToOne(type => Ministry)
+  @ManyToOne((type) => Ministry)
   ministry: Ministry;
 
   @Column({ type: 'text', nullable: true })
@@ -59,4 +59,7 @@ export class Client {
 
   @Column({ type: 'text', nullable: true })
   nonMinistryName: string;
+
+  @Column({ type: 'int', nullable: true })
+  billingCount: number;
 }

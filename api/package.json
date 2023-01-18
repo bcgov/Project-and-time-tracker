@@ -1,5 +1,5 @@
 {
-  "name": "aot-core",
+  "name": "api",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -69,12 +69,12 @@
     "node-fetch": "^2.3.0",
     "nodemon": "^1.18.10",
     "nyc": "^13.3.0",
-    "pg": "^7.8.2",
+    "pg": "^8.8.0",
     "reflect-metadata": "^0.1.13",
     "supertest": "^4.0.0",
     "tape": "^4.10.1",
     "test": "^0.6.0",
-    "typeorm": "^0.2.14",
+    "typeorm": "^0.2.45",
     "uuid-validate": "0.0.3"
   }
 }

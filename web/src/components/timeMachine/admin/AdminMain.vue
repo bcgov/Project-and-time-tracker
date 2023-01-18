@@ -22,20 +22,56 @@
           <v-list-tile avatar>
             <v-list-tile-content>
               <v-list-tile-title>
-                <a v-bind:href="AUTH_URL" target="_blank">Keycloak - IAM</a>
+                <router-link to="admin/hourly-rates">Set hourly rates</router-link>
               </v-list-tile-title>
-              <v-list-tile-sub-title>Login to Keycloak - to manage users</v-list-tile-sub-title>
+              <v-list-tile-sub-title>Set hourly rates for users</v-list-tile-sub-title>
             </v-list-tile-content>
           </v-list-tile>
 
+           <v-list-tile avatar>
+            <v-list-tile-content>
+              <v-list-tile-title>
+                <router-link to="admin/revenue-rates">Set revenue rates</router-link>
+              </v-list-tile-title>
+              <v-list-tile-sub-title>Set revenue rates for users</v-list-tile-sub-title>
+            </v-list-tile-content>
+          </v-list-tile>
+
+          <v-list-tile avatar>
+            <v-list-tile-content>
+              <v-list-tile-title>
+                <router-link to="/admin/financecodes">Set finance codes</router-link>
+              </v-list-tile-title>
+              <v-list-tile-sub-title>Add or remove finance code's of users</v-list-tile-sub-title>
+            </v-list-tile-content>
+          </v-list-tile>
 
 
           <v-list-tile avatar>
             <v-list-tile-content>
               <v-list-tile-title>
-                <router-link to="admin/hourly-rates">Set hourly rates</router-link>
+                <router-link to="admin/remove-mou">Remove MOU</router-link>
               </v-list-tile-title>
-              <v-list-tile-sub-title>Set hourly rates for users</v-list-tile-sub-title>
+              <v-list-tile-sub-title>Remove MOU's not connected with projects</v-list-tile-sub-title>
+            </v-list-tile-content>
+          </v-list-tile>
+
+          <v-list-tile avatar>
+            <v-list-tile-content>
+              <v-list-tile-title>
+                <router-link to="admin/rfx-phase">Set Rfx Phase</router-link>
+              </v-list-tile-title>
+              <v-list-tile-sub-title>Add edit or remove Rfx Phases</v-list-tile-sub-title>
+            </v-list-tile-content>
+          </v-list-tile>
+
+
+          <v-list-tile avatar>
+            <v-list-tile-content>
+              <v-list-tile-title>
+                <router-link to="admin/rfx-type">Set Rfx Type</router-link>
+              </v-list-tile-title>
+              <v-list-tile-sub-title>Add edit or remove Rfx Types</v-list-tile-sub-title>
             </v-list-tile-content>
           </v-list-tile>
         </v-list>
@@ -45,19 +81,16 @@
 </template>
 
 <script>
-import Material from "vuetify/es5/util/colors";
-// web/src/modules/security/init.js
-import { getAuthURL } from "../../../modules/security/init";
+import Material from 'vuetify/es5/util/colors';
 
 export default {
   data: () => ({
     color: Material,
-    selectedTab: "tab-1",
-    AUTH_URL: getAuthURL()
+    selectedTab: 'tab-1',
   }),
   beforeMount() {
     // this.$store.state.collapseNavigationBar = true;
-  }
+  },
 };
 </script>
 

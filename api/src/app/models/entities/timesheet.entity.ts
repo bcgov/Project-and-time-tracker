@@ -3,7 +3,7 @@ import {
   PrimaryGeneratedColumn,
   Column,
   ManyToOne,
-  OneToMany
+  OneToMany,
 } from 'typeorm';
 import { ProjectRfx } from './projectRfx.entity';
 import { Project } from './project.entity';
@@ -17,16 +17,16 @@ export class Timesheet {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(type => ProjectRfx)
+  @ManyToOne((type) => ProjectRfx)
   projectRfx: ProjectRfx;
 
-  @ManyToOne(type => Project)
+  @ManyToOne((type) => Project)
   project: Project;
 
-  @ManyToOne(type => User)
+  @ManyToOne((type) => User)
   user: User;
 
-  @ManyToOne(type => MOU, { nullable: true })
+  @ManyToOne((type) => MOU, { nullable: true })
   mou: MOU;
 
   @Column({ type: 'date', nullable: true })
@@ -59,9 +59,12 @@ export class Timesheet {
   @Column({ type: 'boolean', nullable: true })
   is_locked: boolean;
 
-  @OneToMany(
-    type => TimesheetEntry,
-    type => type.timesheet
-  )
+  @Column({ type: 'double precision', nullable: true })
+  amountBilled: number;
+
+  @Column({ type: 'text', nullable: true })
+  documentNo: string;
+
+  @OneToMany((type) => TimesheetEntry, (type) => type.timesheet)
   timesheetEntries: TimesheetEntry[];
 }

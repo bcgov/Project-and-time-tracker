@@ -1,7 +1,7 @@
 import * as Koa from 'koa';
 import * as Router from 'koa-router';
 import { authorize } from '../../../services/common/authorize.service';
-import { retrieveMOUs, createMOU } from '../../../services/client/mou.service';
+import { retrieveMOUs, createMOU, deleteMOU } from '../../../services/client/mou.service';
 
 export const getMOUs = async (ctx: Koa.Context) => {
     try {
@@ -20,14 +20,24 @@ export const createMOUAction = async (ctx: Koa.Context) => {
     }
 };
 
+export const deleteMOUByAction = async (ctx: Koa.Context) => {
+    try {
+      await deleteMOU(ctx.params.id);
+      ctx.body = 'success';
+    } catch (err) {
+      ctx.throw(err.message);
+    }
+  };
+
 
 const routerOpts: Router.IRouterOptions = {
-    prefix: '/MOU'
+    prefix: '/api/MOU'
 };
 
 const router: Router = new Router(routerOpts);
 
 router.get('/', authorize, getMOUs);
 router.post('/', authorize, createMOUAction);
+router.delete('/:id', authorize, deleteMOUByAction);
 
 export default router;

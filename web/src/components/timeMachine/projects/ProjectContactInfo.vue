@@ -52,7 +52,6 @@
           ></v-text-field>
         </div>
       </v-flex>
-     
     </v-form>
   </v-layout>
 </template>
@@ -72,9 +71,7 @@ export default {
     const form = Object.assign({}, new ContactDto(), this.$props.contact);
     return {
       valid: true,
-      requiredRule: this.$props.isRequired
-        ? [v => !!v || 'This field is required']
-        : [],
+      requiredRule: this.$props.isRequired ? [v => !!v || 'This field is required'] : [],
       emailPattern: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
       emailRules: this.$props.isRequired
         ? [
@@ -82,7 +79,9 @@ export default {
           v => this.emailPattern.test(v) || 'Email must be valid',
         ]
         : [v => !v || this.emailPattern.test(v) || 'Email must be valid'],
-      phoneRule: this.$props.isRequired?[v => !!v || 'This field is required',v => v.length >= 10 || 'Invalid Phone']:[v => !v || v.length >= 10 || 'Invalid Phone'],
+      phoneRule: this.$props.isRequired
+        ? [v => !!v || 'This field is required', v => v.length >= 10 || 'Invalid Phone']
+        : [v => !v || v.length >= 10 || 'Invalid Phone'],
 
       contactInformation: this.$store.state.contactInformation,
       // Initialize using props
@@ -99,16 +98,15 @@ export default {
     },
     contact(value) {
       this.form = value || new ContactDto();
-    } },
+    },
+  },
   methods: {
     onNextClicked() {
-      if (this.$refs.projectContact.validate())
-      { 
-      this.$store.state.contactInformation = true;
-         // this.$emit('next');
-      }
-      else {
-         this.$store.state.contactInformation = false;
+      if (this.$refs.projectContact.validate()) {
+        this.$store.state.contactInformation = true;
+        // this.$emit('next');
+      } else {
+        this.$store.state.contactInformation = false;
       }
       return this.$store.state.contactInformation;
     },

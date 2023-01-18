@@ -2,12 +2,15 @@ import { Repository, getRepository } from 'typeorm';
 import { ProjectSector } from '../../models/entities/projectSector.entity';
 
 const projectSectorRepo = (): Repository<ProjectSector> => {
-    return getRepository(ProjectSector);
-  };
-  
-export const  retrieveProjectSectors = async () => {
+  return getRepository(ProjectSector);
+};
+
+export const retrieveProjectSectors = async () => {
   const repo = projectSectorRepo();
-  return await repo.find();
+  return await repo
+    .createQueryBuilder('s')
+    .orderBy('s.projectSectorName', 'ASC')
+    .getMany();
 };
 
 export const retrieveProjectSectorById = async (id: string) => {

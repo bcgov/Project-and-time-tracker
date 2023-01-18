@@ -1,0 +1,1215 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1094" height="2861" viewBox="0 0 1094 2861">
+  <defs>
+    <filter id="Rectangle_208" x="4" y="48" width="237" height="119" filterUnits="userSpaceOnUse">
+      <feOffset dy="1" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="1" result="blur"/>
+      <feFlood flood-opacity="0.251"/>
+      <feComposite operator="in" in2="blur"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <linearGradient id="linear-gradient" x1="0.5" x2="0.5" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#fff"/>
+      <stop offset="1" stop-color="#ff9800"/>
+    </linearGradient>
+    <filter id="Rectangle_208-2" x="286.667" y="48" width="237" height="119" filterUnits="userSpaceOnUse">
+      <feOffset dy="1" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="1" result="blur-2"/>
+      <feFlood flood-opacity="0.251"/>
+      <feComposite operator="in" in2="blur-2"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <linearGradient id="linear-gradient-2" x1="0.5" x2="0.5" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#fff"/>
+      <stop offset="1" stop-color="#009688"/>
+    </linearGradient>
+    <filter id="Rectangle_208-3" x="569.333" y="48" width="237" height="119" filterUnits="userSpaceOnUse">
+      <feOffset dy="1" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="1" result="blur-3"/>
+      <feFlood flood-opacity="0.251"/>
+      <feComposite operator="in" in2="blur-3"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <linearGradient id="linear-gradient-3" x1="0.5" x2="0.5" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#fff"/>
+      <stop offset="1" stop-color="#03a9f4"/>
+    </linearGradient>
+    <filter id="Rectangle_208-4" x="852" y="48" width="237" height="119" filterUnits="userSpaceOnUse">
+      <feOffset dy="1" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="1" result="blur-4"/>
+      <feFlood flood-opacity="0.251"/>
+      <feComposite operator="in" in2="blur-4"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <linearGradient id="linear-gradient-4" x1="0.5" x2="0.5" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#fff"/>
+      <stop offset="1" stop-color="#ce61d2"/>
+    </linearGradient>
+    <filter id="path" x="2.5" y="200.5" width="1088" height="59" filterUnits="userSpaceOnUse">
+      <feOffset dy="1" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="1.5" result="blur-5"/>
+      <feFlood flood-opacity="0.239"/>
+      <feComposite operator="in" in2="blur-5"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <filter id="Rectangle_212" x="737" y="2404" width="357" height="457" filterUnits="userSpaceOnUse">
+      <feOffset dy="1" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="2" result="blur-6"/>
+      <feFlood flood-opacity="0.251"/>
+      <feComposite operator="in" in2="blur-6"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <filter id="Path_107" x="757.5" y="2479" width="318.364" height="316.5" filterUnits="userSpaceOnUse">
+      <feOffset dy="1" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="1" result="blur-7"/>
+      <feFlood flood-opacity="0.251"/>
+      <feComposite operator="in" in2="blur-7"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <filter id="button" x="1002.5" y="2813.5" width="74.044" height="33.553" filterUnits="userSpaceOnUse">
+      <feOffset dy="2" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="1" result="blur-8"/>
+      <feFlood flood-opacity="0.102"/>
+      <feComposite operator="in" in2="blur-8"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <filter id="Rectangle_212-2" x="370" y="2404" width="357" height="457" filterUnits="userSpaceOnUse">
+      <feOffset dy="1" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="2" result="blur-9"/>
+      <feFlood flood-opacity="0.251"/>
+      <feComposite operator="in" in2="blur-9"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <filter id="Path_107-2" x="390.5" y="2479" width="318.364" height="316.5" filterUnits="userSpaceOnUse">
+      <feOffset dy="1" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="1" result="blur-10"/>
+      <feFlood flood-opacity="0.251"/>
+      <feComposite operator="in" in2="blur-10"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <filter id="button-2" x="635.5" y="2813.5" width="74.044" height="33.553" filterUnits="userSpaceOnUse">
+      <feOffset dy="2" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="1" result="blur-11"/>
+      <feFlood flood-opacity="0.102"/>
+      <feComposite operator="in" in2="blur-11"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <filter id="Rectangle_212-3" x="3" y="2404" width="357" height="457" filterUnits="userSpaceOnUse">
+      <feOffset dy="1" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="2" result="blur-12"/>
+      <feFlood flood-opacity="0.251"/>
+      <feComposite operator="in" in2="blur-12"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <filter id="Path_107-3" x="23.5" y="2479" width="318.364" height="316.5" filterUnits="userSpaceOnUse">
+      <feOffset dy="1" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="1" result="blur-13"/>
+      <feFlood flood-opacity="0.251"/>
+      <feComposite operator="in" in2="blur-13"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <filter id="button-3" x="268.5" y="2813.5" width="74.044" height="33.553" filterUnits="userSpaceOnUse">
+      <feOffset dy="2" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="1" result="blur-14"/>
+      <feFlood flood-opacity="0.102"/>
+      <feComposite operator="in" in2="blur-14"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <filter id="Rectangle_212-4" x="542" y="1800" width="548.822" height="462" filterUnits="userSpaceOnUse">
+      <feOffset dy="1" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="2" result="blur-15"/>
+      <feFlood flood-opacity="0.251"/>
+      <feComposite operator="in" in2="blur-15"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <filter id="Path_107-4" x="562" y="1869" width="505.299" height="316.5" filterUnits="userSpaceOnUse">
+      <feOffset dy="1" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="1" result="blur-16"/>
+      <feFlood flood-opacity="0.251"/>
+      <feComposite operator="in" in2="blur-16"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <filter id="button-4" x="993.5" y="2211.5" width="74.044" height="33.553" filterUnits="userSpaceOnUse">
+      <feOffset dy="2" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="1" result="blur-17"/>
+      <feFlood flood-opacity="0.102"/>
+      <feComposite operator="in" in2="blur-17"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <filter id="Rectangle_212-5" x="0" y="1800" width="534.458" height="462" filterUnits="userSpaceOnUse">
+      <feOffset dy="1" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="2" result="blur-18"/>
+      <feFlood flood-opacity="0.251"/>
+      <feComposite operator="in" in2="blur-18"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <filter id="button-5" x="443.5" y="2211.5" width="74.044" height="33.553" filterUnits="userSpaceOnUse">
+      <feOffset dy="2" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="1" result="blur-19"/>
+      <feFlood flood-opacity="0.102"/>
+      <feComposite operator="in" in2="blur-19"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <filter id="Rectangle_212-6" x="736" y="1380" width="355" height="407" filterUnits="userSpaceOnUse">
+      <feOffset dy="1" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="2" result="blur-20"/>
+      <feFlood flood-opacity="0.251"/>
+      <feComposite operator="in" in2="blur-20"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <filter id="button-6" x="1000.5" y="1736.5" width="74.044" height="33.553" filterUnits="userSpaceOnUse">
+      <feOffset dy="2" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="1" result="blur-21"/>
+      <feFlood flood-opacity="0.102"/>
+      <feComposite operator="in" in2="blur-21"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <filter id="Rectangle_212-7" x="368" y="1380" width="355" height="407" filterUnits="userSpaceOnUse">
+      <feOffset dy="1" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="2" result="blur-22"/>
+      <feFlood flood-opacity="0.251"/>
+      <feComposite operator="in" in2="blur-22"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <filter id="button-7" x="634.5" y="1736.5" width="74.044" height="33.553" filterUnits="userSpaceOnUse">
+      <feOffset dy="2" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="1" result="blur-23"/>
+      <feFlood flood-opacity="0.102"/>
+      <feComposite operator="in" in2="blur-23"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <filter id="Rectangle_212-8" x="0" y="1380" width="355" height="407" filterUnits="userSpaceOnUse">
+      <feOffset dy="1" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="2" result="blur-24"/>
+      <feFlood flood-opacity="0.251"/>
+      <feComposite operator="in" in2="blur-24"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <filter id="button-8" x="266.5" y="1736.5" width="74.044" height="33.553" filterUnits="userSpaceOnUse">
+      <feOffset dy="2" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="1" result="blur-25"/>
+      <feFlood flood-opacity="0.102"/>
+      <feComposite operator="in" in2="blur-25"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <filter id="Rectangle_212-9" x="542" y="811" width="548.822" height="427" filterUnits="userSpaceOnUse">
+      <feOffset dy="1" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="2" result="blur-26"/>
+      <feFlood flood-opacity="0.251"/>
+      <feComposite operator="in" in2="blur-26"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <filter id="button-9" x="998.5" y="1186.5" width="74.044" height="33.553" filterUnits="userSpaceOnUse">
+      <feOffset dy="2" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="1" result="blur-27"/>
+      <feFlood flood-opacity="0.102"/>
+      <feComposite operator="in" in2="blur-27"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <filter id="Rectangle_212-10" x="0" y="811" width="534.458" height="427" filterUnits="userSpaceOnUse">
+      <feOffset dy="1" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="2" result="blur-28"/>
+      <feFlood flood-opacity="0.251"/>
+      <feComposite operator="in" in2="blur-28"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <filter id="button-10" x="442.5" y="1186.5" width="74.044" height="33.553" filterUnits="userSpaceOnUse">
+      <feOffset dy="2" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="1" result="blur-29"/>
+      <feFlood flood-opacity="0.102"/>
+      <feComposite operator="in" in2="blur-29"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <filter id="Rectangle_212-11" x="734" y="374" width="357" height="427" filterUnits="userSpaceOnUse">
+      <feOffset dy="1" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="2" result="blur-30"/>
+      <feFlood flood-opacity="0.251"/>
+      <feComposite operator="in" in2="blur-30"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <filter id="button-11" x="998.5" y="749.5" width="74.044" height="33.553" filterUnits="userSpaceOnUse">
+      <feOffset dy="2" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="1" result="blur-31"/>
+      <feFlood flood-opacity="0.102"/>
+      <feComposite operator="in" in2="blur-31"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <filter id="Rectangle_212-12" x="367" y="374" width="357" height="427" filterUnits="userSpaceOnUse">
+      <feOffset dy="1" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="2" result="blur-32"/>
+      <feFlood flood-opacity="0.251"/>
+      <feComposite operator="in" in2="blur-32"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <linearGradient id="linear-gradient-5" x1="0.5" x2="0.5" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#03a9f4"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-6" x1="0.5" x2="0.5" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#ce61d2"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="button-12" x="634.5" y="749.5" width="74.044" height="33.553" filterUnits="userSpaceOnUse">
+      <feOffset dy="2" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="1" result="blur-33"/>
+      <feFlood flood-opacity="0.102"/>
+      <feComposite operator="in" in2="blur-33"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <filter id="Rectangle_212-13" x="0" y="374" width="357" height="427" filterUnits="userSpaceOnUse">
+      <feOffset dy="1" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="2" result="blur-34"/>
+      <feFlood flood-opacity="0.251"/>
+      <feComposite operator="in" in2="blur-34"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <filter id="button-13" x="267.5" y="749.5" width="74.044" height="33.553" filterUnits="userSpaceOnUse">
+      <feOffset dy="2" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="1" result="blur-35"/>
+      <feFlood flood-opacity="0.102"/>
+      <feComposite operator="in" in2="blur-35"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+  </defs>
+  <g id="Group_704" data-name="Group 704" transform="translate(-258 -115)">
+    <g id="Group_477" data-name="Group 477" transform="translate(-4 -20)">
+      <g id="Group_470" data-name="Group 470" transform="translate(269 185)">
+        <g transform="matrix(1, 0, 0, 1, -7, -50)" filter="url(#Rectangle_208)">
+          <rect id="Rectangle_208-5" data-name="Rectangle 208" width="231" height="113" rx="2" transform="translate(7 50)" fill="#fff"/>
+        </g>
+        <g id="Group_598" data-name="Group 598">
+          <g id="Rectangle_209" data-name="Rectangle 209" fill="#ff9800" stroke="#ff9800" stroke-width="1">
+            <rect width="231" height="113" rx="2" stroke="none"/>
+            <rect x="0.5" y="0.5" width="230" height="112" rx="1.5" fill="none"/>
+          </g>
+          <path id="Bar_Chart" data-name="Bar Chart" d="M98,119V101h6v18Zm-9,0V89h8v30Zm-9,0V99h8v20Zm-9,0V106h8v13Zm-9,0V94h8v25Zm-9,0V84h8v35Zm-9,0V94h8v25Zm-9,0V99h8v20Zm-9,0V79h8v40Zm-9,0V89h8v30Zm-7,0V101h6v18Zm-9,0V89H9v30Zm-9,0V99H0v20Z" transform="translate(119 -12)" opacity="0.37" fill="url(#linear-gradient)"/>
+        </g>
+        <text id="Projects_in_Progress" data-name="Projects in Progress" transform="translate(15 36)" fill="#fff" font-size="18" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">Projects in Progress</tspan></text>
+        <text id="_32" data-name="32" transform="translate(15 88)" fill="#fff" font-size="30" font-family="NunitoSans-Bold, Nunito Sans" font-weight="700"><tspan x="0" y="0">32</tspan></text>
+      </g>
+      <g id="Group_471" data-name="Group 471" transform="translate(551.667 185)">
+        <g transform="matrix(1, 0, 0, 1, -289.67, -50)" filter="url(#Rectangle_208-2)">
+          <rect id="Rectangle_208-6" data-name="Rectangle 208" width="231" height="113" rx="2" transform="translate(289.67 50)" fill="#fff"/>
+        </g>
+        <g id="Group_599" data-name="Group 599">
+          <g id="Path_282" data-name="Path 282" fill="#009688">
+            <path d="M 229 112.5 L 2 112.5 C 1.172911763191223 112.5 0.5 111.8270874023438 0.5 111 L 0.5 2 C 0.5 1.172911763191223 1.172911763191223 0.5 2 0.5 L 229 0.5 C 229.8270874023438 0.5 230.5 1.172911763191223 230.5 2 L 230.5 111 C 230.5 111.8270874023438 229.8270874023438 112.5 229 112.5 Z" stroke="none"/>
+            <path d="M 2 1 C 1.448593139648438 1 1 1.448585510253906 1 2 L 1 111 C 1 111.5514144897461 1.448593139648438 112 2 112 L 229 112 C 229.5514068603516 112 230 111.5514144897461 230 111 L 230 2 C 230 1.448585510253906 229.5514068603516 1 229 1 L 2 1 M 2 0 L 229 0 C 230.1045532226562 0 231 0.8954391479492188 231 2 L 231 111 C 231 112.1045608520508 230.1045532226562 113 229 113 L 2 113 C 0.89544677734375 113 0 112.1045608520508 0 111 L 0 2 C 0 0.8954391479492188 0.89544677734375 0 2 0 Z" stroke="none" fill="#009688"/>
+          </g>
+          <path id="Bar_Chart-2" data-name="Bar Chart" d="M98,119V101h6v18Zm-9,0V89h8v30Zm-9,0V99h8v20Zm-9,0V106h8v13Zm-9,0V94h8v25Zm-9,0V84h8v35Zm-9,0V94h8v25Zm-9,0V99h8v20Zm-9,0V79h8v40Zm-9,0V89h8v30Zm-7,0V101h6v18Zm-9,0V89H9v30Zm-9,0V99H0v20Z" transform="translate(118.333 -14)" opacity="0.37" fill="url(#linear-gradient-2)"/>
+        </g>
+        <text id="Project_Added_this_Month" data-name="Project Added this Month" transform="translate(14 36)" fill="#fff" font-size="18" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">Project Added this Month</tspan></text>
+        <text id="_12" data-name="12" transform="translate(14 88)" fill="#fff" font-size="30" font-family="NunitoSans-Bold, Nunito Sans" font-weight="700"><tspan x="0" y="0">12</tspan></text>
+      </g>
+      <g id="Group_472" data-name="Group 472" transform="translate(834.333 185)">
+        <g transform="matrix(1, 0, 0, 1, -572.33, -50)" filter="url(#Rectangle_208-3)">
+          <rect id="Rectangle_208-7" data-name="Rectangle 208" width="231" height="113" rx="2" transform="translate(572.33 50)" fill="#fff"/>
+        </g>
+        <g id="Group_600" data-name="Group 600">
+          <g id="Path_296" data-name="Path 296" fill="#03a9f4">
+            <path d="M 229 112.5 L 2 112.5 C 1.172911763191223 112.5 0.5 111.8270874023438 0.5 111 L 0.5 2 C 0.5 1.172911763191223 1.172911763191223 0.5 2 0.5 L 229 0.5 C 229.8270874023438 0.5 230.5 1.172911763191223 230.5 2 L 230.5 111 C 230.5 111.8270874023438 229.8270874023438 112.5 229 112.5 Z" stroke="none"/>
+            <path d="M 2 1 C 1.448593139648438 1 1 1.448585510253906 1 2 L 1 111 C 1 111.5514144897461 1.448593139648438 112 2 112 L 229 112 C 229.5514068603516 112 230 111.5514144897461 230 111 L 230 2 C 230 1.448585510253906 229.5514068603516 1 229 1 L 2 1 M 2 0 L 229 0 C 230.1045532226562 0 231 0.8954391479492188 231 2 L 231 111 C 231 112.1045608520508 230.1045532226562 113 229 113 L 2 113 C 0.89544677734375 113 0 112.1045608520508 0 111 L 0 2 C 0 0.8954391479492188 0.89544677734375 0 2 0 Z" stroke="none" fill="#03a9f4"/>
+          </g>
+          <path id="Bar_Chart-3" data-name="Bar Chart" d="M98,119V101h6v18Zm-9,0V89h8v30Zm-9,0V99h8v20Zm-9,0V106h8v13Zm-9,0V94h8v25Zm-9,0V84h8v35Zm-9,0V94h8v25Zm-9,0V99h8v20Zm-9,0V79h8v40Zm-9,0V89h8v30Zm-7,0V101h6v18Zm-9,0V89H9v30Zm-9,0V99H0v20Z" transform="translate(116.667 -12)" opacity="0.37" fill="url(#linear-gradient-3)"/>
+        </g>
+        <text id="Total_Value" data-name="Total Value" transform="translate(15 36)" fill="#fff" font-size="18" font-family="NunitoSans-Light, Nunito Sans" font-weight="300"><tspan x="0" y="0">Total Value</tspan></text>
+        <text id="_147_638_435" data-name="$147,638,435" transform="translate(15 88)" fill="#fff" font-size="25" font-family="NunitoSans-Bold, Nunito Sans" font-weight="700"><tspan x="0" y="0">$147,638,435</tspan></text>
+      </g>
+      <g id="Group_473" data-name="Group 473" transform="translate(1117 185)">
+        <g transform="matrix(1, 0, 0, 1, -855, -50)" filter="url(#Rectangle_208-4)">
+          <rect id="Rectangle_208-8" data-name="Rectangle 208" width="231" height="113" rx="2" transform="translate(855 50)" fill="#fff"/>
+        </g>
+        <g id="Group_601" data-name="Group 601">
+          <g id="Path_278" data-name="Path 278" fill="#ce61d2">
+            <path d="M 229 112.5 L 2 112.5 C 1.172911763191223 112.5 0.5 111.8270874023438 0.5 111 L 0.5 2 C 0.5 1.172911763191223 1.172911763191223 0.5 2 0.5 L 229 0.5 C 229.8270874023438 0.5 230.5 1.172911763191223 230.5 2 L 230.5 111 C 230.5 111.8270874023438 229.8270874023438 112.5 229 112.5 Z" stroke="none"/>
+            <path d="M 2 1 C 1.448593139648438 1 1 1.448585510253906 1 2 L 1 111 C 1 111.5514144897461 1.448593139648438 112 2 112 L 229 112 C 229.5514068603516 112 230 111.5514144897461 230 111 L 230 2 C 230 1.448585510253906 229.5514068603516 1 229 1 L 2 1 M 2 0 L 229 0 C 230.1045532226562 0 231 0.8954391479492188 231 2 L 231 111 C 231 112.1045608520508 230.1045532226562 113 229 113 L 2 113 C 0.89544677734375 113 0 112.1045608520508 0 111 L 0 2 C 0 0.8954391479492188 0.89544677734375 0 2 0 Z" stroke="none" fill="#ce61d2"/>
+          </g>
+          <path id="Bar_Chart-4" data-name="Bar Chart" d="M98,119V101h6v18Zm-9,0V89h8v30Zm-9,0V99h8v20Zm-9,0V106h8v13Zm-9,0V94h8v25Zm-9,0V84h8v35Zm-9,0V94h8v25Zm-9,0V99h8v20Zm-9,0V79h8v40Zm-9,0V89h8v30Zm-7,0V101h6v18Zm-9,0V89H9v30Zm-9,0V99H0v20Z" transform="translate(121 -14)" opacity="0.37" fill="url(#linear-gradient-4)"/>
+        </g>
+        <text id="Resources_Engaged_over_75_" data-name="Resources Engaged over 75%" transform="translate(15 36)" fill="#fff" font-size="15" font-family="NunitoSans-Light, Nunito Sans" font-weight="300"><tspan x="0" y="0">Resources Engaged over 75%</tspan></text>
+        <text id="_35_50" data-name="35/50" transform="translate(15 88)" fill="#fff" font-size="25" font-family="NunitoSans-Bold, Nunito Sans" font-weight="700"><tspan x="0" y="0">35/50</tspan></text>
+      </g>
+    </g>
+    <g id="Group_252" data-name="Group 252" transform="translate(93.51 63)">
+      <g id="Group_232" data-name="Group 232" transform="translate(171.49 256)">
+        <g transform="matrix(1, 0, 0, 1, -7, -204)" filter="url(#path)">
+          <path id="path-2" data-name="path" d="M1087,57.742h0a38.622,38.622,0,0,1-6.273.258H14.273A38.623,38.623,0,0,1,8,57.742H8V8.258H8A38.622,38.622,0,0,1,14.273,8H1080.727a38.622,38.622,0,0,1,6.273.258h0Z" transform="translate(-1 196)" fill="#e7eaed"/>
+        </g>
+        <g id="Group_223" data-name="Group 223" transform="translate(23.01 9.059)">
+          <text id="Select_KPIs" data-name="Select KPIs" transform="translate(0 22)" fill="#036" font-size="20" font-family="NunitoSans-Bold, Nunito Sans" font-weight="700"><tspan x="0" y="0">Select KPIs</tspan></text>
+        </g>
+        <g id="arrow-down-sign-to-navigate_1_" data-name="arrow-down-sign-to-navigate (1)" transform="translate(1040.95 22)">
+          <path id="Path_30" data-name="Path 30" d="M9.442,107.9a1.318,1.318,0,0,1-.935-.387L.388,99.4a1.322,1.322,0,0,1,1.87-1.87l7.184,7.184,7.184-7.184A1.322,1.322,0,0,1,18.5,99.4l-8.119,8.119A1.318,1.318,0,0,1,9.442,107.9Z" transform="translate(-0.001 -97.14)"/>
+        </g>
+      </g>
+    </g>
+    <g id="graphs">
+      <g id="Resource_Focus" data-name="Resource Focus" transform="translate(4 33)">
+        <g id="T3">
+          <g transform="matrix(1, 0, 0, 1, 254, 82)" filter="url(#Rectangle_212)">
+            <rect id="Rectangle_212-14" data-name="Rectangle 212" width="345" height="445" rx="2" transform="translate(743 2409)" fill="#fff"/>
+          </g>
+          <g id="Group_703" data-name="Group 703">
+            <g id="Group_546" data-name="Group 546" transform="translate(734 271)">
+              <g transform="matrix(1, 0, 0, 1, -480, -189)" filter="url(#Path_107)">
+                <path id="Path_107-5" data-name="Path 107" d="M0,0H312.364V310.5H0Z" transform="translate(760.5 2481)" fill="#dff0f8"/>
+              </g>
+              <text id="RFx_Type" data-name="RFx Type" transform="translate(296.5 2325)" font-size="15" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">RFx Type</tspan></text>
+              <text id="Number_of_Resources" data-name="Number of Resources" transform="translate(438.245 2325)" font-size="15" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">Number of Resources</tspan></text>
+              <g id="Group_541" data-name="Group 541" transform="translate(280.5 2348)">
+                <rect id="Rectangle_184" data-name="Rectangle 184" width="311.864" height="50" fill="#fff"/>
+                <text id="NRFP" transform="translate(17 29)" font-size="15" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">NRFP</tspan></text>
+                <path id="Path_106" data-name="Path 106" d="M0,0H311.864" transform="translate(0.5 50.5)" fill="none" stroke="#b7b5b5" stroke-width="0.5"/>
+                <text id="_26" data-name="26" transform="translate(222.659 29)" font-size="15" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">26</tspan></text>
+              </g>
+              <g id="Group_542" data-name="Group 542" transform="translate(280.5 2399)">
+                <rect id="Rectangle_184-2" data-name="Rectangle 184" width="311.864" height="50" fill="#fff"/>
+                <text id="ITQ" transform="translate(17 29)" font-size="15" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">ITQ</tspan></text>
+                <path id="Path_106-2" data-name="Path 106" d="M0,0H311.864" transform="translate(0.5 50.5)" fill="none" stroke="#b7b5b5" stroke-width="0.5"/>
+                <text id="_26-2" data-name="26" transform="translate(222.659 29)" font-size="15" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">26</tspan></text>
+              </g>
+              <g id="Group_543" data-name="Group 543" transform="translate(280.5 2450)">
+                <rect id="Rectangle_184-3" data-name="Rectangle 184" width="311.864" height="50" fill="#fff"/>
+                <text id="ITT" transform="translate(17 29)" font-size="15" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">ITT</tspan></text>
+                <path id="Path_106-3" data-name="Path 106" d="M0,0H311.864" transform="translate(0.5 50.5)" fill="none" stroke="#b7b5b5" stroke-width="0.5"/>
+                <text id="_26-3" data-name="26" transform="translate(222.659 29)" font-size="15" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">26</tspan></text>
+              </g>
+              <g id="Group_544" data-name="Group 544" transform="translate(280.5 2501)">
+                <rect id="Rectangle_184-4" data-name="Rectangle 184" width="311.864" height="50" fill="#fff"/>
+                <text id="JSRFP" transform="translate(17 29)" font-size="15" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">JSRFP</tspan></text>
+                <path id="Path_106-4" data-name="Path 106" d="M0,0H311.864" transform="translate(0.5 50.5)" fill="none" stroke="#b7b5b5" stroke-width="0.5"/>
+                <text id="_26-4" data-name="26" transform="translate(222.659 29)" font-size="15" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">26</tspan></text>
+              </g>
+              <g id="Group_545" data-name="Group 545" transform="translate(280.5 2552)">
+                <rect id="Rectangle_184-5" data-name="Rectangle 184" width="311.864" height="50" fill="#fff"/>
+                <text id="NRFP-2" data-name="NRFP" transform="translate(17 29)" font-size="15" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">NRFP</tspan></text>
+                <text id="_26-5" data-name="26" transform="translate(222.655 29)" font-size="15" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">26</tspan></text>
+              </g>
+            </g>
+            <g id="Group_656" data-name="Group 656" transform="translate(0 63)">
+              <text id="Resources_per_RFx_Type" data-name="Resources per RFx Type" transform="translate(1014 2469)" font-size="18" font-family="NunitoSans-SemiBold, Nunito Sans" font-weight="600"><tspan x="0" y="0">Resources per RFx Type</tspan></text>
+              <g id="Symbol_25" data-name="Symbol 25" transform="translate(820 2374)">
+                <rect id="rectangle" width="22" height="22" transform="translate(485 78)" fill="none"/>
+                <path id="path-3" data-name="path" d="M17.833,6.283,16.55,5l-5.133,5.133L6.283,5,5,6.283l5.133,5.133L5,16.55l1.283,1.283L11.417,12.7l5.133,5.133,1.283-1.283L12.7,11.417Z" transform="translate(484.583 77.583)" fill="#707070" fill-rule="evenodd" opacity="0.54"/>
+              </g>
+            </g>
+            <g id="Normal_Flat_Light" data-name="Normal Flat Light" transform="translate(1260.25 2897)">
+              <g id="ui_raised_btn_light" transform="translate(-0.25)">
+                <g transform="matrix(1, 0, 0, 1, -1006, -2815)" filter="url(#button)">
+                  <path id="button-14" data-name="button" d="M1.426,0H65.618a1.451,1.451,0,0,1,1.426,1.475v23.6a1.451,1.451,0,0,1-1.426,1.475H1.426A1.451,1.451,0,0,1,0,25.078V1.475A1.451,1.451,0,0,1,1.426,0Z" transform="translate(1006 2815)" fill="#fff" stroke="#036" stroke-width="1"/>
+                </g>
+              </g>
+              <text id="teal_Normal" transform="translate(33.75 18)" fill="#036" font-size="14" font-family="Roboto-Medium, Roboto" font-weight="500"><tspan x="-21.632" y="0">Details</tspan></text>
+            </g>
+          </g>
+        </g>
+        <g id="T2">
+          <g transform="matrix(1, 0, 0, 1, 254, 82)" filter="url(#Rectangle_212-2)">
+            <rect id="Rectangle_212-15" data-name="Rectangle 212" width="345" height="445" rx="2" transform="translate(376 2409)" fill="#fff"/>
+          </g>
+          <g id="Group_701" data-name="Group 701">
+            <g id="Group_546-2" data-name="Group 546" transform="translate(367 271)">
+              <g transform="matrix(1, 0, 0, 1, -113, -189)" filter="url(#Path_107-2)">
+                <path id="Path_107-6" data-name="Path 107" d="M0,0H312.364V310.5H0Z" transform="translate(393.5 2481)" fill="#dff0f8"/>
+              </g>
+              <text id="Resource" transform="translate(296.5 2325)" font-size="15" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">Resource</tspan></text>
+              <text id="Billable_Hours_this_month_" data-name="Billable Hours
+ (this month) " transform="translate(468.245 2315)" font-size="15" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">Billable Hours</tspan><tspan x="0" y="20" xml:space="preserve"> (this month) </tspan></text>
+              <g id="Group_541-2" data-name="Group 541" transform="translate(280.5 2348)">
+                <rect id="Rectangle_184-6" data-name="Rectangle 184" width="311.864" height="50" fill="#fff"/>
+                <text id="Mike_Jones_" data-name="Mike Jones " transform="translate(17 29)" font-size="15" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">Mike Jones </tspan></text>
+                <path id="Path_106-5" data-name="Path 106" d="M0,0H311.864" transform="translate(0.5 50.5)" fill="none" stroke="#b7b5b5" stroke-width="0.5"/>
+                <text id="_26-6" data-name="26" transform="translate(222.659 29)" font-size="15" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">26</tspan></text>
+              </g>
+              <g id="Group_542-2" data-name="Group 542" transform="translate(280.5 2399)">
+                <rect id="Rectangle_184-7" data-name="Rectangle 184" width="311.864" height="50" fill="#fff"/>
+                <text id="Bob_Jonhson_" data-name="Bob Jonhson " transform="translate(17 29)" font-size="15" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">Bob Jonhson </tspan></text>
+                <path id="Path_106-6" data-name="Path 106" d="M0,0H311.864" transform="translate(0.5 50.5)" fill="none" stroke="#b7b5b5" stroke-width="0.5"/>
+                <text id="_26-7" data-name="26" transform="translate(222.659 29)" font-size="15" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">26</tspan></text>
+              </g>
+              <g id="Group_543-2" data-name="Group 543" transform="translate(280.5 2450)">
+                <rect id="Rectangle_184-8" data-name="Rectangle 184" width="311.864" height="50" fill="#fff"/>
+                <text id="Susan_Smith" data-name="Susan Smith" transform="translate(17 29)" font-size="15" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">Susan Smith</tspan></text>
+                <path id="Path_106-7" data-name="Path 106" d="M0,0H311.864" transform="translate(0.5 50.5)" fill="none" stroke="#b7b5b5" stroke-width="0.5"/>
+                <text id="_26-8" data-name="26" transform="translate(222.659 29)" font-size="15" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">26</tspan></text>
+              </g>
+              <g id="Group_544-2" data-name="Group 544" transform="translate(280.5 2501)">
+                <rect id="Rectangle_184-9" data-name="Rectangle 184" width="311.864" height="50" fill="#fff"/>
+                <text id="Lucy_Wu" data-name="Lucy Wu" transform="translate(17 29)" font-size="15" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">Lucy Wu</tspan></text>
+                <path id="Path_106-8" data-name="Path 106" d="M0,0H311.864" transform="translate(0.5 50.5)" fill="none" stroke="#b7b5b5" stroke-width="0.5"/>
+                <text id="_26-9" data-name="26" transform="translate(222.659 29)" font-size="15" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">26</tspan></text>
+              </g>
+              <g id="Group_545-2" data-name="Group 545" transform="translate(280.5 2552)">
+                <rect id="Rectangle_184-10" data-name="Rectangle 184" width="311.864" height="50" fill="#fff"/>
+                <text id="Chris_Bob" data-name="Chris Bob" transform="translate(17 29)" font-size="15" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">Chris Bob</tspan></text>
+                <text id="_26-10" data-name="26" transform="translate(222.655 29)" font-size="15" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">26</tspan></text>
+              </g>
+            </g>
+            <g id="Group_653" data-name="Group 653" transform="translate(0 63)">
+              <text id="Billable_Hours_per_Resource" data-name="Billable Hours per Resource" transform="translate(647 2469)" font-size="18" font-family="NunitoSans-SemiBold, Nunito Sans" font-weight="600"><tspan x="0" y="0">Billable Hours per Resource</tspan></text>
+              <g id="Symbol_24" data-name="Symbol 24" transform="translate(453 2374)">
+                <rect id="rectangle-2" data-name="rectangle" width="22" height="22" transform="translate(485 78)" fill="none"/>
+                <path id="path-4" data-name="path" d="M17.833,6.283,16.55,5l-5.133,5.133L6.283,5,5,6.283l5.133,5.133L5,16.55l1.283,1.283L11.417,12.7l5.133,5.133,1.283-1.283L12.7,11.417Z" transform="translate(484.583 77.583)" fill="#707070" fill-rule="evenodd" opacity="0.54"/>
+              </g>
+            </g>
+            <g id="Normal_Flat_Light-2" data-name="Normal Flat Light" transform="translate(893.25 2897)">
+              <g id="ui_raised_btn_light-2" data-name="ui_raised_btn_light" transform="translate(-0.25)">
+                <g transform="matrix(1, 0, 0, 1, -639, -2815)" filter="url(#button-2)">
+                  <path id="button-15" data-name="button" d="M1.426,0H65.618a1.451,1.451,0,0,1,1.426,1.475v23.6a1.451,1.451,0,0,1-1.426,1.475H1.426A1.451,1.451,0,0,1,0,25.078V1.475A1.451,1.451,0,0,1,1.426,0Z" transform="translate(639 2815)" fill="#fff" stroke="#036" stroke-width="1"/>
+                </g>
+              </g>
+              <text id="teal_Normal-2" data-name="teal_Normal" transform="translate(33.75 18)" fill="#036" font-size="14" font-family="Roboto-Medium, Roboto" font-weight="500"><tspan x="-21.632" y="0">Details</tspan></text>
+            </g>
+          </g>
+        </g>
+        <g id="T1">
+          <g transform="matrix(1, 0, 0, 1, 254, 82)" filter="url(#Rectangle_212-3)">
+            <rect id="Rectangle_212-16" data-name="Rectangle 212" width="345" height="445" rx="2" transform="translate(9 2409)" fill="#fff"/>
+          </g>
+          <g id="Group_699" data-name="Group 699">
+            <g id="Group_546-3" data-name="Group 546" transform="translate(0 271)">
+              <g transform="matrix(1, 0, 0, 1, 254, -189)" filter="url(#Path_107-3)">
+                <path id="Path_107-7" data-name="Path 107" d="M0,0H312.364V310.5H0Z" transform="translate(26.5 2481)" fill="#dff0f8"/>
+              </g>
+              <text id="Project_Phase_" data-name="Project Phase " transform="translate(296.5 2325)" font-size="15" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">Project Phase </tspan></text>
+              <text id="Number_of_Resources-2" data-name="Number of Resources" transform="translate(438.245 2325)" font-size="15" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">Number of Resources</tspan></text>
+              <g id="Group_541-3" data-name="Group 541" transform="translate(280.5 2348)">
+                <rect id="Rectangle_184-11" data-name="Rectangle 184" width="311.864" height="50" fill="#fff"/>
+                <text id="Onboarding" transform="translate(17 29)" font-size="15" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">Onboarding</tspan></text>
+                <path id="Path_106-9" data-name="Path 106" d="M0,0H311.864" transform="translate(0.5 50.5)" fill="none" stroke="#b7b5b5" stroke-width="0.5"/>
+                <text id="_26-11" data-name="26" transform="translate(222.659 29)" font-size="15" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">26</tspan></text>
+              </g>
+              <g id="Group_542-3" data-name="Group 542" transform="translate(280.5 2399)">
+                <rect id="Rectangle_184-12" data-name="Rectangle 184" width="311.864" height="50" fill="#fff"/>
+                <text id="Planning_" data-name="Planning " transform="translate(17 29)" font-size="15" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">Planning </tspan></text>
+                <path id="Path_106-10" data-name="Path 106" d="M0,0H311.864" transform="translate(0.5 50.5)" fill="none" stroke="#b7b5b5" stroke-width="0.5"/>
+                <text id="_26-12" data-name="26" transform="translate(222.659 29)" font-size="15" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">26</tspan></text>
+              </g>
+              <g id="Group_543-3" data-name="Group 543" transform="translate(280.5 2450)">
+                <rect id="Rectangle_184-13" data-name="Rectangle 184" width="311.864" height="50" fill="#fff"/>
+                <text id="Drafting" transform="translate(17 29)" font-size="15" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">Drafting</tspan></text>
+                <path id="Path_106-11" data-name="Path 106" d="M0,0H311.864" transform="translate(0.5 50.5)" fill="none" stroke="#b7b5b5" stroke-width="0.5"/>
+                <text id="_26-13" data-name="26" transform="translate(222.659 29)" font-size="15" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">26</tspan></text>
+              </g>
+              <g id="Group_544-3" data-name="Group 544" transform="translate(280.5 2501)">
+                <rect id="Rectangle_184-14" data-name="Rectangle 184" width="311.864" height="50" fill="#fff"/>
+                <text id="Active_Posted_" data-name="Active (Posted) " transform="translate(17 29)" font-size="15" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">Active (Posted) </tspan></text>
+                <path id="Path_106-12" data-name="Path 106" d="M0,0H311.864" transform="translate(0.5 50.5)" fill="none" stroke="#b7b5b5" stroke-width="0.5"/>
+                <text id="_26-14" data-name="26" transform="translate(222.659 29)" font-size="15" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">26</tspan></text>
+              </g>
+              <g id="Group_545-3" data-name="Group 545" transform="translate(280.5 2552)">
+                <rect id="Rectangle_184-15" data-name="Rectangle 184" width="311.864" height="50" fill="#fff"/>
+                <text id="Evaluation" transform="translate(17 29)" font-size="15" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">Evaluation</tspan></text>
+                <text id="_26-15" data-name="26" transform="translate(222.655 29)" font-size="15" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">26</tspan></text>
+              </g>
+            </g>
+            <g id="Group_650" data-name="Group 650" transform="translate(0 63)">
+              <text id="Resources_per_Phase" data-name="Resources per Phase" transform="translate(280 2469)" font-size="18" font-family="NunitoSans-SemiBold, Nunito Sans" font-weight="600"><tspan x="0" y="0">Resources per Phase</tspan></text>
+              <g id="Symbol_23" data-name="Symbol 23" transform="translate(86 2374)">
+                <rect id="rectangle-3" data-name="rectangle" width="22" height="22" transform="translate(485 78)" fill="none"/>
+                <path id="path-5" data-name="path" d="M17.833,6.283,16.55,5l-5.133,5.133L6.283,5,5,6.283l5.133,5.133L5,16.55l1.283,1.283L11.417,12.7l5.133,5.133,1.283-1.283L12.7,11.417Z" transform="translate(484.583 77.583)" fill="#707070" fill-rule="evenodd" opacity="0.54"/>
+              </g>
+            </g>
+            <g id="Normal_Flat_Light-3" data-name="Normal Flat Light" transform="translate(526.25 2897)">
+              <g id="ui_raised_btn_light-3" data-name="ui_raised_btn_light" transform="translate(-0.25)">
+                <g transform="matrix(1, 0, 0, 1, -272, -2815)" filter="url(#button-3)">
+                  <path id="button-16" data-name="button" d="M1.426,0H65.618a1.451,1.451,0,0,1,1.426,1.475v23.6a1.451,1.451,0,0,1-1.426,1.475H1.426A1.451,1.451,0,0,1,0,25.078V1.475A1.451,1.451,0,0,1,1.426,0Z" transform="translate(272 2815)" fill="#fff" stroke="#036" stroke-width="1"/>
+                </g>
+              </g>
+              <text id="teal_Normal-3" data-name="teal_Normal" transform="translate(33.75 18)" fill="#036" font-size="14" font-family="Roboto-Medium, Roboto" font-weight="500"><tspan x="-21.632" y="0">Details</tspan></text>
+            </g>
+          </g>
+        </g>
+        <g id="H1" transform="translate(-3 2010)">
+          <text id="Resource_Focus-2" data-name="Resource Focus" transform="translate(281 441)" font-size="24" font-family="NunitoSans-SemiBold, Nunito Sans" font-weight="600"><tspan x="0" y="0">Resource Focus</tspan></text>
+          <g id="Rectangle_221" data-name="Rectangle 221" transform="translate(263 409)" fill="#fcba19" stroke="#fcba19" stroke-width="1">
+            <rect width="6" height="47" stroke="none"/>
+            <rect x="0.5" y="0.5" width="5" height="46" fill="none"/>
+          </g>
+        </g>
+      </g>
+      <g id="Project_Focus" data-name="Project Focus" transform="translate(2 -23)">
+        <g id="H1-2" data-name="H1" transform="translate(-1 1042)">
+          <text id="Project_Focus-2" data-name="Project Focus" transform="translate(281 441)" font-size="24" font-family="NunitoSans-SemiBold, Nunito Sans" font-weight="600"><tspan x="0" y="0">Project Focus</tspan></text>
+          <g id="Rectangle_221-2" data-name="Rectangle 221" transform="translate(263 409)" fill="#fcba19" stroke="#fcba19" stroke-width="1">
+            <rect width="6" height="47" stroke="none"/>
+            <rect x="0.5" y="0.5" width="5" height="46" fill="none"/>
+          </g>
+        </g>
+        <g id="Group">
+          <g id="R2">
+            <g id="G2" transform="translate(0 -16)">
+              <g transform="matrix(1, 0, 0, 1, 256, 154)" filter="url(#Rectangle_212-4)">
+                <rect id="Rectangle_212-17" data-name="Rectangle 212" width="536.822" height="450" rx="2" transform="translate(548 1805)" fill="#fff"/>
+              </g>
+              <g id="Group_693" data-name="Group 693">
+                <g id="Group_519" data-name="Group 519" transform="translate(821 2025)">
+                  <g transform="matrix(1, 0, 0, 1, -565, -1871)" filter="url(#Path_107-4)">
+                    <path id="Path_107-8" data-name="Path 107" d="M0,0H499.3V310.5H0Z" transform="translate(565 1871)" fill="#dff0f8"/>
+                  </g>
+                  <text id="Project_Name" data-name="Project Name" transform="translate(16 33)" font-size="15" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">Project Name</tspan></text>
+                  <text id="Number_of_Resources-3" data-name="Number of Resources" transform="translate(338.822 33)" font-size="15" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">Number of Resources</tspan></text>
+                  <g id="Group_514" data-name="Group 514" transform="translate(0 56)">
+                    <rect id="Rectangle_184-16" data-name="Rectangle 184" width="498.799" height="50" transform="translate(0)" fill="#fff"/>
+                    <g id="Group_513" data-name="Group 513" transform="translate(0.5 14)">
+                      <g id="Group_512" data-name="Group 512" transform="translate(16.5)">
+                        <text id="Tree_Planting" data-name="Tree Planting" transform="translate(0 15)" font-size="15" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">Tree Planting</tspan></text>
+                        <text id="_26-16" data-name="26" transform="translate(336.001 15)" font-size="15" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">26</tspan></text>
+                      </g>
+                      <path id="Path_106-13" data-name="Path 106" d="M0,0H498.8" transform="translate(0 36.5)" fill="none" stroke="#b7b5b5" stroke-width="0.5"/>
+                    </g>
+                  </g>
+                  <g id="Group_515" data-name="Group 515" transform="translate(0 107)">
+                    <rect id="Rectangle_184-17" data-name="Rectangle 184" width="498.799" height="50" transform="translate(0)" fill="#fff"/>
+                    <g id="Group_513-2" data-name="Group 513" transform="translate(0.5 14)">
+                      <g id="Group_512-2" data-name="Group 512" transform="translate(16.5)">
+                        <text id="Time_Machine_Betterment_" data-name="Time Machine Betterment " transform="translate(0 15)" font-size="15" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">Time Machine Betterment </tspan></text>
+                        <text id="_26-17" data-name="26" transform="translate(336.001 15)" font-size="15" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">26</tspan></text>
+                      </g>
+                      <path id="Path_106-14" data-name="Path 106" d="M0,0H498.8" transform="translate(0 36.5)" fill="none" stroke="#b7b5b5" stroke-width="0.5"/>
+                    </g>
+                  </g>
+                  <g id="Group_516" data-name="Group 516" transform="translate(0 158)">
+                    <rect id="Rectangle_184-18" data-name="Rectangle 184" width="498.799" height="50" transform="translate(0)" fill="#fff"/>
+                    <g id="Group_513-3" data-name="Group 513" transform="translate(0.5 14)">
+                      <g id="Group_512-3" data-name="Group 512" transform="translate(16.5)">
+                        <text id="New_Sidewalks" data-name="New Sidewalks" transform="translate(0 15)" font-size="15" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">New Sidewalks</tspan></text>
+                        <text id="_26-18" data-name="26" transform="translate(336.001 15)" font-size="15" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">26</tspan></text>
+                      </g>
+                      <path id="Path_106-15" data-name="Path 106" d="M0,0H498.8" transform="translate(0 36.5)" fill="none" stroke="#b7b5b5" stroke-width="0.5"/>
+                    </g>
+                  </g>
+                  <g id="Group_517" data-name="Group 517" transform="translate(0 209)">
+                    <rect id="Rectangle_184-19" data-name="Rectangle 184" width="498.799" height="50" transform="translate(0)" fill="#fff"/>
+                    <g id="Group_513-4" data-name="Group 513" transform="translate(0.5 14)">
+                      <g id="Group_512-4" data-name="Group 512" transform="translate(16.5)">
+                        <text id="Invasive_Species_" data-name="Invasive Species " transform="translate(0 15)" font-size="15" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">Invasive Species </tspan></text>
+                        <text id="_26-19" data-name="26" transform="translate(336.001 15)" font-size="15" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">26</tspan></text>
+                      </g>
+                      <path id="Path_106-16" data-name="Path 106" d="M0,0H498.8" transform="translate(0 36.5)" fill="none" stroke="#b7b5b5" stroke-width="0.5"/>
+                    </g>
+                  </g>
+                  <g id="Group_518" data-name="Group 518" transform="translate(0 260)">
+                    <rect id="Rectangle_184-20" data-name="Rectangle 184" width="498.799" height="50" transform="translate(0)" fill="#fff"/>
+                    <g id="Group_513-5" data-name="Group 513" transform="translate(0.5 14)">
+                      <g id="Group_512-5" data-name="Group 512" transform="translate(16.5)">
+                        <text id="New_Roads" data-name="New Roads" transform="translate(0 15)" font-size="15" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">New Roads</tspan></text>
+                        <text id="_26-20" data-name="26" transform="translate(336.001 15)" font-size="15" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">26</tspan></text>
+                      </g>
+                      <path id="Path_106-17" data-name="Path 106" d="M0,0H498.8" transform="translate(0 36.5)" fill="none" stroke="#b7b5b5" stroke-width="0.5"/>
+                    </g>
+                  </g>
+                </g>
+                <g id="Group_643" data-name="Group 643" transform="translate(0 96)">
+                  <text id="Resources_per_Project" data-name="Resources per Project" transform="translate(821 1899)" font-size="18" font-family="NunitoSans-SemiBold, Nunito Sans" font-weight="600"><tspan x="0" y="0">Resources per Project</tspan></text>
+                  <g id="Symbol_22" data-name="Symbol 22" transform="translate(813 1804)">
+                    <rect id="rectangle-4" data-name="rectangle" width="22" height="22" transform="translate(485 78)" fill="none"/>
+                    <path id="path-6" data-name="path" d="M17.833,6.283,16.55,5l-5.133,5.133L6.283,5,5,6.283l5.133,5.133L5,16.55l1.283,1.283L11.417,12.7l5.133,5.133,1.283-1.283L12.7,11.417Z" transform="translate(484.583 77.583)" fill="#707070" fill-rule="evenodd" opacity="0.54"/>
+                  </g>
+                </g>
+                <g id="Normal_Flat_Light-4" data-name="Normal Flat Light" transform="translate(1253.25 2367)">
+                  <g id="ui_raised_btn_light-4" data-name="ui_raised_btn_light" transform="translate(-0.25)">
+                    <g transform="matrix(1, 0, 0, 1, -997, -2213)" filter="url(#button-4)">
+                      <path id="button-17" data-name="button" d="M1.426,0H65.618a1.451,1.451,0,0,1,1.426,1.475v23.6a1.451,1.451,0,0,1-1.426,1.475H1.426A1.451,1.451,0,0,1,0,25.078V1.475A1.451,1.451,0,0,1,1.426,0Z" transform="translate(997 2213)" fill="#fff" stroke="#036" stroke-width="1"/>
+                    </g>
+                  </g>
+                  <text id="teal_Normal-4" data-name="teal_Normal" transform="translate(33.75 18)" fill="#036" font-size="14" font-family="Roboto-Medium, Roboto" font-weight="500"><tspan x="-21.632" y="0">Details</tspan></text>
+                </g>
+              </g>
+            </g>
+            <g id="G1" transform="translate(0 -16)">
+              <g transform="matrix(1, 0, 0, 1, 256, 154)" filter="url(#Rectangle_212-5)">
+                <rect id="Rectangle_212-18" data-name="Rectangle 212" width="522.458" height="450" rx="2" transform="translate(6 1805)" fill="#fff"/>
+              </g>
+              <g id="Group_691" data-name="Group 691">
+                <g id="Group_645" data-name="Group 645" transform="translate(0 89.389)">
+                  <path id="Chart_Grid" data-name="Chart Grid" d="M285.195,256.195V256H0v-1H285.195V205H0v-1H285.195V154H0v-1H285.195V103H0v-1H285.195V52H0V51H285.195V1H0V0H285.195V-50H0v-1H285.195V-76.194h1V256.195Z" transform="translate(655.608 1935.611) rotate(90)" fill="#e2e2e2"/>
+                  <g id="Group_507" data-name="Group 507" transform="translate(316.068 1980)">
+                    <g id="Group_506" data-name="Group 506" transform="translate(0 -25)">
+                      <text id="TimeMachine" transform="translate(67 11)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-65.494" y="0">TimeMachine</tspan></text>
+                      <text id="Bike_Lanes" data-name="Bike Lanes" transform="translate(65 63)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-53.097" y="0">Bike Lanes</tspan></text>
+                      <text id="Tree_Planting-2" data-name="Tree Planting" transform="translate(67 114)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-64.658" y="0">Tree Planting</tspan></text>
+                      <text id="IT_Resourcing" data-name="IT Resourcing" transform="translate(67 166)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-67.419" y="0">IT Resourcing</tspan></text>
+                      <text id="New_Roads-2" data-name="New Roads" transform="translate(69 217)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-57.123" y="0">New Roads</tspan></text>
+                    </g>
+                    <g id="Chart.Content" transform="translate(222.19) rotate(90)">
+                      <g id="Positive">
+                        <path id="Apr.Bar" d="M4,0H21a4,4,0,0,1,4,4V72a0,0,0,0,1,0,0H0a0,0,0,0,1,0,0V4A4,4,0,0,1,4,0Z" transform="translate(177 67)" fill="#03a9f4"/>
+                        <path id="Mar.Bar" d="M4,0H21a4,4,0,0,1,4,4V114a0,0,0,0,1,0,0H0a0,0,0,0,1,0,0V4A4,4,0,0,1,4,0Z" transform="translate(125 25)" fill="#03a9f4"/>
+                        <path id="Feb.Bar" d="M2.5,0h20C23.881,0,25,3.152,25,7.04V168.956H0V7.04C0,3.152,1.119,0,2.5,0Z" transform="translate(73 -29.956)" fill="#03a9f4"/>
+                        <path id="Jan.Bar" d="M4,0H21a4,4,0,0,1,4,4V139a0,0,0,0,1,0,0H0a0,0,0,0,1,0,0V4A4,4,0,0,1,4,0Z" transform="translate(20)" fill="#03a9f4"/>
+                        <path id="Jan.Bar-2" data-name="Jan.Bar" d="M4,0H21a4,4,0,0,1,4,4V268a0,0,0,0,1,0,0H0a0,0,0,0,1,0,0V4A4,4,0,0,1,4,0Z" transform="translate(-32 -129)" fill="#03a9f4"/>
+                      </g>
+                    </g>
+                  </g>
+                  <g id="Group_670" data-name="Group 670">
+                    <text id="Jun" transform="translate(560 2242)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-16.005" y="0">Jun</tspan></text>
+                    <text id="July" transform="translate(614 2242)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-17.963" y="0">July</tspan></text>
+                    <text id="Aug" transform="translate(665 2242)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-20.614" y="0">Aug</tspan></text>
+                    <text id="Sept" transform="translate(719 2242)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-22.715" y="0">Sept</tspan></text>
+                    <text id="May" transform="translate(512 2242)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-20.735" y="0">May</tspan></text>
+                    <text id="Apr" transform="translate(459 2242)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-18.282" y="0">Apr</tspan></text>
+                    <text id="Today" transform="translate(413 2242)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-29.733" y="0">Today</tspan></text>
+                  </g>
+                </g>
+                <g id="Group_644" data-name="Group 644" transform="translate(0 96)">
+                  <text id="Project_Timelines_" data-name="Project Timelines " transform="translate(279 1899)" font-size="18" font-family="NunitoSans-SemiBold, Nunito Sans" font-weight="600"><tspan x="0" y="0">Project Timelines </tspan></text>
+                  <g id="Symbol_21" data-name="Symbol 21" transform="translate(263 1804)">
+                    <rect id="rectangle-5" data-name="rectangle" width="22" height="22" transform="translate(485 78)" fill="none"/>
+                    <path id="path-7" data-name="path" d="M17.833,6.283,16.55,5l-5.133,5.133L6.283,5,5,6.283l5.133,5.133L5,16.55l1.283,1.283L11.417,12.7l5.133,5.133,1.283-1.283L12.7,11.417Z" transform="translate(484.583 77.583)" fill="#707070" fill-rule="evenodd" opacity="0.54"/>
+                  </g>
+                </g>
+                <g id="Normal_Flat_Light-5" data-name="Normal Flat Light" transform="translate(703.25 2367)">
+                  <g id="ui_raised_btn_light-5" data-name="ui_raised_btn_light" transform="translate(-0.25)">
+                    <g transform="matrix(1, 0, 0, 1, -447, -2213)" filter="url(#button-5)">
+                      <path id="button-18" data-name="button" d="M1.426,0H65.618a1.451,1.451,0,0,1,1.426,1.475v23.6a1.451,1.451,0,0,1-1.426,1.475H1.426A1.451,1.451,0,0,1,0,25.078V1.475A1.451,1.451,0,0,1,1.426,0Z" transform="translate(447 2213)" fill="#fff" stroke="#036" stroke-width="1"/>
+                    </g>
+                  </g>
+                  <text id="teal_Normal-5" data-name="teal_Normal" transform="translate(33.75 18)" fill="#036" font-size="14" font-family="Roboto-Medium, Roboto" font-weight="500"><tspan x="-21.632" y="0">Details</tspan></text>
+                </g>
+              </g>
+            </g>
+          </g>
+          <g id="R1">
+            <g id="G3">
+              <g transform="matrix(1, 0, 0, 1, 256, 138)" filter="url(#Rectangle_212-6)">
+                <rect id="Rectangle_212-19" data-name="Rectangle 212" width="343" height="395" rx="2" transform="translate(742 1385)" fill="#fff"/>
+              </g>
+              <g id="Group_689" data-name="Group 689">
+                <g id="Group_631" data-name="Group 631" transform="translate(0 54)">
+                  <text id="Number_of_Projects" data-name="Number of Projects" transform="translate(1027 1667.5) rotate(-90)" fill="#707070" font-size="12" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-51.624" y="0">Number of Projects</tspan></text>
+                  <g id="Group_630" data-name="Group 630">
+                    <g id="LT-Y-Axis-Info" transform="translate(1046 1559)">
+                      <text id="_0" data-name="0" transform="translate(19 212)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-6.6" y="0">0</tspan></text>
+                      <text id="_2k" data-name="2k" transform="translate(19 161)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-12.1" y="0">2k</tspan></text>
+                      <text id="_5k" data-name="5k" transform="translate(19 110)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-12.1" y="0">5k</tspan></text>
+                      <text id="_8k" data-name="8k" transform="translate(19 59)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-12.1" y="0">8k</tspan></text>
+                      <text id="_11k" data-name="11k" transform="translate(19 11)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-18.7" y="0">11k</tspan></text>
+                    </g>
+                    <g id="X.Axis-Days" transform="translate(1069.583 1783)">
+                      <text id="Onboarding-2" data-name="Onboarding" transform="translate(37 5)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-29.205" y="0">Onboarding</tspan></text>
+                      <text id="Planning" transform="translate(95 5)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-21.609" y="0">Planning</tspan></text>
+                      <text id="Complete_" data-name="Complete " transform="translate(152 5)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-24.954" y="0">Complete </tspan></text>
+                      <text id="Billing" transform="translate(208 7)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-15.158" y="0">Billing</tspan></text>
+                    </g>
+                    <g id="Group_629" data-name="Group 629">
+                      <path id="Chart_Grid-2" data-name="Chart Grid" d="M0,205v-1H238.069v1Zm0-51v-1H238.069v1Zm0-51v-1H238.069v1ZM0,52V51H238.069v1ZM0,1V0H238.069V1Z" transform="translate(1075 1564)" fill="#e2e2e2"/>
+                      <g id="Chart.Content-2" data-name="Chart.Content" transform="translate(1084.688 1630)">
+                        <g id="Positive-2" data-name="Positive">
+                          <path id="Apr.Bar-2" data-name="Apr.Bar" d="M4,0H21a4,4,0,0,1,4,4V72a0,0,0,0,1,0,0H0a0,0,0,0,1,0,0V4A4,4,0,0,1,4,0Z" transform="translate(180.312 67)" fill="#03a9f4"/>
+                          <path id="Mar.Bar-2" data-name="Mar.Bar" d="M4,0H21a4,4,0,0,1,4,4V44a0,0,0,0,1,0,0H0a0,0,0,0,1,0,0V4A4,4,0,0,1,4,0Z" transform="translate(123.312 95)" fill="#03a9f4"/>
+                          <path id="Feb.Bar-2" data-name="Feb.Bar" d="M4,0H21a4,4,0,0,1,4,4V96a0,0,0,0,1,0,0H0a0,0,0,0,1,0,0V4A4,4,0,0,1,4,0Z" transform="translate(67.312 43)" fill="#03a9f4"/>
+                          <path id="Jan.Bar-3" data-name="Jan.Bar" d="M4,0H21a4,4,0,0,1,4,4V139a0,0,0,0,1,0,0H0a0,0,0,0,1,0,0V4A4,4,0,0,1,4,0Z" transform="translate(10.312)" fill="#03a9f4"/>
+                        </g>
+                      </g>
+                    </g>
+                  </g>
+                </g>
+                <g id="Group_632" data-name="Group 632" transform="translate(0 63)">
+                  <text id="Projects_by_Phase" data-name="Projects by Phase" transform="translate(1015 1499)" font-size="18" font-family="NunitoSans-SemiBold, Nunito Sans" font-weight="600"><tspan x="0" y="0">Projects by Phase</tspan></text>
+                  <g id="Symbol_20" data-name="Symbol 20" transform="translate(820 1404)">
+                    <rect id="rectangle-6" data-name="rectangle" width="22" height="22" transform="translate(485 78)" fill="none"/>
+                    <path id="path-8" data-name="path" d="M17.833,6.283,16.55,5l-5.133,5.133L6.283,5,5,6.283l5.133,5.133L5,16.55l1.283,1.283L11.417,12.7l5.133,5.133,1.283-1.283L12.7,11.417Z" transform="translate(484.583 77.583)" fill="#707070" fill-rule="evenodd" opacity="0.54"/>
+                  </g>
+                </g>
+                <g id="Normal_Flat_Light-6" data-name="Normal Flat Light" transform="translate(1260.25 1876)">
+                  <g id="ui_raised_btn_light-6" data-name="ui_raised_btn_light" transform="translate(-0.25)">
+                    <g transform="matrix(1, 0, 0, 1, -1004, -1738)" filter="url(#button-6)">
+                      <path id="button-19" data-name="button" d="M1.426,0H65.618a1.451,1.451,0,0,1,1.426,1.475v23.6a1.451,1.451,0,0,1-1.426,1.475H1.426A1.451,1.451,0,0,1,0,25.078V1.475A1.451,1.451,0,0,1,1.426,0Z" transform="translate(1004 1738)" fill="#fff" stroke="#036" stroke-width="1"/>
+                    </g>
+                  </g>
+                  <text id="teal_Normal-6" data-name="teal_Normal" transform="translate(33.75 18)" fill="#036" font-size="14" font-family="Roboto-Medium, Roboto" font-weight="500"><tspan x="-21.632" y="0">Details</tspan></text>
+                </g>
+              </g>
+            </g>
+            <g id="G2-2" data-name="G2" transform="translate(-2)">
+              <g transform="matrix(1, 0, 0, 1, 258, 138)" filter="url(#Rectangle_212-7)">
+                <rect id="Rectangle_212-20" data-name="Rectangle 212" width="343" height="395" rx="2" transform="translate(374 1385)" fill="#fff"/>
+              </g>
+              <g id="Group_687" data-name="Group 687">
+                <g id="Group_640" data-name="Group 640" transform="translate(0 54)">
+                  <text id="Contractor_Billing_Amount" data-name="Contractor Billing Amount" transform="translate(661 1667.5) rotate(-90)" fill="#707070" font-size="12" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-69.672" y="0">Contractor Billing Amount</tspan></text>
+                  <g id="Group_487" data-name="Group 487" transform="translate(680 1559)">
+                    <path id="Chart_Grid-3" data-name="Chart Grid" d="M0,205v-1H238.069v1Zm0-51v-1H238.069v1Zm0-51v-1H238.069v1ZM0,52V51H238.069v1ZM0,1V0H238.069V1Z" transform="translate(29 5)" fill="#e2e2e2"/>
+                    <g id="LT-Y-Axis-Info-2" data-name="LT-Y-Axis-Info">
+                      <text id="_0-2" data-name="0" transform="translate(19 212)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-6.6" y="0">0</tspan></text>
+                      <text id="_2k-2" data-name="2k" transform="translate(19 161)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-12.1" y="0">2k</tspan></text>
+                      <text id="_5k-2" data-name="5k" transform="translate(19 110)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-12.1" y="0">5k</tspan></text>
+                      <text id="_8k-2" data-name="8k" transform="translate(19 59)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-12.1" y="0">8k</tspan></text>
+                      <text id="_11k-2" data-name="11k" transform="translate(19 11)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-18.7" y="0">11k</tspan></text>
+                    </g>
+                    <g id="X.Axis-Days-2" data-name="X.Axis-Days" transform="translate(23.583 224)">
+                      <text id="Invasive_Species" data-name="Invasive
+Species" transform="translate(39 5)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-19.833" y="0">Invasive</tspan><tspan x="-18.942" y="13">Species</tspan></text>
+                      <text id="Tree_Planting-3" data-name="Tree 
+Planting" transform="translate(95 5)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-11.973" y="0">Tree </tspan><tspan x="-20.355" y="13">Planting</tspan></text>
+                      <text id="New_Sidewalks-2" data-name="New 
+Sidewalks" transform="translate(152 5)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-12.98" y="0">New </tspan><tspan x="-24.849" y="13">Sidewalks</tspan></text>
+                      <text id="New_Roads-3" data-name="New
+Roads" transform="translate(208 7)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-11.561" y="0">New</tspan><tspan x="-15.582" y="13">Roads</tspan></text>
+                    </g>
+                    <g id="Chart.Content-3" data-name="Chart.Content" transform="translate(38.688 71)">
+                      <g id="Positive-3" data-name="Positive">
+                        <path id="Apr.Bar-3" data-name="Apr.Bar" d="M4,0H21a4,4,0,0,1,4,4V72a0,0,0,0,1,0,0H0a0,0,0,0,1,0,0V4A4,4,0,0,1,4,0Z" transform="translate(180.312 67)" fill="#03a9f4"/>
+                        <path id="Mar.Bar-3" data-name="Mar.Bar" d="M4,0H21a4,4,0,0,1,4,4V44a0,0,0,0,1,0,0H0a0,0,0,0,1,0,0V4A4,4,0,0,1,4,0Z" transform="translate(123.312 95)" fill="#03a9f4"/>
+                        <path id="Feb.Bar-3" data-name="Feb.Bar" d="M4,0H21a4,4,0,0,1,4,4V96a0,0,0,0,1,0,0H0a0,0,0,0,1,0,0V4A4,4,0,0,1,4,0Z" transform="translate(67.312 43)" fill="#03a9f4"/>
+                        <path id="Jan.Bar-4" data-name="Jan.Bar" d="M4,0H21a4,4,0,0,1,4,4V139a0,0,0,0,1,0,0H0a0,0,0,0,1,0,0V4A4,4,0,0,1,4,0Z" transform="translate(10.312)" fill="#03a9f4"/>
+                      </g>
+                    </g>
+                  </g>
+                </g>
+                <g id="Group_639" data-name="Group 639" transform="translate(0 63)">
+                  <text id="Contractor_Billing_per_Project_" data-name="Contractor Billing per Project " transform="translate(649 1499)" font-size="18" font-family="NunitoSans-SemiBold, Nunito Sans" font-weight="600"><tspan x="0" y="0">Contractor Billing per Project </tspan></text>
+                  <g id="Symbol_19" data-name="Symbol 19" transform="translate(456 1404)">
+                    <rect id="rectangle-7" data-name="rectangle" width="22" height="22" transform="translate(485 78)" fill="none"/>
+                    <path id="path-9" data-name="path" d="M17.833,6.283,16.55,5l-5.133,5.133L6.283,5,5,6.283l5.133,5.133L5,16.55l1.283,1.283L11.417,12.7l5.133,5.133,1.283-1.283L12.7,11.417Z" transform="translate(484.583 77.583)" fill="#707070" fill-rule="evenodd" opacity="0.54"/>
+                  </g>
+                </g>
+                <g id="Normal_Flat_Light-7" data-name="Normal Flat Light" transform="translate(896.25 1876)">
+                  <g id="ui_raised_btn_light-7" data-name="ui_raised_btn_light" transform="translate(-0.25)">
+                    <g transform="matrix(1, 0, 0, 1, -638, -1738)" filter="url(#button-7)">
+                      <path id="button-20" data-name="button" d="M1.426,0H65.618a1.451,1.451,0,0,1,1.426,1.475v23.6a1.451,1.451,0,0,1-1.426,1.475H1.426A1.451,1.451,0,0,1,0,25.078V1.475A1.451,1.451,0,0,1,1.426,0Z" transform="translate(638 1738)" fill="#fff" stroke="#036" stroke-width="1"/>
+                    </g>
+                  </g>
+                  <text id="teal_Normal-7" data-name="teal_Normal" transform="translate(33.75 18)" fill="#036" font-size="14" font-family="Roboto-Medium, Roboto" font-weight="500"><tspan x="-21.632" y="0">Details</tspan></text>
+                </g>
+              </g>
+            </g>
+            <g id="G1-2" data-name="G1">
+              <g transform="matrix(1, 0, 0, 1, 256, 138)" filter="url(#Rectangle_212-8)">
+                <rect id="Rectangle_212-21" data-name="Rectangle 212" width="343" height="395" rx="2" transform="translate(6 1385)" fill="#fff"/>
+              </g>
+              <g id="Group_685" data-name="Group 685">
+                <g id="Group_636" data-name="Group 636" transform="translate(-4 54)">
+                  <text id="Legal_Billing_Amount" data-name="Legal Billing Amount" transform="translate(295 1667.5) rotate(-90)" fill="#707070" font-size="12" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-55.734" y="0">Legal Billing Amount</tspan></text>
+                  <g id="Group_487-2" data-name="Group 487" transform="translate(314 1559)">
+                    <path id="Chart_Grid-4" data-name="Chart Grid" d="M0,205v-1H238.069v1Zm0-51v-1H238.069v1Zm0-51v-1H238.069v1ZM0,52V51H238.069v1ZM0,1V0H238.069V1Z" transform="translate(29 5)" fill="#e2e2e2"/>
+                    <g id="LT-Y-Axis-Info-3" data-name="LT-Y-Axis-Info">
+                      <text id="_0-3" data-name="0" transform="translate(19 212)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-6.6" y="0">0</tspan></text>
+                      <text id="_2k-3" data-name="2k" transform="translate(19 161)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-12.1" y="0">2k</tspan></text>
+                      <text id="_5k-3" data-name="5k" transform="translate(19 110)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-12.1" y="0">5k</tspan></text>
+                      <text id="_8k-3" data-name="8k" transform="translate(19 59)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-12.1" y="0">8k</tspan></text>
+                      <text id="_11k-3" data-name="11k" transform="translate(19 11)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-18.7" y="0">11k</tspan></text>
+                    </g>
+                    <g id="X.Axis-Days-3" data-name="X.Axis-Days" transform="translate(23.583 224)">
+                      <text id="Invasive_Species-2" data-name="Invasive
+Species" transform="translate(39 5)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-19.833" y="0">Invasive</tspan><tspan x="-18.942" y="13">Species</tspan></text>
+                      <text id="Tree_Planting-4" data-name="Tree 
+Planting" transform="translate(95 5)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-11.973" y="0">Tree </tspan><tspan x="-20.355" y="13">Planting</tspan></text>
+                      <text id="New_Sidewalks-3" data-name="New 
+Sidewalks" transform="translate(152 5)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-12.98" y="0">New </tspan><tspan x="-24.849" y="13">Sidewalks</tspan></text>
+                      <text id="New_Roads-4" data-name="New
+Roads" transform="translate(208 7)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-11.561" y="0">New</tspan><tspan x="-15.582" y="13">Roads</tspan></text>
+                    </g>
+                    <g id="Chart.Content-4" data-name="Chart.Content" transform="translate(38.688 71)">
+                      <g id="Positive-4" data-name="Positive">
+                        <path id="Apr.Bar-4" data-name="Apr.Bar" d="M4,0H21a4,4,0,0,1,4,4V72a0,0,0,0,1,0,0H0a0,0,0,0,1,0,0V4A4,4,0,0,1,4,0Z" transform="translate(180.312 67)" fill="#03a9f4"/>
+                        <path id="Mar.Bar-4" data-name="Mar.Bar" d="M4,0H21a4,4,0,0,1,4,4V44a0,0,0,0,1,0,0H0a0,0,0,0,1,0,0V4A4,4,0,0,1,4,0Z" transform="translate(123.312 95)" fill="#03a9f4"/>
+                        <path id="Feb.Bar-4" data-name="Feb.Bar" d="M4,0H21a4,4,0,0,1,4,4V96a0,0,0,0,1,0,0H0a0,0,0,0,1,0,0V4A4,4,0,0,1,4,0Z" transform="translate(67.312 43)" fill="#03a9f4"/>
+                        <path id="Jan.Bar-5" data-name="Jan.Bar" d="M4,0H21a4,4,0,0,1,4,4V139a0,0,0,0,1,0,0H0a0,0,0,0,1,0,0V4A4,4,0,0,1,4,0Z" transform="translate(10.312)" fill="#03a9f4"/>
+                      </g>
+                    </g>
+                  </g>
+                </g>
+                <g id="Group_635" data-name="Group 635" transform="translate(-4 63)">
+                  <text id="Legal_Billing_per_Project" data-name="Legal Billing per Project" transform="translate(283 1499)" font-size="18" font-family="NunitoSans-SemiBold, Nunito Sans" font-weight="600"><tspan x="0" y="0">Legal Billing per Project</tspan></text>
+                  <g id="Symbol_18" data-name="Symbol 18" transform="translate(575.131 1482)">
+                    <rect id="rectangle-8" data-name="rectangle" width="22" height="22" fill="none"/>
+                    <path id="path-10" data-name="path" d="M17.833,6.283,16.55,5l-5.133,5.133L6.283,5,5,6.283l5.133,5.133L5,16.55l1.283,1.283L11.417,12.7l5.133,5.133,1.283-1.283L12.7,11.417Z" transform="translate(-0.417 -0.417)" fill="#707070" fill-rule="evenodd" opacity="0.54"/>
+                  </g>
+                </g>
+                <g id="Normal_Flat_Light-8" data-name="Normal Flat Light" transform="translate(526.25 1876)">
+                  <g id="ui_raised_btn_light-8" data-name="ui_raised_btn_light" transform="translate(-0.25)">
+                    <g transform="matrix(1, 0, 0, 1, -270, -1738)" filter="url(#button-8)">
+                      <path id="button-21" data-name="button" d="M1.426,0H65.618a1.451,1.451,0,0,1,1.426,1.475v23.6a1.451,1.451,0,0,1-1.426,1.475H1.426A1.451,1.451,0,0,1,0,25.078V1.475A1.451,1.451,0,0,1,1.426,0Z" transform="translate(270 1738)" fill="#fff" stroke="#036" stroke-width="1"/>
+                    </g>
+                  </g>
+                  <text id="teal_Normal-8" data-name="teal_Normal" transform="translate(33.75 18)" fill="#036" font-size="14" font-family="Roboto-Medium, Roboto" font-weight="500"><tspan x="-21.632" y="0">Details</tspan></text>
+                </g>
+              </g>
+            </g>
+          </g>
+        </g>
+      </g>
+      <g id="Ministry_Focus" data-name="Ministry Focus" transform="translate(2 1)">
+        <g id="H1-3" data-name="H1" transform="translate(-1 12)">
+          <text id="Ministry_Focus-2" data-name="Ministry Focus" transform="translate(281 441)" font-size="24" font-family="NunitoSans-SemiBold, Nunito Sans" font-weight="600"><tspan x="0" y="0">Ministry Focus</tspan></text>
+          <g id="Rectangle_221-3" data-name="Rectangle 221" transform="translate(263 409)" fill="#fcba19" stroke="#fcba19" stroke-width="1">
+            <rect width="6" height="47" stroke="none"/>
+            <rect x="0.5" y="0.5" width="5" height="46" fill="none"/>
+          </g>
+        </g>
+        <g id="Groups">
+          <g id="R2-2" data-name="R2">
+            <g id="G2-3" data-name="G2" transform="translate(0 -28)">
+              <g transform="matrix(1, 0, 0, 1, 256, 142)" filter="url(#Rectangle_212-9)">
+                <rect id="Rectangle_212-22" data-name="Rectangle 212" width="536.822" height="415" rx="2" transform="translate(548 816)" fill="#fff"/>
+              </g>
+              <g id="Group_679" data-name="Group 679">
+                <g id="Group_615" data-name="Group 615" transform="translate(0 51)">
+                  <text id="Contractor_Billing" data-name="Contractor Billing" transform="translate(833 1107.5) rotate(-90)" fill="#707070" font-size="12" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-46.506" y="0">Contractor Billing</tspan></text>
+                  <g id="Group_487-3" data-name="Group 487" transform="translate(853 1005)">
+                    <path id="Chart_Grid-5" data-name="Chart Grid" d="M0,205v-1H415.037v1Zm0-51v-1H415.037v1Zm0-51v-1H415.037v1ZM0,52V51H415.037v1ZM0,1V0H415.037V1Z" transform="translate(35 5)" fill="#e2e2e2"/>
+                    <g id="LT-Y-Axis-Info-4" data-name="LT-Y-Axis-Info">
+                      <text id="_0-4" data-name="$0" transform="translate(25 212)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-13.2" y="0">$0</tspan></text>
+                      <text id="_5k-4" data-name="$5k" transform="translate(25 161)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-18.7" y="0">$5k</tspan></text>
+                      <text id="_10k" data-name="$10k" transform="translate(25 110)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-25.3" y="0">$10k</tspan></text>
+                      <text id="_15k" data-name="$15k" transform="translate(25 59)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-25.3" y="0">$15k</tspan></text>
+                      <text id="_20k" data-name="$20k" transform="translate(25 11)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-25.3" y="0">$20k</tspan></text>
+                    </g>
+                    <g id="X.Axis-Days-4" data-name="X.Axis-Days" transform="translate(97.406 223)">
+                      <text id="AGRI" transform="translate(-0.406 11)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">AGRI</tspan></text>
+                      <text id="FLNR" transform="translate(80.594 11)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">FLNR</tspan></text>
+                      <text id="SDSI" transform="translate(163.594 11)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">SDSI</tspan></text>
+                      <text id="MOE" transform="translate(243.594 11)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">MOE</tspan></text>
+                    </g>
+                    <g id="Chart.Content-5" data-name="Chart.Content" transform="translate(116.811 71)">
+                      <g id="Positive-5" data-name="Positive">
+                        <path id="Apr.Bar-5" data-name="Apr.Bar" d="M4,0H36a4,4,0,0,1,4,4V72a0,0,0,0,1,0,0H0a0,0,0,0,1,0,0V4A4,4,0,0,1,4,0Z" transform="translate(215.189 67)" fill="#03a9f4"/>
+                        <path id="Mar.Bar-5" data-name="Mar.Bar" d="M4,0H36a4,4,0,0,1,4,4V44a0,0,0,0,1,0,0H0a0,0,0,0,1,0,0V4A4,4,0,0,1,4,0Z" transform="translate(135.189 95)" fill="#03a9f4"/>
+                        <path id="Feb.Bar-5" data-name="Feb.Bar" d="M4,0H36a4,4,0,0,1,4,4V96a0,0,0,0,1,0,0H0a0,0,0,0,1,0,0V4A4,4,0,0,1,4,0Z" transform="translate(55.189 43)" fill="#03a9f4"/>
+                        <path id="Jan.Bar-6" data-name="Jan.Bar" d="M4,0H36a4,4,0,0,1,4,4V139a0,0,0,0,1,0,0H0a0,0,0,0,1,0,0V4A4,4,0,0,1,4,0Z" transform="translate(-24.811)" fill="#03a9f4"/>
+                      </g>
+                    </g>
+                  </g>
+                  <text id="Ministry" transform="translate(1072.411 1267.5)" fill="#707070" font-size="12" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-21.51" y="0">Ministry</tspan></text>
+                </g>
+                <g id="Group_614" data-name="Group 614" transform="translate(0 63)">
+                  <text id="Contractor_Billing_per_Ministry" data-name="Contractor Billing per Ministry" transform="translate(821 937)" font-size="18" font-family="NunitoSans-SemiBold, Nunito Sans" font-weight="600"><tspan x="0" y="0">Contractor Billing per Ministry</tspan></text>
+                  <g id="Symbol_17" data-name="Symbol 17" transform="translate(818 843)">
+                    <rect id="rectangle-9" data-name="rectangle" width="22" height="22" transform="translate(485 78)" fill="none"/>
+                    <path id="path-11" data-name="path" d="M17.833,6.283,16.55,5l-5.133,5.133L6.283,5,5,6.283l5.133,5.133L5,16.55l1.283,1.283L11.417,12.7l5.133,5.133,1.283-1.283L12.7,11.417Z" transform="translate(484.583 77.583)" fill="#707070" fill-rule="evenodd" opacity="0.54"/>
+                  </g>
+                </g>
+                <g id="Normal_Flat_Light-9" data-name="Normal Flat Light" transform="translate(1258.25 1330)">
+                  <g id="ui_raised_btn_light-9" data-name="ui_raised_btn_light" transform="translate(-0.25)">
+                    <g transform="matrix(1, 0, 0, 1, -1002, -1188)" filter="url(#button-9)">
+                      <path id="button-22" data-name="button" d="M1.426,0H65.618a1.451,1.451,0,0,1,1.426,1.475v23.6a1.451,1.451,0,0,1-1.426,1.475H1.426A1.451,1.451,0,0,1,0,25.078V1.475A1.451,1.451,0,0,1,1.426,0Z" transform="translate(1002 1188)" fill="#fff" stroke="#036" stroke-width="1"/>
+                    </g>
+                  </g>
+                  <text id="teal_Normal-9" data-name="teal_Normal" transform="translate(33.75 18)" fill="#036" font-size="14" font-family="Roboto-Medium, Roboto" font-weight="500"><tspan x="-21.632" y="0">Details</tspan></text>
+                </g>
+              </g>
+            </g>
+            <g id="G1-3" data-name="G1" transform="translate(0 -28)">
+              <g transform="matrix(1, 0, 0, 1, 256, 142)" filter="url(#Rectangle_212-10)">
+                <rect id="Rectangle_212-23" data-name="Rectangle 212" width="522.458" height="415" rx="2" transform="translate(6 816)" fill="#fff"/>
+              </g>
+              <g id="Group_677" data-name="Group 677">
+                <g id="Group_617" data-name="Group 617" transform="translate(0 51)">
+                  <text id="Contract_Value" data-name="Contract Value" transform="translate(291 1107.5) rotate(-90)" fill="#707070" font-size="12" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-39.432" y="0">Contract Value</tspan></text>
+                  <g id="Group_487-4" data-name="Group 487" transform="translate(311 1005)">
+                    <path id="Chart_Grid-6" data-name="Chart Grid" d="M0,205v-1H400.673v1Zm0-51v-1H400.673v1Zm0-51v-1H400.673v1ZM0,52V51H400.673v1ZM0,1V0H400.673V1Z" transform="translate(35 5)" fill="#e2e2e2"/>
+                    <g id="LT-Y-Axis-Info-5" data-name="LT-Y-Axis-Info" transform="translate(0)">
+                      <text id="_0-5" data-name="$0" transform="translate(25 212)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-13.2" y="0">$0</tspan></text>
+                      <text id="_2k-4" data-name="$2k" transform="translate(25 161)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-18.7" y="0">$2k</tspan></text>
+                      <text id="_5k-5" data-name="$5k" transform="translate(25 110)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-18.7" y="0">$5k</tspan></text>
+                      <text id="_8k-4" data-name="$8k" transform="translate(25 59)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-18.7" y="0">$8k</tspan></text>
+                      <text id="_11k-4" data-name="$11k" transform="translate(25 11)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-25.3" y="0">$11k</tspan></text>
+                    </g>
+                    <g id="X.Axis-Days-5" data-name="X.Axis-Days" transform="translate(99.423 224)">
+                      <text id="AGRI-2" data-name="AGRI" transform="translate(-14.423 11)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">AGRI</tspan></text>
+                      <text id="FLNR-2" data-name="FLNR" transform="translate(58.577 11)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">FLNR</tspan></text>
+                      <text id="SDSI-2" data-name="SDSI" transform="translate(132.577 11)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">SDSI</tspan></text>
+                      <text id="MOE-2" data-name="MOE" transform="translate(203.577 11)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">MOE</tspan></text>
+                    </g>
+                    <g id="Chart.Content-6" data-name="Chart.Content" transform="translate(95.744 71)">
+                      <g id="Positive-6" data-name="Positive">
+                        <path id="Apr.Bar-6" data-name="Apr.Bar" d="M4,0H36a4,4,0,0,1,4,4V72a0,0,0,0,1,0,0H0a0,0,0,0,1,0,0V4A4,4,0,0,1,4,0Z" transform="translate(201.256 67)" fill="#03a9f4"/>
+                        <path id="Mar.Bar-6" data-name="Mar.Bar" d="M4,0H36a4,4,0,0,1,4,4V44a0,0,0,0,1,0,0H0a0,0,0,0,1,0,0V4A4,4,0,0,1,4,0Z" transform="translate(127.256 95)" fill="#03a9f4"/>
+                        <path id="Feb.Bar-6" data-name="Feb.Bar" d="M4,0H36a4,4,0,0,1,4,4V96a0,0,0,0,1,0,0H0a0,0,0,0,1,0,0V4A4,4,0,0,1,4,0Z" transform="translate(54.256 43)" fill="#03a9f4"/>
+                        <path id="Jan.Bar-7" data-name="Jan.Bar" d="M4,0H36a4,4,0,0,1,4,4V139a0,0,0,0,1,0,0H0a0,0,0,0,1,0,0V4A4,4,0,0,1,4,0Z" transform="translate(-18.744)" fill="#03a9f4"/>
+                      </g>
+                    </g>
+                  </g>
+                  <text id="Ministry-2" data-name="Ministry" transform="translate(523.229 1267.5)" fill="#707070" font-size="12" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-21.51" y="0">Ministry</tspan></text>
+                </g>
+                <g id="Group_618" data-name="Group 618" transform="translate(0 63)">
+                  <text id="Total_Value_of_Contracts" data-name="Total Value of Contracts" transform="translate(279 937)" font-size="18" font-family="NunitoSans-SemiBold, Nunito Sans" font-weight="600"><tspan x="0" y="0">Total Value of Contracts</tspan></text>
+                  <g id="Symbol_16" data-name="Symbol 16" transform="translate(262 843)">
+                    <rect id="rectangle-10" data-name="rectangle" width="22" height="22" transform="translate(485 78)" fill="none"/>
+                    <path id="path-12" data-name="path" d="M17.833,6.283,16.55,5l-5.133,5.133L6.283,5,5,6.283l5.133,5.133L5,16.55l1.283,1.283L11.417,12.7l5.133,5.133,1.283-1.283L12.7,11.417Z" transform="translate(484.583 77.583)" fill="#707070" fill-rule="evenodd" opacity="0.54"/>
+                  </g>
+                </g>
+                <g id="Normal_Flat_Light-10" data-name="Normal Flat Light" transform="translate(702.25 1330)">
+                  <g id="ui_raised_btn_light-10" data-name="ui_raised_btn_light" transform="translate(-0.25)">
+                    <g transform="matrix(1, 0, 0, 1, -446, -1188)" filter="url(#button-10)">
+                      <path id="button-23" data-name="button" d="M1.426,0H65.618a1.451,1.451,0,0,1,1.426,1.475v23.6a1.451,1.451,0,0,1-1.426,1.475H1.426A1.451,1.451,0,0,1,0,25.078V1.475A1.451,1.451,0,0,1,1.426,0Z" transform="translate(446 1188)" fill="#fff" stroke="#036" stroke-width="1"/>
+                    </g>
+                  </g>
+                  <text id="teal_Normal-10" data-name="teal_Normal" transform="translate(33.75 18)" fill="#036" font-size="14" font-family="Roboto-Medium, Roboto" font-weight="500"><tspan x="-21.632" y="0">Details</tspan></text>
+                </g>
+              </g>
+            </g>
+          </g>
+          <g id="R1-2" data-name="R1">
+            <g id="G3-2" data-name="G3">
+              <g transform="matrix(1, 0, 0, 1, 256, 114)" filter="url(#Rectangle_212-11)">
+                <rect id="Rectangle_212-24" data-name="Rectangle 212" width="345" height="415" rx="2" transform="translate(740 379)" fill="#fff"/>
+              </g>
+              <g id="Group_675" data-name="Group 675">
+                <g id="Group_627" data-name="Group 627" transform="translate(0.217 -2.783)">
+                  <g id="Group_497" data-name="Group 497" transform="translate(721 87)">
+                    <g id="Total_views_label" data-name="Total views label" transform="translate(472.107 718)">
+                      <text id="Billable" transform="translate(28 14)" fill="#707070" font-size="13" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">Billable</tspan></text>
+                      <rect id="Label" width="18" height="8" rx="4" transform="translate(0 5)" fill="#03a9f4"/>
+                    </g>
+                    <g id="Products_sold_label" data-name="Products sold label" transform="translate(349.5 718)">
+                      <text id="Non-Billable" transform="translate(28 14)" fill="#707070" font-size="13" font-family="NunitoSans-SemiBold, Nunito Sans" font-weight="600"><tspan x="0" y="0">Non-Billable</tspan></text>
+                      <rect id="Label-2" data-name="Label" width="18" height="8" rx="4" transform="translate(0 5)" fill="#ce61d2"/>
+                    </g>
+                  </g>
+                  <g id="Group_501" data-name="Group 501" transform="translate(-34.217 -820.217)">
+                    <path id="Path_280" data-name="Path 280" d="M98.776,0a98.776,98.776,0,0,1,98.776,98.776,100.523,100.523,0,0,1-.735,12.108A98.781,98.781,0,1,1,98.776,0Z" transform="translate(1104 1407)" fill="#ce61d2"/>
+                    <path id="Intersection_1" data-name="Intersection 1" d="M0,98.78A98.776,98.776,0,0,1,98.775,0V98.4l-45.434,88.1A98.764,98.764,0,0,1,0,98.78Z" transform="translate(1104 1407)" fill="#03a9f4"/>
+                    <circle id="Ellipse_4" data-name="Ellipse 4" cx="48.749" cy="48.749" r="48.749" transform="translate(1153.978 1456.978)" fill="#fff"/>
+                    <text id="_60_" data-name="60%" transform="translate(1242.778 1578.442)" fill="#fff" font-size="10" font-family="NunitoSans-SemiBold, Nunito Sans" font-weight="600"><tspan x="-10.68" y="0">60%</tspan></text>
+                    <text id="_40_" data-name="40%" transform="translate(1150.778 1469.442)" fill="#fff" font-size="10" font-family="NunitoSans-SemiBold, Nunito Sans" font-weight="600"><tspan x="-10.685" y="0">40%</tspan></text>
+                    <text id="_60_Hrs" data-name="60 Hrs" transform="translate(1242.778 1563.442)" fill="#fff" font-size="13" font-family="NunitoSans-SemiBold, Nunito Sans" font-weight="600"><tspan x="-19.942" y="0">60 Hrs</tspan></text>
+                    <text id="_40_Hrs" data-name="40 Hrs" transform="translate(1150.778 1454.442)" fill="#fff" font-size="13" font-family="NunitoSans-SemiBold, Nunito Sans" font-weight="600"><tspan x="-19.948" y="0">40 Hrs</tspan></text>
+                  </g>
+                </g>
+                <g id="Group_626" data-name="Group 626">
+                  <text id="Billable_vs._Non-Billable" data-name="Billable vs. Non-Billable" transform="translate(1007 528)" font-size="17" font-family="NunitoSans-SemiBold, Nunito Sans" font-weight="600"><tspan x="0" y="0">Billable vs. Non-Billable</tspan></text>
+                  <g id="Symbol_15" data-name="Symbol 15" transform="translate(818 434)">
+                    <rect id="rectangle-11" data-name="rectangle" width="22" height="22" transform="translate(485 78)" fill="none"/>
+                    <path id="path-13" data-name="path" d="M17.833,6.283,16.55,5l-5.133,5.133L6.283,5,5,6.283l5.133,5.133L5,16.55l1.283,1.283L11.417,12.7l5.133,5.133,1.283-1.283L12.7,11.417Z" transform="translate(484.583 77.583)" fill="#707070" fill-rule="evenodd" opacity="0.54"/>
+                  </g>
+                </g>
+                <g id="Normal_Flat_Light-11" data-name="Normal Flat Light" transform="translate(1258.25 865)">
+                  <g id="ui_raised_btn_light-11" data-name="ui_raised_btn_light" transform="translate(-0.25)">
+                    <g transform="matrix(1, 0, 0, 1, -1002, -751)" filter="url(#button-11)">
+                      <path id="button-24" data-name="button" d="M1.426,0H65.618a1.451,1.451,0,0,1,1.426,1.475v23.6a1.451,1.451,0,0,1-1.426,1.475H1.426A1.451,1.451,0,0,1,0,25.078V1.475A1.451,1.451,0,0,1,1.426,0Z" transform="translate(1002 751)" fill="#fff" stroke="#036" stroke-width="1"/>
+                    </g>
+                  </g>
+                  <text id="teal_Normal-11" data-name="teal_Normal" transform="translate(33.75 18)" fill="#036" font-size="14" font-family="Roboto-Medium, Roboto" font-weight="500"><tspan x="-21.632" y="0">Details</tspan></text>
+                </g>
+              </g>
+            </g>
+            <g id="G2-4" data-name="G2">
+              <g transform="matrix(1, 0, 0, 1, 256, 114)" filter="url(#Rectangle_212-12)">
+                <rect id="Rectangle_212-25" data-name="Rectangle 212" width="345" height="415" rx="2" transform="translate(373 379)" fill="#fff"/>
+              </g>
+              <g id="Group_673" data-name="Group 673">
+                <g id="Group_624" data-name="Group 624">
+                  <g id="Group_475" data-name="Group 475" transform="translate(297 94)">
+                    <g id="Group_474" data-name="Group 474" transform="translate(390 428)">
+                      <path id="Chart_Grid-7" data-name="Chart Grid" d="M0,231V0H.243V230.125h54.2v-52.5H.315v-.875H54.438v-52.5H.315v-.875H54.438v-52.5H.315V70H54.438V17.5H.315v-.875H54.438V0h.243V16.625h51.279V0h.243V16.625h51.765V0h.243V16.625h51.036V0h.243V16.625h55.1V17.5h-55.1V70h55.1v.875h-55.1v52.5h55.1v.875h-55.1v52.5h55.1v.875h-55.1v52.5h55.167V0h.243V231Zm209.248-.875v-52.5H158.212v52.5Zm-51.279,0v-52.5H106.2v52.5Zm-52.008,0v-52.5H54.681v52.5ZM209.248,176.75v-52.5H158.212v52.5Zm-51.279,0v-52.5H106.2v52.5Zm-52.008,0v-52.5H54.681v52.5Zm103.287-53.375v-52.5H158.212v52.5Zm-51.279,0v-52.5H106.2v52.5Zm-52.008,0v-52.5H54.681v52.5ZM209.248,70V17.5H158.212V70Zm-51.279,0V17.5H106.2V70Zm-52.008,0V17.5H54.681V70Z" transform="translate(5 33)" fill="#e2e2e2"/>
+                      <g id="Total_Views_Graph" data-name="Total Views Graph" transform="translate(0 87)">
+                        <path id="Filled.Graph" d="M330,490.153V354.422s29.813,134.945,54.3,140.023c27.325-1.144,27.549-70.055,51.56-107.78,20.1-29.621,35.44,51.18,52.255,53.151s28.419-55.378,51.358-59.362c29.721,6,53.57,82.62,55.421,86.74V523.21l-264.9.1Z" transform="translate(-324.995 -350)" opacity="0.4" fill="url(#linear-gradient-5)"/>
+                        <path id="Line.Graph" d="M312.953,279.164S343.61,416.6,367.57,417.881s32.153-80.975,51.391-108.707,35.927,52.9,51.988,53.91,31.44-60.576,51.175-58.9,42.3,48.262,54.772,85.012" transform="translate(-306.994 -274)" fill="none" stroke="#03a9f4" stroke-width="2"/>
+                        <g id="Jun.Ellipse" transform="translate(264.717 111)" fill="#fff" stroke="#03a9f4" stroke-width="2">
+                          <circle cx="4.995" cy="4.995" r="4.995" stroke="none"/>
+                          <circle cx="4.995" cy="4.995" r="3.995" fill="none"/>
+                        </g>
+                        <g id="May.Ellipse" transform="translate(209.294 25)" fill="#fff" stroke="#03a9f4" stroke-width="2">
+                          <circle cx="4.995" cy="4.995" r="4.995" stroke="none"/>
+                          <circle cx="4.995" cy="4.995" r="3.995" fill="none"/>
+                        </g>
+                        <g id="Apr.Ellipse" transform="translate(158.004 84)" fill="#fff" stroke="#03a9f4" stroke-width="2">
+                          <circle cx="4.995" cy="4.995" r="4.995" stroke="none"/>
+                          <circle cx="4.995" cy="4.995" r="3.995" fill="none"/>
+                        </g>
+                        <g id="Mar.Ellipse" transform="translate(106.227 30)" fill="#fff" stroke="#03a9f4" stroke-width="2">
+                          <circle cx="4.995" cy="4.995" r="4.995" stroke="none"/>
+                          <circle cx="4.995" cy="4.995" r="3.995" fill="none"/>
+                        </g>
+                        <g id="Feb.Ellipse" transform="translate(54.451 139)" fill="#fff" stroke="#03a9f4" stroke-width="2">
+                          <circle cx="4.995" cy="4.995" r="4.995" stroke="none"/>
+                          <circle cx="4.995" cy="4.995" r="3.995" fill="none"/>
+                        </g>
+                        <g id="Jan.Ellipse" fill="#fff" stroke="#03a9f4" stroke-width="2">
+                          <circle cx="4.995" cy="4.995" r="4.995" stroke="none"/>
+                          <circle cx="4.995" cy="4.995" r="3.995" fill="none"/>
+                        </g>
+                      </g>
+                      <g id="Products_Sold_Graph" data-name="Products Sold Graph" transform="translate(0 33)">
+                        <path id="Filled.Graph-2" data-name="Filled.Graph" d="M330,490.153V401.268s30.546,58.3,54.952,61.963c26.391-3.549,30.96-28.5,51.517-61.963,17.566-27.892,35.085-35.547,51.9-33.576s31.388,32.1,51.25,35.189c35.038-12.44,52.915-75.335,55.282-101.6V523.21l-264.9.1Z" transform="translate(-324.998 -296)" opacity="0.4" fill="url(#linear-gradient-6)"/>
+                        <path id="Line.Graph-2" data-name="Line.Graph" d="M313,346.5s30.262,59.691,54.189,60.976,33.117-30.8,51.444-60.9,35.749-35.23,51.789-34.218,31.633,32.548,51.341,34.221S573.354,292.07,576.9,245.24" transform="translate(-306.998 -241)" fill="none" stroke="#ce61d2" stroke-width="2"/>
+                        <g id="Jun.Ellipse-2" data-name="Jun.Ellipse" transform="translate(264.176)" fill="#fff" stroke="#ce61d2" stroke-width="2">
+                          <circle cx="4.995" cy="4.995" r="4.995" stroke="none"/>
+                          <circle cx="4.995" cy="4.995" r="3.995" fill="none"/>
+                        </g>
+                        <g id="May.Ellipse-2" data-name="May.Ellipse" transform="translate(208.866 101)" fill="#fff" stroke="#ce61d2" stroke-width="2">
+                          <circle cx="4.995" cy="4.995" r="4.995" stroke="none"/>
+                          <circle cx="4.995" cy="4.995" r="3.995" fill="none"/>
+                        </g>
+                        <g id="Apr.Ellipse-2" data-name="Apr.Ellipse" transform="translate(157.681 67)" fill="#fff" stroke="#ce61d2" stroke-width="2">
+                          <circle cx="4.995" cy="4.995" r="4.995" stroke="none"/>
+                          <circle cx="4.995" cy="4.995" r="3.995" fill="none"/>
+                        </g>
+                        <g id="Mar.Ellipse-2" data-name="Mar.Ellipse" transform="translate(106.01 101)" fill="#fff" stroke="#ce61d2" stroke-width="2">
+                          <circle cx="4.995" cy="4.995" r="4.995" stroke="none"/>
+                          <circle cx="4.995" cy="4.995" r="3.995" fill="none"/>
+                        </g>
+                        <g id="Feb.Ellipse-2" data-name="Feb.Ellipse" transform="translate(54.582 162)" fill="#fff" stroke="#ce61d2" stroke-width="2">
+                          <circle cx="4.995" cy="4.995" r="4.995" stroke="none"/>
+                          <circle cx="4.995" cy="4.995" r="3.995" fill="none"/>
+                        </g>
+                        <g id="Jan.Ellipse-2" data-name="Jan.Ellipse" transform="translate(0 100)" fill="#fff" stroke="#ce61d2" stroke-width="2">
+                          <circle cx="4.995" cy="4.995" r="4.995" stroke="none"/>
+                          <circle cx="4.995" cy="4.995" r="3.995" fill="none"/>
+                        </g>
+                      </g>
+                    </g>
+                    <g id="Months" transform="translate(395 698)">
+                      <text id="Jan" transform="translate(0 11)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">Jan</tspan></text>
+                      <text id="Feb" transform="translate(49.594 11)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">Feb</tspan></text>
+                      <text id="Mar" transform="translate(97.732 11)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">Mar</tspan></text>
+                      <text id="Apr-2" data-name="Apr" transform="translate(147.603 11)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">Apr</tspan></text>
+                      <text id="May-2" data-name="May" transform="translate(194.003 11)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">May</tspan></text>
+                      <text id="Jun-2" data-name="Jun" transform="translate(247.901 11)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">Jun</tspan></text>
+                    </g>
+                    <g id="Y-Axis-Info" transform="translate(367 469.382)">
+                      <text id="_5" data-name="5" transform="translate(13 221.618)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-6.6" y="0">5</tspan></text>
+                      <text id="_10" data-name="10" transform="translate(13 169.447)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-13.2" y="0">10</tspan></text>
+                      <text id="_15" data-name="15" transform="translate(13 117.18)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-13.2" y="0">15</tspan></text>
+                      <text id="_20" data-name="20" transform="translate(13 63.171)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-13.2" y="0">20</tspan></text>
+                      <text id="_25" data-name="25" transform="translate(13 11)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-13.2" y="0">25</tspan></text>
+                    </g>
+                  </g>
+                  <g id="Group_497-2" data-name="Group 497" transform="translate(357.5 117)">
+                    <g id="Total_views_label-2" data-name="Total views label" transform="translate(479.107 718)">
+                      <text id="MOE-3" data-name="MOE" transform="translate(28 14)" fill="#707070" font-size="13" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">MOE</tspan></text>
+                      <rect id="Label-3" data-name="Label" width="18" height="8" rx="4" transform="translate(0 5)" fill="#03a9f4"/>
+                    </g>
+                    <g id="Products_sold_label-2" data-name="Products sold label" transform="translate(375.5 718)">
+                      <text id="AGRI-3" data-name="AGRI" transform="translate(28 14)" fill="#707070" font-size="13" font-family="NunitoSans-SemiBold, Nunito Sans" font-weight="600"><tspan x="0" y="0">AGRI</tspan></text>
+                      <rect id="Label-4" data-name="Label" width="18" height="8" rx="4" transform="translate(0 5)" fill="#ce61d2"/>
+                    </g>
+                  </g>
+                  <text id="Billable_Hours" data-name="Billable Hours" transform="translate(650 681) rotate(-90)" fill="#707070" font-size="12" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-37.206" y="0">Billable Hours</tspan></text>
+                </g>
+                <g id="Group_623" data-name="Group 623">
+                  <text id="Billable_Hours_over_Time" data-name="Billable Hours over Time" transform="translate(640 528)" font-size="17" font-family="NunitoSans-SemiBold, Nunito Sans" font-weight="600"><tspan x="0" y="0">Billable Hours over Time</tspan></text>
+                  <g id="Symbol_14" data-name="Symbol 14" transform="translate(454 434)">
+                    <rect id="rectangle-12" data-name="rectangle" width="22" height="22" transform="translate(485 78)" fill="none"/>
+                    <path id="path-14" data-name="path" d="M17.833,6.283,16.55,5l-5.133,5.133L6.283,5,5,6.283l5.133,5.133L5,16.55l1.283,1.283L11.417,12.7l5.133,5.133,1.283-1.283L12.7,11.417Z" transform="translate(484.583 77.583)" fill="#707070" fill-rule="evenodd" opacity="0.54"/>
+                  </g>
+                </g>
+                <g id="Normal_Flat_Light-12" data-name="Normal Flat Light" transform="translate(894.25 865)">
+                  <g id="ui_raised_btn_light-12" data-name="ui_raised_btn_light" transform="translate(-0.25)">
+                    <g transform="matrix(1, 0, 0, 1, -638, -751)" filter="url(#button-12)">
+                      <path id="button-25" data-name="button" d="M1.426,0H65.618a1.451,1.451,0,0,1,1.426,1.475v23.6a1.451,1.451,0,0,1-1.426,1.475H1.426A1.451,1.451,0,0,1,0,25.078V1.475A1.451,1.451,0,0,1,1.426,0Z" transform="translate(638 751)" fill="#fff" stroke="#036" stroke-width="1"/>
+                    </g>
+                  </g>
+                  <text id="teal_Normal-12" data-name="teal_Normal" transform="translate(33.75 18)" fill="#036" font-size="14" font-family="Roboto-Medium, Roboto" font-weight="500"><tspan x="-21.632" y="0">Details</tspan></text>
+                </g>
+              </g>
+            </g>
+            <g id="G1-4" data-name="G1">
+              <g transform="matrix(1, 0, 0, 1, 256, 114)" filter="url(#Rectangle_212-13)">
+                <rect id="Rectangle_212-26" data-name="Rectangle 212" width="345" height="415" rx="2" transform="translate(6 379)" fill="#fff"/>
+              </g>
+              <g id="Group_671" data-name="Group 671">
+                <g id="Group_621" data-name="Group 621">
+                  <g id="Group_475-2" data-name="Group 475" transform="translate(-70 94)">
+                    <g id="Group_474-2" data-name="Group 474" transform="translate(390 428)">
+                      <path id="Chart_Grid-8" data-name="Chart Grid" d="M0,231V0H.243V230.125h54.2v-52.5H.315v-.875H54.438v-52.5H.315v-.875H54.438v-52.5H.315V70H54.438V17.5H.315v-.875H54.438V0h.243V16.625h51.279V0h.243V16.625h51.765V0h.243V16.625h51.036V0h.243V16.625h55.1V17.5h-55.1V70h55.1v.875h-55.1v52.5h55.1v.875h-55.1v52.5h55.1v.875h-55.1v52.5h55.167V0h.243V231Zm209.248-.875v-52.5H158.212v52.5Zm-51.279,0v-52.5H106.2v52.5Zm-52.008,0v-52.5H54.681v52.5ZM209.248,176.75v-52.5H158.212v52.5Zm-51.279,0v-52.5H106.2v52.5Zm-52.008,0v-52.5H54.681v52.5Zm103.287-53.375v-52.5H158.212v52.5Zm-51.279,0v-52.5H106.2v52.5Zm-52.008,0v-52.5H54.681v52.5ZM209.248,70V17.5H158.212V70Zm-51.279,0V17.5H106.2V70Zm-52.008,0V17.5H54.681V70Z" transform="translate(5 33)" fill="#e2e2e2"/>
+                      <g id="Total_Views_Graph-2" data-name="Total Views Graph" transform="translate(0 87)">
+                        <path id="Filled.Graph-3" data-name="Filled.Graph" d="M330,490.153V354.422s29.813,134.945,54.3,140.023c27.325-1.144,27.549-70.055,51.56-107.78,20.1-29.621,35.44,51.18,52.255,53.151s28.419-55.378,51.358-59.362c29.721,6,53.57,82.62,55.421,86.74V523.21l-264.9.1Z" transform="translate(-324.995 -350)" opacity="0.4" fill="url(#linear-gradient-5)"/>
+                        <path id="Line.Graph-3" data-name="Line.Graph" d="M312.953,279.164S343.61,416.6,367.57,417.881s32.153-80.975,51.391-108.707,35.927,52.9,51.988,53.91,31.44-60.576,51.175-58.9,42.3,48.262,54.772,85.012" transform="translate(-306.994 -274)" fill="none" stroke="#03a9f4" stroke-width="2"/>
+                        <g id="Jun.Ellipse-3" data-name="Jun.Ellipse" transform="translate(264.717 111)" fill="#fff" stroke="#03a9f4" stroke-width="2">
+                          <circle cx="4.995" cy="4.995" r="4.995" stroke="none"/>
+                          <circle cx="4.995" cy="4.995" r="3.995" fill="none"/>
+                        </g>
+                        <g id="May.Ellipse-3" data-name="May.Ellipse" transform="translate(209.294 25)" fill="#fff" stroke="#03a9f4" stroke-width="2">
+                          <circle cx="4.995" cy="4.995" r="4.995" stroke="none"/>
+                          <circle cx="4.995" cy="4.995" r="3.995" fill="none"/>
+                        </g>
+                        <g id="Apr.Ellipse-3" data-name="Apr.Ellipse" transform="translate(158.004 84)" fill="#fff" stroke="#03a9f4" stroke-width="2">
+                          <circle cx="4.995" cy="4.995" r="4.995" stroke="none"/>
+                          <circle cx="4.995" cy="4.995" r="3.995" fill="none"/>
+                        </g>
+                        <g id="Mar.Ellipse-3" data-name="Mar.Ellipse" transform="translate(106.227 30)" fill="#fff" stroke="#03a9f4" stroke-width="2">
+                          <circle cx="4.995" cy="4.995" r="4.995" stroke="none"/>
+                          <circle cx="4.995" cy="4.995" r="3.995" fill="none"/>
+                        </g>
+                        <g id="Feb.Ellipse-3" data-name="Feb.Ellipse" transform="translate(54.451 139)" fill="#fff" stroke="#03a9f4" stroke-width="2">
+                          <circle cx="4.995" cy="4.995" r="4.995" stroke="none"/>
+                          <circle cx="4.995" cy="4.995" r="3.995" fill="none"/>
+                        </g>
+                        <g id="Jan.Ellipse-3" data-name="Jan.Ellipse" fill="#fff" stroke="#03a9f4" stroke-width="2">
+                          <circle cx="4.995" cy="4.995" r="4.995" stroke="none"/>
+                          <circle cx="4.995" cy="4.995" r="3.995" fill="none"/>
+                        </g>
+                      </g>
+                      <g id="Products_Sold_Graph-2" data-name="Products Sold Graph" transform="translate(0 33)">
+                        <path id="Filled.Graph-4" data-name="Filled.Graph" d="M330,490.153V401.268s30.546,58.3,54.952,61.963c26.391-3.549,30.96-28.5,51.517-61.963,17.566-27.892,35.085-35.547,51.9-33.576s31.388,32.1,51.25,35.189c35.038-12.44,52.915-75.335,55.282-101.6V523.21l-264.9.1Z" transform="translate(-324.998 -296)" opacity="0.4" fill="url(#linear-gradient-6)"/>
+                        <path id="Line.Graph-4" data-name="Line.Graph" d="M313,346.5s30.262,59.691,54.189,60.976,33.117-30.8,51.444-60.9,35.749-35.23,51.789-34.218,31.633,32.548,51.341,34.221S573.354,292.07,576.9,245.24" transform="translate(-306.998 -241)" fill="none" stroke="#ce61d2" stroke-width="2"/>
+                        <g id="Jun.Ellipse-4" data-name="Jun.Ellipse" transform="translate(264.176)" fill="#fff" stroke="#ce61d2" stroke-width="2">
+                          <circle cx="4.995" cy="4.995" r="4.995" stroke="none"/>
+                          <circle cx="4.995" cy="4.995" r="3.995" fill="none"/>
+                        </g>
+                        <g id="May.Ellipse-4" data-name="May.Ellipse" transform="translate(208.866 101)" fill="#fff" stroke="#ce61d2" stroke-width="2">
+                          <circle cx="4.995" cy="4.995" r="4.995" stroke="none"/>
+                          <circle cx="4.995" cy="4.995" r="3.995" fill="none"/>
+                        </g>
+                        <g id="Apr.Ellipse-4" data-name="Apr.Ellipse" transform="translate(157.681 67)" fill="#fff" stroke="#ce61d2" stroke-width="2">
+                          <circle cx="4.995" cy="4.995" r="4.995" stroke="none"/>
+                          <circle cx="4.995" cy="4.995" r="3.995" fill="none"/>
+                        </g>
+                        <g id="Mar.Ellipse-4" data-name="Mar.Ellipse" transform="translate(106.01 101)" fill="#fff" stroke="#ce61d2" stroke-width="2">
+                          <circle cx="4.995" cy="4.995" r="4.995" stroke="none"/>
+                          <circle cx="4.995" cy="4.995" r="3.995" fill="none"/>
+                        </g>
+                        <g id="Feb.Ellipse-4" data-name="Feb.Ellipse" transform="translate(54.582 162)" fill="#fff" stroke="#ce61d2" stroke-width="2">
+                          <circle cx="4.995" cy="4.995" r="4.995" stroke="none"/>
+                          <circle cx="4.995" cy="4.995" r="3.995" fill="none"/>
+                        </g>
+                        <g id="Jan.Ellipse-4" data-name="Jan.Ellipse" transform="translate(0 100)" fill="#fff" stroke="#ce61d2" stroke-width="2">
+                          <circle cx="4.995" cy="4.995" r="4.995" stroke="none"/>
+                          <circle cx="4.995" cy="4.995" r="3.995" fill="none"/>
+                        </g>
+                      </g>
+                    </g>
+                    <g id="Months-2" data-name="Months" transform="translate(395 698)">
+                      <text id="Jan-2" data-name="Jan" transform="translate(0 11)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">Jan</tspan></text>
+                      <text id="Feb-2" data-name="Feb" transform="translate(49.594 11)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">Feb</tspan></text>
+                      <text id="Mar-2" data-name="Mar" transform="translate(97.732 11)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">Mar</tspan></text>
+                      <text id="Apr-3" data-name="Apr" transform="translate(147.603 11)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">Apr</tspan></text>
+                      <text id="May-3" data-name="May" transform="translate(194.003 11)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">May</tspan></text>
+                      <text id="Jun-3" data-name="Jun" transform="translate(247.901 11)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">Jun</tspan></text>
+                    </g>
+                    <g id="Y-Axis-Info-2" data-name="Y-Axis-Info" transform="translate(367 469.382)">
+                      <text id="_4" data-name="4" transform="translate(13 221.618)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-6.6" y="0">4</tspan></text>
+                      <text id="_8" data-name="8" transform="translate(13 169.447)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-6.6" y="0">8</tspan></text>
+                      <text id="_12-2" data-name="12" transform="translate(13 117.18)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-13.2" y="0">12</tspan></text>
+                      <text id="_16" data-name="16" transform="translate(13 63.171)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-13.189" y="0">16</tspan></text>
+                      <text id="_20-2" data-name="20" transform="translate(13 11)" fill="#707070" font-size="11" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-13.2" y="0">20</tspan></text>
+                    </g>
+                  </g>
+                  <g id="Group_497-3" data-name="Group 497" transform="translate(-9.5 117)">
+                    <g id="Total_views_label-3" data-name="Total views label" transform="translate(479.107 718)">
+                      <text id="MOE-4" data-name="MOE" transform="translate(28 14)" fill="#707070" font-size="13" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="0" y="0">MOE</tspan></text>
+                      <rect id="Label-5" data-name="Label" width="18" height="8" rx="4" transform="translate(0 5)" fill="#03a9f4"/>
+                    </g>
+                    <g id="Products_sold_label-3" data-name="Products sold label" transform="translate(375.5 718)">
+                      <text id="AGRI-4" data-name="AGRI" transform="translate(28 14)" fill="#707070" font-size="13" font-family="NunitoSans-SemiBold, Nunito Sans" font-weight="600"><tspan x="0" y="0">AGRI</tspan></text>
+                      <rect id="Label-6" data-name="Label" width="18" height="8" rx="4" transform="translate(0 5)" fill="#ce61d2"/>
+                    </g>
+                  </g>
+                  <text id="Project_Count" data-name="Project Count" transform="translate(283 681) rotate(-90)" fill="#707070" font-size="12" font-family="NunitoSans-Regular, Nunito Sans"><tspan x="-36.366" y="0">Project Count</tspan></text>
+                </g>
+                <g id="Group_620" data-name="Group 620">
+                  <text id="Project_Count_Change_Over_Time" data-name="Project Count Change Over Time" transform="translate(273 528)" font-size="17" font-family="NunitoSans-SemiBold, Nunito Sans" font-weight="600"><tspan x="0" y="0">Project Count Change Over Time</tspan></text>
+                  <g id="Symbol_64_18" data-name="Symbol 64 – 18" transform="translate(87 434)">
+                    <rect id="rectangle-13" data-name="rectangle" width="22" height="22" transform="translate(485 78)" fill="none"/>
+                    <path id="path-15" data-name="path" d="M17.833,6.283,16.55,5l-5.133,5.133L6.283,5,5,6.283l5.133,5.133L5,16.55l1.283,1.283L11.417,12.7l5.133,5.133,1.283-1.283L12.7,11.417Z" transform="translate(484.583 77.583)" fill="#707070" fill-rule="evenodd" opacity="0.54"/>
+                  </g>
+                </g>
+                <g id="Normal_Flat_Light-13" data-name="Normal Flat Light" transform="translate(527.25 865)">
+                  <g id="ui_raised_btn_light-13" data-name="ui_raised_btn_light" transform="translate(-0.25)">
+                    <g transform="matrix(1, 0, 0, 1, -271, -751)" filter="url(#button-13)">
+                      <path id="button-26" data-name="button" d="M1.426,0H65.618a1.451,1.451,0,0,1,1.426,1.475v23.6a1.451,1.451,0,0,1-1.426,1.475H1.426A1.451,1.451,0,0,1,0,25.078V1.475A1.451,1.451,0,0,1,1.426,0Z" transform="translate(271 751)" fill="#fff" stroke="#036" stroke-width="1"/>
+                    </g>
+                  </g>
+                  <text id="teal_Normal-13" data-name="teal_Normal" transform="translate(33.75 18)" fill="#036" font-size="14" font-family="Roboto-Medium, Roboto" font-weight="500"><tspan x="-21.632" y="0">Details</tspan></text>
+                </g>
+              </g>
+            </g>
+          </g>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>
