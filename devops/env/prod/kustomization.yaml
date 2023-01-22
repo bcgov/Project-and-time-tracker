@@ -18,8 +18,8 @@ kind: Kustomization
 namespace: ed57f0-prod
 bases:
   - ../../base/db
-  - ../../base/api
-  - ../../base/web
+  - ../../base/prod/api
+  - ../../base/prod/web
   - ../../base/policy
   - ../../base/backup
 resources:

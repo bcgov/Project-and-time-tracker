@@ -18,8 +18,8 @@ kind: Kustomization
 namespace: ed57f0-test
 bases:
   - ../../base/db
-  - ../../base/api
-  - ../../base/web
+  - ../../base/test/api
+  - ../../base/test/web
   - ../../base/policy
   - ../../base/backup
 resources:
@@ -49,7 +49,7 @@ secretGenerator:
     type: Opaque
     env: db-secret.properties
 images:
-  - name: image-registry.openshift-image-registry.svc:5000/ed57f0-tools/timemachine-api
+  - name: image-registry.openshift-image-registry.svc:5000/ed57f0-tools/timemachine-api-test
     newTag: "latest"
   - name: image-registry.openshift-image-registry.svc:5000/bcgov/patroni-postgres
     newTag: "12.4-latest"
