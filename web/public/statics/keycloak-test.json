@@ -1,6 +1,6 @@
 {
   "confidential-port": 0,
-  "auth-server-url": "https://loginproxy.gov.bc.ca/auth",
+  "auth-server-url": "https://test.loginproxy.gov.bc.ca/auth",
   "realm": "standard",
   "ssl-required": "none",
   "public-client": true,
