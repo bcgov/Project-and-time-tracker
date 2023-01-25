@@ -53,7 +53,7 @@ export const validateToken = async (
         //console.log(authorizationData);
         // const permissions = authorizationData.resource_access[keycloakConfig.resourceName].roles;
         const authData = <IAuth>{
-          fullName: data.name,
+          fullName: data.given_name +' '+ data.family_name,
           referenceId: data.sub,
           role: [],
           // permissions: permissions

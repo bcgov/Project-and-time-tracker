@@ -49,7 +49,7 @@ secretGenerator:
     type: Opaque
     env: db-secret.properties
 images:
-  - name: image-registry.openshift-image-registry.svc:5000/ed57f0-tools/timemachine-api
+  - name: image-registry.openshift-image-registry.svc:5000/ed57f0-tools/timemachine-api-prod
     newTag: "latest"
   - name: image-registry.openshift-image-registry.svc:5000/bcgov/patroni-postgres
     newTag: "12.4-latest"
