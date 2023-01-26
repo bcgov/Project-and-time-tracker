@@ -37,7 +37,7 @@ spec:
     spec:
       containers:
         - name: timemachine-web
-          image: image-registry.openshift-image-registry.svc:5000/ed57f0-tools/timemachine-web:latest
+          image: image-registry.openshift-image-registry.svc:5000/ed57f0-tools/timemachine-web-test:latest
           imagePullPolicy: Always
           startupProbe:
             httpGet:

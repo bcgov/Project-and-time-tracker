@@ -33,7 +33,7 @@ Kustomize will `build` the manifests from the templates and configuration. This 
 Kustomize is built into `kubectl`, if you have it installed you can use it to process the templates and build the manifests:
 
 ```console
-kubestl kustomize devops/env/dev | oc apply -f -`
+kubectl kustomize devops/env/dev | oc apply -f -`
 ```
 
 ### kustomize
@@ -43,6 +43,9 @@ Alternatively, install `kustomize` and use it to build the manifests to be appli
 ```console
 kustomize build devops/env/dev | oc apply -f -`
 ```
+
+##
+backup.conf file needs linux (LF) line endings otherwise the backup process will fail with windows lines endings (CRLF)
 
 **Pro Tip 🤓**
 

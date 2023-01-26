@@ -66,7 +66,7 @@ export const retrieveAllTimesheets = async () => {
     .leftJoinAndSelect('u.contact', 'c')
     .innerJoin('t.timesheetEntries', 'te')
     .innerJoin('t.projectRfx', 'pr')
-    .orderBy('t.dateModified', 'DESC')
+    .orderBy('t.startDate', 'DESC')
     .getMany();
 };
 export const retrieveMyTimesheets = async (userId) => {

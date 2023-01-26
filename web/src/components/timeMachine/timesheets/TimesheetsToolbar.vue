@@ -7,7 +7,7 @@
       <v-flex md6>
         <v-radio-group v-model="selectedFilter" row>
           <v-radio label="My Timesheets" value="Mine"></v-radio>
-          <v-radio label="Everyone's Timesheets" value="All"></v-radio>
+          <v-radio label="Everyone's Timesheets" value="All" v-if="isAdmin"></v-radio>
         </v-radio-group>
       </v-flex>
     </v-flex>
@@ -23,6 +23,7 @@
 <script>
 import TimesheetsCalendar from './TimesheetsCalendar.vue';
 import AddTimeRecord from './AddTimeRecord.vue';
+import { getRoles } from '../../../modules/security/init';
 
 export default {
   data() {
@@ -30,6 +31,7 @@ export default {
       selectedFilter: 'Mine',
       startDateMain: this.$store.state.timesheetsWeek.startDate,
       endDateMain: this.$store.state.timesheetsWeek.endDate,
+      isAdmin: false,
     };
   },
   components: {
@@ -42,6 +44,9 @@ export default {
       type: Function,
       default: () => {},
     },
+  },
+  created() {
+    this.setAdmin();
   },
   methods: {
     closeTimesheet(needRefresh) {
@@ -64,6 +69,9 @@ export default {
       sessionStorage.setItem('selectedStartDate', this.startDateMain);
       sessionStorage.setItem('selectedEndDate', this.endDateMain);
       this.$refs.AddTimeRecord.open();
+    },
+    async setAdmin() {
+      this.isAdmin = getRoles().includes('PSB_Admin');// this.$store.state.activeRoles && this.$store.state.activeRoles.role.includes('PSB_Admin');
     },
   },
 };

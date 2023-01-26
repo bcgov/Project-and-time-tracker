@@ -8,3 +8,6 @@ sql/
 *-secrets.*
 dev_db/
 backup/*.sql
+api/src/app/config/env-config.ts
+.env
+dev-docker-compose.yaml

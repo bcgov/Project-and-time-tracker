@@ -22,16 +22,6 @@
           <v-list-tile avatar>
             <v-list-tile-content>
               <v-list-tile-title>
-                <a v-bind:href="AUTH_URL" target="_blank">Keycloak - IAM</a>
-              </v-list-tile-title>
-              <v-list-tile-sub-title>Login to Keycloak - to manage users</v-list-tile-sub-title>
-            </v-list-tile-content>
-          </v-list-tile>
-
-
-          <v-list-tile avatar>
-            <v-list-tile-content>
-              <v-list-tile-title>
                 <router-link to="admin/hourly-rates">Set hourly rates</router-link>
               </v-list-tile-title>
               <v-list-tile-sub-title>Set hourly rates for users</v-list-tile-sub-title>
@@ -92,14 +82,11 @@
 
 <script>
 import Material from 'vuetify/es5/util/colors';
-// web/src/modules/security/init.js
-import { getAuthURL } from '../../../modules/security/init';
 
 export default {
   data: () => ({
     color: Material,
     selectedTab: 'tab-1',
-    AUTH_URL: getAuthURL(),
   }),
   beforeMount() {
     // this.$store.state.collapseNavigationBar = true;

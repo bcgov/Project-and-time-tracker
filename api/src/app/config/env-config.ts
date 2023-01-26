@@ -12,11 +12,9 @@ export  const ENV_CONFIG =  {
             }
         },
         keyCloak: {
-            realm: 'Time_Tracker_dev',
-            resource: 'timeMachineApp',
-            authServerUrl: 'https://iam.aot-technologies.com/auth',
-            adminUserName: 'dev_admin',
-            adminPassword: 'aot123'
+            realm: 'standard',
+            resource: 'time-machine-4338',
+            authServerUrl: 'https://dev.loginproxy.gov.bc.ca/auth'
         }
     },
 };

@@ -110,7 +110,7 @@ export default {
       if (this.$store.state.collapseNavigationBar) this.mini = this.$store.state.collapseNavigationBar;
     },
     shouldDisplayMenuItem(item) {
-      return shouldDisplayItem(item, this.$router, this.$store.getters.SECURITY_AUTH);
+      return shouldDisplayItem(item, this.$router, this.$store.getters.SECURITY_AUTH, getRoles());
     },
     async fetchInitialData() {
       this.$store.dispatch('fetchintakeRiskQuestions');

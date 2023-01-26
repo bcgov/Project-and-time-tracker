@@ -23,6 +23,7 @@ import {
 } from '../../../services/client/timesheetEntry.service';
 import { IAuth } from '../../../models/interfaces/i-auth';
 import { authorize } from '../../../services/common/authorize.service';
+import { Role } from '../../roles';
 import e = require('express');
 
 export const getTimesheets = async (ctx: Koa.Context) => {
@@ -81,8 +82,12 @@ export const timeEntryByUser = async (ctx: Koa.Context) => {
 
 export const getAllTimesheets = async (ctx: Koa.Context) => {
   try {
-    // TODO - If user is NOT admin, return only the sheets by user id?
-    ctx.body = await retrieveAllTimesheets();
+    const auth = ctx.state.auth as IAuth;
+    if(auth.role.includes(Role.PSB_Admin)){
+      ctx.body = await retrieveAllTimesheets();
+    }else{
+      ctx.body = await retrieveMyTimesheets(auth.userId)//await retrieveAllTimesheets();
+    }
   } catch (err) {
     ctx.throw(err.message);
   }

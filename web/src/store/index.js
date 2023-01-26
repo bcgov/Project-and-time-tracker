@@ -27,7 +27,7 @@ import RFxDto from "@/domain/models/RFx.dto";
 // add /api. This assumes OCP is using a path based route. This way
 // it does not need to be changed for dev/test/prod.
 const API_URI = process.env.NODE_ENV === 'development'
-? (process.env.VUE_APP_API_URI || "http://localhost:3000")
+? (process.env.VUE_APP_API_URI || "http://localhost:3000/api")
 : `${window.location.origin}/api`;
 
 console.log("API URL:", { API_URI });
@@ -142,7 +142,7 @@ const store = new Vuex.Store({
     },
     // Verify data
     verifyTokenServer(state, data) {
-      // console.log('verifyTokenServer called', {state, data})
+      console.log('verifyTokenServer called', {state, data})
       state.verifyTokenServer = data;
     },
     // Master data
@@ -525,14 +525,18 @@ const store = new Vuex.Store({
     },
     // Verification
     async verifyTokenServer(ctx) {
+      /* console.log('verifyTokenServer()');
+      console.log(API_URI); */
       const api = await $http
         .get(`${API_URI}/auth/verify`)
         .then(res => {
           const content = res.data;
+          // console.log(res);
           ctx.commit("verifyTokenServer", content);
           return Promise.resolve(content);
         })
         .catch(err => Promise.reject(err.response));
+      // console.log(api);
       return Promise.resolve(api);
     },
     // Master data
