@@ -27,7 +27,7 @@ const shouldDisplayItem = (item, router, auth, userRoles) => {
 
     let isAuthorized = false;
     for (let idx = 0; idx < itemRoute.meta.roles.length; idx++) {
-      if (userRoles.includes(itemRoute.meta.roles[idx])) {
+      if (userRoles && userRoles.includes(itemRoute.meta.roles[idx])) {
         isAuthorized = true;
         break;
       }

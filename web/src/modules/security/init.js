@@ -12,9 +12,6 @@ const pageBasedOnRole = role => {
   let page = "Unauthorized";
   console.log("Page based on role");
   switch (role) {
-    case "User":
-      page = "timemachineIntakeIntroduction";
-      break;
     case "PSB_User":
       page = "timeMachineProjects";
       break;
@@ -33,7 +30,7 @@ const pageBasedOnRole = role => {
   return page;
 };
 
-export default (next, roles, isLoggedIn = false) => {
+export default (next, pageRolesRequired, isLoggedIn = false) => {
   keycloakAuth
     .init({ onLoad: "login-required", responseMode: "query", checkLoginIframe: false, pkceMethod: 'S256' })
     .then(() => {
@@ -41,19 +38,26 @@ export default (next, roles, isLoggedIn = false) => {
         `${keycloakAuth.authServerUrl}/realms/${keycloakAuth.realm}` +
         `/protocol/openid-connect/logout?redirect_uri=${document.baseURI}`;
       store.dispatch("authLogin", keycloakAuth);
-      if (roles) {
-        /* console.log("ROLES:");
-        console.log(roles); */
+      if (pageRolesRequired) {
+        /*console.log("Roles Required For page:");//Only needs one of them
+        console.log(pageRolesRequired);*/
         let hasAccess = false;
         let keycloakRole;
+        userRoles = keycloakAuth.tokenParsed.client_roles;
+        
+        if(userRoles && userRoles.length>0){
+          if(userRoles.includes("PSB_Admin")){
+            keycloakRole = "PSB_Admin";
+          }else if (userRoles.includes("Manage_Finances")){
+            keycloakRole = "Manage_Finances";
+          }else if (userRoles.includes("PSB_User") || userRoles.includes("PSB_Intake_User")){
+            keycloakRole = "PSB_User";
+          }
+        }
 
-        // console.log(keycloakAuth.tokenParsed.client_roles)
-        roles.forEach(role => {
-          if (keycloakAuth.tokenParsed.client_roles.includes(role)) {
-            // console.log('Has Role:'+role);
+        pageRolesRequired.forEach(role => {
+          if (keycloakAuth.tokenParsed.client_roles && keycloakAuth.tokenParsed.client_roles.includes(role)) {
             hasAccess = true;
-            keycloakRole = role;
-            userRoles.push(role);
           }
         });
 

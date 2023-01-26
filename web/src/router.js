@@ -67,7 +67,7 @@ const routes = [
     component: TimeMachineFinanceExport,
     meta: { requiresAuth: true, roles: ['Manage_Finances'] },
     // Uncomment this for adding finance role to admin
-    // meta: { requiresAuth: true, roles: ["PSB_Admin", "manage_finances"] }
+    // meta: { requiresAuth: true, roles: ['PSB_Admin', 'Manage_Finances'] }
   },
   {
     exact: true,
@@ -219,6 +219,7 @@ router.beforeEach((to, from, next) => {
     security.logout();
   }
 
+  //Checking if a page has required roles and if the user has said roles
   if (to.meta.requiresAuth) {
     const { auth } = store.state.security;
     if (!auth.authenticated) {
