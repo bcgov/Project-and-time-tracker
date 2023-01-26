@@ -1,10 +1,8 @@
 {
-    "realm": "b9xip88d",
-    "auth-server-url": "https://dev.oidc.gov.bc.ca/auth",
-    "ssl-required": "none",
-    "resource": "timeMachineApp",
-    "clientId": "timeMachineApp",
-    "public-client": true,
-    "confidential-port": 0,
-    "ignore-oauth-query-parameter":true
-  }
+  "confidential-port": 0,
+  "auth-server-url": "https://dev.loginproxy.gov.bc.ca/auth",
+  "realm": "standard",
+  "ssl-required": "none",
+  "public-client": true,
+  "resource": "time-machine-4338"
+}

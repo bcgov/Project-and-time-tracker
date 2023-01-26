@@ -1,16 +1,15 @@
 <template>
   <v-layout class="timesheets-toolbar" d-flex style="width: 100%;">
     <v-flex d-flex justify-center align-start style="width: 100%;">
-        <v-flex md6>
-      <timesheets-calendar ref="WeekSelection"></timesheets-calendar>
-       </v-flex>
+      <v-flex md6>
+        <timesheets-calendar ref="WeekSelection"></timesheets-calendar>
+      </v-flex>
       <v-flex md6>
         <v-radio-group v-model="selectedFilter" row>
           <v-radio label="My Timesheets" value="Mine"></v-radio>
-          <v-radio label="Everyone's Timesheets" value="All"></v-radio>
+          <v-radio label="Everyone's Timesheets" value="All" v-if="isAdmin"></v-radio>
         </v-radio-group>
       </v-flex>
-
     </v-flex>
     <v-flex d-flex justify-end>
       <add-time-record ref="AddTimeRecord" @close-timesheet="closeTimesheet"></add-time-record>
@@ -24,6 +23,7 @@
 <script>
 import TimesheetsCalendar from './TimesheetsCalendar.vue';
 import AddTimeRecord from './AddTimeRecord.vue';
+import { getRoles } from '../../../modules/security/init';
 
 export default {
   data() {
@@ -31,6 +31,7 @@ export default {
       selectedFilter: 'Mine',
       startDateMain: this.$store.state.timesheetsWeek.startDate,
       endDateMain: this.$store.state.timesheetsWeek.endDate,
+      isAdmin: false,
     };
   },
   components: {
@@ -44,9 +45,11 @@ export default {
       default: () => {},
     },
   },
+  created() {
+    this.setAdmin();
+  },
   methods: {
     closeTimesheet(needRefresh) {
-      debugger;
       if (needRefresh) {
         sessionStorage.setItem('selectedStartDate', this.$store.state.timesheetsWeek.startDate);
         sessionStorage.setItem('selectedEndDate', this.$store.state.timesheetsWeek.endDate);
@@ -66,6 +69,9 @@ export default {
       sessionStorage.setItem('selectedStartDate', this.startDateMain);
       sessionStorage.setItem('selectedEndDate', this.endDateMain);
       this.$refs.AddTimeRecord.open();
+    },
+    async setAdmin() {
+      this.isAdmin = getRoles().includes('PSB_Admin');// this.$store.state.activeRoles && this.$store.state.activeRoles.role.includes('PSB_Admin');
     },
   },
 };
@@ -97,9 +103,8 @@ export default {
   padding-top: 0 !important;
   padding-bottom: 0 !important;
 }
-.date-picker-container
-{
-   margin-top: 0px ;
+.date-picker-container {
+  margin-top: 0px;
 }
 
 .week-switcher-cal {
@@ -108,7 +113,7 @@ export default {
 }
 
 .add-timesheet-button {
-      margin-top: 12px;
+  margin-top: 12px;
   width: 200px;
   flex: 0 0 200px !important;
 }

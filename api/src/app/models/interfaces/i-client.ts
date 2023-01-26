@@ -18,4 +18,5 @@ export interface IClient {
   postalCode: string;
   isNonMinistry: boolean;
   nonMinistryName: string;
+  billingCount: number;
 }

@@ -1,6 +1,8 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import Dashboard from './components/dashboard/Dashboard.vue';
+import security from '@/modules/security';
+import store from '@/store';
+/* import Dashboard from './components/dashboard/Dashboard.vue'; */
 import Authorize from './components/login/Authorize.vue';
 import Project from './components/timeMachine/projects/Project.vue';
 import TimeMachineIntakeForm from './components/timeMachine/projectIntake/IntakeForm.vue';
@@ -10,12 +12,15 @@ import TimeMachineIntakeRequests from './components/timeMachine/projectIntake/In
 import TimeMachineIntakeSuccess from './components/timeMachine/projectIntake/IntakeSuccess.vue';
 import TimeMachineProjects from './components/timeMachine/projects/Projects.vue';
 import TimeMachineTimesheets from './components/timeMachine/timesheets/Timesheets.vue';
-import AdminMain from './components/timeMachine/admin/AdminMain.vue'
-import AdminMinistries from './components/timeMachine/admin/AdminMinistries.vue'
-import AdminHourlyRates from './components/timeMachine/admin/HourlyRates.vue'
+import AdminMain from './components/timeMachine/admin/AdminMain.vue';
+import AdminMinistries from './components/timeMachine/admin/AdminMinistries.vue';
+import AdminFinanceCodes from './components/timeMachine/admin/AdminFinanceCodes.vue';
+import AdminHourlyRates from './components/timeMachine/admin/HourlyRates.vue';
+import AdminRevenueRates from './components/timeMachine/admin/RevenueRates.vue';
+import AdminRemoveMOU from './components/timeMachine/admin/RemoveMOU.vue';
+import AdminRfxType from './components/timeMachine/admin/AdminRfxType.vue';
+import AdminRfxPhase from './components/timeMachine/admin/AdminRfxPhase.vue';
 import Unauthorized from './components/error/Unauthorized.vue';
-import security from '@/modules/security';
-import store from '@/store';
 
 Vue.use(Router);
 
@@ -36,7 +41,10 @@ const routes = [
     path: '/authorize',
     name: 'authorize',
     component: Authorize,
-    meta: { requiresAuth: true, roles: ['PSB_User', 'PSB_Admin', 'User', 'PSB_Intake_User'] },
+    meta: {
+      requiresAuth: true,
+      roles: ['PSB_User', 'PSB_Admin', 'User', 'PSB_Intake_User', 'Manage_Finances'],
+    },
   },
   // {
   //   exact: true,
@@ -55,9 +63,11 @@ const routes = [
   {
     exact: true,
     path: '/finance',
-    name: 'timemachineFinance',
+    name: 'timeMachineFinance',
     component: TimeMachineFinanceExport,
-    meta: { requiresAuth: true, roles: ['User', 'PSB_Admin', 'PSB_User', 'PSB_Intake_User'] },
+    meta: { requiresAuth: true, roles: ['Manage_Finances'] },
+    // Uncomment this for adding finance role to admin
+    // meta: { requiresAuth: true, roles: ['PSB_Admin', 'Manage_Finances'] }
   },
   {
     exact: true,
@@ -96,7 +106,7 @@ const routes = [
   {
     exact: true,
     path: '/archived',
-    name: 'timeMachineProjects',
+    name: 'archived',
     component: TimeMachineProjects,
     meta: { requiresAuth: true, roles: ['PSB_User', 'PSB_Admin', 'PSB_Intake_User'] },
   },
@@ -130,7 +140,7 @@ const routes = [
     path: '/export',
     name: 'export',
     component: null,
-    meta: { requiresAuth: true, roles: ['PSB_Intake_User'] },
+    meta: { requiresAuth: true, roles: ['PSB_User', 'PSB_Admin', 'PSB_Intake_User'] },
   },
   {
     exact: true,
@@ -146,14 +156,48 @@ const routes = [
     component: AdminMinistries,
     meta: { requiresAuth: true, roles: ['PSB_Admin'] },
   },
-   {
+  {
+    exact: true,
+    path: '/admin/financecodes',
+    name: 'admin-finance-codes',
+    component: AdminFinanceCodes,
+    meta: { requiresAuth: true, roles: ['PSB_Admin'] },
+  },
+  {
     exact: true,
     path: '/admin/hourly-rates',
     name: 'admin-hourly-rates',
     component: AdminHourlyRates,
     meta: { requiresAuth: true, roles: ['PSB_Admin'] },
   },
-
+  {
+    exact: true,
+    path: '/admin/revenue-rates',
+    name: 'admin-revenue-rates',
+    component: AdminRevenueRates,
+    meta: { requiresAuth: true, roles: ['PSB_Admin'] },
+  },
+  {
+    exact: true,
+    path: '/admin/remove-mou',
+    name: 'admin-remove-mou',
+    component: AdminRemoveMOU,
+    meta: { requiresAuth: true, roles: ['PSB_Admin'] },
+  },
+  {
+    exact: true,
+    path: '/admin/rfx-phase',
+    name: 'admin-rfx-phase',
+    component: AdminRfxPhase,
+    meta: { requiresAuth: true, roles: ['PSB_Admin'] },
+  },
+  {
+    exact: true,
+    path: '/admin/rfx-type',
+    name: 'admin-rfx-type',
+    component: AdminRfxType,
+    meta: { requiresAuth: true, roles: ['PSB_Admin'] },
+  },
   // Error routes
   {
     path: '/unauthorized',
@@ -175,10 +219,11 @@ router.beforeEach((to, from, next) => {
     security.logout();
   }
 
+  //Checking if a page has required roles and if the user has said roles
   if (to.meta.requiresAuth) {
     const { auth } = store.state.security;
     if (!auth.authenticated) {
-      const isAuthPage = (to.name === 'authorize');
+      const isAuthPage = to.name === 'authorize';
       security.init(next, to.meta.roles, isAuthPage);
     } else if (to.meta.roles) {
       if (security.roles(to.meta.roles)) {

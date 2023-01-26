@@ -1,21 +1,38 @@
 .v-toolbar--fixed
     z-index:200;
 .v-dialog.add-time-record
-    max-width: 1024px;
-    border-radius: 9px;
-    border: 1px solid gray;
-    margin-top: 56px !important; 
+    max-width: 1200px;
+    border-radius: 9px;   
+    margin-top: 0px !important;
+    margin-bottom: 0px !important;
+    background-color:white;
+    .week-change-control
+        .layout.column
+            width: 100%;
+            margin-top: 15px;
+            margin-left: -38px; 
     .v-input--radio-group--row .v-radio
         min-width: auto;
         label
             padding-left:3px;
+    .v-input--radio-group--row .v-radio:last-child
+        margin-right:0px;
+    .batch-entry-container
+        overflow: auto;
     .batch-entry
+        max-height:420px;       
+        thead 
+            border-color:transparent;
+            border:none;
         .v-input__slot
             padding: 0 0px;
         tbody tr:first-child
             height: 82px;
-        tbody tr:not(:first-child)
+        tbody tr, thead tr:first-child
             border-top:none;
+            border-bottom: none !important;
+            td:first-child, th:first-child
+                padding-left:0px;
     .v-sheet
         width:100%;
         height: initial;
@@ -26,15 +43,17 @@
         border-color: var(--v-primary-base) !important;
         border: 1px solid !important;
         color: var(--v-primary-base) !important;
-        margin-left: .5vw
+        margin-left: 0vw;    
         margin-right: .5vw
-    background-color: white !important;
+        background-color: white !important;
     .v-window__container
         padding-left: 47px;
         padding-right: 20px;  
     .v-card
-        .card-contents
-            height: 676px;
+        height:100%;
+        .card-contents           
+            margin-top: 20px;
+            min-height: 681px;
             padding: 0px 0px !important;
             .v-window
                 background-color:white;
@@ -54,6 +73,7 @@
             .v-tabs__container
                 height : 35px
                 margin: 20px;
+                margin-left: 44px;
                 .v-tabs__item--active
                     position: static
                     background-color: #57789A;
@@ -79,12 +99,14 @@
         .cardheadlabel1
             .currentuser
                 padding-top: 25px;
+                margin-right: 8%;
             padding-left: 20%
-            .haederinfo
+            .headerinfo
                 padding-top: 8%;
                 color: grey;
+                width:100%;
                 text-align: right;
-                padding-right: 10px;
+                padding-right: 15px;
         .cardheadlabel2
             padding-left: 25%
             color: gray;
@@ -103,9 +125,11 @@
             .add-btns
                 text-align: right;
                 padding-top: 26px;
+                margin-left: 9px;
+                margin-right: -5px;
             .add-new-row
-                margin-right: .5vw
-                margin-left: .5vw           
+                margin-right: .5vw;
+                margin-left: .5vw;    
             .btn-discard,.btn-discard:focus:before,.btn-discard:before              
                 background: none!important;
                 border: none;
@@ -115,7 +139,7 @@
                 cursor: pointer;
                 box-shadow: none !important;
                 float: right;
-                margin-top: 26px;
+                margin-top: 42px;;
             
             .hours-err-msg
                 color: #d20e00;
@@ -131,6 +155,12 @@
             border-bottom: 1px solid #bbb;
             .time-log-card-hrs
                 font-weight: 600;
+    .mou-amount-warning
+        position:sticky !important;
+        top:0 !important;
+        z-index:1020 !important;
+        div
+            height: 40px !important;
 
 @media screen and (max-width: 567px)
     .add-time-record

@@ -81,4 +81,14 @@ export class Project {
 
   @ManyToOne(type => MOU)
   mou: MOU;
+
+  @Column({ type: 'int', nullable: true })
+  categoryId: ProjectCategory
+}
+
+export enum ProjectCategory {
+  CSA = 1,
+  ITQ = 2,
+  CostRecoverable = 3,
+  NonRecoverable = 4
 }

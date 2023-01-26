@@ -26,10 +26,7 @@
     </v-card-title>
     <v-divider></v-divider>
     <v-card-text class="pa-0">
-       <add-time-record
-                    ref="AddTimeRecord"
-                    @close-timesheet="closeTimesheet"
-                  ></add-time-record>
+      <add-time-record ref="AddTimeRecord" @close-timesheet="closeTimesheet"></add-time-record>
       <template>
         <v-data-table
           :headers="headers"
@@ -39,16 +36,28 @@
           item-key="id"
         >
           <template slot="items" slot-scope="props">
-            <td class="text-xs-left">{{ props.item.dateModified.toString().slice(0,10) }}</td>
+            <td class="text-xs-left">{{ props.item.dateModified.toString().slice(0, 10) }}</td>
             <td class="text-xs-left">{{ props.item.user.contact.fullName }}</td>
             <!-- <td class="text-xs-left">{{ props.item.projectName}} </td> -->
-            <td class="text-xs-left">{{ props.item.project.projectName }}</td>
+            <td>
+              <span class="clickable" @click="viewRequest(props.item.id)">{{
+                props.item.project.projectName
+              }}</span>
+            </td>
             <!-- <td class="text-xs-left">
               $$$
             </td>-->
             <!-- <td class="text-xs-left"> legal $$$ </td> -->
             <td class="text-xs-left">{{ props.item.hoursAccured }}</td>
             <td class="text-xs-center">
+              <v-tooltip top>
+                <template v-slot:activator="{ on }">
+                  <v-btn flat icon color="grey" v-on="on" @click="viewRequest(props.item.id)">
+                    <v-icon>visibility</v-icon>
+                  </v-btn>
+                </template>
+                <span>View Timesheet</span>
+              </v-tooltip>
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
                   <v-btn flat icon color="grey" @click="editTimesheet(props.item.id)" v-on="on">
@@ -60,7 +69,7 @@
 
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
-                  <v-btn flat icon color="grey" v-on="on" @click="deleteTimesheet(props.item.id)">
+                  <v-btn flat icon color="grey" v-on="on"  :disabled="props.item.documentNo ? true : false"  @click="deleteTimesheet(props.item.id)">
                     <v-icon>delete</v-icon>
                   </v-btn>
                 </template>
@@ -69,6 +78,22 @@
             </td>
           </template>
         </v-data-table>
+        <v-dialog
+          v-if="dialog"
+          v-model="dialog"
+          @input="closeDialog(false)"
+          width="800"
+          margin-top="91px"
+        >
+          <v-card>
+            <v-card-text>
+              <v-icon class="v-model-close-icon" color="blue darken-1" flat @click="dialog = false"
+                >close</v-icon
+              >
+              <timesheet-info-view :id="id"></timesheet-info-view>
+            </v-card-text>
+          </v-card>
+        </v-dialog>
       </template>
       <v-divider></v-divider>
     </v-card-text>
@@ -76,21 +101,21 @@
 </template>
 
 <script>
-import ProjectExpansionRow from './ProjectExpansionRow.vue';
 import TimesheetsToolbar from './TimesheetsToolbar.vue';
 import Spinner from '../common/Spinner.vue';
 import Snackbar from '../common/Snackbar.vue';
 import Confirm from '../common/Confirm.vue';
 import AddTimeRecord from './AddTimeRecord.vue';
+import TimesheetInfoView from './TimesheetInfoView.vue';
 
 export default {
   components: {
-    ProjectExpansionRow,
     TimesheetsToolbar,
     Spinner,
     AddTimeRecord,
     Snackbar,
     Confirm,
+    TimesheetInfoView,
   },
   props: {
     title: String,
@@ -153,7 +178,9 @@ export default {
         }
       }
       if (this.$store.state.timesheetsWeek.startDate) {
-        timeRecords = timeRecords.filter(item => item.startDate === this.$store.state.timesheetsWeek.startDate);
+        timeRecords = timeRecords.filter(
+          item => item.startDate === this.$store.state.timesheetsWeek.startDate,
+        );
       }
 
       if (this.search) {
@@ -163,6 +190,20 @@ export default {
     },
   },
   methods: {
+    closeDialog() {
+      this.dialog = false;
+    },
+    async viewRequest(timesheetId) {
+      const vm = this;
+      await vm.$store.dispatch('fetchTimesheetById', { id: timesheetId }).then((res) => {
+        vm.$store.state.timesheetById = res;
+        vm.startDateMain = vm.$store.state.timesheetsWeek.startDate;
+        vm.endDateMain = vm.$store.state.timesheetsWeek.endDate;
+        // const found = vm.timesheetsList.find(element => element.id === timesheetId);
+        vm.id = timesheetId;
+        vm.dialog = true;
+      });
+    },
     closeTimesheet(needRefresh) {
       if (needRefresh) {
         this.fetchData();
@@ -173,14 +214,20 @@ export default {
         this.$store.state.timesheetsWeek.endDate = this.endDateMain;
       }
     },
-    editTimesheet(value) {
+    async editTimesheet(value) {
       this.startDateMain = this.$store.state.timesheetsWeek.startDate;
       this.endDateMain = this.$store.state.timesheetsWeek.endDate;
       const found = this.timesheetsList.find(element => element.id === value);
       sessionStorage.setItem('selectedStartDate', found.startDate);
       sessionStorage.setItem('selectedEndDate', found.endDate);
-      this.$refs.AddTimeRecord.open(true); // specifies edit mode
-      this.$refs.AddTimeRecord.editTimeEntries(value);
+      await this.$refs.AddTimeRecord.open(true, found.user.id); // specifies edit mode
+      if (this.$refs.spinner) {
+        this.$refs.spinner.open();
+      }
+      await this.$refs.AddTimeRecord.editTimeEntries(value);
+      if (this.$refs.spinner) {
+        this.$refs.spinner.close();
+      }
     },
     getFullname(projectLeadId) {
       let projectLeadName = null;
@@ -235,6 +282,9 @@ export default {
         this.$refs.snackbar.displaySnackbar('success', 'Successfully deleted the record.');
         await this.fetchData();
       }
+    },
+    async fetchAllTimesheets() {
+      await this.$store.dispatch('fetchAllTimesheets');
     },
     async initalfetch() {
       await this.$store.dispatch('fetchAllProjects'); // Needed in AddTimeRecord

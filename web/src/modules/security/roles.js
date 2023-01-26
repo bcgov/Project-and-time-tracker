@@ -5,7 +5,7 @@ export default (roles) => {
   if (keycloakAuth.authenticated) {
     let hasAccess = false;
     roles.forEach((role) => {
-      if (keycloakAuth.hasRealmRole(role)) {
+      if (keycloakAuth.tokenParsed.client_roles.includes(role)) {
         hasAccess = true;
       }
     });

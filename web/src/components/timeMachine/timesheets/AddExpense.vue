@@ -22,7 +22,9 @@
               prepend-inner-icon="attach_money"
               oninput="validity.valid||(value='');"
               :value="item.expenseAmount | withCommas"
-              @blur="v => (item.expenseAmount = parseFloat(v.target.value))"
+              @blur="
+                v => (item.expenseAmount = parseFloat(v.target.value.toString().replace(/,/g, '')))
+              "
             ></v-text-field>
           </v-flex>
           <v-flex md3>
@@ -35,7 +37,10 @@
             ></v-select>
           </v-flex>
           <v-flex md4>
-            <v-text-field v-model="item.expenseComment" :disabled="timesheet[projectIndex].is_locked"></v-text-field>
+            <v-text-field
+              v-model="item.expenseComment"
+              :disabled="timesheet[projectIndex].is_locked"
+            ></v-text-field>
           </v-flex>
           <v-flex md2>
             <v-tooltip top open-delay="500">
@@ -53,13 +58,25 @@
               <span>Copy</span>
             </v-tooltip>
 
-            <v-tooltip top open-delay="500">
+            <v-tooltip top open-delay="500" v-if="isCopy">
               <template v-slot:activator="{ on }">
-                <v-btn flat icon @click="pastefunc(index)" v-on="on" :disabled="timesheet[projectIndex].is_locked">
+                <v-btn
+                  flat
+                  icon
+                  @click="pastefunc(index)"
+                  v-on="on"
+                  :disabled="timesheet[projectIndex].is_locked"
+                >
                   <v-icon>post_add</v-icon>
                 </v-btn>
               </template>
               <span>Paste</span>
+            </v-tooltip>
+            <v-tooltip v-else>
+              <template v-slot:activator="{ on }">
+                <v-btn flat icon v-on="on" :disabled="!isCopy"> </v-btn>
+              </template>
+              <span></span>
             </v-tooltip>
           </v-flex>
         </v-layout>
@@ -75,17 +92,15 @@ export default {
   components: {},
   data() {
     return {
-      categoryOptions: [{ category: 'Fees' }, { category: 'Transporation' }, { category: 'Other' }],
+      isCopy: false,
+      categoryOptions: [{ category: 'Fees' }, { category: 'Other' }, { category: 'Transporation' }],
       valid: true,
       dialog: false,
       amountRule: [
         (v) => {
-          // if (!v) return 'This field is required';
-          if (!v) {
-            return true;
-          }
-          const anyNonNumbers = v.toString().match(/[^\d,]+/g, '');
-          if (anyNonNumbers) {
+          if (!v) return true;
+          const anyNonNumbers = v.toString().match(/^[0-9,_.-]*$/g, '');
+          if (!anyNonNumbers) {
             return 'Field must just be a number.';
           }
           return true;
@@ -105,10 +120,23 @@ export default {
     projectIndex: Number,
   },
   methods: {
+    thousandSeprator(amount) {
+      if (
+        amount !== ''
+        || amount !== undefined
+        || amount !== 0
+        || amount !== '0'
+        || amount !== null
+      ) {
+        return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      }
+      return amount;
+    },
     validate() {
       return this.$refs.form.validate();
     },
     copyfunc(expenseAmount, expenseComment, expenseCategory) {
+      this.isCopy = true;
       this.expenseAmount = expenseAmount;
       this.expenseComment = expenseComment;
       this.expenseCategory = expenseCategory;

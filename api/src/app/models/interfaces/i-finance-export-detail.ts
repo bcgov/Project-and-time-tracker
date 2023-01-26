@@ -1,5 +1,3 @@
-import { IFinanceExport } from './i-finance-export';
-
 export interface IFinanceExportDetail {
   id: string;
   entryDate: Date;

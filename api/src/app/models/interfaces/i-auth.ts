@@ -1,7 +1,7 @@
 export interface IAuth {
-    userId: string;
-    referenceId: string;
-    fullName: string;
-    // permissions: string[];
-    role: string;
-  }
+  userId: string;
+  referenceId: string;
+  fullName: string;
+  // permissions: string[];
+  role: string[];
+}

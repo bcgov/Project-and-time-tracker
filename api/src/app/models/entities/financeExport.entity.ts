@@ -22,4 +22,25 @@ export class FinanceExport {
 
   @Column({ type: 'uuid', nullable: true })
   createdUserId: string;
+
+  @Column({ type: 'double precision', nullable: true })
+  totalAmount: number;
+
+  @Column({ type: 'date', nullable: true })
+  monthStartDate: Date;
+
+  @Column({ type: 'boolean', nullable: true })
+  isDischarged: boolean;
+
+  @Column({ type: 'int', nullable: true })
+  billingCount: number;
+
+  @Column({ type: 'text', nullable: true })
+  selectedMous: string;
+
+  @Column({ type: 'text', nullable: true })
+  mouId: string;
+
+  @Column({ type: 'boolean', nullable: true })
+  isNonMinistry: boolean;
 }

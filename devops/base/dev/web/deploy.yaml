@@ -1,0 +1,104 @@
+# Copyright 2021 The Province of British Columbia
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: timemachine
+  name: web
+spec:
+  strategy:
+    type: RollingUpdate
+  replicas: 1
+  selector:
+    matchLabels:
+      app: timemachine
+      component: web
+  template:
+    metadata:
+      labels:
+        app: timemachine
+        role: web
+        component: web
+      name: timemachine
+    spec:
+      containers:
+        - name: timemachine-web
+          image: image-registry.openshift-image-registry.svc:5000/ed57f0-tools/timemachine-web-dev:latest
+          imagePullPolicy: Always
+          startupProbe:
+            httpGet:
+              path: /
+              port: 2015
+            failureThreshold: 11
+            periodSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 2015
+            timeoutSeconds: 3
+          ports:
+            - containerPort: 2015
+          resources:
+            limits:
+              cpu: 30m
+              memory: 48Mi
+            requests:
+              cpu: 10m
+              memory: 32Mi
+          volumeMounts:
+              - name: config-vol
+                mountPath: /etc/caddy/Caddyfile
+                subPath: Caddyfile
+      volumes:
+        - name: config-vol
+          configMap:
+            name: web-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: timemachine
+    component: web
+  name: web
+spec:
+  selector:
+    app: timemachine
+    component: web
+  ports:
+    - name: 2015-tcp
+      port: 2015
+      protocol: TCP
+      targetPort: 2015
+---
+apiVersion: v1
+kind: Route
+metadata:
+  labels:
+    app: timemachine
+    component: web
+  name: web
+spec:
+  port:
+    targetPort: 2015-tcp
+  tls:
+    insecureEdgeTerminationPolicy: Redirect
+    terminationc: edge
+  to:
+    kind: Service
+    name: web
+    weight: 100

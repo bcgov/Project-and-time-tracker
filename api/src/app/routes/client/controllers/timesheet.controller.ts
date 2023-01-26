@@ -23,6 +23,7 @@ import {
 } from '../../../services/client/timesheetEntry.service';
 import { IAuth } from '../../../models/interfaces/i-auth';
 import { authorize } from '../../../services/common/authorize.service';
+import { Role } from '../../roles';
 import e = require('express');
 
 export const getTimesheets = async (ctx: Koa.Context) => {
@@ -81,8 +82,12 @@ export const timeEntryByUser = async (ctx: Koa.Context) => {
 
 export const getAllTimesheets = async (ctx: Koa.Context) => {
   try {
-    // TODO - If user is NOT admin, return only the sheets by user id?
-    ctx.body = await retrieveAllTimesheets();
+    const auth = ctx.state.auth as IAuth;
+    if(auth.role.includes(Role.PSB_Admin)){
+      ctx.body = await retrieveAllTimesheets();
+    }else{
+      ctx.body = await retrieveMyTimesheets(auth.userId)//await retrieveAllTimesheets();
+    }
   } catch (err) {
     ctx.throw(err.message);
   }
@@ -144,7 +149,14 @@ export const timeSheetLight = async (ctx: Koa.Context) => {
 export const createBatchTimesheet = async (ctx: Koa.Context) => {
   try {
     const auth = ctx.state.auth as IAuth;
-
+    ctx.request.body.forEach((timesheet) => {
+      timesheet.entries.forEach((timeEntry) => {
+      timeEntry.expenseAmount = timeEntry.expenseAmount==""?0:timeEntry.expenseAmount;
+      timeEntry.hoursBillable = timeEntry.hoursBillable==""?0:timeEntry.hoursBillable;
+      timeEntry.hoursUnBillable = timeEntry.hoursUnBillable==""?0:timeEntry.hoursUnBillable;
+      timeEntry.revenueHours = timeEntry.revenueHours==""?0:timeEntry.revenueHours;
+    });
+    });
     const timeSheetEnties = ctx.request.body as ITimesheet[];
 
     for (let index = 0; index < timeSheetEnties.length; index++) {
@@ -209,6 +221,7 @@ export const createBatchTimesheet = async (ctx: Koa.Context) => {
             expenseComment: entry.expenseComment,
             expenseCategory: entry.expenseCategory,
             revenueAmount: entry.revenueAmount,
+            revenueHours: entry.revenueHours,
             revenueComment: entry.revenueComment
           });
         } else {
@@ -305,6 +318,7 @@ export const createLightTimesheet = async (ctx: Koa.Context) => {
           expenseComment: entry.expenseComment,
           expenseCategory: entry.expenseCategory,
           revenueAmount: entry.revenueAmount,
+          revenueHours: entry.revenueHours,
           revenueComment: entry.revenueComment
         });
       } else {
@@ -543,7 +557,7 @@ const validateTimesheetEntries = async (timesheet: ITimesheet) => {
 };
 
 const routerOpts: Router.IRouterOptions = {
-  prefix: '/timesheet'
+  prefix: '/api/timesheet'
 };
 
 const router: Router = new Router(routerOpts);

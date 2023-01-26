@@ -17,4 +17,5 @@ export interface ITimesheet {
   batchEntryComments: string;
   deleted: boolean;
   is_locked: boolean;
+  documentNo: string;
 }

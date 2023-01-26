@@ -7,16 +7,24 @@ import {
   retrieveProjectsByUserId,
   retrieveArchivedProjects,
   retrieveTimesheetProjects,
+  retrieveTimesheetProjectsOld,
   retrieveExportedPdfs,
+  retrieveDischargedPdfs,
   downloadpdf,
   retrieveAllProjects,
-  retrieveFinanceData
+  retrieveMouProjectsByUserId,
+  retrieveFinanceData,
+  retrieveFinanceDataOld,
+  dischargeFinanceRecord,
+  reinstateFinanceRecord,
+  reGenerateFinanceRecord,
+  getProjectCategories
 } from '../../../services/client/project.service';
 import { IProject } from '../../../models/interfaces/i-project';
 import { retrieveClientByProjectId } from '../../../services/client/client.service';
 import { Role } from '../../roles';
 import { IAuth } from '../../../models/interfaces/i-auth';
-import { authorize } from '../../../services/common/authorize.service';
+import { authorize, isInRoles } from '../../../services/common/authorize.service';
 import { createMOU } from '../../../services/client/mou.service';
 
 export const getProjects = async (ctx: Koa.Context) => {
@@ -31,6 +39,14 @@ export const getAllProjects = async (ctx: Koa.Context) => {
   try {
     const auth = ctx.state.auth as IAuth;
     ctx.body = await retrieveAllProjects();
+  } catch (err) {
+    ctx.throw(err.message);
+  }
+};
+
+export const getmouProjects = async (ctx: Koa.Context) => {
+  try {
+    ctx.body = await retrieveMouProjectsByUserId(ctx.params.id);
   } catch (err) {
     ctx.throw(err.message);
   }
@@ -54,6 +70,16 @@ export const timesheetProjects = async (ctx: Koa.Context) => {
     ctx.throw(err.message);
   }
 };
+export const timesheetProjectsOld = async (ctx: Koa.Context) => {
+  try {
+    const auth = ctx.state.auth as IAuth;
+    const obj = ctx.request.body as any;
+    const result = await retrieveTimesheetProjectsOld(obj);
+    ctx.body = result;
+  } catch (err) {
+    ctx.throw(err.message);
+  }
+};
 export const exportedPdfs = async (ctx: Koa.Context) => {
   try {
     const auth = ctx.state.auth as IAuth;
@@ -63,6 +89,16 @@ export const exportedPdfs = async (ctx: Koa.Context) => {
     ctx.throw(err.message);
   }
 };
+export const dischargedPdfs = async (ctx: Koa.Context) => {
+  try {
+    const auth = ctx.state.auth as IAuth;
+    const obj = ctx.request.body as any;
+    ctx.body = await retrieveDischargedPdfs(obj);
+  } catch (err) {
+    ctx.throw(err.message);
+  }
+};
+
 export const downloadFinancePdf = async (ctx: Koa.Context) => {
   try {
     const auth = ctx.state.auth as IAuth;
@@ -72,11 +108,47 @@ export const downloadFinancePdf = async (ctx: Koa.Context) => {
     ctx.throw(err.message);
   }
 };
+export const dischargeFinancePdf = async (ctx: Koa.Context) => {
+  try {
+    const auth = ctx.state.auth as IAuth;
+    const obj = ctx.request.body as any;
+    ctx.body = await dischargeFinanceRecord(obj);
+  } catch (err) {
+    ctx.throw(err.message);
+  }
+};
+export const reGenerateFinancePdf = async (ctx: Koa.Context) => {
+  try {
+    const auth = ctx.state.auth as IAuth;
+    const obj = ctx.request.body as any;
+    ctx.body = await reGenerateFinanceRecord(obj);
+  } catch (err) {
+    ctx.throw(err.message);
+  }
+};
+export const reinstateFinancePdf = async (ctx: Koa.Context) => {
+  try {
+    const auth = ctx.state.auth as IAuth;
+    const obj = ctx.request.body as any;
+    ctx.body = await reinstateFinanceRecord(obj);
+  } catch (err) {
+    ctx.throw(err.message);
+  }
+};
 export const getfinanceExport = async (ctx: Koa.Context) => {
   try {
     const auth = ctx.state.auth as IAuth;
     const obj = ctx.request.body as any;
     ctx.body = await retrieveFinanceData(obj, auth.userId);
+  } catch (err) {
+    ctx.throw(err.message);
+  }
+};
+export const getfinanceExportOld = async (ctx: Koa.Context) => {
+  try {
+    const auth = ctx.state.auth as IAuth;
+    const obj = ctx.request.body as any;
+    ctx.body = await retrieveFinanceDataOld(obj, auth.userId);
   } catch (err) {
     ctx.throw(err.message);
   }
@@ -114,7 +186,7 @@ export const updateProjectAction = async (ctx: Koa.Context) => {
       mou = await createMOU({ name: project.mou });
     }
 
-    const updatingFields = {
+    let updatingFields = {
       projectName: project.projectName,
       completionDate: project.completionDate,
       contractValue: project.contractValue,
@@ -129,15 +201,20 @@ export const updateProjectAction = async (ctx: Koa.Context) => {
       previousContractBackground: project.previousContractBackground,
       projectFailImpact: project.projectFailImpact,
       projectSuccess: project.projectSuccess,
-
-      mou: mou
+      mou: mou,
     };
-
-    const updateingClient = {
+  
+    // Check if the user has permission to update the categoryId.
+    const canEditProjectCategories = isInRoles(auth, [Role.PSB_Admin, Role.PSB_Intake_User]);
+    if(canEditProjectCategories){
+      updatingFields['categoryId'] = project.categoryId;
+    }
+    
+    const updatingClient = {
       id: project.client.id,
       isNonMinistry: project.client.isNonMinistry,
       nonMinistryName: project.client.nonMinistryName,
-      ministry: project.client.ministry
+      ministry: project.client.ministry,
     };
 
     const client = await retrieveClientByProjectId(ctx.params.id);
@@ -165,7 +242,7 @@ export const updateProjectAction = async (ctx: Koa.Context) => {
       }
     }
 
-    await updateProject(ctx.params.id, updatingFields, updateingClient);
+    await updateProject(ctx.params.id, updatingFields, updatingClient);
 
     ctx.body = 'success';
   } catch (err) {
@@ -176,7 +253,7 @@ export const updateProjectAction = async (ctx: Koa.Context) => {
 export const archiveProjectAction = async (ctx: Koa.Context) => {
   try {
     await updateProject(ctx.params.id, {
-      is_archived: ctx.request.body.is_archived
+      is_archived: ctx.request.body.is_archived,
     });
     ctx.body = 'success';
   } catch (err) {
@@ -193,7 +270,7 @@ export const assignLeadAction = async (ctx: Koa.Context) => {
     }
 
     await updateProject(ctx.params.id, {
-      leadUserId: obj.userId
+      leadUserId: obj.userId,
     });
 
     ctx.body = 'success';
@@ -211,10 +288,18 @@ export const assignBackupAction = async (ctx: Koa.Context) => {
     }
 
     await updateProject(ctx.params.id, {
-      backupUserId: obj.userId
+      backupUserId: obj.userId,
     });
 
     ctx.body = 'success';
+  } catch (err) {
+    ctx.throw(err.message);
+  }
+};
+
+export const getCategories = async (ctx: Koa.Context) => {
+  try {
+    ctx.body = getProjectCategories();
   } catch (err) {
     ctx.throw(err.message);
   }
@@ -239,18 +324,27 @@ const validateProject = (project: IProject) => {
 };
 
 const routerOpts: Router.IRouterOptions = {
-  prefix: '/project'
+  prefix: '/api/project',
 };
 
 const router: Router = new Router(routerOpts);
 
 router.get('/', authorize, getProjects);
 router.get('/all', authorize, getAllProjects);
+router.get('/:id/by-user-id', authorize, getmouProjects);
 router.get('/archived', authorize, getArchivedProjects);
+router.get('/categories', authorize, getCategories);
 router.post('/timesheetprojects', authorize, timesheetProjects);
+router.post('/timesheetprojectsOld', authorize, timesheetProjectsOld);
 router.post('/exportedPdfs', authorize, exportedPdfs);
+router.post('/dischargedPdfs', authorize, dischargedPdfs);
 router.post('/downloadFinancePdf', authorize, downloadFinancePdf);
+router.post('/dischargeFinanceRecord', authorize, dischargeFinancePdf);
+router.post('/reGenerateFinanceRecord', authorize, reGenerateFinancePdf);
+router.post('/reinstateFinanceRecord', authorize, reinstateFinancePdf);
+
 router.post('/finance', authorize, getfinanceExport);
+router.post('/financeOld', authorize, getfinanceExportOld);
 router.get('/:id', authorize, getProjectById);
 router.patch('/:id', authorize, updateProjectAction);
 router.patch('/:id/archive', authorize, archiveProjectAction);
