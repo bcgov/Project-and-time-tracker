@@ -1,11 +1,41 @@
 img - [![img](https://img.shields.io/badge/Lifecycle-Maturing-007EC6)](https://github.com/bcgov/repomountie/blob/master/doc/lifecycle-badges.md)
 The codebase is being roughed out, but finer details are likely to change.
 
-# time-machine
+# Time Machine
 Time and billing management tool
 
-# Run the TimeMachine application locally 
-Step 1: Provide all the environment variables in .env file
+# Run the TimeMachine application locally
+**note: Database needs to be setup prior**
+
+## Using NPM
+Step 1: Provide all the environment variables in .env file (including local db info). You can use the sample.env as a basis.
+
+Step 2: Verify and update keycloak.json in 'web/public/statics'
+
+Step 3: Verify local databse info in api/src/app/config/env-confi.ts is correct
+
+Step 4: In both /api and /web directories run
+
+```bash
+npm install
+```
+
+Step 5: In /api run
+
+```bash
+npm run serve
+```
+
+Step 6: In /web run
+
+```bash
+npm run start
+```
+
+Step 7: visit http://localhost:8080
+
+## Using Docker
+Step 1: Provide all the environment variables in .env file. You can use the sample.env as a basis.
 
 Step 2: Verify and update keycloak.json in 'web/public/statics'
 
