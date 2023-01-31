@@ -12,7 +12,7 @@ Step 1: Provide all the environment variables in .env file (including local db i
 
 Step 2: Verify and update keycloak.json in 'web/public/statics'
 
-Step 3: Verify local databse info in api/src/app/config/env-confi.ts is correct
+Step 3: Verify local database info in api/src/app/config/env-confi.ts is correct
 
 Step 4: In both /api and /web directories run
 
@@ -20,13 +20,13 @@ Step 4: In both /api and /web directories run
 npm install
 ```
 
-Step 5: In /api run
+Step 5: In the /api directory run
 
 ```bash
 npm run serve
 ```
 
-Step 6: In /web run
+Step 6: In the /web directory run
 
 ```bash
 npm run start
