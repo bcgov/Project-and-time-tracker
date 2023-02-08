@@ -422,6 +422,9 @@ const store = new Vuex.Store({
         }
       }
     },
+    fetchTimesheetsByWeek(state, data) {
+      state.allTimesheets = data;
+    },
     fetchAllTimesheets(state, data) {
       state.allTimesheets = data;
     },
@@ -1271,6 +1274,12 @@ const store = new Vuex.Store({
       ctx.commit("fetchTimesheets", { data: res.data, replace: req.replace });
 
       return Promise.resolve();
+    },
+    async fetchTimesheetsByWeek(ctx) {
+      const startDateString = sessionStorage.getItem("selectedStartDate");
+      const res = await $http.get(`${API_URI}/timesheet/week/${startDateString}`);
+      ctx.commit("fetchTimesheetsByWeek", res.data);
+      return Promise.resolve(res.data);
     },
     async fetchAllTimesheets(ctx) {
       const res = await $http.get(`${API_URI}/timesheet/all`);
