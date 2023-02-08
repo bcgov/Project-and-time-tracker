@@ -2198,6 +2198,7 @@ export const retrieveExportedPdfs = async (obj) => {
 };
 
 export const retrieveMouProjectsByUserId = async (userId: string) => {
+  // const A = Date.now();
   const repo = projectRepo();
   const projects = await repo
     .createQueryBuilder("p")
@@ -2205,17 +2206,20 @@ export const retrieveMouProjectsByUserId = async (userId: string) => {
     .innerJoinAndSelect("p.client", "c")
     .orderBy("p.projectName", "ASC")
     .where(
-      '(p.is_archived IS NULL OR p.is_archived = :is_archived) AND (p."leadUserId" = :userId OR p."backupUserId" = :userId OR p.teamWideProject=true)',
+      '(p.is_archived IS NULL OR p.is_archived = :is_archived) AND (p.teamWideProject=true OR p."leadUserId" = :userId OR p."backupUserId" = :userId)',
       {
         is_archived: false,
         userId,
       }
     )
     .getMany();
+  
+    // const B = Date.now();
+    // console.log('Time: '+ (B-A));
 
   const results = projects.map(async (project) => {
     const [totalBillWithForecast, rfxList] = await Promise.all([
-      retrieveTotalBillAmountWithForecastByProject(project.id),
+      retrieveTotalBillAmountWithForecastByProject(project.id, project.categoryId),
       retrieveRFXByProjectId(project.id),
     ]);
     return {
@@ -2233,6 +2237,9 @@ export const retrieveMouProjectsByUserId = async (userId: string) => {
     };
   });
 
+  // const C = Date.now();
+  // console.log('Time: '+ (C-B));
+
   return await Promise.all(results);
 };
 
@@ -2248,26 +2255,34 @@ export const retrieveRFXByProjectId = async (id: string) => {
 };
 
 /**
- * Retrieve the total bill anount for the project considering the timesheets already locked
+ * Retrieve the total bill amount for the project considering the timesheets already locked
  * and calculating the forecast for the timesheets that are not locked yet.
+ * Removed non billable project calculations to reduce API load.
  * @param id Project ID to be retrieved.
+ * @param categoryId Id on whether the project is cost recoverable.
  */
 export const retrieveTotalBillAmountWithForecastByProject = async (
-  id: string
+  id: string,
+  categoryId: number
 ) => {
-  const [totalLocked, totalUnlocked] = await Promise.all([
-    retrieveTotalAmountBilledByProjectId(id),
-    retrieveTotalAmountToBillByProjectId(id),
-  ]);
+  if (categoryId === ProjectCategory.CostRecoverable || categoryId === null){
 
-  let totalAmountToBill = 0;
-  if (totalUnlocked && totalUnlocked.length) {
-    totalAmountToBill = totalUnlocked
-      .map((x) => x.totalBillableTime + x.totalRevenue + x.totalExpenses)
-      .reduce((prev, cur) => prev + cur);
+    const [totalLocked, totalUnlocked] = await Promise.all([
+      retrieveTotalAmountBilledByProjectId(id),
+      retrieveTotalAmountToBillByProjectId(id),
+    ]);
+
+    let totalAmountToBill = 0;
+    if (totalUnlocked && totalUnlocked.length) {
+      totalAmountToBill = totalUnlocked
+        .map((x) => x.totalBillableTime + x.totalRevenue + x.totalExpenses)
+        .reduce((prev, cur) => prev + cur);
+    }
+
+    return totalLocked + totalAmountToBill;  
+  }else{
+    return 0;
   }
-
-  return totalLocked + totalAmountToBill;
 };
 
 /**
