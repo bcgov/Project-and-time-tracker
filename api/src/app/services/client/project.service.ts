@@ -1,4 +1,4 @@
-import { getRepository, Repository, getConnection } from "typeorm";
+import { getRepository, Repository, getConnection, createQueryBuilder, getManager } from "typeorm";
 import {
   Project,
   ProjectContacts,
@@ -2199,11 +2199,13 @@ export const retrieveExportedPdfs = async (obj) => {
 
 export const retrieveMouProjectsByUserId = async (userId: string) => {
   // const A = Date.now();
+  console.time("AllProjects1");
   const repo = projectRepo();
   const projects = await repo
     .createQueryBuilder("p")
     .innerJoinAndSelect("p.mou", "o")
     .innerJoinAndSelect("p.client", "c")
+    .innerJoinAndSelect("p.projectRfxs", "pr")
     .orderBy("p.projectName", "ASC")
     .where(
       '(p.is_archived IS NULL OR p.is_archived = :is_archived) AND (p.teamWideProject=true OR p."leadUserId" = :userId OR p."backupUserId" = :userId)',
@@ -2213,14 +2215,83 @@ export const retrieveMouProjectsByUserId = async (userId: string) => {
       }
     )
     .getMany();
-  
-    // const B = Date.now();
-    // console.log('Time: '+ (B-A));
+  console.timeEnd("AllProjects1")
 
+
+  //3 items to add
+  const timeSheetEntryRepo = timesheetEntryRepo();
+  const openTimeSheetsAmount = await timeSheetEntryRepo
+  .createQueryBuilder("tse")
+  .select('ts."projectId"')
+  .addSelect('SUM(tse."hoursBillable") * COALESCE (c."hourlyRate", 0)', "totalBillableTime")
+  .addSelect('SUM(tse."revenueHours") * COALESCE (c."revenueRate", 0)',"totalRevenue")
+  .addSelect('SUM(tse."expenseAmount")', "totalExpenses")
+  .innerJoin("timesheet", "ts", 'tse."timesheetId" = ts.Id')
+  .innerJoin("user", "u", 'ts."userId" = u.Id')
+  .innerJoin("contact", "c", 'u."contactId" = c.Id')
+  .where('ts."is_locked" = :isLocked', {isLocked: false,})
+  .groupBy('ts."projectId"')
+  .addGroupBy('tse."timesheetId"')
+  .addGroupBy('c."revenueRate"')
+  .addGroupBy('c."hourlyRate"')
+
+  console.log("openTimeSheetsAmount");
+  const totalNumbersUnbilled = getManager().createQueryBuilder()
+  .select('ts."projectId"')
+  .addSelect('(sum("totalBillableHours") + Sum("totalRevenueHours") + sum("totalExpense")) as "TotalUnbilled"')
+  .from("(" + openTimeSheetsAmount.getQuery() + ")", "OT")
+  .groupBy('"projectId"');
+
+  console.log("totalNumbersUnbilled");
+  const timeSheetRepo3 = timesheetRepo();
+  const totalNumbersBilled = await timeSheetRepo3
+  .createQueryBuilder("t")
+  .select("t.projectId")
+  .addSelect("SUM(t.amountBilled)", "TotalBilled")
+  .where('t."is_locked" = :isLocked', {isLocked: true})
+  .groupBy('"t.projectId"')
+  console.log("totalNumbersBilled");
+
+  console.time("AllProjects2+more");
+  const repo2 = projectRepo();
+  const projects2 = await repo2
+    .createQueryBuilder("p")
+    .innerJoinAndSelect("p.mou", "o")
+    .innerJoinAndSelect("p.client", "c")
+    .innerJoinAndSelect("p.projectRfxs", "pr")
+    .addSelect("unbilled.TotalUnbilled")
+    .addSelect("billed.TotalBilled")
+    .leftJoin("(" + totalNumbersUnbilled.getQuery() + ")", "unbilled", "unbilled.projectId = t.projectId")
+    .leftJoin("(" + totalNumbersBilled.getQuery() + ")", "billed", "billed.projectId = t.projectId")
+    .orderBy("p.projectName", "ASC")
+    .where(
+      '(p.is_archived IS NULL OR p.is_archived = :is_archived) AND (p.teamWideProject=true OR p."leadUserId" = :userId OR p."backupUserId" = :userId)',
+      {
+        is_archived: false,
+        userId,
+      }
+    )
+    .getMany();
+    console.timeEnd("AllProjects2+more")
+
+  //One item to add
+  const timeSheetRepo = timesheetRepo();
+  const lockedAmount = await timeSheetRepo
+    .createQueryBuilder("t")
+    .select("SUM(t.amountBilled)")
+    .where('t."is_locked" = :isLocked', {isLocked: true,})
+
+  //totalAmountBilled = 
+
+  console.log("PROJECT EXAMPLES:");
+  console.log(projects[1]);
+  console.log(projects2[1]);
+
+  console.time("Get And Assign Billings");
   const results = projects.map(async (project) => {
-    const [totalBillWithForecast, rfxList] = await Promise.all([
+    const [totalBillWithForecast/*, rfxList*/] = await Promise.all([
       retrieveTotalBillAmountWithForecastByProject(project.id, project.categoryId),
-      retrieveRFXByProjectId(project.id),
+      //retrieveRFXByProjectId(project.id),
     ]);
     return {
       id: project.id,
@@ -2229,16 +2300,14 @@ export const retrieveMouProjectsByUserId = async (userId: string) => {
       mouName: project.mou.name,
       mouId: project.mou.id,
       totalAmountBilled: round(totalBillWithForecast),
-      rfxList: rfxList,
+      rfxList: project.projectRfxs /*rfxList*/,
       isCostRecoverable:
         project.categoryId === ProjectCategory.CostRecoverable ||
         project.categoryId === null,
       hasValidFinanceCodes: validateFinanceCodes(project.client).length === 0,
     };
   });
-
-  // const C = Date.now();
-  // console.log('Time: '+ (C-B));
+  console.timeEnd("GetAnd Assign Billings");
 
   return await Promise.all(results);
 };
@@ -2265,7 +2334,7 @@ export const retrieveTotalBillAmountWithForecastByProject = async (
   id: string,
   categoryId: number
 ) => {
-  if (categoryId === ProjectCategory.CostRecoverable || categoryId === null){
+  //if (/*false*/categoryId === ProjectCategory.CostRecoverable || categoryId === null){
 
     const [totalLocked, totalUnlocked] = await Promise.all([
       retrieveTotalAmountBilledByProjectId(id),
@@ -2280,10 +2349,17 @@ export const retrieveTotalBillAmountWithForecastByProject = async (
     }
 
     return totalLocked + totalAmountToBill;  
-  }else{
+  /*}else{
     return 0;
-  }
+  }*/
 };
+
+export const retrieveTotalBilledAndUnbilledByProjectId = async (id: string) => {
+  //const
+
+}
+
+
 
 /**
  * Sum all the already billed timesheets.
