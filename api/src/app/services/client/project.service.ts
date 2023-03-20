@@ -2198,8 +2198,7 @@ export const retrieveExportedPdfs = async (obj) => {
 };
 
 export const retrieveMouProjectsByUserId = async (userId: string) => {
-  // const A = Date.now();
-  console.time("AllProjects1");
+  //console.time("AllProjects1");
   const repo = projectRepo();
   const projects = await repo
     .createQueryBuilder("p")
@@ -2207,6 +2206,7 @@ export const retrieveMouProjectsByUserId = async (userId: string) => {
     .innerJoinAndSelect("p.client", "c")
     .innerJoinAndSelect("p.projectRfxs", "pr")
     .orderBy("p.projectName", "ASC")
+    .addOrderBy("pr.rfxName", "ASC")
     .where(
       '(p.is_archived IS NULL OR p.is_archived = :is_archived) AND (p.teamWideProject=true OR p."leadUserId" = :userId OR p."backupUserId" = :userId)',
       {
@@ -2215,10 +2215,15 @@ export const retrieveMouProjectsByUserId = async (userId: string) => {
       }
     )
     .getMany();
-  console.timeEnd("AllProjects1")
+  //console.timeEnd("AllProjects1")
+
+  const projectIds = [];
+  projects.forEach((project) => {
+    projectIds.push(project.id)
+  })
+  //console.log(projectIds[0]);
 
 
-  //3 items to add
   const timeSheetEntryRepo = timesheetEntryRepo();
   const openTimeSheetsAmount = await timeSheetEntryRepo
   .createQueryBuilder("tse")
@@ -2226,88 +2231,66 @@ export const retrieveMouProjectsByUserId = async (userId: string) => {
   .addSelect('SUM(tse."hoursBillable") * COALESCE (c."hourlyRate", 0)', "totalBillableTime")
   .addSelect('SUM(tse."revenueHours") * COALESCE (c."revenueRate", 0)',"totalRevenue")
   .addSelect('SUM(tse."expenseAmount")', "totalExpenses")
-  .innerJoin("timesheet", "ts", 'tse."timesheetId" = ts.Id')
-  .innerJoin("user", "u", 'ts."userId" = u.Id')
-  .innerJoin("contact", "c", 'u."contactId" = c.Id')
-  .where('ts."is_locked" = :isLocked', {isLocked: false,})
+  .innerJoin("timesheet", "ts", 'tse."timesheetId" = ts."id"')
+  .innerJoin("user", "u", 'ts."userId" = u."id"')
+  .innerJoin("contact", "c", 'u."contactId" = c."id"')
+  .where('ts."is_locked" = :isLocked AND ts."projectId" IN (:...ids)' , {isLocked: false, ids: projectIds})
   .groupBy('ts."projectId"')
   .addGroupBy('tse."timesheetId"')
   .addGroupBy('c."revenueRate"')
   .addGroupBy('c."hourlyRate"')
+  .getRawMany();
+  //console.log("openTimeSheetsAmount complete");
 
-  console.log("openTimeSheetsAmount");
-  const totalNumbersUnbilled = getManager().createQueryBuilder()
-  .select('ts."projectId"')
-  .addSelect('(sum("totalBillableHours") + Sum("totalRevenueHours") + sum("totalExpense")) as "TotalUnbilled"')
-  .from("(" + openTimeSheetsAmount.getQuery() + ")", "OT")
-  .groupBy('"projectId"');
-
-  console.log("totalNumbersUnbilled");
+  //console.log("totalNumbersUnbilled");
   const timeSheetRepo3 = timesheetRepo();
   const totalNumbersBilled = await timeSheetRepo3
   .createQueryBuilder("t")
-  .select("t.projectId")
-  .addSelect("SUM(t.amountBilled)", "TotalBilled")
-  .where('t."is_locked" = :isLocked', {isLocked: true})
-  .groupBy('"t.projectId"')
-  console.log("totalNumbersBilled");
+  .select('t."projectId"')
+  .addSelect('SUM(t."amountBilled")', "totalBilled")
+  .where('t."is_locked" = :isLocked AND t."projectId" IN (:...ids)', {isLocked: true, ids: projectIds})
+  .groupBy('t."projectId"')
+  .orderBy('t."projectId"')
+  .getRawMany();
 
-  console.time("AllProjects2+more");
-  const repo2 = projectRepo();
-  const projects2 = await repo2
-    .createQueryBuilder("p")
-    .innerJoinAndSelect("p.mou", "o")
-    .innerJoinAndSelect("p.client", "c")
-    .innerJoinAndSelect("p.projectRfxs", "pr")
-    .addSelect("unbilled.TotalUnbilled")
-    .addSelect("billed.TotalBilled")
-    .leftJoin("(" + totalNumbersUnbilled.getQuery() + ")", "unbilled", "unbilled.projectId = t.projectId")
-    .leftJoin("(" + totalNumbersBilled.getQuery() + ")", "billed", "billed.projectId = t.projectId")
-    .orderBy("p.projectName", "ASC")
-    .where(
-      '(p.is_archived IS NULL OR p.is_archived = :is_archived) AND (p.teamWideProject=true OR p."leadUserId" = :userId OR p."backupUserId" = :userId)',
-      {
-        is_archived: false,
-        userId,
-      }
-    )
-    .getMany();
-    console.timeEnd("AllProjects2+more")
+  var projectBillings = [];
+  projectIds.forEach(element => {
+    var projectID = element;
+    var billingSum = 0;
+    var ts = openTimeSheetsAmount.find(x => x.projectId === element);
+    if(ts){
+     billingSum += ts.totalBillableTime + ts.totalRevenue + ts.totalExpenses;
+    }
+    var tsr = totalNumbersBilled.find(x => x.projectId === element);
+    if(tsr){
+      billingSum += tsr.totalBilled;
+     }
+     projectBillings.push({
+      projectId: element,
+      totalBillWithForecast: billingSum
+     });
+  });
 
-  //One item to add
-  const timeSheetRepo = timesheetRepo();
-  const lockedAmount = await timeSheetRepo
-    .createQueryBuilder("t")
-    .select("SUM(t.amountBilled)")
-    .where('t."is_locked" = :isLocked', {isLocked: true,})
 
-  //totalAmountBilled = 
+  /*console.log("PROJECT BILLINGS");
+  console.log(projectBillings);*/
 
-  console.log("PROJECT EXAMPLES:");
-  console.log(projects[1]);
-  console.log(projects2[1]);
 
-  console.time("Get And Assign Billings");
-  const results = projects.map(async (project) => {
-    const [totalBillWithForecast/*, rfxList*/] = await Promise.all([
-      retrieveTotalBillAmountWithForecastByProject(project.id, project.categoryId),
-      //retrieveRFXByProjectId(project.id),
-    ]);
+  const results = projects.map((project) => {
     return {
       id: project.id,
       projectName: project.projectName,
       mouAmount: project.mouAmount,
       mouName: project.mou.name,
       mouId: project.mou.id,
-      totalAmountBilled: round(totalBillWithForecast),
-      rfxList: project.projectRfxs /*rfxList*/,
+      totalAmountBilled: round(projectBillings.filter(x => {return x.projectId === project.id})[0].totalBillWithForecast),
+      rfxList: project.projectRfxs,
       isCostRecoverable:
         project.categoryId === ProjectCategory.CostRecoverable ||
         project.categoryId === null,
       hasValidFinanceCodes: validateFinanceCodes(project.client).length === 0,
     };
   });
-  console.timeEnd("GetAnd Assign Billings");
 
   return await Promise.all(results);
 };
