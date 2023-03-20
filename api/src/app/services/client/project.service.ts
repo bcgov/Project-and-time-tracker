@@ -1,4 +1,4 @@
-import { getRepository, Repository, getConnection } from "typeorm";
+import { getRepository, Repository, getConnection, createQueryBuilder, getManager } from "typeorm";
 import {
   Project,
   ProjectContacts,
@@ -2198,13 +2198,15 @@ export const retrieveExportedPdfs = async (obj) => {
 };
 
 export const retrieveMouProjectsByUserId = async (userId: string) => {
-  // const A = Date.now();
+  //console.time("AllProjects1");
   const repo = projectRepo();
   const projects = await repo
     .createQueryBuilder("p")
     .innerJoinAndSelect("p.mou", "o")
     .innerJoinAndSelect("p.client", "c")
+    .innerJoinAndSelect("p.projectRfxs", "pr")
     .orderBy("p.projectName", "ASC")
+    .addOrderBy("pr.rfxName", "ASC")
     .where(
       '(p.is_archived IS NULL OR p.is_archived = :is_archived) AND (p.teamWideProject=true OR p."leadUserId" = :userId OR p."backupUserId" = :userId)',
       {
@@ -2213,32 +2215,82 @@ export const retrieveMouProjectsByUserId = async (userId: string) => {
       }
     )
     .getMany();
-  
-    // const B = Date.now();
-    // console.log('Time: '+ (B-A));
+  //console.timeEnd("AllProjects1")
 
-  const results = projects.map(async (project) => {
-    const [totalBillWithForecast, rfxList] = await Promise.all([
-      retrieveTotalBillAmountWithForecastByProject(project.id, project.categoryId),
-      retrieveRFXByProjectId(project.id),
-    ]);
+  const projectIds = [];
+  projects.forEach((project) => {
+    projectIds.push(project.id)
+  })
+  //console.log(projectIds[0]);
+
+
+  const timeSheetEntryRepo = timesheetEntryRepo();
+  const openTimeSheetsAmount = await timeSheetEntryRepo
+  .createQueryBuilder("tse")
+  .select('ts."projectId"')
+  .addSelect('SUM(tse."hoursBillable") * COALESCE (c."hourlyRate", 0)', "totalBillableTime")
+  .addSelect('SUM(tse."revenueHours") * COALESCE (c."revenueRate", 0)',"totalRevenue")
+  .addSelect('SUM(tse."expenseAmount")', "totalExpenses")
+  .innerJoin("timesheet", "ts", 'tse."timesheetId" = ts."id"')
+  .innerJoin("user", "u", 'ts."userId" = u."id"')
+  .innerJoin("contact", "c", 'u."contactId" = c."id"')
+  .where('ts."is_locked" = :isLocked AND ts."projectId" IN (:...ids)' , {isLocked: false, ids: projectIds})
+  .groupBy('ts."projectId"')
+  .addGroupBy('tse."timesheetId"')
+  .addGroupBy('c."revenueRate"')
+  .addGroupBy('c."hourlyRate"')
+  .getRawMany();
+  //console.log("openTimeSheetsAmount complete");
+
+  //console.log("totalNumbersUnbilled");
+  const timeSheetRepo3 = timesheetRepo();
+  const totalNumbersBilled = await timeSheetRepo3
+  .createQueryBuilder("t")
+  .select('t."projectId"')
+  .addSelect('SUM(t."amountBilled")', "totalBilled")
+  .where('t."is_locked" = :isLocked AND t."projectId" IN (:...ids)', {isLocked: true, ids: projectIds})
+  .groupBy('t."projectId"')
+  .orderBy('t."projectId"')
+  .getRawMany();
+
+  var projectBillings = [];
+  projectIds.forEach(element => {
+    var projectID = element;
+    var billingSum = 0;
+    var ts = openTimeSheetsAmount.find(x => x.projectId === element);
+    if(ts){
+     billingSum += ts.totalBillableTime + ts.totalRevenue + ts.totalExpenses;
+    }
+    var tsr = totalNumbersBilled.find(x => x.projectId === element);
+    if(tsr){
+      billingSum += tsr.totalBilled;
+     }
+     projectBillings.push({
+      projectId: element,
+      totalBillWithForecast: billingSum
+     });
+  });
+
+
+  /*console.log("PROJECT BILLINGS");
+  console.log(projectBillings);*/
+
+
+  const results = projects.map((project) => {
     return {
       id: project.id,
       projectName: project.projectName,
       mouAmount: project.mouAmount,
       mouName: project.mou.name,
       mouId: project.mou.id,
-      totalAmountBilled: round(totalBillWithForecast),
-      rfxList: rfxList,
+      totalAmountBilled: round(projectBillings.filter(x => {return x.projectId === project.id})[0].totalBillWithForecast),
+      rfxList: project.projectRfxs,
       isCostRecoverable:
         project.categoryId === ProjectCategory.CostRecoverable ||
         project.categoryId === null,
       hasValidFinanceCodes: validateFinanceCodes(project.client).length === 0,
     };
   });
-
-  // const C = Date.now();
-  // console.log('Time: '+ (C-B));
 
   return await Promise.all(results);
 };
@@ -2265,7 +2317,7 @@ export const retrieveTotalBillAmountWithForecastByProject = async (
   id: string,
   categoryId: number
 ) => {
-  if (categoryId === ProjectCategory.CostRecoverable || categoryId === null){
+  //if (/*false*/categoryId === ProjectCategory.CostRecoverable || categoryId === null){
 
     const [totalLocked, totalUnlocked] = await Promise.all([
       retrieveTotalAmountBilledByProjectId(id),
@@ -2280,10 +2332,17 @@ export const retrieveTotalBillAmountWithForecastByProject = async (
     }
 
     return totalLocked + totalAmountToBill;  
-  }else{
+  /*}else{
     return 0;
-  }
+  }*/
 };
+
+export const retrieveTotalBilledAndUnbilledByProjectId = async (id: string) => {
+  //const
+
+}
+
+
 
 /**
  * Sum all the already billed timesheets.

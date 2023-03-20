@@ -25,6 +25,7 @@ import TimesheetsCalendar from './TimesheetsCalendar.vue';
 import AddTimeRecord from './AddTimeRecord.vue';
 import { getRoles } from '../../../modules/security/init';
 
+
 export default {
   data() {
     return {
@@ -51,7 +52,7 @@ export default {
   },
   methods: {
     closeTimesheet(needRefresh) {
-      isAddTimeOpen = false;
+      this.isAddTimeOpen = false;
       if (needRefresh) {
         sessionStorage.setItem('selectedStartDate', this.$store.state.timesheetsWeek.startDate);
         sessionStorage.setItem('selectedEndDate', this.$store.state.timesheetsWeek.endDate);
@@ -77,7 +78,7 @@ export default {
       this.isAdmin = getRoles().includes('PSB_Admin');// this.$store.state.activeRoles && this.$store.state.activeRoles.role.includes('PSB_Admin');
     },
     async onChangeWeek() {
-      if(!this.isAddTimeOpen){
+      if (!this.isAddTimeOpen) {
         if (this.$refs.spinner) {
           this.$refs.spinner.open();
         }
