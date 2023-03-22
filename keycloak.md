@@ -8,23 +8,9 @@ TimeMachine uses Keycloak for "identity and access management" (IAM).  In plain 
 
 ### ... access Keycloak?
 
-Log into TimeMachine, and go to the "Admin" section.  There should be a link  for Keycloak.
+To access Keycloak you will need to contact an administrator to be assigned to the PSB-TimeMachine team in which you will be able to manage users from https://bcgov.github.io/sso-requests following the 'Request SSO Integration' button.
 
 ### ... create a user?
 
-1. Click "Users" in the left menu, under Manage.
-2. Click 'Add User' in top right of table.
-3. Fill out the form.  **Make sure to fill out name or the account will have no name in TimeMachine!!!**
-<!-- 4. Optional: Set Required User Actions to "Update Password". -->
-4. Click submit.
-5. Click on "Credentials" and set a new temporary password.  It's suggested you keep it a temporary password, forcing the user to set a secure password you will not know.
-
-After submitting and creating the user, you must assign them roles.
-
-1. Click the "Role Mappings" tab.
-2. Select the desired role in "Available Roles" (e.g. PSB_User, PSB_Intake_User)
-3. Click "Add Selected" so that it shows up in the "Assigned Roles" section.
-
-
-Note: Keycloak will not  send out automated emails to users.  You will still have to  email them and tell themt o login.
+Users are based on the IDIR system and will not have to be created but they will have to be assigned the correct roles to use the application. Roles are created/assigned per environment per the link above.
 

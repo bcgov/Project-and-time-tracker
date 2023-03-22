@@ -1,7 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
 import { Client } from './client.entity';
 import { ProjectSector } from './projectSector.entity';
 import { MOU } from './mou.entity';
+import { ProjectRfx } from './projectRfx.entity';
 
 @Entity()
 export class Project {
@@ -84,6 +85,9 @@ export class Project {
 
   @Column({ type: 'int', nullable: true })
   categoryId: ProjectCategory
+
+  @OneToMany(() => ProjectRfx, (projectRfx)=> projectRfx.project)
+  projectRfxs: ProjectRfx[];
 }
 
 export enum ProjectCategory {
