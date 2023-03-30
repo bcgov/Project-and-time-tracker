@@ -173,10 +173,10 @@ export const createBatchTimesheet = async (ctx: Koa.Context) => {
       timeEntry.revenueHours = timeEntry.revenueHours==""?0:timeEntry.revenueHours;
     });
     });
-    const timeSheetEnties = ctx.request.body as ITimesheet[];
+    const timeSheetEntries = ctx.request.body as ITimesheet[];
 
-    for (let index = 0; index < timeSheetEnties.length; index++) {
-      const model = timeSheetEnties[index];
+    for (let index = 0; index < timeSheetEntries.length; index++) {
+      const model = timeSheetEntries[index];
       if (!model) {
         ctx.throw('no data Found');
         return;
