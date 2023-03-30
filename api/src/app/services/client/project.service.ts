@@ -364,7 +364,7 @@ async function generateExportEntries(
     );
   }
 
-  if (timesheetEntry.expenseAmount && timesheetEntry.expenseAmount > 0) {
+  if (timesheetEntry.expenseAmount && timesheetEntry.expenseAmount != 0) {
     let financeDetailExpense = {} as IFinanceExportDetail;
     financeDetailExpense.entryDate = timesheetEntry.entryDate;
     financeDetailExpense.description = timesheetEntry.expenseComment;
