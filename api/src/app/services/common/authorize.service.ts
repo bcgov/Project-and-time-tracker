@@ -79,6 +79,7 @@ const commonForPSBAdminAndUser = [
   'POST/api/timesheet/batch',
   'POST/api/timesheet/getLight',
   'GET/api/timesheet/all',
+  'GET/api/timesheet/week/:week',
   'GET/api/procurement/:id',
   'GET/api/projectnotes/:id',
   'PATCH/api/procurement/:id',

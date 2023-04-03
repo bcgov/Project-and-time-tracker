@@ -2,7 +2,7 @@
   <v-layout class="timesheets-toolbar" d-flex style="width: 100%;">
     <v-flex d-flex justify-center align-start style="width: 100%;">
       <v-flex md6>
-        <timesheets-calendar ref="WeekSelection"></timesheets-calendar>
+        <timesheets-calendar ref="WeekSelection" @next="onChangeWeek"></timesheets-calendar>
       </v-flex>
       <v-flex md6>
         <v-radio-group v-model="selectedFilter" row>
@@ -25,6 +25,7 @@ import TimesheetsCalendar from './TimesheetsCalendar.vue';
 import AddTimeRecord from './AddTimeRecord.vue';
 import { getRoles } from '../../../modules/security/init';
 
+
 export default {
   data() {
     return {
@@ -32,6 +33,7 @@ export default {
       startDateMain: this.$store.state.timesheetsWeek.startDate,
       endDateMain: this.$store.state.timesheetsWeek.endDate,
       isAdmin: false,
+      isAddTimeOpen: false,
     };
   },
   components: {
@@ -50,6 +52,7 @@ export default {
   },
   methods: {
     closeTimesheet(needRefresh) {
+      this.isAddTimeOpen = false;
       if (needRefresh) {
         sessionStorage.setItem('selectedStartDate', this.$store.state.timesheetsWeek.startDate);
         sessionStorage.setItem('selectedEndDate', this.$store.state.timesheetsWeek.endDate);
@@ -64,6 +67,7 @@ export default {
       }
     },
     newTimeRecord() {
+      this.isAddTimeOpen = true;
       this.startDateMain = this.$store.state.timesheetsWeek.startDate;
       this.endDateMain = this.$store.state.timesheetsWeek.endDate;
       sessionStorage.setItem('selectedStartDate', this.startDateMain);
@@ -72,6 +76,17 @@ export default {
     },
     async setAdmin() {
       this.isAdmin = getRoles().includes('PSB_Admin');// this.$store.state.activeRoles && this.$store.state.activeRoles.role.includes('PSB_Admin');
+    },
+    async onChangeWeek() {
+      if (!this.isAddTimeOpen) {
+        if (this.$refs.spinner) {
+          this.$refs.spinner.open();
+        }
+        await this.$store.dispatch('fetchTimesheetsByWeek');
+        if (this.$refs.spinner) {
+          this.$refs.spinner.close();
+        }
+      }
     },
   },
 };
