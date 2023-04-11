@@ -2222,6 +2222,8 @@ export const retrieveNonArchivedProjectsByUserId = async (userId: string) => {
  * and that were still not locked (lock will happen during report generation).
 */
 export const retreiveNonLockedTimesheetBillables = async ( projectIds: string[]) => {
+  //Grab billable time per weekly timesheet for projects provided
+  //TODO: should this grab only billable projects? projectCategoryId = 3 or projectCategoryId = null
   const timeSheetEntryRepo = timesheetEntryRepo();
   const openTimeSheetsAmount = await timeSheetEntryRepo
   .createQueryBuilder("tse")
@@ -2237,8 +2239,26 @@ export const retreiveNonLockedTimesheetBillables = async ( projectIds: string[])
   .addGroupBy('tse."timesheetId"')
   .addGroupBy('c."revenueRate"')
   .addGroupBy('c."hourlyRate"')
+  .orderBy('ts."projectId"')
   .getRawMany();
-  return openTimeSheetsAmount;
+
+  
+  //Sum weekly timesheets into one amount per Project
+  var summedTimesheetsByProjectId = [];
+  var previousProjectId = "";
+  if(openTimeSheetsAmount.length>0){
+    openTimeSheetsAmount.forEach( ts => {
+      if(ts.projectId){
+        if(ts.projectId === previousProjectId){
+            summedTimesheetsByProjectId[summedTimesheetsByProjectId.length-1].nonLockedBill += (ts.totalBillableTime + ts.totalRevenue + ts.totalExpenses);
+        }else{
+          summedTimesheetsByProjectId.push({projectId: ts.projectId, nonLockedBill: (ts.totalBillableTime + ts.totalRevenue + ts.totalExpenses)});
+          previousProjectId = ts.projectId;
+        }
+      }
+    });
+  }
+  return summedTimesheetsByProjectId;
 }
 
 /**
@@ -2276,7 +2296,7 @@ const calculateProjectBillings = async (projectIds: any[]) => {
     var billingSum = 0;
     var ts = totalNumbersToBeBilled.find(x => x.projectId === element);
     if(ts){
-     billingSum += ts.totalBillableTime + ts.totalRevenue + ts.totalExpenses;
+     billingSum += ts.nonLockedBill;
     }
     var tsr = totalNumbersBilled.find(x => x.projectId === element);
     if(tsr){
