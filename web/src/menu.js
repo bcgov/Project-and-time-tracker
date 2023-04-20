@@ -42,11 +42,11 @@ const menuItems = [
   {
     header: '',
   },
-  // {
-  //   href: '/dashboard',
-  //   title: 'Dashboard',
-  //   icon: 'dashboard',
-  // },
+   {
+     href: '/dashboard',
+     title: 'Dashboard',
+     icon: 'dashboard',
+   },
   {
     href: '/intake-intro',
     title: 'New Intake Request',

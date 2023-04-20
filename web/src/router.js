@@ -2,9 +2,10 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import security from '@/modules/security';
 import store from '@/store';
-/* import Dashboard from './components/dashboard/Dashboard.vue'; */
+
 import Authorize from './components/login/Authorize.vue';
 import Project from './components/timeMachine/projects/Project.vue';
+import Dashboard from './components/timeMachine/dashboard/Dashboard.vue';
 import TimeMachineIntakeForm from './components/timeMachine/projectIntake/IntakeForm.vue';
 import TimeMachineIntakeIntro from './components/timeMachine/projectIntake/IntakeIntroduction.vue';
 import TimeMachineFinanceExport from './components/timeMachine/projects/ProjectFinanceExport.vue';
@@ -46,13 +47,13 @@ const routes = [
       roles: ['PSB_User', 'PSB_Admin', 'User', 'PSB_Intake_User', 'Manage_Finances'],
     },
   },
-  // {
-  //   exact: true,
-  //   path: '/intake-intro',
-  //   name: 'dashboard',
-  //   component: TimeMachineIntakeIntro,
-  //   meta: { requiresAuth: true, roles: ['PSB_User', 'PSB_Admin'] },
-  // },
+  {
+     exact: true,
+     path: '/dashboard',
+     name: 'dashboard',
+     component: Dashboard,
+     meta: { requiresAuth: true, roles: ['PSB_User', 'PSB_Admin', 'PSB_Intake_User'] },
+   },
   {
     exact: true,
     path: '/intake-intro',
