@@ -33,14 +33,14 @@
                 :search-input.sync="mouSearch">
 
                 <template v-slot:no-data v-if='mouSearch && mouSearch.length'>
-                  <v-list-tile>
-                    <v-list-tile-content>
-                      <v-list-tile-title>
+                  <v-list-item>
+                    <v-list-item-content>
+                      <v-list-item-title>
                         No results matching "<strong>{{mouSearch}}</strong>".
                         Press <kbd>enter</kbd> to create a new one
-                      </v-list-tile-title>
-                    </v-list-tile-content>
-                  </v-list-tile>
+                      </v-list-item-title>
+                    </v-list-item-content>
+                  </v-list-item>
                 </template>
 
               </v-combobox>

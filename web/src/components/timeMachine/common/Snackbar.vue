@@ -2,7 +2,6 @@
   <v-snackbar
     top
     fixed
-    auto-height
     :value="open"
     :color="color"
     :class="[top ? 'snackbar-top' : '']"

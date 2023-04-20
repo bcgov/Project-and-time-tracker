@@ -23,7 +23,6 @@
           :items="allProcLogs"
           hide-actions
           class="elevation-0 tm-v-datatable"
-          disable-initial-sort
           aria-multiline="true"
           :search="search"
         >

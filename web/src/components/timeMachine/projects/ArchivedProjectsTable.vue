@@ -15,7 +15,6 @@
           :items="projects"
           hide-actions
           class="elevation-0 tm-v-datatable"
-          disable-initial-sort
         >
           <template slot="items" slot-scope="props">
             <td class="text-xs-left">{{ props.item.mou ? props.item.mou.name : "n/a" }}</td>

@@ -42,7 +42,6 @@
           hide-actions
           :multiple-select="singleSelectOld"
           class="elevation-0 tm-v-datatable project-export-table"
-          disable-initial-sort
         >
           <template slot="items" slot-scope="data">
             <td class="text-xs-left">
@@ -90,7 +89,6 @@
           hide-actions
           :multiple-select="singleSelect"
           class="elevation-0 tm-v-datatable project-export-table"
-          disable-initial-sort
         >
           <template slot="items" slot-scope="props">
             <td class="text-xs-left">

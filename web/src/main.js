@@ -17,6 +17,8 @@ import store from "@/store";
 import VForm from "@/modules/widgets/Form.vue";
 import VField from "@/modules/widgets/Field.vue";
 import VCalendar from "v-calendar";
+import Vuetify from 'vuetify/lib';
+
 
 Vue.use(VCalendar, {
   componentPrefix: "vc" // Use <vc-calendar /> instead of <v-calendar />
@@ -57,6 +59,8 @@ Vue.directive("open-on-focus", {
   }
 });
 
+Vue.use(Vuetify);
+
 Vue.config.productionTip = false;
 
 /* eslint-disable */
@@ -65,12 +69,14 @@ const appInstance = new Vue({
   i18n,
   store,
   router,
+  vuetify: new Vuetify(),
   render: h => h(App),
   mounted() {},
   methods: {
     back() {
       this.$router.go(-1);
     }
-  }
-});
+  },
+  render: h => h(App)
+}).$mount('#app')
 /* eslint-enable */

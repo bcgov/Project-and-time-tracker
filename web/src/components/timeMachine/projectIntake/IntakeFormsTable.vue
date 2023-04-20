@@ -26,9 +26,8 @@
           :items="intakeRequests"
           :search="search"
           :loading="isLoading"
-          :pagination.sync="pagination"
+          :options.sync="pagination"
           class="elevation-0 tm-v-datatable"
-          disable-initial-sort
         >
           <template slot="items" slot-scope="props">
             <!-- <td class='pl-3'>

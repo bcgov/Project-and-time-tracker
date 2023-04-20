@@ -30,7 +30,7 @@
           :items="allFinanceCodes"
           class="elevation-1"
           :rows-per-page-items="[15, 30, 50, 100]"
-          :pagination.sync="pagination"
+          :options.sync="pagination"
         >
           <template v-slot:items="props">
             <td class="text-xs-left">{{ props.item.financeName }}</td>

@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import Vuetify from 'vuetify/lib';
-import 'vuetify/src/stylus/app.styl';
 
 const colorTheme = {
   // Backgrounds
@@ -23,8 +22,11 @@ const colorTheme = {
   approved: '#1c9900',
 };
 
-Vue.use(Vuetify, {
-  theme: { ...colorTheme },
+/*Vue.use(Vuetify)
+
+
+export default new Vuetify({
+  theme: { colorTheme },
   options: { customProperties: true },
   iconfont: 'md',
-});
+})*/

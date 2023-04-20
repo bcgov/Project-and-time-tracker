@@ -1,5 +1,3 @@
-import Vue from 'vue';
-import Vuetify from 'vuetify';
 import { shallowMount, createLocalVue, mount, shallow } from '@vue/test-utils';
 import IntakeFormsTable from './IntakeFormsTable.vue';
 import Vuex from 'vuex';

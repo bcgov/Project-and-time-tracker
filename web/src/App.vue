@@ -26,7 +26,7 @@
               value="true"
             >
               <template v-slot:activator>
-                <v-list-tile
+                <v-list-item
                   v-bind:key="JSON.stringify(item)"
                   v-bind:to="item.href"
                   v-bind:title="item.title"
@@ -34,20 +34,20 @@
                   router
                   ripple
                 >
-                  <v-list-tile-action v-if="item.icon">
+                  <v-list-item-action v-if="item.icon">
                     <v-icon>{{ item.icon }}</v-icon>
-                  </v-list-tile-action>
-                  <v-list-tile-content>
-                    <v-list-tile-title> {{ $t(item.title) }}</v-list-tile-title>
-                  </v-list-tile-content>
-                  <v-list-tile-action>
+                  </v-list-item-action>
+                  <v-list-item-content>
+                    <v-list-item-title> {{ $t(item.title) }}</v-list-item-title>
+                  </v-list-item-content>
+                  <v-list-item-action>
                     <v-icon></v-icon>
-                  </v-list-tile-action>
-                </v-list-tile>
+                  </v-list-item-action>
+                </v-list-item>
               </template>
             </v-list-group>
             <!-- If the item doesn't have any children -->
-            <v-list-tile
+            <v-list-item
               v-else
               v-bind:key="JSON.stringify(item)"
               v-bind:to="item.href"
@@ -56,35 +56,35 @@
               router
               ripple
             >
-              <v-list-tile-action v-if="item.icon">
+              <v-list-item-action v-if="item.icon">
                 <v-icon>{{ item.icon }}</v-icon>
-              </v-list-tile-action>
-              <v-list-tile-content>
-                <v-list-tile-title> {{ $t(item.title) }}</v-list-tile-title>
-              </v-list-tile-content>
-            </v-list-tile>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title> {{ $t(item.title) }}</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
           </div>
         </template>
       </v-list>
     </v-navigation-drawer>
 
-    <v-toolbar app fixed class="app-toolbar" color="background" v-if="!isToolbarHide">
-      <v-toolbar-side-icon dark @click.native.stop="drawer = !drawer" />
+    <v-app-bar fixed class="app-toolbar" color="background" v-if="!isToolbarHide">
+      <v-app-bar-nav-icon dark @click.native.stop="drawer = !drawer" />
       <v-toolbar-title class="App-toolbar-title">
         <img src="./images/logo.svg" alt="avatar" class="app-logo"/>
       </v-toolbar-title>
       <div class="app-title">Time Machine</div>
       <v-spacer></v-spacer>
        <div class="user-name" v-if="userName">Hi, {{userName}}</div>
-    </v-toolbar>
+    </v-app-bar>
 
-    <v-content>
+    <v-main>
       <v-container pa-0 fluid fill-height>
         <v-layout justify-center align-top>
           <router-view />
         </v-layout>
       </v-container>
-    </v-content>
+    </v-main>
 
   </v-app>
 </template>

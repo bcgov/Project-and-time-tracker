@@ -1,5 +1,4 @@
-import Vue from 'vue';
-import Vuetify from 'vuetify';
+import Vuetify from 'vuetify/lib';
 import { shallowMount, createLocalVue, mount,shallow } from '@vue/test-utils';
 import IntakeSuccess from './IntakeSuccess.vue';
 

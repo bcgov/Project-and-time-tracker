@@ -27,7 +27,7 @@
           hide-actions
           :multiple-select="singleSelect"
           class="elevation-0 tm-v-datatable"
-          disable-initial-sort
+
         >
           <template slot="items" slot-scope="props">
             <td class="text-xs-left">{{ props.item.t_selectedMous }}</td>
