@@ -69,6 +69,22 @@ export const retrieveAllTimesheets = async () => {
     .orderBy('t.startDate', 'DESC')
     .getMany();
 };
+
+export const retrieveAllTimesheetsFromDate = async (date) => {
+  const repo = timesheetRepo();
+  return await repo
+    .createQueryBuilder('t')
+    .innerJoinAndSelect('t.project', 'p')
+    .leftJoinAndSelect('t.user', 'u')
+    .leftJoinAndSelect('u.contact', 'c')
+    .innerJoin('t.timesheetEntries', 'te')
+    .innerJoin('t.projectRfx', 'pr')
+    .orderBy('t.startDate', 'DESC')
+    .where(' t."startDate" > :date', {
+      date,
+    })
+    .getMany();
+};
 export const retrieveAllTimesheetsByWeek = async (startOfWeek) => {
   const repo = timesheetRepo();
   return await repo
@@ -82,10 +98,6 @@ export const retrieveAllTimesheetsByWeek = async (startOfWeek) => {
     .where(' t."startDate" = :startOfWeek', {
       startOfWeek,
     })
-    /*.where(' t."startDate" = :startOfWeek AND t."endDate" = :endOfWeek', {
-      startOfWeek,
-      endOfWeek,
-    })*/
     .getMany();
 };
 export const retrieveMyTimesheets = async (userId) => {

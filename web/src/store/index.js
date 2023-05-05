@@ -95,6 +95,7 @@ const store = new Vuex.Store({
     timesheetEntries: [],
     userTimesheets: [],
     allTimesheets: [], // used in table view of all timesheets
+    allTimesheetsFromDate: [],
     allProcurementLog: [],
     allProjectNotes: [],
     collapseNavigationBar: false,
@@ -427,6 +428,9 @@ const store = new Vuex.Store({
     },
     fetchAllTimesheets(state, data) {
       state.allTimesheets = data;
+    },
+    fetchAllTimesheetsFromDate(state, data) {
+      state.allTimesheetsFromDate = data;
     },
     fetchUserTimesheets(state, data) {
       state.userTimesheets = data;
@@ -1284,6 +1288,11 @@ const store = new Vuex.Store({
     async fetchAllTimesheets(ctx) {
       const res = await $http.get(`${API_URI}/timesheet/all`);
       ctx.commit("fetchAllTimesheets", res.data);
+      return Promise.resolve(res.data);
+    },
+    async fetchAllTimesheetsFromDate(ctx, req) {
+      const res = await $http.get(`${API_URI}/timesheet/allFromDate/${req.date}`);
+      ctx.commit("fetchAllTimesheetsFromDate", res.data);
       return Promise.resolve(res.data);
     },
     async fetchUserTimesheets(ctx) {

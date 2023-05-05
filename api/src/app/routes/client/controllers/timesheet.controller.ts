@@ -10,6 +10,7 @@ import {
   retrieveForLightTimesheet,
   retrieveForLightTimesheetPreview,
   retrieveAllTimesheets,
+  retrieveAllTimesheetsFromDate,
   retrieveAllTimesheetsByWeek,
   retrieveForLightTimesheetByUser,
   retrieveTimesheetByUserAndDate,
@@ -107,6 +108,13 @@ export const getAllTimesheetsByWeek = async (ctx: Koa.Context) => {
   }
 };
 
+export const getAllTimesheetsFromDate = async (ctx: Koa.Context) => {
+  try {
+    ctx.body = await retrieveAllTimesheetsFromDate(ctx.params.date);
+  } catch (err) {
+    ctx.throw(err.message);
+  }
+};
 
 export const getMyTimesheets = async (ctx: Koa.Context) => {
   try {
@@ -580,6 +588,7 @@ const router: Router = new Router(routerOpts);
 
 // router.get('/', authorize, getTimesheets);
 router.get('/all', authorize, getAllTimesheets);
+router.get('/allFromDate/:date', authorize, getAllTimesheetsFromDate);
 router.get('/week/:week', authorize, getAllTimesheetsByWeek);
 router.get('/user', authorize, getMyTimesheets);
 router.get('/:id', authorize, getTimesheetbyId);

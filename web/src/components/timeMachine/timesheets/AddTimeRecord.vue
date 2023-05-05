@@ -651,6 +651,7 @@ export default {
       }
       this.initData();
       this.$refs.AddimeRecords.resetValidation();
+      console.log("Setting user");
       this.form.userId = this.fetchUser();
       if (this.form.userId) {
         await this.onChangeUser(userId || this.form.userId, editMode);

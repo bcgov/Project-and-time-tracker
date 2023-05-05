@@ -2362,6 +2362,7 @@ export const retrieveAllProjects = async () => {
       "p.projectName",
       "ps",
       "p.dateModified",
+      "p.dateCreated",
       "p.completionDate",
       "c.orgDivision",
       "m.ministryName",
