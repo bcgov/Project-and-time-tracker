@@ -77,7 +77,7 @@ export const retrieveAllTimesheetsFromDate = async (date) => {
     .innerJoinAndSelect('t.project', 'p')
     .leftJoinAndSelect('t.user', 'u')
     .leftJoinAndSelect('u.contact', 'c')
-    .innerJoin('t.timesheetEntries', 'te')
+    .innerJoinAndSelect('t.timesheetEntries', 'te')
     .innerJoin('t.projectRfx', 'pr')
     .orderBy('t.startDate', 'DESC')
     .where(' t."startDate" > :date', {

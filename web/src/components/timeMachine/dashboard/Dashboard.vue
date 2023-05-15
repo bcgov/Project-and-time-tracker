@@ -9,97 +9,69 @@
       <v-sheet>
         <v-layout>
         <v-flex md12>
-          <h1 style="padding:20px 10px 0px 10px" >Branch Wide</h1>
+          <h1 style="padding:20px 10px 0px 10px" >User Wide</h1>
         </v-flex>
       </v-layout>
       <div class="d-flex flex-row mb-6 bg-surface-variant">
-        <v-card class="ma-4 pa-4 custom-card" elevation="1" dark color="#ff9800" outlined  style="width:25%; height:140px">
+        <v-card class="ma-4 pa-4 custom-card" elevation="1" dark color="#ff9800" outlined  style="width:25%;">
           <v-card-title style="padding: 0px 0px; font-size:24px">Total Projects</v-card-title>
           <div v-if="totalProjects>-1" style="font-size:32px; font-weight:bold; padding: 10px 0px" >{{totalProjects}}</div>
         </v-card>
-        <v-card color="#009688" dark class="ma-4 pa-4" elevation="1" style="width:25%; height:140px">
+        <v-card color="#009688" dark class="ma-4 pa-4" elevation="1" style="width:25%;">
           <v-card-title style="padding: 0px 0px; font-size:24px">Projects Added this Month</v-card-title>
           <div v-if="newProjects>-1" style="font-size:32px; font-weight:bold; padding: 10px 0px" >{{newProjects}}</div>
         </v-card>
-        <v-card color="#03a9f4" dark class="ma-4 pa-4" elevation="1" style="width:25%; height:140px">
+        <v-card color="#03a9f4" dark class="ma-4 pa-4" elevation="1" style="width:25%;">
           <v-card-title style="padding: 0px 0px; font-size:24px">Projects Actively Billed</v-card-title>
           <div v-if="newProjects>-1" style="font-size:32px; font-weight:bold; padding: 10px 0px" >{{activeProjects}}</div>
         </v-card>
-        <v-card color="#ce61d2" dark class="ma-4 pa-4 custom-card" elevation="1" style="width:25%; height:140px">
+        <v-card color="#ce61d2" dark class="ma-4 pa-4 custom-card" elevation="1" style="width:25%;">
           <v-card-title style="padding: 0px 0px; font-size:24px">Example</v-card-title>
           <div style="font-size:32px; font-weight:bold; padding: 10px 0px">101</div>
         </v-card>
       </div>
-      <!--
-        Per User (user list, date)
-          - Billable vs NonBillable percent
-          - My top projects (top 8) (option for billable vs non billable)
-
-        Trend over last 6 months (per month bar chart billable vs non billable)
-      -->
       </v-sheet>
       <br>
-     <!-- <v-sheet>-->
       <v-card>
         <v-layout>
-        <v-flex md12>
-          <h1 style="padding:20px 10px 0px 10px">User Specific</h1>
-        </v-flex>
-
-        <v-flex class="d-flex cardheadlabel1" style="align-items:center">
-          <v-flex md5 class="headerinfo">
-            For User:
+          <v-flex md12>
+            <h1 style="padding:20px 10px 0px 10px">User Specific</h1>
           </v-flex>
-          <v-flex md7 style="align-items:center; padding: 0px 80px 0px 0px;width: 400px;">
-            <v-select
-              class="currentuser"
-              v-model="userId"
-              @input="onChangeUser(userId)"
-              :items="userList"
-              item-value="id"
-              item-text="contact.fullName"
-              label="User"
-              style="width: 200px"
-            ></v-select>
-          </v-flex>
-        </v-flex>
 
+          <v-flex style="align-content:right; padding: 10px 0px 0px 0px">
+            <!--<v-flex md5 class="headerinfo">
+              For User:
+            </v-flex>-->
+            <v-flex md7 style="padding: 0px 0px 0px 0px;width: 240px;">
+              <v-select
+                class="currentuser"
+                v-model="userId"
+                @input="onChangeUser(userId)"
+                :items="userList"
+                item-value="id"
+                item-text="contact.fullName"
+                label="User"
+                style="width: 200px"
+              ></v-select>
+            </v-flex>
+          </v-flex>
         </v-layout>
           
-
         <div class="d-flex flex-row">
           <v-card color="#ffffff" class="ma-4 pa-4" width="20%" elevation="1" height="500px">
             <h2 style="text-align:center">Billable Hours Over Time</h2>
-            <Bar
-            :chart-options="barChartOptions"
-            :chart-data="barChartData"
-            />
+            <canvas id ="BillableOverTime" style="padding:20px"></canvas>
           </v-card>
           <v-card color="#ffffff" class="ma-4 pa-4" width="20%" elevation="1" height="500px">
             <h2 style="text-align:center">Expenses Over Time</h2>
-            <Bar
-            :chart-options="expenseBarChartOptions"
-            :chart-data="expenseBarChartData"
-            />
+            <canvas id ="ExpenseOverTime" style="padding:20px" ></canvas>
           </v-card>
-          <v-card class="ma-4 pa-4"  color="#ffffff" width="20%" elevation="1" outlined border-color="red" height="500px">
+          <v-card class="ma-4 pa-4"  color="#ffffff" width="20%" elevation="1" height="500px">
             <h2 style="text-align:center">Billable Vs Non-Billable</h2>
-            <Doughnut
-            :chart-options="doughnutChartOptions"
-            :chart-data="doughnutChartData"
-            />
+            <canvas id ="doughChart" style="padding:20px"></canvas>
           </v-card>
         </div>
         </v-card>
-      <!--</v-sheet>-->
-      <!--:chart-id="chartId"
-      :dataset-id-key="datasetIdKey"
-      :plugins="plugins"
-      :css-classes="cssClasses"
-      :styles="styles"
-      :width="width"
-      :height="height"-->
-
   </v-container>
 </template>
 
@@ -112,19 +84,91 @@ import {
   Tooltip,
   Legend,
   BarElement,
+  DoughnutController,
   CategoryScale,
   LinearScale,
   ArcElement,
+  BarController,
 } from 'chart.js';
 import { Bar, Doughnut } from 'vue-chartjs/legacy'
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Title, Tooltip, Legend)
-//import BarChart from '../charts/Bar.vue'
+ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Title, Tooltip, Legend, DoughnutController, BarController)
 
 import './dashboard.styl';
 
 export default {
   methods: {
+    initializeDoughChart(){
+      const ctx = document.getElementById('doughChart').getContext('2d');
+      ctx.canvas.height = 500;
+      this.billableDoughnutChart = new ChartJS(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: [ 'Billable','Non-Billable' ],
+          datasets: [ { 
+            backgroundColor: ['#03a9f4', '#ce61d2'],
+            data: null,
+           } 
+        ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+            position: 'bottom'
+            }
+          }
+        }
+      })
+    },
+    initializeExpenseOverTimeChart(){
+      const ctx = document.getElementById('BillableOverTime').getContext('2d');
+      ctx.canvas.height = 400;
+      this.billingOverTimeChart = new ChartJS(ctx, {
+        type: 'bar',
+        data: {
+          labels: null,
+          datasets: [ {
+            data: null,
+            backgroundColor: ['#03a9f4'],
+          
+        }],
+        }, 
+        options:{
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend:{
+              display: false
+            },
+          }
+        }
+      })
+    },
+    initializeBillableOverTimeChart(){
+      const ctx = document.getElementById('ExpenseOverTime').getContext('2d');
+      this.expenseOverTimeChart = new ChartJS(ctx, {
+        type: 'bar',
+        data: {
+          labels: null,
+          color: ['#03a9f4'],
+          datasets: [ { 
+            data: null,
+            backgroundColor: ['#03a9f4'],
+           } ],
+        }, 
+        options:{
+          responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend:{
+              display: false
+            },
+        }
+        }
+      })
+    },
     async fetchData() {
       if (this.$store.state.users.length === 0) {
         //this.$refs.spinner.open();
@@ -133,64 +177,79 @@ export default {
       }
       await this.$store.dispatch('fetchAllProjects');
       this.totalProjects = this.$store.state.allProjects.length;
-      this.newProjects = 0; //calculation for this month
-      this.activeProjects = 0; //More Complex calculation
+      this.newProjects = 0;
+      this.activeProjects = 0;
       this.monthBillables = 0;
 
-      const month = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-      const d = new Date();
-      let monthName = month[d.getMonth()];
-      console.log(monthName);
-
-      console.log(this.$store.state.allProjects[0]);
       this.newProjects = this.$store.state.allProjects.filter(filterByDate).length;
 
-      const timesheetDate = new Date(d.getFullYear(), d.getMonth()-2, 1); //6 months
-      /*timesheetDate.setDate(timesheetDate.getMonth()-5);
-      timesheetDate.setDate(timesheetDate.getDay()-5);*/
+      const d = new Date();
+      const timesheetDate = new Date(d.getFullYear(), d.getMonth()-5, 1); //6 months
       let dateString = timesheetDate.getFullYear() + "-"+ timesheetDate.getMonth()+"-"+timesheetDate.getDate();
 
       await this.$store.dispatch('fetchAllTimesheetsFromDate', { date: dateString })
-      
       console.log(this.$store.state.allTimesheetsFromDate[0]);
       const res = [...this.$store.state.allTimesheetsFromDate.reduce((a,c)=>{
         a.set(c.project.id, c);
         return a;
       }, new Map()).values()]
-      console.log(res);
       this.activeProjects = res.length;
     },
     fetchUser() {
       const referenceId = this.$store.state.activeUser.refId;
       const user = this.$store.state.users.find(value => value.referenceId === referenceId);
       if (user && user.id) {
+        this.onChangeUser(user.id);
         return user.id;
       }
       return '';
     },
     async onChangeUser(userId) {
-      console.log('onChangeUserCalled');
-        /*if (this.$refs.spinner) {
-          this.$refs.spinner.open();
-        }*/
-        /*this.form.userId = userId;
+      /*console.log('onChangeUserCalled');
+      console.log(this.$store.state.allTimesheetsFromDate.length);*/
+      let res = this.$store.state.allTimesheetsFromDate.filter(obj => {
+        return obj.userId === userId;
+      });
+      /*console.log('User Timesheets');
+      console.log(res.length);
+      console.log(res);*/
 
-        const vm = this;
-        vm.projectList = [];
-        vm.rfxList = [];
-        vm.userMouProjects = [];
-        await vm.$store.dispatch('fetchMouProjects', { id: userId }).then((res) => {
-          vm.userMouProjects = res;
-        });
-        if (!editMode) {
-          await this.getTimeSheets();
-        }
-        if (this.$refs.spinner) {
-          this.$refs.spinner.close();
-        }
+      var xMonths = 6; //default for now, allow this to be modified in the future
+      var monthNames = getLastXMonthNames(xMonths);
+      var monthlySums = caclulateMonthlyTimesheetSums(res);
+      var lastXMonths = getLastXMonthDates(xMonths);
+      
 
-        return vm.userMouProjects;*/
-        return null;
+      var billableHoursArray = lastXMonths.map(function (key){
+        return monthlySums[key] ? monthlySums[key].billableHours : 0;
+      });
+
+      var expenseArray = lastXMonths.map(function (key){
+        return monthlySums[key] ? monthlySums[key].expenseAmount : 0;
+      });
+
+      var nonBillableHoursArray = lastXMonths.map(function (key){
+        return monthlySums[key] ? monthlySums[key].nonBillableHours : 0;
+      })
+
+
+      let billableHours = 0;
+      let nonBillableHours  = 0;
+      billableHours = billableHoursArray.reduce((partialSum, a) => partialSum + a, 0);
+      nonBillableHours = nonBillableHoursArray.reduce((partialSum, a) => partialSum + a, 0);
+
+      this.billableDoughnutChart.data.datasets[0].data = [billableHours, nonBillableHours];
+      this.billableDoughnutChart.update();
+
+      this.billingOverTimeChart.data.labels = monthNames;
+      this.billingOverTimeChart.data.datasets[0].data = billableHoursArray;
+      this.billingOverTimeChart.update();
+
+      this.expenseOverTimeChart.data.labels = monthNames;
+      this.expenseOverTimeChart.data.datasets[0].data = expenseArray;
+      this.expenseOverTimeChart.update();
+      
+      return null;
       }
     },
   computed:{ 
@@ -207,14 +266,17 @@ export default {
     console.log('created called');
     await this.fetchData();
     this.userId = this.fetchUser();
-
   },
-  /*updated(){
-    console.log('updated called');
-  },*/
+  mounted(){
+    this.initializeDoughChart();
+    this.initializeBillableOverTimeChart();
+    this.initializeExpenseOverTimeChart();
+  },
   data() {
-    //const form = Object.assign({});
     return {
+      expenseOverTimeChart: null,
+      billingOverTimeChart: null,
+      billableDoughnutChart: null,
       totalProjects:{
         type: Number,
         default: null,
@@ -235,85 +297,6 @@ export default {
         type: String,
         defualt: '',
       },
-      barChartData: {
-        labels: [ 'December', 'January', 'February', 'March', 'April', 'May'],
-        color: ['#03a9f4'],
-        datasets: [ { 
-          data: [40, 20, 12, 36, 22, 25],
-          backgroundColor: ['#03a9f4'],
-           } ],
-      },
-      barChartOptions: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend:{
-              display: false
-            },
-        }
-      },
-      expenseBarChartData: {
-        labels: [ 'December', 'January', 'February', 'March', 'April', 'May'],
-        datasets: [ {
-          data: [1200, 3000, 350, 0, 2000, 750], 
-          backgroundColor: ['#03a9f4'],
-          
-        }],
-      },
-      expenseBarChartOptions: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend:{
-              display: false
-            },
-        }
-      },
-      doughnutChartData: {
-        labels: [ 'Billed','Non-Billed' ],
-        datasets: [ { 
-          backgroundColor: ['#03a9f4', '#ce61d2'],
-          data: [40, 60] } 
-        ]
-      },
-      doughnutChartOptions: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-        legend: {
-          position: 'bottom'
-          }
-      },
-      width: {
-      type: Number,
-      default: 100
-      },
-      height: {
-        type: Number,
-        default: 300
-      },
-      doughnutWidth:{
-        type: Number,
-        default: 400
-      },
-      doughnutWidth:{
-        type: Number,
-        default: 400
-      },
-      },
-      datasetIdKey: {
-        type: String,
-        default: 'label'
-      },
-      chartId: {
-        type: String,
-        default: 'doughnut-chart'
-      },
-      plugins: {
-        type: Array,
-        default: () => []
-      }/*,
-      form: { ...form }*/
     }
   }
 };
@@ -326,6 +309,65 @@ function filterByDate(item) {
     return true;
   }
   return false;
+}
+
+function getLastXMonthNames(x) {
+  let currentDate = new Date();
+  var monthNames = [];
+  for(var i = 0; i< x; i++){
+    var month = currentDate.getMonth() -i;
+    var year = currentDate.getFullYear();
+    if(month < 0){
+      month+= 12;
+      year--;
+    }
+    var monthDate = new Date(year, month,1);
+    var monthName = monthDate.toLocaleString('default', {month: 'long'});
+    monthNames.push(monthName);
+  }
+  monthNames.reverse();
+  return monthNames;
+}
+
+function getLastXMonthDates(x) {
+  var lastXMonths = [];
+  var currentDate = new Date();
+  for(var i = 0; i< x; i++){
+    var month = currentDate.getMonth() -i;
+    var year = currentDate.getFullYear();
+    if(month < 0){
+      month+= 12;
+      year--;
+    }
+    lastXMonths.push(year + '-'+month);
+  }
+  lastXMonths.reverse();
+  return lastXMonths;
+}
+
+function caclulateMonthlyTimesheetSums(timesheets){
+  let monthlySums = {};
+  timesheets.forEach(function (timesheet){
+      timesheet.timesheetEntries.forEach(timesheetEntry =>{
+        var entryDate = new Date(timesheetEntry.entryDate);
+        var year = entryDate.getFullYear();
+        var month = entryDate.getMonth();
+        var key = year + '-'+month;
+
+        if(!monthlySums[key]){
+          monthlySums[key] = {billableHours: 0, expenseAmount: 0, nonBillableHours: 0};
+        }
+
+        if(timesheet.project.categoryId === 3 || timesheet.project.categoryId === null){
+          monthlySums[key].billableHours += timesheetEntry.hoursBillable;
+          monthlySums[key].expenseAmount += timesheetEntry.expenseAmount;
+        }else{
+          monthlySums[key].nonBillableHours += (timesheetEntry.hoursBillable + timesheetEntry.hoursUnBillable);
+        }
+      })
+    }
+  );
+  return monthlySums;
 }
 </script>
 
