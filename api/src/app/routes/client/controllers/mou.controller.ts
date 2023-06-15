@@ -1,12 +1,20 @@
 import * as Koa from 'koa';
 import * as Router from 'koa-router';
 import { authorize } from '../../../services/common/authorize.service';
-import { retrieveMOUs, createMOU, deleteMOU } from '../../../services/client/mou.service';
+import { retrieveMOUs,retrieveMOUsAndAmounts, createMOU, deleteMOU } from '../../../services/client/mou.service';
 
 export const getMOUs = async (ctx: Koa.Context) => {
     try {
         const rfxTypes = await retrieveMOUs();
         ctx.body = rfxTypes;
+    } catch (err) {
+        ctx.throw(err.message);
+    }
+};
+
+export const getMOUsAndAmounts = async (ctx: Koa.Context) => {
+    try {
+        ctx.body = await retrieveMOUsAndAmounts();
     } catch (err) {
         ctx.throw(err.message);
     }
@@ -37,6 +45,7 @@ const routerOpts: Router.IRouterOptions = {
 const router: Router = new Router(routerOpts);
 
 router.get('/', authorize, getMOUs);
+router.get('/amounts', authorize, getMOUsAndAmounts);
 router.post('/', authorize, createMOUAction);
 router.delete('/:id', authorize, deleteMOUByAction);
 

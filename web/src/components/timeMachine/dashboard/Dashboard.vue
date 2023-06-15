@@ -17,14 +17,19 @@
           <v-card-title style="padding: 0px 0px; font-size:24px">Total Projects</v-card-title>
           <div v-if="totalProjects>-1" style="font-size:32px; font-weight:bold; padding: 10px 0px" >{{totalProjects}}</div>
         </v-card>
-        <v-card color="#009688" dark class="ma-4 pa-4" elevation="1" style="width:25%;">
+        <v-card color="#009688" dark class="ma-4 pa-4" elevation="1" style="width:25%;" >
           <v-card-title style="padding: 0px 0px; font-size:24px">Projects Added this Month</v-card-title>
           <div v-if="newProjects>-1" style="font-size:32px; font-weight:bold; padding: 10px 0px" >{{newProjects}}</div>
         </v-card>
-        <v-card color="#03a9f4" dark class="ma-4 pa-4" elevation="1" style="width:25%;">
+        <v-tooltip top>
+        <template v-slot:activator="{ on, attrs }">
+        <v-card color="#03a9f4" dark class="ma-4 pa-4" elevation="1" style="width:25%;" v-bind="attrs" v-on="on">
           <v-card-title style="padding: 0px 0px; font-size:24px">Projects Actively Billed</v-card-title>
           <div v-if="newProjects>-1" style="font-size:32px; font-weight:bold; padding: 10px 0px" >{{activeProjects}}</div>
         </v-card>
+        </template>
+        <span>Based on Last 6 Months</span>
+        </v-tooltip>
         <v-card color="#ce61d2" dark class="ma-4 pa-4 custom-card" elevation="1" style="width:25%;">
           <v-card-title style="padding: 0px 0px; font-size:24px">Example</v-card-title>
           <div style="font-size:32px; font-weight:bold; padding: 10px 0px">101</div>
@@ -32,17 +37,26 @@
       </div>
       </v-sheet>
       <br>
-      <v-card>
-        <v-layout>
-          <v-flex md12>
-            <h1 style="padding:20px 10px 0px 10px">User Specific</h1>
+      <v-card>  
+        <v-layout row style="display:flex">
+          <v-flex shrink>
+          <h1 style="padding:20px 10px 0px 10px">User Specific</h1>
+          </v-flex>
+          <v-flex shrink style="align-items:center;display:flex; padding:10px 40px 0px">
+          <v-btn-toggle v-model="toggle_exclusive" >
+            <v-btn @click="changeUserMonths(6)">
+              6M
+            </v-btn>
+            <v-btn @click="changeUserMonths(3)">
+              3M
+            </v-btn>
+            <v-btn @click="changeUserMonths(1)">
+              1M
+            </v-btn>
+          </v-btn-toggle>
           </v-flex>
 
-          <v-flex style="align-content:right; padding: 10px 0px 0px 0px">
-            <!--<v-flex md5 class="headerinfo">
-              For User:
-            </v-flex>-->
-            <v-flex md7 style="padding: 0px 0px 0px 0px;width: 240px;">
+          <v-flex grow justify-end style="text-align:end; flex-wrap:wrap;display:flex; align-items:center;">
               <v-select
                 class="currentuser"
                 v-model="userId"
@@ -51,11 +65,11 @@
                 item-value="id"
                 item-text="contact.fullName"
                 label="User"
-                style="width: 200px"
+                style="width:200px; text-align:end; flex-wrap:wrap;display:flex; flex:none"
               ></v-select>
-            </v-flex>
           </v-flex>
-        </v-layout>
+          </v-layout>
+        
           
         <div class="d-flex flex-row">
           <v-card color="#ffffff" class="ma-4 pa-4" width="20%" elevation="1" height="500px">
@@ -183,9 +197,24 @@ export default {
 
       this.newProjects = this.$store.state.allProjects.filter(filterByDate).length;
 
+      
       const d = new Date();
-      const timesheetDate = new Date(d.getFullYear(), d.getMonth()-5, 1); //6 months
-      let dateString = timesheetDate.getFullYear() + "-"+ timesheetDate.getMonth()+"-"+timesheetDate.getDate();
+      console.log("CurrentDate: ");
+      console.log(d);
+
+      var sixMonthsAgo = new Date(d.getFullYear(), d.getMonth()-5, 1); //6 months
+      /*console.log("SixMonthsPrior: ");
+      console.log(sixMonthsAgo);
+      if(d.getMonth()<6){
+        sixMonthsAgo.setFullYear(sixMonthsAgo.getFullYear() - 1);
+        sixMonthsAgo.setMonth(sixMonthsAgo.getMonth()+12);
+      }
+
+      const timesheetDate = new Date(d.getFullYear(), d.getMonth()-6, 1); //6 months
+      console.log("SixMonthsPrior Corrected: ");
+      console.log(timesheetDate);*/
+
+      let dateString = sixMonthsAgo.getFullYear() + "-"+ (sixMonthsAgo.getMonth()+1)+"-"+sixMonthsAgo.getDate();
 
       await this.$store.dispatch('fetchAllTimesheetsFromDate', { date: dateString })
       console.log(this.$store.state.allTimesheetsFromDate[0]);
@@ -214,7 +243,7 @@ export default {
       console.log(res.length);
       console.log(res);*/
 
-      var xMonths = 6; //default for now, allow this to be modified in the future
+      var xMonths = this.userMonthsSelected; //default for now, allow this to be modified in the future
       var monthNames = getLastXMonthNames(xMonths);
       var monthlySums = caclulateMonthlyTimesheetSums(res);
       var lastXMonths = getLastXMonthDates(xMonths);
@@ -250,7 +279,12 @@ export default {
       this.expenseOverTimeChart.update();
       
       return null;
-      }
+    },
+    changeUserMonths(number){
+      console.log("changeUserMonths")
+      this.userMonthsSelected = number;
+      this.onChangeUser(this.userId);
+    }
     },
   computed:{ 
     userList() {
@@ -274,6 +308,8 @@ export default {
   },
   data() {
     return {
+      userMonthsSelected: 6,
+      toggle_exclusive: 0,
       expenseOverTimeChart: null,
       billingOverTimeChart: null,
       billableDoughnutChart: null,
@@ -310,6 +346,11 @@ function filterByDate(item) {
   }
   return false;
 }
+
+/*function changeUserMonths(){
+    this.userMonthsSelected = 3;
+    this.onChangeUser(this.userId);
+  }*/
 
 function getLastXMonthNames(x) {
   let currentDate = new Date();
@@ -376,4 +417,9 @@ function caclulateMonthlyTimesheetSums(timesheets){
   outline-color: black !important;
   box-shadow: 10px !important;
 }
+
+.v-flex{
+  display: flex;
+}
+
 </style>

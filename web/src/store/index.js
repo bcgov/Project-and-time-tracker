@@ -239,6 +239,9 @@ const store = new Vuex.Store({
     fetchMOUs(state, data) {
       state.mouList = data;
     },
+    fetchMOUAmounts(state, data) {
+      state.mouListAmounts = data;
+    },
     addClient() {
       throw new Error("Not implemented!");
     },
@@ -863,6 +866,13 @@ const store = new Vuex.Store({
         // console.log('fetch MOUs', res);
         const content = res.data;
         ctx.commit("fetchMOUs", content);
+      });
+    },
+    fetchMOUAmounts(ctx, req) {
+      $http.get(`${API_URI}/MOU/amounts`).then(res => {
+        // console.log('fetch MOUs', res);
+        const content = res.data;
+        ctx.commit("fetchMOUAmounts", content);
       });
     },
     async createMOU(ctx, req) {

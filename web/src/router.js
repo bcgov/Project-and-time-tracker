@@ -6,6 +6,8 @@ import store from '@/store';
 import Authorize from './components/login/Authorize.vue';
 import Project from './components/timeMachine/projects/Project.vue';
 import Dashboard from './components/timeMachine/dashboard/Dashboard.vue';
+import Reports from './components/timeMachine/reports/Reports.vue';
+import ReportMOUAmounts from './components/timeMachine/reports/MOUAmounts.vue';
 import TimeMachineIntakeForm from './components/timeMachine/projectIntake/IntakeForm.vue';
 import TimeMachineIntakeIntro from './components/timeMachine/projectIntake/IntakeIntroduction.vue';
 import TimeMachineFinanceExport from './components/timeMachine/projects/ProjectFinanceExport.vue';
@@ -53,7 +55,21 @@ const routes = [
      name: 'dashboard',
      component: Dashboard,
      meta: { requiresAuth: true, roles: ['PSB_User', 'PSB_Admin', 'PSB_Intake_User'] },
-   },
+  },
+  {
+    exact: true,
+    path: '/reports',
+    name: 'reports',
+    component: Reports,
+    meta: { requiresAuth: true, roles: ['PSB_User', 'PSB_Admin', 'PSB_Intake_User'] },
+  },
+  {
+    exact: true,
+    path: '/reports/MOUAmounts',
+    name: 'ReportMOUAmounts',
+    component: ReportMOUAmounts,
+    meta: { requiresAuth: true, roles: ['PSB_User', 'PSB_Admin', 'PSB_Intake_User'] },
+  },
   {
     exact: true,
     path: '/intake-intro',

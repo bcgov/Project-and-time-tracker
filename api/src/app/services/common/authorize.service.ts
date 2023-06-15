@@ -50,6 +50,7 @@ const commonForAllUsers = [
   'GET/api/rfx-type/:id',
   'GET/api/user/',
   'GET/api/MOU/',
+  'GET/api/MOU/amounts',
   'POST/api/intake/',
 ];
 

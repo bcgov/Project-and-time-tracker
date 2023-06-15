@@ -1,6 +1,11 @@
 import { getRepository, Repository } from 'typeorm';
 import { MOU } from '../../models/entities/mou.entity';
 import { retrieveProjectById, updateProject } from './project.service';
+import { FinanceExport } from "../../models/entities";
+
+const financeRepo = (): Repository<FinanceExport> => {
+  return getRepository(FinanceExport);
+};
 
 const mouRepo = (): Repository<MOU> => {
   return getRepository(MOU);
@@ -10,6 +15,40 @@ export const retrieveMOUs = async () => {
   const repo = mouRepo();
   return await repo.createQueryBuilder('m').orderBy('m.name', 'ASC').getMany();
 };
+
+export const retrieveMOUsAndAmounts =async () => {
+  console.log("retrieveMOUsAndAmounts");
+  const financeRep = financeRepo();
+  const prevBills = await financeRep
+    .createQueryBuilder("f")
+    .select("f.mouId", "mouId")
+    .addSelect("SUM(f.totalAmount)", "sum")
+    .groupBy("f.mouId")
+    .getRawMany();
+    console.log(prevBills);
+  
+  const mouRep = mouRepo();
+  const mouList = await mouRep
+    .createQueryBuilder('m')
+    .orderBy('m.name', 'ASC')
+    .getMany();
+
+  const filteredMouList = mouList.filter(mou => mou.billingCount != null)
+  console.log(filteredMouList);
+  const newMouList = [];
+  
+  filteredMouList.forEach(mou => {
+    console.log("Searching for MOU: "+ mou.id);
+    const amounts = prevBills.find(bill => bill.mouId == mou.id);
+    console.log(amounts);
+
+    const newMou = {mouId: mou.id, name: mou.name, mouAmount: 0/*amounts.mouAmount*/, mouBilled:amounts.sum}
+    newMouList.push(newMou)
+  })
+
+  console.log(newMouList);
+  return newMouList;
+}
 
 // TODO - CHANGE THIS!  Do a lookup first, and if so, assign.
 // Otherwise, create.
