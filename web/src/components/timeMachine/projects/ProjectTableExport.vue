@@ -267,7 +267,7 @@ export default {
       if (vm.$refs.spinner) {
         vm.$refs.spinner.open();
       }
-      await this.$store.dispatch("fetchTimesheetProjects", postData).then(
+      await this.$store.dispatch("fetchTimesheetProjectsFromMonth", postData).then(
         res => {
           const timeSheetProjects = vm.$store.state.allProjects.filter(el =>
             res.some(f => f.id === el.id)
@@ -293,14 +293,14 @@ export default {
         }
       );
 
-      await this.$store.dispatch("fetchTimesheetProjectsOld", postData).then(
+      await this.$store.dispatch("fetchTimesheetProjectsPriorToMonth", postData).then(
         res => {
           //const timeSheetProjects = vm.$store.state.allProjects.filter(el => res.some(f => f.id === el.id));
           //vm.projectsListOld = this.groupBy(timeSheetProjects, timesheetProject => timesheetProject.mou.id);
           const jsonObject = res.map(JSON.stringify);
           const uniqueSet = new Set(jsonObject);
           const uniqueArray = Array.from(uniqueSet).map(JSON.parse);
-          const result = uniqueArray.filter(x => x.cnt == 7);
+          console.log(uniqueArray);
           vm.projectsListOld = uniqueArray;
           if (vm.$refs.spinner) {
             vm.$refs.spinner.close();
@@ -312,6 +312,7 @@ export default {
             vm.$refs.snackbar.displaySnackbar("error", message);
           } catch (ex) {
             // vm.$refs.snackbar.displaySnackbar('error', 'Failed to update');
+            console.log(ex);
           }
           if (vm.$refs.spinner) {
             vm.$refs.spinner.close();
