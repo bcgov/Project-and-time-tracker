@@ -300,7 +300,7 @@ export default {
           const jsonObject = res.map(JSON.stringify);
           const uniqueSet = new Set(jsonObject);
           const uniqueArray = Array.from(uniqueSet).map(JSON.parse);
-          console.log(uniqueArray);
+          //console.log(uniqueArray);
           vm.projectsListOld = uniqueArray;
           if (vm.$refs.spinner) {
             vm.$refs.spinner.close();
