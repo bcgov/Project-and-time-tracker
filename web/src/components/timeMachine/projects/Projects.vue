@@ -7,7 +7,7 @@
       </v-flex>
        <v-flex md8><v-radio-group class="right-position" row v-model="selected">
         <v-radio label="My Projects" value="My Projects"></v-radio>
-       <v-radio v-if="($store.state.activeRoles && $store.state.activeRoles.role && $store.state.activeRoles.role.includes('PSB_Admin')? $store.state.activeRoles.role.includes('PSB_Admin'):'')||($store.state.activeRoles && $store.state.activeRoles.role && $store.state.activeRoles.role.includes('PSB_Intake_User')?$store.state.activeRoles.role.includes('PSB_Intake_User'):'')" label="All Projects" value="All Projects"></v-radio>
+        <v-radio v-if="isAdmin" label="All Projects" value="All Projects"></v-radio>
         <v-radio label="Archived Projects" value="Archived Projects"></v-radio>
       </v-radio-group></v-flex></v-flex>
     </v-layout>
@@ -27,6 +27,7 @@
 import Material from 'vuetify/es5/util/colors';
 import ProjectsTable from './ProjectsTable.vue';
 import ArchivedProjectsTable from './ArchivedProjectsTable.vue';
+import { getRoles } from '../../../modules/security/init';
 
 import './projects.styl';
 
@@ -37,9 +38,17 @@ export default {
   data: () => ({
     color: Material,
     selected: 'My Projects',
-
+    isAdmin: false,
   }),
   computed: {
+  },
+  methods: {
+    async setAdmin() {
+      this.isAdmin = getRoles().includes('PSB_Admin');
+    },
+  },
+  created() {
+    this.setAdmin();
   },
 };
 </script>
