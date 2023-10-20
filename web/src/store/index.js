@@ -267,17 +267,17 @@ const store = new Vuex.Store({
     addUser() {
       throw new Error("Not implemented!");
     },
-    addMinistry(state, data) {
-      console.log("TODO - NOT SURE IF COMPLETE - addMinistry MUTATION called", { state, data });
-      // state.ministries = data;
-      // throw new Error('Not implemented');
-    },
     updateUser(state, data) {
       // throw new Error('Not implemented!');
       console.log("TODO", { users: state.users, data });
     },
     deleteUser() {
       throw new Error("Not implemented!");
+    },
+    addMinistry(state, data) {
+      console.log("TODO - NOT SURE IF COMPLETE - addMinistry MUTATION called", { state, data });
+      // state.ministries = data;
+      // throw new Error('Not implemented');
     },
     // Intake requests
     fetchIntakeRequests(state, data) {

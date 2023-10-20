@@ -5,4 +5,5 @@ export interface IUser {
     referenceId: string;
     contact: IContact;
     role: string;
+    isActive: boolean;
 }

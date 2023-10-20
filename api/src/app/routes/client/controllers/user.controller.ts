@@ -1,6 +1,6 @@
 import * as Koa from 'koa';
 import * as Router from 'koa-router';
-import { retrieveUsers, retrieveUsersWithFinanceCodes} from '../../../services/client/user.service';
+import {retrieveUsersWithFinanceCodes, retrieveActiveUsers, retrieveInactiveUsers} from '../../../services/client/user.service';
 import { Role } from '../../roles';
 import { authorize } from '../../../services/common/authorize.service';
 
@@ -21,8 +21,25 @@ import { authorize } from '../../../services/common/authorize.service';
 
 export const getUsers = async (ctx: Koa.Context) => {
   try {
-    
     const users = await retrieveUsersWithFinanceCodes();
+    ctx.body = users;
+  } catch (err) {
+    ctx.throw(err.message);
+  }
+};
+
+export const getActiveUsers = async (ctx: Koa.Context) => {
+  try {
+    const users = await retrieveActiveUsers();
+    ctx.body = users;
+  } catch (err) {
+    ctx.throw(err.message);
+  }
+};
+
+export const getInactiveUsers = async (ctx: Koa.Context) => {
+  try {
+    const users = await retrieveInactiveUsers();
     ctx.body = users;
   } catch (err) {
     ctx.throw(err.message);
@@ -37,5 +54,7 @@ const routerOpts: Router.IRouterOptions = {
 const router: Router = new Router(routerOpts);
 
 router.get('/', authorize, getUsers);
+router.get('/getActive', authorize, getActiveUsers);
+router.get('/getInactive', authorize, getInactiveUsers);
 
 export default router;

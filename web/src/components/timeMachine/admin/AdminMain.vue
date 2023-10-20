@@ -28,6 +28,15 @@
             </v-list-tile-content>
           </v-list-tile>
 
+          <v-list-tile avatar>
+            <v-list-tile-content>
+              <v-list-tile-title>
+                <router-link to="admin/users">Set active users</router-link>
+              </v-list-tile-title>
+              <v-list-tile-sub-title>Set users as active or inactive</v-list-tile-sub-title>
+            </v-list-tile-content>
+          </v-list-tile>
+
            <v-list-tile avatar>
             <v-list-tile-content>
               <v-list-tile-title>

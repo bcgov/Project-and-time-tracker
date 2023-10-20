@@ -16,6 +16,7 @@ import AdminMain from './components/timeMachine/admin/AdminMain.vue';
 import AdminMinistries from './components/timeMachine/admin/AdminMinistries.vue';
 import AdminFinanceCodes from './components/timeMachine/admin/AdminFinanceCodes.vue';
 import AdminHourlyRates from './components/timeMachine/admin/HourlyRates.vue';
+import AdminUsers from './components/timeMachine/admin/AdminUsers.vue';
 import AdminRevenueRates from './components/timeMachine/admin/RevenueRates.vue';
 import AdminRemoveMOU from './components/timeMachine/admin/RemoveMOU.vue';
 import AdminRfxType from './components/timeMachine/admin/AdminRfxType.vue';
@@ -168,6 +169,13 @@ const routes = [
     path: '/admin/hourly-rates',
     name: 'admin-hourly-rates',
     component: AdminHourlyRates,
+    meta: { requiresAuth: true, roles: ['PSB_Admin'] },
+  },
+  {
+    exact: true,
+    path: '/admin/users',
+    name: 'admin-users',
+    component: AdminUsers,
     meta: { requiresAuth: true, roles: ['PSB_Admin'] },
   },
   {

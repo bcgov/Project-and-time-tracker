@@ -14,4 +14,7 @@ export class User {
 
   @Column({ type: 'text', nullable: true })
   role: string;
+
+  @Column({ type: 'boolean', nullable: true })
+  isActive: boolean;
 }

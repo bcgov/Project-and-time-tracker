@@ -16,6 +16,46 @@ export const retrieveUsers = async () => {
   return await repo.find();
 };
 
+export const retrieveActiveUsers = async () => {
+  const repo = userRepo();
+  return await repo
+  .createQueryBuilder('u')
+  .innerJoin('u.contact', 'c')
+  .select([
+    'u.id',
+    'u.referenceId',
+    'u.role',
+    'u.isActive',
+    'c.fullName',
+    'c.hourlyRate',
+    'c.revenueRate',
+    'c.id',
+  ])
+  .orderBy('c.fullName', 'ASC')
+  .where('u."isActive" = :isActive:', { isActive: true })
+  .getMany();
+};
+
+export const retrieveInactiveUsers = async () => {
+  const repo = userRepo();
+  return await repo
+  .createQueryBuilder('u')
+  .innerJoin('u.contact', 'c')
+  .select([
+    'u.id',
+    'u.referenceId',
+    'u.role',
+    'u.isActive',
+    'c.fullName',
+    'c.hourlyRate',
+    'c.revenueRate',
+    'c.id',
+  ])
+  .orderBy('c.fullName', 'ASC')
+  .where('u."isActive" = :isActive:', { isActive: false })
+  .getMany();
+};
+
 export const retrieveUserById = async (id: string) => {
   const repo = userRepo();
   const res = await repo.findOne(id);
@@ -34,6 +74,7 @@ export const retrieveUserByReferenceId = async (id: string) => {
     .getOne();
 };
 
+
 export const retrieveUsersWithFinanceCodes = async () => {
   const repo = userRepo();
   const users = await repo
@@ -43,6 +84,7 @@ export const retrieveUsersWithFinanceCodes = async () => {
       'u.id',
       'u.referenceId',
       'u.role',
+      'u.isActive',
       'c.fullName',
       'c.hourlyRate',
       'c.revenueRate',
