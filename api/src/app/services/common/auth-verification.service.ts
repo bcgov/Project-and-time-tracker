@@ -11,9 +11,12 @@ import {
   updateUser,
 } from '../client/user.service';
 import { IUser } from '../../models/interfaces/i-user';
-import { createContact } from '../client/contact.service';
+import { createContact, updateContact } from '../client/contact.service';
 import { IContact } from '../../models/interfaces/i-contact';
 import { IAuth } from '../../models/interfaces/i-auth';
+import { IFinanceCodes } from '../../models/interfaces/i-finance-codes'; 
+//import { FinanceCodes } from '../../models/entities/financeCodes.entity';
+import { retrieveFinanceCodeByID } from '../client/financeCode.service';
 
 // Token validation done in the app.ts file. all the requests go through this function
 export const validateToken = async (
@@ -105,15 +108,25 @@ export const validateToken = async (
 const verifyAndCreateOrUpdateUser = async (authData: IAuth, data: any) => {
   // console.log("verifyAndCreateOrUpdateUser");
   const user = await retrieveUserByReferenceId(data.sub);
+  //console.log(data);
   if (!user) {
     console.log(
       'ARC - User does not exist, creating contact with name: ',
       authData.fullName
     );
+    const financeCode: any = await retrieveFinanceCodeByID(3);
+    //let financeCode = <IFinanceCodes> {id: '3'}
     const contact: any = await createContact(<IContact>{
       fullName: authData.fullName,
       contactType: 'user',
+      email:data.email,
+      //financeCode,//financeCodesId:  3,
+      hourlyRate: 100,
     });
+    let field = {financeCodes: '3'}
+    await updateContact(contact.id, field);
+    let field2 = {hourlyRate: 100}
+    await updateContact(contact.id, field2);
     console.log('ARC - Created contact.  ID: ', contact.id);
     const createdUser = await createUser(<IUser>{
       referenceId: authData.referenceId,

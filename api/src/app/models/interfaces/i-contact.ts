@@ -18,4 +18,5 @@ export interface IContact {
   postalCode: string;
   roleName: string;
   financeCodes: IFinanceCodes;
+  hourlyRate: number;
 }

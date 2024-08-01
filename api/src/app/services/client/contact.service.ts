@@ -30,6 +30,10 @@ export const updateContact = async (id: string, fields: any) => {
   if (!contact) {
     throw Error('contact not found');
   }
+
+  //console.log("updateContact");
+  //console.log(fields);
+
   const updatedContact = await repo.merge(contact, fields);
   updatedContact.dateModified = new Date();
 

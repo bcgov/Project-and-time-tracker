@@ -22,6 +22,15 @@ export const retrieveAllFinanceCodes = async () => {
     .getMany();
 };
 
+export const retrieveFinanceCodeByID = async (id: number,) => {
+  const repo = financeCodeRepo();
+  const res = await repo.findOne(id);
+  if (!res) {
+    throw Error(`Finance Code not found for the id specified: ${id}`);
+  }
+  return res;
+}
+
 export const deleteFinanceCodes = async (id: string) => {
   const repo = financeCodeRepo();
   const fincode = await repo.findOne(id);
