@@ -1,43 +1,43 @@
 /**
  * One store to rule them all...
  */
-import Vue from "vue";
-import Vuex from "vuex";
+import Vue from 'vue';
+import Vuex from 'vuex';
 
-import merge from "object-merge";
+import merge from 'object-merge';
 
 // Menu items
-import menu from "@/menu";
+import moment from 'moment';
+import menu from '@/menu';
 // Env config
-import config from "@/config";
+import config from '@/config';
 // Security store module
-import security from "@/modules/security/store";
+import security from '@/modules/security/store';
 
 // import axios from 'axios';
-import $http from "@/modules/axios";
-import moment from "moment";
+import $http from '@/modules/axios';
 
 // Import dtos
-import IntakeRequestDto from "@/domain/models/Intake.dto";
+import IntakeRequestDto from '@/domain/models/Intake.dto';
 
-import HashTable from "@/utils/HashTable";
-import RFxDto from "@/domain/models/RFx.dto";
+import HashTable from '@/utils/HashTable';
+import RFxDto from '@/domain/models/RFx.dto';
 
 // For non-local dev get the API from the window location and
 // add /api. This assumes OCP is using a path based route. This way
 // it does not need to be changed for dev/test/prod.
 const API_URI = process.env.NODE_ENV === 'development'
-? (process.env.VUE_APP_API_URI || "http://localhost:3000/api")
-: `${window.location.origin}/api`;
+  ? (process.env.VUE_APP_API_URI || 'http://localhost:3000/api')
+  : `${window.location.origin}/api`;
 
-console.log("API URL:", { API_URI });
+console.log('API URL:', { API_URI });
 
 Vue.use(Vuex);
 
-if (typeof security === "undefined") throw new Error("Security cannot be undefined");
+if (typeof security === 'undefined') throw new Error('Security cannot be undefined');
 const store = new Vuex.Store({
   modules: {
-    security
+    security,
     // app
   },
   state: {
@@ -74,7 +74,7 @@ const store = new Vuex.Store({
     intakeRequests: [],
     intakeLoading: false,
     timesheetProjects: [],
-    timesheetProjectsOld:[],
+    timesheetProjectsOld: [],
     downloadedPdfs: [],
     // Projects component
     activeProjectId: null,
@@ -104,12 +104,12 @@ const store = new Vuex.Store({
     intakeRisk: false,
     timesheetsWeek: {
       startDate: null,
-      endDate: null
+      endDate: null,
     },
     drawerComments: false,
     drawerCommentsEntries: [],
     verifyTokenServer: null,
-    timeLogOfSelectedDate: null
+    timeLogOfSelectedDate: null,
   },
   /**
    * Mutations are functions that are used to modify store data - they should be pure.
@@ -118,8 +118,8 @@ const store = new Vuex.Store({
     setAuth(state, { user, token }) {
       state.user = user;
       state.token = token;
-      global.helper.ls.set("user", user);
-      global.helper.ls.set("token", token);
+      global.helper.ls.set('user', user);
+      global.helper.ls.set('token', token);
     },
     setMenu(state, data) {
       state.menu = data;
@@ -130,19 +130,19 @@ const store = new Vuex.Store({
     setFeedbackMessages(state, type, body) {
       state.message = {
         type,
-        body
+        body,
       };
     },
     // Timesheet Dates
     setTimesheetsWeek(state, data) {
       state.timesheetsWeek = {
         startDate: data.startDate,
-        endDate: data.endDate
+        endDate: data.endDate,
       };
     },
     // Verify data
     verifyTokenServer(state, data) {
-      console.log('verifyTokenServer called', {state, data})
+      console.log('verifyTokenServer called', { state, data });
       state.verifyTokenServer = data;
     },
     // Master data
@@ -239,25 +239,25 @@ const store = new Vuex.Store({
       state.mouList = data;
     },
     addClient() {
-      throw new Error("Not implemented!");
+      throw new Error('Not implemented!');
     },
     updateClient() {
-      throw new Error("Not implemented!");
+      throw new Error('Not implemented!');
     },
     deleteClient() {
-      throw new Error("Not implemented!");
+      throw new Error('Not implemented!');
     },
     fetchContacts(state, data) {
       state.contacts = data;
     },
     addContact() {
-      throw new Error("Not implemented!");
+      throw new Error('Not implemented!');
     },
     updateContact() {
-      throw new Error("Not implemented!");
+      throw new Error('Not implemented!');
     },
     deleteContact() {
-      throw new Error("Not implemented!");
+      throw new Error('Not implemented!');
     },
     // User contacts (profiles?)
     fetchUsers(state, data) {
@@ -265,23 +265,23 @@ const store = new Vuex.Store({
       state.users = data;
     },
     addUser() {
-      throw new Error("Not implemented!");
+      throw new Error('Not implemented!');
     },
     addMinistry(state, data) {
-      console.log("TODO - NOT SURE IF COMPLETE - addMinistry MUTATION called", { state, data });
+      console.log('TODO - NOT SURE IF COMPLETE - addMinistry MUTATION called', { state, data });
       // state.ministries = data;
       // throw new Error('Not implemented');
     },
     updateUser(state, data) {
       // throw new Error('Not implemented!');
-      console.log("TODO", { users: state.users, data });
+      console.log('TODO', { users: state.users, data });
     },
     deleteUser() {
-      throw new Error("Not implemented!");
+      throw new Error('Not implemented!');
     },
     // Intake requests
     fetchIntakeRequests(state, data) {
-      Vue.set(state, "intakeRequests", [...data]);
+      Vue.set(state, 'intakeRequests', [...data]);
     },
     fetchIntakeRequest(state, data) {
       // TODO: Overwrite intakeRequests entry
@@ -311,21 +311,21 @@ const store = new Vuex.Store({
     updateProctLog() {},
     updateFinanceCodes() {},
     approveIntakeRequest() {
-      throw new Error("Not implemented!");
+      throw new Error('Not implemented!');
     },
     assignContactToIntakeRequest() {
-      throw new Error("Not implemented!");
+      throw new Error('Not implemented!');
     },
     createMOU(state, data) {
-      console.log("createMOU mutation", data);
+      console.log('createMOU mutation', data);
       // state.mouList = data;
       state.mouList.push(data);
     },
     // Projects
     fetchProjects(state, data) {
-      state.projects = []; //reset state, helps when archiving/deleting.
+      state.projects = []; // reset state, helps when archiving/deleting.
       if (data instanceof Array) {
-        data.forEach(project => {
+        data.forEach((project) => {
           project.projectLeadUserId = project.leadUserId;
 
           project.projectBackupUserId = project.backupUserId;
@@ -349,9 +349,9 @@ const store = new Vuex.Store({
       state.archivedProjects = data;
     },
     fetchAllProjects(state, data) {
-      state.allProjects = []; //reset state, helps when archiving/deleting.
+      state.allProjects = []; // reset state, helps when archiving/deleting.
       if (data instanceof Array) {
-        data.forEach(project => {
+        data.forEach((project) => {
           project.projectLeadUserId = project.leadUserId;
 
           project.projectBackupUserId = project.backupUserId;
@@ -368,17 +368,17 @@ const store = new Vuex.Store({
       }
     },
     addProject() {
-      throw new Error("Not implemented!");
+      throw new Error('Not implemented!');
     },
     updateProject() {},
     deleteProject() {
-      throw new Error("Not implemented!");
+      throw new Error('Not implemented!');
     },
     assignResourceToProject() {
-      throw new Error("Not implemented!");
+      throw new Error('Not implemented!');
     },
     assignContactToProject() {
-      throw new Error("Not implemented!");
+      throw new Error('Not implemented!');
     },
     assignProjectLead() {},
     assignProjectBackup() {},
@@ -394,7 +394,7 @@ const store = new Vuex.Store({
     // Project RFx
     fetchProjectRFxData(state, data) {
       // if it's an empty array, need to add blank rfX type
-      console.log("fetchProjectRFxData", { data });
+      console.log('fetchProjectRFxData', { data });
       if (data && data.length === 0) {
         data.push(new RFxDto());
       }
@@ -409,7 +409,7 @@ const store = new Vuex.Store({
         if (replace === true) {
           state.timesheets = data;
         } else {
-          data.forEach(timesheet => {
+          data.forEach((timesheet) => {
             const exists = state.timesheets.filter(item => item.id === timesheet.id) || [];
 
             if (exists.length > 0) {
@@ -465,46 +465,45 @@ const store = new Vuex.Store({
       }
     },
     deleteTimesheet(state, data) {
-      const deletedTimesheetArr =
-        state.timesheets.filter(item => item.id !== data.timesheetId) || [];
+      const deletedTimesheetArr = state.timesheets.filter(item => item.id !== data.timesheetId) || [];
       state.timesheets = deletedTimesheetArr;
     },
     addTimesheetEntry() {
-      throw new Error("Not implemented!");
+      throw new Error('Not implemented!');
     },
     addWeekTimesheetEntries() {
-      throw new Error("Not implemented!");
+      throw new Error('Not implemented!');
     },
     updateTimesheetEntry() {
-      throw new Error("Not implemented!");
+      throw new Error('Not implemented!');
     },
     updateWeekTimesheetEntries() {
-      throw new Error("Not implemented!");
+      throw new Error('Not implemented!');
     },
     deleteTimesheetEntry() {
-      throw new Error("Not implemented!");
+      throw new Error('Not implemented!');
     },
     deleteWeekTimesheetEntries() {
-      throw new Error("Not implemented!");
+      throw new Error('Not implemented!');
     },
     approveTimesheetEntry() {
-      throw new Error("Not implemented!");
+      throw new Error('Not implemented!');
     },
     approveWeekTimesheetEntries() {
-      throw new Error("Not implemented!");
+      throw new Error('Not implemented!');
     },
     addTimesheetEntryComment() {
-      throw new Error("Not implemented!");
+      throw new Error('Not implemented!');
     },
     updateTimesheetEntryComment() {
-      throw new Error("Not implemented!");
+      throw new Error('Not implemented!');
     },
     deleteTimesheetEntryComment() {
-      throw new Error("Not implemented!");
+      throw new Error('Not implemented!');
     },
     archiveProject(state, data) {
-      console.log("archiveProject response", data);
-    }
+      console.log('archiveProject response', data);
+    },
   },
   /**
    * This layer uses our service classes to make AJAX requests to the backend.
@@ -514,16 +513,16 @@ const store = new Vuex.Store({
   actions: {
     checkAuth(ctx) {
       const data = {
-        user: global.helper.ls.get("user"),
-        token: global.helper.ls.get("token")
+        user: global.helper.ls.get('user'),
+        token: global.helper.ls.get('token'),
       };
-      ctx.commit("setAuth", data);
+      ctx.commit('setAuth', data);
     },
     // Timesheet Dates
     setTimesheetsWeek(ctx, data) {
-      ctx.commit("setTimesheetsWeek", {
+      ctx.commit('setTimesheetsWeek', {
         startDate: data.startDate,
-        endDate: data.endDate
+        endDate: data.endDate,
       });
     },
     // Verification
@@ -532,10 +531,10 @@ const store = new Vuex.Store({
       console.log(API_URI); */
       const api = await $http
         .get(`${API_URI}/auth/verify`)
-        .then(res => {
+        .then((res) => {
           const content = res.data;
           // console.log(res);
-          ctx.commit("verifyTokenServer", content);
+          ctx.commit('verifyTokenServer', content);
           return Promise.resolve(content);
         })
         .catch(err => Promise.reject(err.response));
@@ -544,32 +543,32 @@ const store = new Vuex.Store({
     },
     // Master data
     fetchMinistries(ctx) {
-      $http.get(`${API_URI}/ministry`).then(res => {
+      $http.get(`${API_URI}/ministry`).then((res) => {
         const content = res.data;
-        ctx.commit("fetchMinistries", content);
+        ctx.commit('fetchMinistries', content);
       });
     },
     // Returns archived ministries + unarchived
     fetchAllMinistries(ctx) {
-      $http.get(`${API_URI}/ministry/all`).then(res => {
+      $http.get(`${API_URI}/ministry/all`).then((res) => {
         const content = res.data;
-        ctx.commit("fetchAllMinistries", content);
+        ctx.commit('fetchAllMinistries', content);
       });
     },
     fetchAllFinanceCodes(ctx) {
-      $http.get(`${API_URI}/financecode/all`).then(res => {
+      $http.get(`${API_URI}/financecode/all`).then((res) => {
         const content = res.data;
-        console.log("fincodes:", content);
-        ctx.commit("fetchAllFinanceCodes", content);
+        console.log('fincodes:', content);
+        ctx.commit('fetchAllFinanceCodes', content);
       });
     },
     async addMinistry(ctx, req) {
       const body = req;
       const api = $http
         .post(`${API_URI}/ministry`, body)
-        .then(res => {
+        .then((res) => {
           const content = res.data;
-          ctx.commit("addMinistry", content);
+          ctx.commit('addMinistry', content);
           return Promise.resolve(res.data);
         })
         .catch(err => Promise.reject(err));
@@ -578,32 +577,32 @@ const store = new Vuex.Store({
     async updateMinistries(ctx, req) {
       const api = await $http
         .patch(`${API_URI}/ministry/${req.id}/update`, req)
-        .then(res => {
-          console.log("updateMinistires RESPONSE", { res });
+        .then((res) => {
+          console.log('updateMinistires RESPONSE', { res });
           return Promise.resolve(res.data);
         })
         .catch(err => Promise.reject(err));
       return Promise.resolve(api);
     },
     fetchintakeRiskQuestions(ctx) {
-      $http.get(`${API_URI}/project-risk`).then(res => {
+      $http.get(`${API_URI}/project-risk`).then((res) => {
         const content = res.data;
-        ctx.commit("fetchintakeRiskQuestions", content);
+        ctx.commit('fetchintakeRiskQuestions', content);
       });
     },
     fetchprojectRiskAnswers(ctx, req) {
-      $http.get(`${API_URI}/project-risk/${req.id}`).then(res => {
+      $http.get(`${API_URI}/project-risk/${req.id}`).then((res) => {
         const content = res.data;
-        ctx.commit("fetchprojectRiskAnswers", content);
+        ctx.commit('fetchprojectRiskAnswers', content);
       });
     },
     async fetchTimesheetById(ctx, req) {
       const body = req;
       const api = await $http
         .get(`${API_URI}/timesheet/${req.id}`, body)
-        .then(res => {
+        .then((res) => {
           const content = res.data;
-          ctx.commit("fetchTimesheetById", content);
+          ctx.commit('fetchTimesheetById', content);
           return Promise.resolve(content);
         })
         .catch(err => Promise.reject(err.response));
@@ -614,9 +613,9 @@ const store = new Vuex.Store({
       const body = req;
       const api = await $http
         .post(`${API_URI}/project/finance`, body)
-        .then(res => {
+        .then((res) => {
           const content = res.data;
-          ctx.commit("fetchFinanceExport", content);
+          ctx.commit('fetchFinanceExport', content);
           return Promise.resolve(content);
         })
         .catch(err => Promise.reject(err.response));
@@ -626,9 +625,9 @@ const store = new Vuex.Store({
       const body = req;
       const api = await $http
         .post(`${API_URI}/project/financeOld`, body)
-        .then(res => {
+        .then((res) => {
           const content = res.data;
-          ctx.commit("fetchFinanceExportOld", content);
+          ctx.commit('fetchFinanceExportOld', content);
           return Promise.resolve(content);
         })
         .catch(err => Promise.reject(err.response));
@@ -639,9 +638,9 @@ const store = new Vuex.Store({
       const body = req;
       const api = await $http
         .post(`${API_URI}/project/downloadFinancePdf`, body)
-        .then(res => {
+        .then((res) => {
           const content = res.data;
-          ctx.commit("downloadExportedPdf", content);
+          ctx.commit('downloadExportedPdf', content);
           return Promise.resolve(content);
         })
         .catch(err => Promise.reject(err.response));
@@ -651,9 +650,9 @@ const store = new Vuex.Store({
       const body = req;
       const api = await $http
         .post(`${API_URI}/project/dischargeFinanceRecord`, body)
-        .then(res => {
+        .then((res) => {
           const content = res.data;
-          ctx.commit("downloadExportedPdf", content);
+          ctx.commit('downloadExportedPdf', content);
           return Promise.resolve(content);
         })
         .catch(err => Promise.reject(err.response));
@@ -663,9 +662,9 @@ const store = new Vuex.Store({
       const body = req;
       const api = await $http
         .post(`${API_URI}/project/reGenerateFinanceRecord`, body)
-        .then(res => {
+        .then((res) => {
           const content = res.data;
-          ctx.commit("downloadExportedPdf", content);
+          ctx.commit('downloadExportedPdf', content);
           return Promise.resolve(content);
         })
         .catch(err => Promise.reject(err.response));
@@ -675,9 +674,9 @@ const store = new Vuex.Store({
       const body = req;
       const api = await $http
         .post(`${API_URI}/project/reinstateFinanceRecord`, body)
-        .then(res => {
+        .then((res) => {
           const content = res.data;
-          ctx.commit("reinstateFinanceRecords", content);
+          ctx.commit('reinstateFinanceRecords', content);
           return Promise.resolve(content);
         })
         .catch(err => Promise.reject(err.response));
@@ -687,7 +686,7 @@ const store = new Vuex.Store({
       const body = req;
       const api = await $http
         .get(`${API_URI}/project/${req.id}/by-user-id`)
-        .then(res => {
+        .then((res) => {
           const content = res.data;
           return Promise.resolve(content);
         })
@@ -699,9 +698,9 @@ const store = new Vuex.Store({
       const body = req;
       const api = await $http
         .post(`${API_URI}/timesheet/timesheetentriesByUser`, body)
-        .then(res => {
+        .then((res) => {
           const content = res.data;
-          ctx.commit("fetchTimesheetEntriesByUser", content);
+          ctx.commit('fetchTimesheetEntriesByUser', content);
           return Promise.resolve(content);
         })
         .catch(err => Promise.reject(err.response));
@@ -711,34 +710,34 @@ const store = new Vuex.Store({
       const body = req;
       const api = await $http
         .post(`${API_URI}/timesheet/timesheetentries`, body)
-        .then(res => {
+        .then((res) => {
           const content = res.data;
-          ctx.commit("fetchTimesheetEntries", content);
+          ctx.commit('fetchTimesheetEntries', content);
           return Promise.resolve(content);
         })
         .catch(err => Promise.reject(err.response));
       return Promise.resolve(api);
     },
     fetchRFxPhases(ctx) {
-      $http.get(`${API_URI}/rfx-phase`).then(res => {
+      $http.get(`${API_URI}/rfx-phase`).then((res) => {
         const content = res.data;
-        ctx.commit("fetchRFxPhases", content);
+        ctx.commit('fetchRFxPhases', content);
       });
     },
     fetchRfxTypes(ctx) {
-      $http.get(`${API_URI}/rfx-type`).then(res => {
+      $http.get(`${API_URI}/rfx-type`).then((res) => {
         const content = res.data;
-        ctx.commit("fetchRfxTypes", content);
+        ctx.commit('fetchRfxTypes', content);
       });
     },
     async fetchProjectRfx(ctx, req) {
       const api = await $http
         .get(`${API_URI}/project-rfx/${req.id}/by-project-id`)
-        .then(res => {
+        .then((res) => {
           const content = res.data;
-          ctx.commit("fetchProjectRfx", {
+          ctx.commit('fetchProjectRfx', {
             projectId: req.id,
-            content
+            content,
           });
           return Promise.resolve(content);
         })
@@ -746,75 +745,75 @@ const store = new Vuex.Store({
       return Promise.resolve(api);
     },
     fetchRFxTypes(ctx) {
-      $http.get(`${API_URI}/rfx-type`).then(res => {
+      $http.get(`${API_URI}/rfx-type`).then((res) => {
         const content = res.data;
-        ctx.commit("fetchRFxTypes", content);
+        ctx.commit('fetchRFxTypes', content);
       });
     },
     fetchProjectSectors(ctx) {
-      $http.get(`${API_URI}/project-sector`).then(res => {
+      $http.get(`${API_URI}/project-sector`).then((res) => {
         const content = res.data;
-        ctx.commit("fetchProjectSectors", content);
+        ctx.commit('fetchProjectSectors', content);
       });
     },
     fetchProjectIntakeCategory(ctx) {
-      $http.get(`${API_URI}/project-intake-category`).then(res => {
+      $http.get(`${API_URI}/project-intake-category`).then((res) => {
         const content = res.data;
-        ctx.commit("fetchProjectIntakeCategory", content);
+        ctx.commit('fetchProjectIntakeCategory', content);
       });
     },
     fetchProjectIntakeServices(ctx) {
-      $http.get(`${API_URI}/project-intake-service`).then(res => {
+      $http.get(`${API_URI}/project-intake-service`).then((res) => {
         const content = res.data;
-        ctx.commit("fetchProjectIntakeServices", content);
+        ctx.commit('fetchProjectIntakeServices', content);
       });
     },
     // Clients or Government Ministries
     fetchClients(ctx) {
-      $http.get(`${API_URI}/client`).then(res => {
+      $http.get(`${API_URI}/client`).then((res) => {
         const content = res.data;
-        ctx.commit("fetchClients", content);
+        ctx.commit('fetchClients', content);
       });
     },
     fetchClient(ctx, req) {
-      $http.get(`${API_URI}/client/${req.id}`).then(res => {
+      $http.get(`${API_URI}/client/${req.id}`).then((res) => {
         const content = res.data;
-        ctx.commit("fetchClient", content);
+        ctx.commit('fetchClient', content);
       });
     },
     addClient(ctx, req) {
       const body = req;
-      $http.post(`${API_URI}/client`, body).then(res => {
+      $http.post(`${API_URI}/client`, body).then((res) => {
         const content = res.data;
-        ctx.commit("addClient", content);
+        ctx.commit('addClient', content);
       });
     },
     updateClient(ctx, req) {
       const body = req;
-      $http.patch(`${API_URI}/client/${req.id}`, body).then(res => {
+      $http.patch(`${API_URI}/client/${req.id}`, body).then((res) => {
         const content = res.data;
-        ctx.commit("updateClient", content);
+        ctx.commit('updateClient', content);
       });
     },
     deleteClient(ctx, req) {
-      $http.delete(`${API_URI}/client/${req.id}`).then(res => {
+      $http.delete(`${API_URI}/client/${req.id}`).then((res) => {
         const content = res.data;
-        ctx.commit("updateClient", content);
+        ctx.commit('updateClient', content);
       });
     },
     // User contacts
     addContact(ctx, req) {
       const body = req;
-      $http.post(`${API_URI}/contact`, body).then(res => {
+      $http.post(`${API_URI}/contact`, body).then((res) => {
         const content = res.data;
-        ctx.commit("addContact", content);
+        ctx.commit('addContact', content);
       });
     },
     updateContact(ctx, req) {
       const body = req;
-      $http.patch(`${API_URI}/contact/${req.id}`, body).then(res => {
+      $http.patch(`${API_URI}/contact/${req.id}`, body).then((res) => {
         const content = res.data;
-        ctx.commit("updateContact", content);
+        ctx.commit('updateContact', content);
       });
     },
     updateContactPartial(ctx, req) {
@@ -822,53 +821,53 @@ const store = new Vuex.Store({
       return $http.patch(`${API_URI}/contact/${req.id}/partial`, body);
     },
     deleteContact(ctx, req) {
-      $http.delete(`${API_URI}/contact/${req.id}`).then(res => {
+      $http.delete(`${API_URI}/contact/${req.id}`).then((res) => {
         const content = res.data;
-        ctx.commit("deleteContact", content);
+        ctx.commit('deleteContact', content);
       });
     },
     // User profiles
     async fetchUsers(ctx) {
-      await $http.get(`${API_URI}/user`).then(res => {
+      await $http.get(`${API_URI}/user`).then((res) => {
         const content = res.data;
-        ctx.commit("fetchUsers", content);
+        ctx.commit('fetchUsers', content);
       });
     },
     addUser(ctx, req) {
       const body = req;
-      $http.post(`${API_URI}/user`, body).then(res => {
+      $http.post(`${API_URI}/user`, body).then((res) => {
         const content = res.data;
-        ctx.commit("addUser", content);
+        ctx.commit('addUser', content);
       });
     },
     updateUser(ctx, req) {
       const body = req;
-      $http.patch(`${API_URI}/user/${req.id}`, body).then(res => {
+      $http.patch(`${API_URI}/user/${req.id}`, body).then((res) => {
         const content = res.data;
-        ctx.commit("updateUser", content);
+        ctx.commit('updateUser', content);
       });
     },
     deleteUser(ctx, req) {
-      $http.delete(`${API_URI}/user/${req.id}`).then(res => {
+      $http.delete(`${API_URI}/user/${req.id}`).then((res) => {
         const content = res.data;
-        ctx.commit("deleteUser", content);
+        ctx.commit('deleteUser', content);
       });
     },
     fetchMOUs(ctx, req) {
-      $http.get(`${API_URI}/MOU`).then(res => {
+      $http.get(`${API_URI}/MOU`).then((res) => {
         // console.log('fetch MOUs', res);
         const content = res.data;
-        ctx.commit("fetchMOUs", content);
+        ctx.commit('fetchMOUs', content);
       });
     },
     async createMOU(ctx, req) {
       const body = req;
       const api = await $http
         .post(`${API_URI}/MOU`, body)
-        .then(res => {
+        .then((res) => {
           const content = res.data;
-          console.log("createMOU called with body", body);
-          ctx.commit("createMOU", content);
+          console.log('createMOU called with body', body);
+          ctx.commit('createMOU', content);
           return Promise.resolve(content);
         })
         .catch(err => Promise.reject(err));
@@ -877,39 +876,39 @@ const store = new Vuex.Store({
     // Intake requests
     fetchIntakeRequests(ctx) {
       ctx.intakeLoading = true;
-      $http.get(`${API_URI}/intake`).then(res => {
+      $http.get(`${API_URI}/intake`).then((res) => {
         const content = res.data;
-        content.forEach(contentdata => {
+        content.forEach((contentdata) => {
           contentdata.projectLeadId = contentdata.leadUserId;
 
           contentdata.projectBackupId = contentdata.backupUserId;
 
           contentdata.estimatedCompletionDate = moment(
-            String(contentdata.estimatedCompletionDate)
-          ).format("YYYY-MM-DD");
+            String(contentdata.estimatedCompletionDate),
+          ).format('YYYY-MM-DD');
         });
-        ctx.commit("fetchIntakeRequests", content);
+        ctx.commit('fetchIntakeRequests', content);
       }).finally(() => {
         this.intakeLoading = false;
       });
     },
     fetchIntakeRequest(ctx, req) {
       // TODO: Make sure it's the right kind of ID - eg. numeric or GUID/UUID
-      $http.get(`${API_URI}/intake/${req.id}`).then(res => {
+      $http.get(`${API_URI}/intake/${req.id}`).then((res) => {
         const content = res.data;
-        ctx.commit("fetchIntakeRequest", content);
+        ctx.commit('fetchIntakeRequest', content);
       });
     },
     clearActiveIntakeRequest(ctx) {
-      ctx.commit("clearActiveIntakeRequest", new IntakeRequestDto());
+      ctx.commit('clearActiveIntakeRequest', new IntakeRequestDto());
     },
     async addIntakeRequest(ctx, req) {
       const body = req;
       const api = await $http
         .post(`${API_URI}/intake`, body)
-        .then(res => {
+        .then((res) => {
           const content = res.data;
-          ctx.commit("addIntakeRequest", content);
+          ctx.commit('addIntakeRequest', content);
           return Promise.resolve(content);
         })
         .catch(err => Promise.reject(err));
@@ -918,9 +917,9 @@ const store = new Vuex.Store({
     async updateIntakeRequest(ctx, req) {
       const api = $http
         .patch(`${API_URI}/intake/${req.id}`, req)
-        .then(res => {
+        .then((res) => {
           const content = res.data;
-          ctx.commit("updateIntakeRequest", content);
+          ctx.commit('updateIntakeRequest', content);
           return Promise.resolve(content);
         })
         .catch(err => Promise.reject(err));
@@ -931,21 +930,21 @@ const store = new Vuex.Store({
       console.log(req);
       const api = $http
         .patch(`${API_URI}/procurement/${req.id}`, req)
-        .then(res => {
+        .then((res) => {
           const content = res.data;
-          ctx.commit("updateProctLog", content);
+          ctx.commit('updateProctLog', content);
           return Promise.resolve(content);
         })
         .catch(err => Promise.reject(err));
       return Promise.resolve(api);
     },
     async updateFinanceCodes(ctx, req) {
-      console.log("reqq:", req);
+      console.log('reqq:', req);
       const api = $http
         .patch(`${API_URI}/financecode/${req.id}`, req)
-        .then(res => {
+        .then((res) => {
           const content = res.data;
-          ctx.commit("updateFinanceCodes", content);
+          ctx.commit('updateFinanceCodes', content);
           return Promise.resolve(content);
         })
         .catch(err => Promise.reject(err));
@@ -954,7 +953,7 @@ const store = new Vuex.Store({
     async updateRfxPhase(ctx, req) {
       const api = $http
         .patch(`${API_URI}/rfx-phase/${req.id}`, req)
-        .then(res => {
+        .then((res) => {
           const content = res.data;
           return Promise.resolve(content);
         })
@@ -964,7 +963,7 @@ const store = new Vuex.Store({
     async updateRfxType(ctx, req) {
       const api = $http
         .patch(`${API_URI}/rfx-type/${req.id}`, req)
-        .then(res => {
+        .then((res) => {
           const content = res.data;
           return Promise.resolve(content);
         })
@@ -975,7 +974,7 @@ const store = new Vuex.Store({
       try {
         const res = await $http.delete(`${API_URI}/intake/${req.id}`);
         const content = res.data;
-        ctx.commit("deleteIntakeRequest", content);
+        ctx.commit('deleteIntakeRequest', content);
       } catch (err) {
         throw err;
       }
@@ -985,7 +984,7 @@ const store = new Vuex.Store({
       try {
         const res = await $http.delete(`${API_URI}/MOU/${req.id}`);
         const content = res.data;
-        ctx.commit("deleteMOUs", content);
+        ctx.commit('deleteMOUs', content);
       } catch (err) {
         throw err;
       }
@@ -994,7 +993,7 @@ const store = new Vuex.Store({
       try {
         const res = await $http.delete(`${API_URI}/financecode/${req.id}`);
         const content = res.data;
-        ctx.commit("deleteFinanceCodes", content);
+        ctx.commit('deleteFinanceCodes', content);
       } catch (err) {
         throw err;
       }
@@ -1003,7 +1002,7 @@ const store = new Vuex.Store({
       try {
         const api = await $http
           .delete(`${API_URI}/rfx-phase/${req.id}`)
-          .then(res => {
+          .then((res) => {
             const content = res.data;
             return Promise.resolve(content);
           })
@@ -1017,7 +1016,7 @@ const store = new Vuex.Store({
       try {
         const api = await $http
           .delete(`${API_URI}/rfx-type/${req.id}`)
-          .then(res => {
+          .then((res) => {
             const content = res.data;
             return Promise.resolve(content);
           })
@@ -1030,7 +1029,7 @@ const store = new Vuex.Store({
     async approveIntakeRequest(ctx, req) {
       const api = await $http
         .post(`${API_URI}/intake/${req.id}/approve`, { categoryId: req.categoryId })
-        .then(res => {
+        .then((res) => {
           const content = res.data;
           return Promise.resolve(content);
         })
@@ -1038,32 +1037,32 @@ const store = new Vuex.Store({
       return Promise.resolve(api);
     },
     assignContactToIntakeRequest(ctx, req) {
-      $http.post(`${API_URI}/intake/${req.id}/assign-contact`).then(res => {
+      $http.post(`${API_URI}/intake/${req.id}/assign-contact`).then((res) => {
         const content = res.data;
-        ctx.commit("assignContactToIntakeRequest", content);
+        ctx.commit('assignContactToIntakeRequest', content);
       });
     },
     // Projects
     fetchProjects(ctx) {
-      $http.get(`${API_URI}/project`).then(res => {
+      $http.get(`${API_URI}/project`).then((res) => {
         let content = res.data;
         content = res.data.map(project => project);
-        ctx.commit("fetchProjects", content);
+        ctx.commit('fetchProjects', content);
       });
     },
     fetchArchivedProjects(ctx) {
-      $http.get(`${API_URI}/project/archived`).then(res => {
+      $http.get(`${API_URI}/project/archived`).then((res) => {
         let content = res.data;
         content = res.data.map(project => project);
-        ctx.commit("fetchArchivedProjects", content);
+        ctx.commit('fetchArchivedProjects', content);
       });
     },
     async fetchAllProjects(ctx) {
       ctx.projectsLoading = true;
-      await $http.get(`${API_URI}/project/all`).then(res => {
+      await $http.get(`${API_URI}/project/all`).then((res) => {
         let content = res.data;
         content = res.data.map(project => project);
-        ctx.commit("fetchAllProjects", content);
+        ctx.commit('fetchAllProjects', content);
       }).finally(() => {
         ctx.projectsLoading = false;
       });
@@ -1073,64 +1072,64 @@ const store = new Vuex.Store({
         throw new Error(`is_archived must be boolean, instead you provided: ${typeof is_archived}`);
       }
 
-      return $http.patch(`${API_URI}/project/${id}/archive`, { is_archived }).then(res => {
+      return $http.patch(`${API_URI}/project/${id}/archive`, { is_archived }).then((res) => {
         const content = res.data;
-        ctx.commit("archiveProject", content);
+        ctx.commit('archiveProject', content);
       });
     },
     fetchProject(ctx, req) {
       // TODO: Make sure it's the right kind of ID - eg. numeric or GUID/UUID
-      $http.get(`${API_URI}/project/${req.id}`).then(res => {
+      $http.get(`${API_URI}/project/${req.id}`).then((res) => {
         const content = res.data;
-        ctx.commit("fetchProject", content);
+        ctx.commit('fetchProject', content);
       });
     },
     addProject(ctx, req) {
       const body = req;
-      $http.post(`${API_URI}/project`, body).then(res => {
+      $http.post(`${API_URI}/project`, body).then((res) => {
         const content = res.data;
-        ctx.commit("addProject", content);
+        ctx.commit('addProject', content);
       });
     },
     async updateProject(ctx, req) {
       const body = req;
       const api = await $http
         .patch(`${API_URI}/project/${req.id}`, body)
-        .then(res => {
+        .then((res) => {
           const content = res.data;
-          ctx.commit("updateProject", content);
+          ctx.commit('updateProject', content);
           return Promise.resolve(content);
         })
         .catch(err => Promise.reject(err));
       return Promise.resolve(api);
     },
     deleteProject(ctx, req) {
-      $http.delete(`${API_URI}/project/${req.id}`).then(res => {
+      $http.delete(`${API_URI}/project/${req.id}`).then((res) => {
         const content = res.data;
-        ctx.commit("deleteProject", content);
+        ctx.commit('deleteProject', content);
       });
     },
     assignResourceToProject(ctx, req) {
-      $http.post(`${API_URI}/project/${req.id}/assign-resource`).then(res => {
+      $http.post(`${API_URI}/project/${req.id}/assign-resource`).then((res) => {
         const content = res.data;
-        ctx.commit("deleteProject", content);
+        ctx.commit('deleteProject', content);
       });
     },
     assignContactToProject(ctx, req) {
-      $http.post(`${API_URI}/project/${req.id}/assign-contact`).then(res => {
+      $http.post(`${API_URI}/project/${req.id}/assign-contact`).then((res) => {
         const content = res.data;
-        ctx.commit("assignContactToProject", content);
+        ctx.commit('assignContactToProject', content);
       });
     },
     async assignProjectLead(ctx, req) {
       const body = {
-        userId: req.userId
+        userId: req.userId,
       };
       const api = await $http
         .post(`${API_URI}/project/${req.projectId}/assign-lead`, body)
-        .then(res => {
+        .then((res) => {
           const content = res.data;
-          ctx.commit("assignProjectLead", content);
+          ctx.commit('assignProjectLead', content);
           return Promise.resolve(content);
         })
         .catch(err => Promise.reject(err));
@@ -1139,13 +1138,13 @@ const store = new Vuex.Store({
 
     async assignProjectBackup(ctx, req) {
       const body = {
-        userId: req.userId
+        userId: req.userId,
       };
       const api = await $http
         .post(`${API_URI}/project/${req.projectId}/assign-backup`, body)
-        .then(res => {
+        .then((res) => {
           const content = res.data;
-          ctx.commit("assignProjectBackup", content);
+          ctx.commit('assignProjectBackup', content);
           return Promise.resolve(content);
         })
         .catch(err => Promise.reject(err));
@@ -1154,39 +1153,39 @@ const store = new Vuex.Store({
     // Project Contacts Requests
     async fetchProjectContacts(ctx, req) {
       // TODO: Make sure it's the right kind of ID - eg. numeric or GUID/UUID
-      const api = await $http.get(`${API_URI}/contact/${req.id}/by-project-id`).then(res => {
+      const api = await $http.get(`${API_URI}/contact/${req.id}/by-project-id`).then((res) => {
         const content = res.data;
-        ctx.commit("fetchProjectContacts", content);
+        ctx.commit('fetchProjectContacts', content);
         return Promise.resolve(content);
       });
       return Promise.resolve(api);
     },
     updateProjectContacts(ctx, req) {
       const body = req.contacts;
-      $http.patch(`${API_URI}/contact/${req.id}`, body).then(res => {
+      $http.patch(`${API_URI}/contact/${req.id}`, body).then((res) => {
         const content = res.data;
-        ctx.commit("updateProjectContacts", content);
+        ctx.commit('updateProjectContacts', content);
       });
     },
     updateProjectFinanceCodes(ctx, req) {
       const body = req.financeCodes;
-      $http.patch(`${API_URI}/client/${req.id}/finance-code`, body).then(res => {
+      $http.patch(`${API_URI}/client/${req.id}/finance-code`, body).then((res) => {
         const content = res.data;
-        ctx.commit("updateProjectFinanceCodes", content);
+        ctx.commit('updateProjectFinanceCodes', content);
       });
     },
     fetchProjectCategories(ctx, req) {
-      $http.get(`${API_URI}/project/categories`).then(res => {
-        ctx.commit("fetchProjectCategories", res.data);
+      $http.get(`${API_URI}/project/categories`).then((res) => {
+        ctx.commit('fetchProjectCategories', res.data);
       });
     },
     async updateProcurementLog(ctx, req) {
       const body = req.procurementlog;
       const api = await $http
         .post(`${API_URI}/procurement`, body)
-        .then(res => {
+        .then((res) => {
           const content = res.data;
-          ctx.commit("updateProcurementLog", content);
+          ctx.commit('updateProcurementLog', content);
           return Promise.resolve(content);
         })
         .catch(err => Promise.reject(err));
@@ -1196,7 +1195,7 @@ const store = new Vuex.Store({
       const body = req.RfxType;
       const api = await $http
         .post(`${API_URI}/rfx-type`, body)
-        .then(res => {
+        .then((res) => {
           const content = res.data;
           return Promise.resolve(content);
         })
@@ -1207,7 +1206,7 @@ const store = new Vuex.Store({
       const body = req.RfxPhase;
       const api = await $http
         .post(`${API_URI}/rfx-phase`, body)
-        .then(res => {
+        .then((res) => {
           const content = res.data;
           return Promise.resolve(content);
         })
@@ -1218,9 +1217,9 @@ const store = new Vuex.Store({
       const body = req.FinanceCodes;
       const api = await $http
         .post(`${API_URI}/financecode`, body)
-        .then(res => {
+        .then((res) => {
           const content = res.data;
-          ctx.commit("addFinanceCodes", content);
+          ctx.commit('addFinanceCodes', content);
           return Promise.resolve(content);
         })
         .catch(err => Promise.reject(err));
@@ -1230,9 +1229,9 @@ const store = new Vuex.Store({
       const body = req.projectNotes;
       const api = await $http
         .post(`${API_URI}/projectnotes`, body)
-        .then(res => {
+        .then((res) => {
           const content = res.data;
-          ctx.commit("addProjectNotes", content);
+          ctx.commit('addProjectNotes', content);
           return Promise.resolve(content);
         })
         .catch(err => Promise.reject(err));
@@ -1241,71 +1240,71 @@ const store = new Vuex.Store({
     // Project RFx Requests
     fetchProjectRFxData(ctx, req) {
       // TODO: Make sure it's the right kind of ID - eg. numeric or GUID/UUID
-      $http.get(`${API_URI}/project-rfx/${req.id}/by-project-id`).then(res => {
+      $http.get(`${API_URI}/project-rfx/${req.id}/by-project-id`).then((res) => {
         const content = res.data;
-        ctx.commit("fetchProjectRFxData", content);
+        ctx.commit('fetchProjectRFxData', content);
       });
     },
     addProjectRFxData(ctx, req) {
       const body = req;
-      const api = $http.post(`${API_URI}/project-rfx`, body).then(res => {
+      const api = $http.post(`${API_URI}/project-rfx`, body).then((res) => {
         const content = res.data;
-        ctx.commit("addProjectRFxData", content);
+        ctx.commit('addProjectRFxData', content);
         return Promise.resolve(res.data);
       });
       return Promise.resolve(api);
     },
     updateProjectRFxData(ctx, req) {
       const body = req;
-      $http.patch(`${API_URI}/project-rfx/${req.id}`, body).then(res => {
+      $http.patch(`${API_URI}/project-rfx/${req.id}`, body).then((res) => {
         const content = res.data;
-        ctx.commit("updateProjectRFxData", content);
+        ctx.commit('updateProjectRFxData', content);
       });
     },
     // Timesheets
     async fetchTimesheets(ctx, req) {
-      const startDateString = sessionStorage.getItem("selectedStartDate");
-      const endDateString = sessionStorage.getItem("selectedEndDate");
+      const startDateString = sessionStorage.getItem('selectedStartDate');
+      const endDateString = sessionStorage.getItem('selectedEndDate');
 
       const query = `projectId=${req.projectId}&startDate=${startDateString}&endDate=${endDateString}`;
       req.replace = req.replace || false;
 
       const res = await $http.get(`${API_URI}/timesheet?${query}`);
-      ctx.commit("fetchTimesheets", { data: res.data, replace: req.replace });
+      ctx.commit('fetchTimesheets', { data: res.data, replace: req.replace });
 
       return Promise.resolve();
     },
     async fetchTimesheetsByWeek(ctx) {
-      const startDateString = sessionStorage.getItem("selectedStartDate");
+      const startDateString = sessionStorage.getItem('selectedStartDate');
       const res = await $http.get(`${API_URI}/timesheet/week/${startDateString}`);
-      ctx.commit("fetchTimesheetsByWeek", res.data);
+      ctx.commit('fetchTimesheetsByWeek', res.data);
       return Promise.resolve(res.data);
     },
     async fetchAllTimesheets(ctx) {
       const res = await $http.get(`${API_URI}/timesheet/all`);
-      ctx.commit("fetchAllTimesheets", res.data);
+      ctx.commit('fetchAllTimesheets', res.data);
       return Promise.resolve(res.data);
     },
     async fetchUserTimesheets(ctx) {
       const res = await $http.get(`${API_URI}/timesheet/user`);
-      ctx.commit("fetchUserTimesheets", res.data);
+      ctx.commit('fetchUserTimesheets', res.data);
       return Promise.resolve(res.data);
     },
     async fetchAllProcurementLog(ctx, req) {
       const res = await $http.get(`${API_URI}/procurement/${req.id}`);
-      ctx.commit("fetchAllProcurementLog", res.data);
+      ctx.commit('fetchAllProcurementLog', res.data);
       return Promise.resolve(res.data);
     },
     async fetchAllProjectNotes(ctx, req) {
       const res = await $http.get(`${API_URI}/projectnotes/${req.id}`);
-      ctx.commit("fetchAllProjectNotes", res.data);
+      ctx.commit('fetchAllProjectNotes', res.data);
       return Promise.resolve(res.data);
     },
     async updateRiskAnalysis(ctx, req) {
       const body = req;
       const api = await $http
         .patch(`${API_URI}/project-risk/${req.projectId}/update`, body)
-        .then(res => {
+        .then((res) => {
           const content = res.data;
           return Promise.resolve(content);
         })
@@ -1317,9 +1316,9 @@ const store = new Vuex.Store({
       const body = req;
       const api = await $http
         .post(`${API_URI}/project/timesheetprojects`, body)
-        .then(res => {
+        .then((res) => {
           const content = res.data;
-          ctx.commit("fetchTimesheetProjects", content);
+          ctx.commit('fetchTimesheetProjects', content);
           return Promise.resolve(content);
         })
         .catch(err => Promise.reject(err.response));
@@ -1330,9 +1329,9 @@ const store = new Vuex.Store({
       const body = req;
       const api = await $http
         .post(`${API_URI}/project/timesheetprojectsOld`, body)
-        .then(res => {
+        .then((res) => {
           const content = res.data;
-          ctx.commit("fetchTimesheetProjectsOld", content);
+          ctx.commit('fetchTimesheetProjectsOld', content);
           return Promise.resolve(content);
         })
         .catch(err => Promise.reject(err.response));
@@ -1342,9 +1341,9 @@ const store = new Vuex.Store({
       const body = req;
       const api = await $http
         .post(`${API_URI}/project/exportedPdfs`, body)
-        .then(res => {
+        .then((res) => {
           const content = res.data;
-          ctx.commit("fetchExportedPdfs", content);
+          ctx.commit('fetchExportedPdfs', content);
           return Promise.resolve(content);
         })
         .catch(err => Promise.reject(err.response));
@@ -1354,9 +1353,9 @@ const store = new Vuex.Store({
       const body = req;
       const api = await $http
         .post(`${API_URI}/project/dischargedPdfs`, body)
-        .then(res => {
+        .then((res) => {
           const content = res.data;
-          ctx.commit("fetchDischargedPdfs", content);
+          ctx.commit('fetchDischargedPdfs', content);
           return Promise.resolve(content);
         })
         .catch(err => Promise.reject(err.response));
@@ -1367,10 +1366,10 @@ const store = new Vuex.Store({
 
       const api = await $http
         .post(`${API_URI}/timesheet/batch`, body)
-        .then(res => {
+        .then((res) => {
           const content = res.data;
-          ctx.commit("addTimesheet", content);
-          //ctx.commit('setTimesheetsWeek', { startDate: content.startDate, endDate: content.endDate });
+          ctx.commit('addTimesheet', content);
+          // ctx.commit('setTimesheetsWeek', { startDate: content.startDate, endDate: content.endDate });
           return Promise.resolve(content);
         })
         .catch(err => Promise.reject(err.response));
@@ -1381,10 +1380,10 @@ const store = new Vuex.Store({
 
       const api = await $http
         .post(`${API_URI}/timesheet/light`, body)
-        .then(res => {
+        .then((res) => {
           const content = res.data;
-          ctx.commit("addTimesheet", content);
-          //ctx.commit('setTimesheetsWeek', { startDate: content.startDate, endDate: content.endDate });
+          ctx.commit('addTimesheet', content);
+          // ctx.commit('setTimesheetsWeek', { startDate: content.startDate, endDate: content.endDate });
           return Promise.resolve(content);
         })
         .catch(err => Promise.reject(err.response));
@@ -1395,9 +1394,9 @@ const store = new Vuex.Store({
 
       const api = await $http
         .post(`${API_URI}/timesheet/getLight`, body)
-        .then(res => {
+        .then((res) => {
           const content = res.data;
-          ctx.commit("getTimeLogOfSelectedDate", content);
+          ctx.commit('getTimeLogOfSelectedDate', content);
           return Promise.resolve(content);
         })
         .catch(err => Promise.reject(err.response));
@@ -1409,9 +1408,9 @@ const store = new Vuex.Store({
 
       const api = await $http
         .post(`${API_URI}/timesheet`, body)
-        .then(res => {
+        .then((res) => {
           const content = res.data;
-          ctx.commit("addTimesheet", content);
+          ctx.commit('addTimesheet', content);
           return Promise.resolve(content);
         })
         .catch(err => Promise.reject(err.response));
@@ -1421,9 +1420,9 @@ const store = new Vuex.Store({
       const body = req.payload;
       const api = await $http
         .patch(`${API_URI}/timesheet/${req.id}`, body)
-        .then(res => {
+        .then((res) => {
           const content = res.data;
-          ctx.commit("updateTimesheet", content);
+          ctx.commit('updateTimesheet', content);
           return Promise.resolve(content);
         })
         .catch(err => Promise.reject(err.response));
@@ -1432,9 +1431,9 @@ const store = new Vuex.Store({
     async deleteTimesheet(ctx, req) {
       const api = await $http
         .delete(`${API_URI}/timesheet/${req.id}`)
-        .then(res => {
+        .then((res) => {
           const content = res.data;
-          ctx.commit("deleteTimesheet", { timesheetId: req.id, content: res.data });
+          ctx.commit('deleteTimesheet', { timesheetId: req.id, content: res.data });
           return Promise.resolve(content);
         })
         .catch(err => Promise.reject(err.response));
@@ -1446,7 +1445,7 @@ const store = new Vuex.Store({
 
       try {
         const res = await $http.post(`${API_URI}/timesheet-entry`, body);
-        ctx.commit("addTimesheetEntry", res.data);
+        ctx.commit('addTimesheetEntry', res.data);
       } catch (err) {
         return err;
       }
@@ -1457,81 +1456,80 @@ const store = new Vuex.Store({
     addWeekTimesheetEntries(ctx, req) {
       const body = req;
 
-      $http.post(`${API_URI}/timesheet`, body).then(res => {
+      $http.post(`${API_URI}/timesheet`, body).then((res) => {
         const content = res.data;
-        ctx.commit("addWeekTimesheetEntries", content);
+        ctx.commit('addWeekTimesheetEntries', content);
       });
     },
 
     updateTimesheetEntry(ctx, req) {
       const body = req;
 
-      $http.patch(`${API_URI}/timesheet-entry/${req.id}`, body).then(res => {
+      $http.patch(`${API_URI}/timesheet-entry/${req.id}`, body).then((res) => {
         const content = res.data;
-        ctx.commit("updateTimesheetEntry", content);
+        ctx.commit('updateTimesheetEntry', content);
       });
     },
 
     updateWeekTimesheetEntries(ctx, req) {
       const body = req;
 
-      $http.patch(`${API_URI}/timesheet/${req.id}`, body).then(res => {
+      $http.patch(`${API_URI}/timesheet/${req.id}`, body).then((res) => {
         const content = res.data;
-        ctx.commit("updateWeekTimesheetEntries", content);
+        ctx.commit('updateWeekTimesheetEntries', content);
       });
     },
     deleteTimesheetEntry(ctx, req) {
-      $http.delete(`${API_URI}/timesheet-entry/${req.id}`).then(res => {
+      $http.delete(`${API_URI}/timesheet-entry/${req.id}`).then((res) => {
         const content = res.data;
-        ctx.commit("deleteTimesheetEntry", content);
+        ctx.commit('deleteTimesheetEntry', content);
       });
     },
     deleteWeekTimesheetEntries(ctx, req) {
-      $http.delete(`${API_URI}/timesheet/${req.id}`).then(res => {
+      $http.delete(`${API_URI}/timesheet/${req.id}`).then((res) => {
         const content = res.data;
-        ctx.commit("deleteWeekTimesheetEntries", content);
+        ctx.commit('deleteWeekTimesheetEntries', content);
       });
     },
     approveTimesheetEntry(ctx, req) {
-      $http.post(`${API_URI}/timesheet-entry/${req.id}/approve`).then(res => {
+      $http.post(`${API_URI}/timesheet-entry/${req.id}/approve`).then((res) => {
         const content = res.data;
-        ctx.commit("approveTimesheetEntry", content);
+        ctx.commit('approveTimesheetEntry', content);
       });
     },
     approveWeekTimesheetEntries(ctx, req) {
-      $http.post(`${API_URI}/timesheet/${req.id}`).then(res => {
+      $http.post(`${API_URI}/timesheet/${req.id}`).then((res) => {
         const content = res.data;
-        ctx.commit("approveWeekTimesheetEntries", content);
+        ctx.commit('approveWeekTimesheetEntries', content);
       });
     },
 
     addTimesheetEntryComment(ctx, req) {
       const body = req;
 
-      $http.post(`${API_URI}/timesheet-entry/${req.id}/comment`, body).then(res => {
+      $http.post(`${API_URI}/timesheet-entry/${req.id}/comment`, body).then((res) => {
         const content = res.data;
-        ctx.commit("addTimesheetEntryComment", content);
+        ctx.commit('addTimesheetEntryComment', content);
       });
     },
     updateTimesheetEntryComment(ctx, req) {
       const body = req;
 
-      $http.patch(`${API_URI}/timesheet-entry/${req.id}/comment`, body).then(res => {
+      $http.patch(`${API_URI}/timesheet-entry/${req.id}/comment`, body).then((res) => {
         const content = res.data;
-        ctx.commit("updateTimesheetEntryComment", content);
+        ctx.commit('updateTimesheetEntryComment', content);
       });
     },
     deleteTimesheetEntryComment(ctx, req) {
-      $http.delete(`${API_URI}/timesheet-entry/${req.id}/comment`).then(res => {
+      $http.delete(`${API_URI}/timesheet-entry/${req.id}/comment`).then((res) => {
         const content = res.data;
-        ctx.commit("deleteTimesheetEntryComment", content);
+        ctx.commit('deleteTimesheetEntryComment', content);
       });
-    }
+    },
   },
   getters: {
-    getProjectContactByType: state => contactType =>
-      state.activeProjectContacts.find(data => data.contactType === contactType)
-  }
+    getProjectContactByType: state => contactType => state.activeProjectContacts.find(data => data.contactType === contactType),
+  },
 });
 
 export default store;

@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import config from '@/config';
 import VueI18n from 'vue-i18n';
+import config from '@/config';
 import helper from '../helper';
 /* eslint-disable */
 
