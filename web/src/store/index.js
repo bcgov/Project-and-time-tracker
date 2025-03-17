@@ -189,10 +189,10 @@ const store = new Vuex.Store({
     fetchRFxPhases(state, data) {
       state.rfxPhases = data;
     },
-    fetchTimesheetProjects(state, data) {
+    fetchTimesheetProjectsFromMonth(state, data) {
       state.timesheetprojects = data;
     },
-    fetchTimesheetProjectsOld(state, data) {
+    fetchTimesheetProjectsPriorToMonth(state, data) {
       state.timesheetprojectsOld = data;
     },
     fetchExportedPdfs(state, data) {
@@ -1313,26 +1313,26 @@ const store = new Vuex.Store({
       return Promise.resolve(api);
     },
 
-    async fetchTimesheetProjects(ctx, req) {
+    async fetchTimesheetProjectsFromMonth(ctx, req) {
       const body = req;
       const api = await $http
         .post(`${API_URI}/project/timesheetprojects`, body)
         .then(res => {
           const content = res.data;
-          ctx.commit("fetchTimesheetProjects", content);
+          ctx.commit("fetchTimesheetProjectsFromMonth", content);
           return Promise.resolve(content);
         })
         .catch(err => Promise.reject(err.response));
       return Promise.resolve(api);
     },
 
-    async fetchTimesheetProjectsOld(ctx, req) {
+    async fetchTimesheetProjectsPriorToMonth(ctx, req) {
       const body = req;
       const api = await $http
         .post(`${API_URI}/project/timesheetprojectsOld`, body)
         .then(res => {
           const content = res.data;
-          ctx.commit("fetchTimesheetProjectsOld", content);
+          ctx.commit("fetchTimesheetProjectsPriorToMonth", content);
           return Promise.resolve(content);
         })
         .catch(err => Promise.reject(err.response));
