@@ -20,6 +20,8 @@ metadata:
     app: timemachine
     component: api
   name: web-to-api
+  annotations:
+    haproxy.router.openshift.io/timeout: 90s
 spec:
   host: web-ed57f0-prod.apps.silver.devops.gov.bc.ca
   path: /api

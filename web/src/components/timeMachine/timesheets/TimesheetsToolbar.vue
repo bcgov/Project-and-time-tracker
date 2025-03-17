@@ -2,12 +2,12 @@
   <v-layout class="timesheets-toolbar" d-flex style="width: 100%;">
     <v-flex d-flex justify-center align-start style="width: 100%;">
       <v-flex md6>
-        <timesheets-calendar ref="WeekSelection"></timesheets-calendar>
+        <timesheets-calendar ref="WeekSelection" @next="onChangeWeek"></timesheets-calendar>
       </v-flex>
       <v-flex md6>
         <v-radio-group v-model="selectedFilter" row>
           <v-radio label="My Timesheets" value="Mine"></v-radio>
-          <v-radio label="Everyone's Timesheets" value="All"></v-radio>
+          <v-radio label="Everyone's Timesheets" value="All" v-if="isAdmin"></v-radio>
         </v-radio-group>
       </v-flex>
     </v-flex>
@@ -23,6 +23,8 @@
 <script>
 import TimesheetsCalendar from './TimesheetsCalendar.vue';
 import AddTimeRecord from './AddTimeRecord.vue';
+import { getRoles } from '../../../modules/security/init';
+
 
 export default {
   data() {
@@ -30,6 +32,8 @@ export default {
       selectedFilter: 'Mine',
       startDateMain: this.$store.state.timesheetsWeek.startDate,
       endDateMain: this.$store.state.timesheetsWeek.endDate,
+      isAdmin: false,
+      isAddTimeOpen: false,
     };
   },
   components: {
@@ -43,8 +47,12 @@ export default {
       default: () => {},
     },
   },
+  created() {
+    this.setAdmin();
+  },
   methods: {
     closeTimesheet(needRefresh) {
+      this.isAddTimeOpen = false;
       if (needRefresh) {
         sessionStorage.setItem('selectedStartDate', this.$store.state.timesheetsWeek.startDate);
         sessionStorage.setItem('selectedEndDate', this.$store.state.timesheetsWeek.endDate);
@@ -59,11 +67,26 @@ export default {
       }
     },
     newTimeRecord() {
+      this.isAddTimeOpen = true;
       this.startDateMain = this.$store.state.timesheetsWeek.startDate;
       this.endDateMain = this.$store.state.timesheetsWeek.endDate;
       sessionStorage.setItem('selectedStartDate', this.startDateMain);
       sessionStorage.setItem('selectedEndDate', this.endDateMain);
       this.$refs.AddTimeRecord.open();
+    },
+    async setAdmin() {
+      this.isAdmin = getRoles().includes('PSB_Admin');
+    },
+    async onChangeWeek() {
+      if (!this.isAddTimeOpen) {
+        if (this.$refs.spinner) {
+          this.$refs.spinner.open();
+        }
+        await this.$store.dispatch('fetchTimesheetsByWeek');
+        if (this.$refs.spinner) {
+          this.$refs.spinner.close();
+        }
+      }
     },
   },
 };

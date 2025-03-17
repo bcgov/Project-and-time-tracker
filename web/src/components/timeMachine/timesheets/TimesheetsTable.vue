@@ -247,11 +247,13 @@ export default {
         this.$refs.spinner.open();
       }
       if (this.$refs.timesheetstoolbar.selectedFilter === 'All') {
-        await this.$store.dispatch('fetchAllTimesheets');
+        //await this.$store.dispatch('fetchAllTimesheets');
+        await this.$store.dispatch('fetchTimesheetsByWeek');
         this.$store.dispatch('fetchUserTimesheets');
       } else {
         await this.$store.dispatch('fetchUserTimesheets');
-        this.$store.dispatch('fetchAllTimesheets');
+        //this.$store.dispatch('fetchAllTimesheets');
+        this.$store.dispatch('fetchTimesheetsByWeek');
       }
 
       if (this.$refs.spinner) {
@@ -283,10 +285,15 @@ export default {
         await this.fetchData();
       }
     },
+    async fetchAllTimesheets() {
+      //await this.$store.dispatch('fetchAllTimesheets');
+      await this.$store.dispatch('fetchTimesheetsByWeek');
+    },
     async initalfetch() {
       await this.$store.dispatch('fetchAllProjects'); // Needed in AddTimeRecord
       await this.$store.dispatch('fetchUserTimesheets');
-      await this.$store.dispatch('fetchAllTimesheets');
+      //await this.$store.dispatch('fetchAllTimesheets');
+      await this.$store.dispatch('fetchTimesheetsByWeek');
     },
   },
   created() {

@@ -14,7 +14,6 @@ import { IUser } from '../../models/interfaces/i-user';
 import { createContact } from '../client/contact.service';
 import { IContact } from '../../models/interfaces/i-contact';
 import { IAuth } from '../../models/interfaces/i-auth';
-import { IKeycloakUserByRole } from '../../models/interfaces/i-keycloak-user-fetch-by-role';
 
 // Token validation done in the app.ts file. all the requests go through this function
 export const validateToken = async (
@@ -37,8 +36,8 @@ export const validateToken = async (
       };
 
       const response = await fetch(url, options);
-
-      // console.log('validateToken response', { response });
+      //console.log('Validate Token');
+      //console.log('validateToken response', { response });
 
       if (response.status !== 200) {
         // if the request status isn't "OK", the token is invalid
@@ -47,30 +46,33 @@ export const validateToken = async (
       } else {
         // the token is valid pass request onto your next function
         const data: any = await response.json();
-
+        //console.log(data);
         const authorizationData: any = decodeKeycloakToken(
           ctx.headers.authorization
         );
+        //console.log(authorizationData);
         // const permissions = authorizationData.resource_access[keycloakConfig.resourceName].roles;
         const authData = <IAuth>{
-          fullName: data.name,
+          fullName: data.given_name +' '+ data.family_name,
           referenceId: data.sub,
           role: [],
           // permissions: permissions
         };
 
+        /* console.log("authData: ");
+        console.log(authData); */
+
         if (
           !(
-            authorizationData.realm_access &&
-            authorizationData.realm_access.roles
+            authorizationData.client_roles
           )
         ) {
-          throw Error('realm roles are not configured.');
+          throw Error('roles are not configured.');
         }
-        const roles = ['PSB_Admin', 'PSB_Intake_User', 'PSB_User', 'User', 'manage_finances'];
+        const roles = ['PSB_Admin', 'PSB_Intake_User', 'PSB_User', 'User', 'Manage_Finances'];
         roles.forEach((role) => 
         {
-          if (authorizationData.realm_access.roles.includes(role)) {
+          if (authorizationData.client_roles.includes(role)) {
             authData.role.push(role);
           }
         });
@@ -84,7 +86,7 @@ export const validateToken = async (
           await updateAuthData(authData,data);
         }
         ctx.state.auth = authData;
-        console.log('state.auth', ctx.state.auth)
+        //console.log('state.auth', ctx.state.auth)
         await next();
       }
     } else {
@@ -99,71 +101,13 @@ export const validateToken = async (
   }
 };
 
-export const retrieveKeycloakAdminToken = async () => {
-  try {
-    const tokenUrl = `${keycloakConfig.url}/realms/${keycloakConfig.realmName}/protocol/openid-connect/token`;
-
-    // console.log('retrieveKeycloakAdminToken URL', { tokenUrl });
-
-    // ARC TODO - PROBLEM IS IN THIS FUNCTION. PARAMS ARE WRONG MAYBE?
-
-    // console.log('retrieveKeycloakAdminToken keycloak config', { keycloakConfig})
-
-    const tokenParams = new URLSearchParams();
-    tokenParams.append('username', keycloakConfig.adminUserName);
-    tokenParams.append('password', keycloakConfig.adminPassword);
-    tokenParams.append('grant_type', 'password');
-    tokenParams.append('client_id', keycloakConfig.resourceName);
-
-    const response = await fetch(tokenUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: tokenParams,
-    });
-
-    // console.log('retrieveKeycloakAdminToken RESPONSE', { response })
-
-    if (response.status !== 200) {
-      throw Error(response.statusText);
-    }
-    const data: any = await response.json();
-    return data.access_token;
-  } catch (err) {
-    throw err;
-  }
-};
-
-export const retrieveKeycloakUsersByRole = async (
-  role: string,
-  token: string
-) => {
-  try {
-    const url = `${keycloakConfig.url}/admin/realms/${keycloakConfig.realmName}/roles/${role}/users`;
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (response.status !== 200) {
-      throw Error(response.statusText);
-    }
-    const data: IKeycloakUserByRole[] = await response.json();
-    return data;
-  } catch (err) {
-    throw err;
-  }
-};
 
 const verifyAndCreateOrUpdateUser = async (authData: IAuth, data: any) => {
+  // console.log("verifyAndCreateOrUpdateUser");
   const user = await retrieveUserByReferenceId(data.sub);
   if (!user) {
     console.log(
-      'ARC - User does not exist, creating contact with nam: ',
+      'ARC - User does not exist, creating contact with name: ',
       authData.fullName
     );
     const contact: any = await createContact(<IContact>{

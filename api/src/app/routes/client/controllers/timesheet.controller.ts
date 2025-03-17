@@ -10,6 +10,7 @@ import {
   retrieveForLightTimesheet,
   retrieveForLightTimesheetPreview,
   retrieveAllTimesheets,
+  retrieveAllTimesheetsByWeek,
   retrieveForLightTimesheetByUser,
   retrieveTimesheetByUserAndDate,
   retrieveMyTimesheets
@@ -23,6 +24,7 @@ import {
 } from '../../../services/client/timesheetEntry.service';
 import { IAuth } from '../../../models/interfaces/i-auth';
 import { authorize } from '../../../services/common/authorize.service';
+import { Role } from '../../roles';
 import e = require('express');
 
 export const getTimesheets = async (ctx: Koa.Context) => {
@@ -81,12 +83,31 @@ export const timeEntryByUser = async (ctx: Koa.Context) => {
 
 export const getAllTimesheets = async (ctx: Koa.Context) => {
   try {
-    // TODO - If user is NOT admin, return only the sheets by user id?
-    ctx.body = await retrieveAllTimesheets();
+    const auth = ctx.state.auth as IAuth;
+    if(auth.role.includes(Role.PSB_Admin)){
+      ctx.body = await retrieveAllTimesheets();
+    }else{
+      ctx.body = await retrieveMyTimesheets(auth.userId)//await retrieveAllTimesheets();
+    }
   } catch (err) {
     ctx.throw(err.message);
   }
 };
+
+export const getAllTimesheetsByWeek = async (ctx: Koa.Context) => {
+  try {
+    const auth = ctx.state.auth as IAuth;
+    if(auth.role.includes(Role.PSB_Admin)){
+      ctx.body = await retrieveAllTimesheetsByWeek(ctx.params.week);
+    }else{
+      ctx.body = await retrieveMyTimesheets(auth.userId)
+    }
+  } catch (err) {
+    ctx.throw(err.message);
+  }
+};
+
+
 export const getMyTimesheets = async (ctx: Koa.Context) => {
   try {
     const auth = ctx.state.auth as IAuth;
@@ -559,6 +580,7 @@ const router: Router = new Router(routerOpts);
 
 // router.get('/', authorize, getTimesheets);
 router.get('/all', authorize, getAllTimesheets);
+router.get('/week/:week', authorize, getAllTimesheetsByWeek);
 router.get('/user', authorize, getMyTimesheets);
 router.get('/:id', authorize, getTimesheetbyId);
 router.post('/timesheetentries', authorize, timesheetEntries);

@@ -10,10 +10,8 @@ const keycloakAuth = new Keycloak(`/${keycloakFileName}.json`);
 let userRoles = [];
 const pageBasedOnRole = role => {
   let page = "Unauthorized";
+  console.log("Page based on role");
   switch (role) {
-    case "User":
-      page = "timemachineIntakeIntroduction";
-      break;
     case "PSB_User":
       page = "timeMachineProjects";
       break;
@@ -23,8 +21,8 @@ const pageBasedOnRole = role => {
     case "PSB_Admin":
       page = "timeMachineProjects";
       break;
-    case "manage_finances":
-      page = "timemachineFinance";
+    case "Manage_Finances":
+      page = "timeMachineFinance";
       break;
     default:
       break;
@@ -32,22 +30,34 @@ const pageBasedOnRole = role => {
   return page;
 };
 
-export default (next, roles, isLoggedIn = false) => {
+export default (next, pageRolesRequired, isLoggedIn = false) => {
   keycloakAuth
-    .init({ onLoad: "login-required", responseMode: "query", checkLoginIframe: false })
-    .success(() => {
+    .init({ onLoad: "login-required", responseMode: "query", checkLoginIframe: false, pkceMethod: 'S256' })
+    .then(() => {
       keycloakAuth.logoutUrl =
         `${keycloakAuth.authServerUrl}/realms/${keycloakAuth.realm}` +
         `/protocol/openid-connect/logout?redirect_uri=${document.baseURI}`;
       store.dispatch("authLogin", keycloakAuth);
-      if (roles) {
+      if (pageRolesRequired) {
+        /*console.log("Roles Required For page:");//Only needs one of them
+        console.log(pageRolesRequired);*/
         let hasAccess = false;
         let keycloakRole;
-        roles.forEach(role => {
-          if (keycloakAuth.hasRealmRole(role)) {
+        userRoles = keycloakAuth.tokenParsed.client_roles;
+        
+        if(userRoles && userRoles.length>0){
+          if(userRoles.includes("PSB_Admin")){
+            keycloakRole = "PSB_Admin";
+          }else if (userRoles.includes("Manage_Finances")){
+            keycloakRole = "Manage_Finances";
+          }else if (userRoles.includes("PSB_User") || userRoles.includes("PSB_Intake_User")){
+            keycloakRole = "PSB_User";
+          }
+        }
+
+        pageRolesRequired.forEach(role => {
+          if (keycloakAuth.tokenParsed.client_roles && keycloakAuth.tokenParsed.client_roles.includes(role)) {
             hasAccess = true;
-            keycloakRole = role;
-            userRoles.push(role);
           }
         });
 
@@ -69,24 +79,25 @@ export default (next, roles, isLoggedIn = false) => {
       setInterval(() => {
         keycloakAuth
           .updateToken(70)
-          .success(refreshed => {
+          .then(refreshed => {
             if (refreshed) {
               store.dispatch("authLogin", keycloakAuth);
             }
           })
-          .error(() => {
+          .catch(() => {
             console.error("Failed to refresh token");
           });
       }, 60000);
     })
-    .error(() => {
+    .catch((e) => {
       console.log("failed to login");
+      console.log(e);
     });
 };
 export function getRoles() {
   return userRoles;
 }
 /** Returns link to Keycloak server, useful for admins to login */
-export function getAuthURL() {
+/*export function getAuthURL() {
   return `${keycloakAuth.authServerUrl}/admin/${keycloakAuth.realm}/console`;
-}
+}*/

@@ -3,5 +3,5 @@ export class Role {
   static PSB_User = 'PSB_User';
   static User = 'User';
   static PSB_Intake_User = 'PSB_Intake_User';
-  static manage_finances = 'manage_finances';
+  static Manage_Finances = 'Manage_Finances';
 }

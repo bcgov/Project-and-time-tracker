@@ -27,7 +27,7 @@ import RFxDto from "@/domain/models/RFx.dto";
 // add /api. This assumes OCP is using a path based route. This way
 // it does not need to be changed for dev/test/prod.
 const API_URI = process.env.NODE_ENV === 'development'
-? (process.env.VUE_APP_API_URI || "http://localhost:3000")
+? (process.env.VUE_APP_API_URI || "http://localhost:3000/api")
 : `${window.location.origin}/api`;
 
 console.log("API URL:", { API_URI });
@@ -142,7 +142,7 @@ const store = new Vuex.Store({
     },
     // Verify data
     verifyTokenServer(state, data) {
-      // console.log('verifyTokenServer called', {state, data})
+      console.log('verifyTokenServer called', {state, data})
       state.verifyTokenServer = data;
     },
     // Master data
@@ -189,10 +189,10 @@ const store = new Vuex.Store({
     fetchRFxPhases(state, data) {
       state.rfxPhases = data;
     },
-    fetchTimesheetProjects(state, data) {
+    fetchTimesheetProjectsFromMonth(state, data) {
       state.timesheetprojects = data;
     },
-    fetchTimesheetProjectsOld(state, data) {
+    fetchTimesheetProjectsPriorToMonth(state, data) {
       state.timesheetprojectsOld = data;
     },
     fetchExportedPdfs(state, data) {
@@ -422,6 +422,9 @@ const store = new Vuex.Store({
         }
       }
     },
+    fetchTimesheetsByWeek(state, data) {
+      state.allTimesheets = data;
+    },
     fetchAllTimesheets(state, data) {
       state.allTimesheets = data;
     },
@@ -525,14 +528,18 @@ const store = new Vuex.Store({
     },
     // Verification
     async verifyTokenServer(ctx) {
+      /* console.log('verifyTokenServer()');
+      console.log(API_URI); */
       const api = await $http
         .get(`${API_URI}/auth/verify`)
         .then(res => {
           const content = res.data;
+          // console.log(res);
           ctx.commit("verifyTokenServer", content);
           return Promise.resolve(content);
         })
         .catch(err => Promise.reject(err.response));
+      // console.log(api);
       return Promise.resolve(api);
     },
     // Master data
@@ -1268,6 +1275,12 @@ const store = new Vuex.Store({
 
       return Promise.resolve();
     },
+    async fetchTimesheetsByWeek(ctx) {
+      const startDateString = sessionStorage.getItem("selectedStartDate");
+      const res = await $http.get(`${API_URI}/timesheet/week/${startDateString}`);
+      ctx.commit("fetchTimesheetsByWeek", res.data);
+      return Promise.resolve(res.data);
+    },
     async fetchAllTimesheets(ctx) {
       const res = await $http.get(`${API_URI}/timesheet/all`);
       ctx.commit("fetchAllTimesheets", res.data);
@@ -1300,26 +1313,26 @@ const store = new Vuex.Store({
       return Promise.resolve(api);
     },
 
-    async fetchTimesheetProjects(ctx, req) {
+    async fetchTimesheetProjectsFromMonth(ctx, req) {
       const body = req;
       const api = await $http
         .post(`${API_URI}/project/timesheetprojects`, body)
         .then(res => {
           const content = res.data;
-          ctx.commit("fetchTimesheetProjects", content);
+          ctx.commit("fetchTimesheetProjectsFromMonth", content);
           return Promise.resolve(content);
         })
         .catch(err => Promise.reject(err.response));
       return Promise.resolve(api);
     },
 
-    async fetchTimesheetProjectsOld(ctx, req) {
+    async fetchTimesheetProjectsPriorToMonth(ctx, req) {
       const body = req;
       const api = await $http
         .post(`${API_URI}/project/timesheetprojectsOld`, body)
         .then(res => {
           const content = res.data;
-          ctx.commit("fetchTimesheetProjectsOld", content);
+          ctx.commit("fetchTimesheetProjectsPriorToMonth", content);
           return Promise.resolve(content);
         })
         .catch(err => Promise.reject(err.response));

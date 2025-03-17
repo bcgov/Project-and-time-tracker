@@ -1,0 +1,8 @@
+{
+    "confidential-port": 0,
+    "auth-server-url": "https://loginproxy.gov.bc.ca/auth",
+    "realm": "standard",
+    "ssl-required": "none",
+    "public-client": true,
+    "resource": "time-machine-4338"
+}

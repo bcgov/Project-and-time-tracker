@@ -16,9 +16,11 @@ const init = () => {
         app.listen(PORT);
       }
       console.log('App Started on ' + PORT);
-      return (this.ready = true);
     })
-    .catch(console.error);
+    .catch((e)=> {
+        console.log(e);
+        console.error;
+    });
 };
 init();
 export default init;
