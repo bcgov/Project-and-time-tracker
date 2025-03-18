@@ -8,15 +8,16 @@ import 'material-design-icons-iconfont/dist/material-design-icons.css';
 import moment from 'moment';
 import './plugins/vuetify';
 
-import VCalendar from 'v-calendar';
-import App from './App.vue';
-import router from './router';
+import VForm from '@/modules/widgets/Form.vue';
+import VField from '@/modules/widgets/Field.vue';
 
 import i18n from '@/i18n';
 import store from '@/store';
 
-import VForm from '@/modules/widgets/Form.vue';
-import VField from '@/modules/widgets/Field.vue';
+import VCalendar from 'v-calendar';
+import App from './App.vue';
+import router from './router';
+
 
 Vue.use(VCalendar, {
   componentPrefix: 'vc', // Use <vc-calendar /> instead of <v-calendar />
@@ -28,10 +29,11 @@ Vue.filter('formatDate', (value) => {
   if (value) {
     return moment(String(value)).format('MM/DD/YYYY');
   }
+  return null;
 });
 
 Vue.filter('withCommas', (value) => {
-  if (!value) return;
+  if (!value) return null;
   const anyNonNumbers = value.toString().match(/[^\d,.]+/g, '');
   if (anyNonNumbers) {
     return value;
