@@ -2,8 +2,8 @@
 import Keycloak from "keycloak-js";
 import store from "@/store";
 
-const keycloakFileName = process.env.VUE_APP_KEYCLOAK_JSON_FILENAME
-  ? process.env.VUE_APP_KEYCLOAK_JSON_FILENAME
+const keycloakFileName = import.meta.env.VUE_APP_KEYCLOAK_JSON_FILENAME
+  ? import.meta.env.VUE_APP_KEYCLOAK_JSON_FILENAME
   : "keycloak-local";
 // const keycloakAuth = new Keycloak(`/statics/${keycloakFileName}.json`);
 const keycloakAuth = new Keycloak(`/${keycloakFileName}.json`);

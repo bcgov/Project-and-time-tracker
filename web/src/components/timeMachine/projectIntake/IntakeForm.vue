@@ -305,7 +305,6 @@ import assign from 'object-assign';
 import Vue from 'vue';
 import VeeValidate from 'vee-validate';
 import AdditionalContact from '@/domain/models/AdditionalContact.dto';
-// import { setTimeout } from 'timers';
 import IntakeBaseInfo from './IntakeBaseInfo.vue';
 import MinistryBranchInfo from '../common/MinistryBranchInfo.vue';
 import Snackbar from '../common/Snackbar.vue';

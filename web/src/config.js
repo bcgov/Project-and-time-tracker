@@ -1,5 +1,5 @@
 // const baseUrl = 'http://localhost:3333';
-const baseUrl = process.env.NODE_ENV === 'development'
+const baseUrl = import.meta.env.NODE_ENV === 'development'
 ? 'http://localhost:3333'
 : `${window.location.origin}/api`;
 
@@ -16,6 +16,6 @@ const config = {
   // api: 'http://192.168.1.108:3333/admin/api'
 };
 
-global.config = config;
+window.config = config;
 
 export default config;

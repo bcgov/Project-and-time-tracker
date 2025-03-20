@@ -28,3 +28,5 @@ Vue.use(Vuetify, {
   options: { customProperties: true },
   iconfont: 'md',
 });
+
+export default new Vuetify({});

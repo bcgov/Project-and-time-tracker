@@ -1,18 +1,19 @@
 import Vue from "vue";
 import VueQuillEditor from "vue-quill-editor";
+import i18n from "@/i18n";
 
 import "./registerServiceWorker";
 import "roboto-fontface/css/roboto/roboto-fontface.css";
 import "@fortawesome/fontawesome-free/css/all.css";
 import "material-design-icons-iconfont/dist/material-design-icons.css";
 import moment from "moment";
-import "./plugins/vuetify";
+import vuetify from "./plugins/vuetify";
 
 import App from "./App.vue";
 import router from "./router";
-
-import i18n from "@/i18n";
 import store from "@/store";
+import helper from "@/helper.js";
+import config from "@/config.js";
 
 import VForm from "@/modules/widgets/Form.vue";
 import VField from "@/modules/widgets/Field.vue";
@@ -38,13 +39,13 @@ Vue.filter("withCommas", value => {
   }
   const stripped = value.toString().replace(/,/g, ""); // Remove commas to get real number, so 1,245 != 1.
   const format = new Intl.NumberFormat().format(stripped);
-  // console.log('withCommas', {value, format, stripped})
   return format;
 });
 
 Vue.component("v-form", VForm);
 Vue.component("v-field", VField);
-// Useful for v-selects, this opens them when tabbed into them
+
+// Corrected directive definition
 Vue.directive("open-on-focus", {
   bind: function(el) {
     el.addEventListener(
@@ -61,16 +62,17 @@ Vue.config.productionTip = false;
 
 /* eslint-disable */
 const appInstance = new Vue({
-  el: "#app",
-  i18n,
-  store,
-  router,
-  render: h => h(App),
-  mounted() {},
-  methods: {
-    back() {
-      this.$router.go(-1);
+    el: "#app",
+    i18n,
+    store,
+    router,
+    vuetify,
+    render: h => h(App),
+    mounted() {},
+    methods: {
+      back() {
+        this.$router.go(-1);
+      }
     }
-  }
-});
-/* eslint-enable */
+  });
+  /* eslint-enable */

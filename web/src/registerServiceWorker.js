@@ -2,8 +2,8 @@
 
 import { register } from 'register-service-worker';
 
-if (process.env.NODE_ENV === 'production') {
-  register(`${process.env.VUE_APP_API_URI}service-worker.js`, {
+if (import.meta.env.NODE_ENV === 'production') {
+  register(`${import.meta.env.VUE_APP_API_URI}service-worker.js`, {
     ready() {
       console.log(
         'App is being served from cache by a service worker.\n'

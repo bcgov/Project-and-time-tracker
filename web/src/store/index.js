@@ -26,8 +26,8 @@ import RFxDto from "@/domain/models/RFx.dto";
 // For non-local dev get the API from the window location and
 // add /api. This assumes OCP is using a path based route. This way
 // it does not need to be changed for dev/test/prod.
-const API_URI = process.env.NODE_ENV === 'development'
-? (process.env.VUE_APP_API_URI || "http://localhost:3000/api")
+const API_URI = import.meta.env.NODE_ENV === 'development'
+? (import.meta.env.VUE_APP_API_URI || "http://localhost:3000/api")
 : `${window.location.origin}/api`;
 
 console.log("API URL:", { API_URI });

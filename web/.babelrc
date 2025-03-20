@@ -1,7 +1,7 @@
 {
   "env": {
     "test": {
-      "presets": ["env"],
+      "presets": ["env", "@babel/preset-env"],
       "plugins": ["transform-vue-jsx", "transform-es2015-modules-commonjs", "dynamic-import-node","transform-object-rest-spread"]
     }
   }

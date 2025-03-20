@@ -2,7 +2,7 @@
 import Vue from 'vue';
 import inflector from 'i';
 
-const storage = window.sessionStorage;
+//const storage = window.sessionStorage;
 const helper = {};
 
 /**
@@ -16,10 +16,10 @@ helper.i = inflector();
 helper.ls = {
   set(key, value) {
     value = JSON.stringify(value);
-    storage.setItem(key, value);
+    window.sessionStorage.setItem(key, value); // Use localStorage or sessionStorage
   },
   get(key, defaultValue) {
-    let value = storage.getItem(key, value);
+    let value = window.sessionStorage.getItem(key); // Corrected to use localStorage
     if (value === null || value === 'undefined' || value === '') {
       value = defaultValue;
     } else {
