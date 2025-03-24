@@ -74,6 +74,7 @@
                 </template>-->
               </td>
               <td v-for="index in 5" :key="index">
+                <div v-if="props.item.entries.length >= index">
                 <v-flex style="float:left" v-if="selectedItem == 1">
                   <v-text-field
                     style="float:left;width:70px"
@@ -203,6 +204,7 @@
                     <span>edit comment</span>
                   </v-tooltip>
                 </v-flex>
+                </div>
               </td>
             </tr>
             <tr v-if="preCalculateMouUsedAmount(props.item, props.item.calculatedAmountBilled) > MOU_USED_AMOUNT_LEVELS.DANGER">

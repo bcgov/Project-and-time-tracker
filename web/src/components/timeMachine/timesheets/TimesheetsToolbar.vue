@@ -75,7 +75,7 @@ export default {
       this.$refs.AddTimeRecord.open();
     },
     async setAdmin() {
-      this.isAdmin = getRoles().includes('PSB_Admin');// this.$store.state.activeRoles && this.$store.state.activeRoles.role.includes('PSB_Admin');
+      this.isAdmin = getRoles().includes('PSB_Admin');
     },
     async onChangeWeek() {
       if (!this.isAddTimeOpen) {

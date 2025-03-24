@@ -364,7 +364,7 @@ async function generateExportEntries(
     );
   }
 
-  if (timesheetEntry.expenseAmount && timesheetEntry.expenseAmount > 0) {
+  if (timesheetEntry.expenseAmount && timesheetEntry.expenseAmount != 0) {
     let financeDetailExpense = {} as IFinanceExportDetail;
     financeDetailExpense.entryDate = timesheetEntry.entryDate;
     financeDetailExpense.description = timesheetEntry.expenseComment;
@@ -406,19 +406,20 @@ export const retrieveFinanceData = async (obj, userId) => {
   const financeExport = ministryProjects as IFinanceExport[];
   const financeExportNonMinistry = nonMinistryProjects as IFinanceExport[];
   const finalResult = [];
+
+
+  const selectedDate = obj.selectedDate.split("-");
+  const year = parseInt(selectedDate[0], 10);
+  const month = parseInt(selectedDate[1], 10);
+  const pdfDateName = new Date(year, month - 1, 1);
+  const startDate = getPriorMonday(new Date(year, month - 1, 1));
+  const endDate = getPriorSunday(new Date(year, month, 0));
+
   if (financeExport.length > 0) {
     const documentNo: string = uuidv4();
 
-    const selectedDate = obj.selectedDate.split("-");
-
-    const year = parseInt(selectedDate[0], 10);
-    const month = parseInt(selectedDate[1], 10);
-
-    const startDate = new Date(year, month - 1, 1);
-    const endDate = new Date(year, month, 0);
-
     const documentPath: string = await getPDFName(
-      startDate,
+      pdfDateName,
       financeExport.length
     );
     let mousSelected = [];
@@ -563,7 +564,7 @@ export const retrieveFinanceData = async (obj, userId) => {
         .innerJoinAndSelect("t.user", "u")
         .innerJoinAndSelect("u.contact", "c")
         .where(
-          't."projectId" = :projectId and (t.is_locked = :is_locked or t.is_locked IS NULL) and (te.entryDate >= :start and te.entryDate <= :end) and t.documentNo is NULL',
+          't."projectId" = :projectId and (t.is_locked = :is_locked or t.is_locked IS NULL) and (t.startDate >= :start AND t.startDate <= :end) and t.documentNo is NULL',
           {
             projectId: exportData.projectId,
             is_locked: false,
@@ -699,16 +700,8 @@ export const retrieveFinanceData = async (obj, userId) => {
   if (financeExportNonMinistry.length > 0) {
     const documentNo: string = uuidv4();
 
-    const selectedDate = obj.selectedDate.split("-");
-
-    const year = parseInt(selectedDate[0], 10);
-    const month = parseInt(selectedDate[1], 10);
-
-    const startDate = new Date(year, month - 1, 1);
-    const endDate = new Date(year, month, 0);
-
     const documentPath: string = await getPDFNameNonMinistry(
-      startDate,
+      pdfDateName,
       financeExportNonMinistry.length
     );
     let mousSelected = [];
@@ -851,7 +844,7 @@ export const retrieveFinanceData = async (obj, userId) => {
         .innerJoinAndSelect("t.user", "u")
         .innerJoinAndSelect("u.contact", "c")
         .where(
-          't."projectId" = :projectId and (t.is_locked = :is_locked or t.is_locked IS NULL) and (te.entryDate >= :start and te.entryDate <= :end) and t.documentNo is NULL',
+          't."projectId" = :projectId and (t.is_locked = :is_locked or t.is_locked IS NULL) and (t.startDate >= :start AND t.startDate <= :end) and t.documentNo is NULL',
           {
             projectId: exportData.projectId,
             is_locked: false,
@@ -1027,10 +1020,11 @@ export const getNonMinistryFinanceExportResult = async (
       const selectedDate = obj.selectedProjects[index].month.split("-");
       const year = parseInt(selectedDate[0], 10);
       const month = parseInt(selectedDate[1], 10);
-      const startDate = new Date(year, month - 1, 1);
-      const endDate = new Date(year, month, 0);
+      const pdfDateName = new Date(year, month - 1, 1);
+      const startDate = getPriorMonday(new Date(year, month - 1, 1));
+      const endDate = getPriorSunday(new Date(year, month, 0));
       const documentPath: string = await getPDFNameNonMinistry(
-        startDate,
+        pdfDateName,
         financeExportNonMinistry.length
       );
       let billingCount = 1;
@@ -1306,10 +1300,11 @@ export const getMinistryFinanceExportResult = async (
       const selectedDate = obj.selectedProjects[index].month.split("-");
       const year = parseInt(selectedDate[0], 10);
       const month = parseInt(selectedDate[1], 10);
-      const startDate = new Date(year, month - 1, 1);
-      const endDate = new Date(year, month, 0);
+      const pdfDateName = new Date(year, month - 1, 1);
+      const startDate = getPriorMonday(new Date(year, month - 1, 1));
+      const endDate = getPriorSunday(new Date(year, month, 0));
       const documentPath: string = await getPDFName(
-        startDate,
+        pdfDateName,
         financeExport.length
       );
       let billingCount = 1;
@@ -1566,6 +1561,12 @@ export const getMinistryFinanceExportResult = async (
     return [];
   }
 };
+
+
+
+/*
+  Gets non locked timesheets from a project between given dates
+*/
 export const getTimesheets = async (projectId, startDate, endDate) => {
   // ARC - Problem.  Is startDate and endDate working?
   // Log query and compare.
@@ -1581,7 +1582,7 @@ export const getTimesheets = async (projectId, startDate, endDate) => {
     .innerJoinAndSelect("u.contact", "c")
     // Verify WHERE is being appended when generating new reports (not just for reinstating)
     .where(
-      't."projectId" = :projectId and (t.is_locked = :is_locked or t.is_locked IS NULL) and (te.entryDate >= :start and te.entryDate <= :end) and t.documentNo is NULL',
+      't."projectId" = :projectId and (t.is_locked = :is_locked or t.is_locked IS NULL) and ((t.startDate >= :start AND t.startDate <= :end) OR (t.endDate >= :start AND t.endDate <= :end)) and t.documentNo is NULL',
       {
         projectId: projectId,
         is_locked: false,
@@ -2039,7 +2040,9 @@ export const retrieveArchivedProjects = async () => {
     .getMany();
 };
 
+//Get projects of the selectedMonth
 export const retrieveTimesheetProjects = async (obj) => {
+  console.log('retrieveTimesheetProjects() called')
   const repo = timesheetRepo();
 
   const selectedDate = obj.selectedDate.split("-");
@@ -2047,8 +2050,8 @@ export const retrieveTimesheetProjects = async (obj) => {
   const year = parseInt(selectedDate[0], 10);
   const month = parseInt(selectedDate[1], 10);
 
-  const startDate = new Date(year, month - 1, 1);
-  const endDate = new Date(year, month, 0);
+  let startDate = getPriorMonday(new Date(year, month - 1, 1));
+  let endDate = getPriorSunday(new Date(year, month, 0));
 
   const res = await repo
     .createQueryBuilder("t")
@@ -2056,7 +2059,7 @@ export const retrieveTimesheetProjects = async (obj) => {
     .innerJoin("t.timesheetEntries", "te")
     .leftJoin(FinanceExport, "fe", 't."documentNo" = fe.documentNo')
     .innerJoin("t.project", "p")
-    .where("te.entryDate >= :startDate AND te.entryDate <= :endDate", {
+    .where("(t.startDate >= :startDate AND t.startDate < :endDate)", {
       startDate,
       endDate,
     })
@@ -2070,6 +2073,7 @@ export const retrieveTimesheetProjects = async (obj) => {
   return res;
 };
 
+//Gets Projects prior to the selected month?
 export const retrieveTimesheetProjectsOld = async (obj) => {
   console.log('retrieveTimesheetProjectsOld() called')
   const repo = timesheetRepo();
@@ -2079,13 +2083,17 @@ export const retrieveTimesheetProjectsOld = async (obj) => {
   const year = parseInt(selectedDate[0], 10);
   const month = parseInt(selectedDate[1], 10);
 
-  const startDate = new Date(year, month - 1, 1);
-  const endDate = new Date(year, month, 0);
+  let startDate = getPriorMonday(new Date(year, month - 1, 1));
 
+  /*console.log('SelectedDate: ' + selectedDate);
+  console.log('StartDate: ' + startDate);*/
+
+
+  //TODO: Can this be changed into a catch all prior unbilled data? Why do we seperate it by month?
   const res = await repo
     .createQueryBuilder("t")
     .select([
-      "cast(te.entryDate as varchar(7)) as startDate",
+      "cast(t.startDate as varchar(7)) as startDate",
       "p.dateModified",
       "p.completionDate",
       "p.id as key",
@@ -2105,7 +2113,7 @@ export const retrieveTimesheetProjectsOld = async (obj) => {
     .innerJoin("p.mou", "mo")
     .innerJoin("p.client", "cl")
     .leftJoin("cl.ministry", "mi")
-    .where("te.entryDate < :startDate", { startDate })
+    .where("(t.startDate < :startDate AND t.endDate < :startDate)", { startDate})
     .andWhere("(t.is_locked = :is_locked OR t.is_locked IS NULL)", {
       is_locked: false,
     })
@@ -2124,11 +2132,33 @@ export const retrieveTimesheetProjectsOld = async (obj) => {
     // .having('count(te.id)=7')
     .getRawMany();
 
+  //console.log(res);
   return res;
 
   // console.log('retrieveTimesheetProjectsOld query:', { query: res.getQuery(), sql: res.getSql()})
   // return res.getRawMany()
 };
+
+//Returns prior monday from a date
+//If the date is already Monday, it returns that
+//Monday will always be the first day in a timesheet
+function getPriorMonday(date: Date){
+  while(date.getDay()!=1){
+    date.setDate(date.getDate() - 1);
+  }
+  return date;
+}
+
+//Returns prior monday from a date
+//If the date is already Sunday, it returns that
+//Sunday will always be the last day in a timesheet
+function getPriorSunday(date: Date){
+  while(date.getDay()!=0){
+    date.setDate(date.getDate() - 1);
+  }
+  return date;
+}
+
 
 export const retrieveDischargedPdfs = async (obj) => {
   const repo = financeRepo();
@@ -2138,8 +2168,8 @@ export const retrieveDischargedPdfs = async (obj) => {
   const year = parseInt(selectedDate[0], 10);
   const month = parseInt(selectedDate[1], 10);
 
-  const startDate = new Date(year, month - 1, 1);
-  const endDate = new Date(year, month, 0);
+  const startDate = getPriorMonday(new Date(year, month - 1, 1));
+  const endDate = getPriorSunday(new Date(year, month, 0));
 
   const res = await repo
     .createQueryBuilder("t")
@@ -2169,8 +2199,8 @@ export const retrieveExportedPdfs = async (obj) => {
   const year = parseInt(selectedDate[0], 10);
   const month = parseInt(selectedDate[1], 10);
 
-  const startDate = new Date(year, month - 1, 1);
-  const endDate = new Date(year, month, 0);
+  const startDate = getPriorMonday(new Date(year, month - 1, 1));
+  const endDate = getPriorSunday(new Date(year, month, 0));
 
   const res = await repo
     .createQueryBuilder("t")
@@ -2222,6 +2252,8 @@ export const retrieveNonArchivedProjectsByUserId = async (userId: string) => {
  * and that were still not locked (lock will happen during report generation).
 */
 export const retreiveNonLockedTimesheetBillables = async ( projectIds: string[]) => {
+  //Grab billable time per weekly timesheet for projects provided
+  //TODO: should this grab only billable projects? projectCategoryId = 3 or projectCategoryId = null
   const timeSheetEntryRepo = timesheetEntryRepo();
   const openTimeSheetsAmount = await timeSheetEntryRepo
   .createQueryBuilder("tse")
@@ -2237,8 +2269,26 @@ export const retreiveNonLockedTimesheetBillables = async ( projectIds: string[])
   .addGroupBy('tse."timesheetId"')
   .addGroupBy('c."revenueRate"')
   .addGroupBy('c."hourlyRate"')
+  .orderBy('ts."projectId"')
   .getRawMany();
-  return openTimeSheetsAmount;
+
+  
+  //Sum weekly timesheets into one amount per Project
+  var summedTimesheetsByProjectId = [];
+  var previousProjectId = "";
+  if(openTimeSheetsAmount.length>0){
+    openTimeSheetsAmount.forEach( ts => {
+      if(ts.projectId){
+        if(ts.projectId === previousProjectId){
+            summedTimesheetsByProjectId[summedTimesheetsByProjectId.length-1].nonLockedBill += (ts.totalBillableTime + ts.totalRevenue + ts.totalExpenses);
+        }else{
+          summedTimesheetsByProjectId.push({projectId: ts.projectId, nonLockedBill: (ts.totalBillableTime + ts.totalRevenue + ts.totalExpenses)});
+          previousProjectId = ts.projectId;
+        }
+      }
+    });
+  }
+  return summedTimesheetsByProjectId;
 }
 
 /**
@@ -2276,7 +2326,7 @@ const calculateProjectBillings = async (projectIds: any[]) => {
     var billingSum = 0;
     var ts = totalNumbersToBeBilled.find(x => x.projectId === element);
     if(ts){
-     billingSum += ts.totalBillableTime + ts.totalRevenue + ts.totalExpenses;
+     billingSum += ts.nonLockedBill;
     }
     var tsr = totalNumbersBilled.find(x => x.projectId === element);
     if(tsr){

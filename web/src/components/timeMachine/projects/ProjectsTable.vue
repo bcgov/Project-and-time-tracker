@@ -133,7 +133,7 @@ export default {
   data() {
     return {
       headers: [
-        { text: 'MOU / Contract', value: 'mou', align: 'left', sortable: true },
+        { text: 'MOU / Contract', value: 'mou.name', align: 'left', sortable: true },
         { text: 'Project Name', value: 'projectName', align: 'left', sortable: true },
         // { text: 'Phase', value: 'rfxPhaseName', align: 'left', sortable: true },
         { text: 'Client', value: 'client.ministry.ministryName', sortable: true },
