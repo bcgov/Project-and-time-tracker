@@ -219,7 +219,7 @@ router.beforeEach((to, from, next) => {
     security.logout();
   }
 
-  //Checking if a page has required roles and if the user has said roles
+  // Checking if a page has required roles and if the user has said roles
   if (to.meta.requiresAuth) {
     const { auth } = store.state.security;
     if (!auth.authenticated) {

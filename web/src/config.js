@@ -1,7 +1,7 @@
 // const baseUrl = 'http://localhost:3333';
 const baseUrl = process.env.NODE_ENV === 'development'
-? 'http://localhost:3333'
-: `${window.location.origin}/api`;
+  ? 'http://localhost:3333'
+  : `${window.location.origin}/api`;
 
 const config = {
   locale: 'en-US', // en-US, zh-CN

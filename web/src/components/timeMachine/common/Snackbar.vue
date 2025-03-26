@@ -21,8 +21,6 @@
 </template>
 
 <script>
-import { setTimeout } from 'timers';
-
 export default {
   data: () => ({
     top: false,

@@ -19,7 +19,7 @@ helper.ls = {
     storage.setItem(key, value);
   },
   get(key, defaultValue) {
-    let value = storage.getItem(key, value);
+    let value = storage.getItem(key);
     if (value === null || value === 'undefined' || value === '') {
       value = defaultValue;
     } else {

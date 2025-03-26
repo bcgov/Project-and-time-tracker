@@ -14,7 +14,7 @@
         hide-actions
         class="elevation-0 tm-v-datatable batch-entry"
       >
-        <template slot="headerCell" scope="props">
+        <template slot="headerCell" slot-scope="props">
           <v-tooltip
             bottom
             v-if="props.header.text != 'Project' && props.header.text != 'Project Rfx'"

@@ -899,19 +899,25 @@ export default {
                 doc.setFontStyle("normal");
                 if (pdfValuesNonMinistry[i].clientAddress) {
                   doc.text(
-                 (pdfValuesNonMinistry[i].clientAddress[0].orgName?pdfValuesNonMinistry[i].clientAddress[0].orgName:"").concat(pdfValuesNonMinistry[i].clientAddress[0].addressLine1?(", ").concat(pdfValuesNonMinistry[i].clientAddress[0].addressLine1?pdfValuesNonMinistry[i].clientAddress[0].addressLine1:""):""),
+                 (pdfValuesNonMinistry[i].clientAddress[0].orgName?pdfValuesNonMinistry[i].clientAddress[0].orgName:"")
+                 .concat(pdfValuesNonMinistry[i].clientAddress[0].addressLine1?(", ")
+                 .concat(pdfValuesNonMinistry[i].clientAddress[0].addressLine1?pdfValuesNonMinistry[i].clientAddress[0].addressLine1:""):""),
                   leftValue + 10,
                   topValue + 58
                 );
 
                 doc.text(
-                 (pdfValuesNonMinistry[i].clientAddress[0].addressLine2?pdfValuesNonMinistry[i].clientAddress[0].addressLine2:"").concat(pdfValuesNonMinistry[i].clientAddress[0].city?(", ").concat(pdfValuesNonMinistry[i].clientAddress[0].city?pdfValuesNonMinistry[i].clientAddress[0].city:""):""),
+                 (pdfValuesNonMinistry[i].clientAddress[0].addressLine2?pdfValuesNonMinistry[i].clientAddress[0].addressLine2:"")
+                 .concat(pdfValuesNonMinistry[i].clientAddress[0].city?(", ")
+                 .concat(pdfValuesNonMinistry[i].clientAddress[0].city?pdfValuesNonMinistry[i].clientAddress[0].city:""):""),
                   leftValue + 10,
                   topValue + 62
                 );
 
                 doc.text(
-                  (pdfValuesNonMinistry[i].clientAddress[0].province?pdfValuesNonMinistry[i].clientAddress[0].province:"").concat(pdfValuesNonMinistry[i].clientAddress[0].postalCode?(", ").concat(pdfValuesNonMinistry[i].clientAddress[0].postalCode?pdfValuesNonMinistry[i].clientAddress[0].postalCode:""):""),
+                  (pdfValuesNonMinistry[i].clientAddress[0].province?pdfValuesNonMinistry[i].clientAddress[0].province:"")
+                  .concat(pdfValuesNonMinistry[i].clientAddress[0].postalCode?(", ")
+                  .concat(pdfValuesNonMinistry[i].clientAddress[0].postalCode?pdfValuesNonMinistry[i].clientAddress[0].postalCode:""):""),
                   leftValue + 10,
                   topValue + 66
                 );
@@ -1809,19 +1815,25 @@ export default {
                 doc.setFontStyle("normal");
                 if (pdfValuesNonMinistry[i].clientAddress) {
                    doc.text(
-                 (pdfValuesNonMinistry[i].clientAddress[0].orgName?pdfValuesNonMinistry[i].clientAddress[0].orgName:"").concat(pdfValuesNonMinistry[i].clientAddress[0].addressLine1?(", ").concat(pdfValuesNonMinistry[i].clientAddress[0].addressLine1?pdfValuesNonMinistry[i].clientAddress[0].addressLine1:""):""),
+                 (pdfValuesNonMinistry[i].clientAddress[0].orgName?pdfValuesNonMinistry[i].clientAddress[0].orgName:"")
+                 .concat(pdfValuesNonMinistry[i].clientAddress[0].addressLine1?(", ")
+                 .concat(pdfValuesNonMinistry[i].clientAddress[0].addressLine1?pdfValuesNonMinistry[i].clientAddress[0].addressLine1:""):""),
                   leftValue + 10,
                   topValue + 58
                 );
 
                 doc.text(
-                 (pdfValuesNonMinistry[i].clientAddress[0].addressLine2?pdfValuesNonMinistry[i].clientAddress[0].addressLine2:"").concat(pdfValuesNonMinistry[i].clientAddress[0].city?(", ").concat(pdfValuesNonMinistry[i].clientAddress[0].city?pdfValuesNonMinistry[i].clientAddress[0].city:""):""),
+                 (pdfValuesNonMinistry[i].clientAddress[0].addressLine2?pdfValuesNonMinistry[i].clientAddress[0].addressLine2:"")
+                 .concat(pdfValuesNonMinistry[i].clientAddress[0].city?(", ")
+                 .concat(pdfValuesNonMinistry[i].clientAddress[0].city?pdfValuesNonMinistry[i].clientAddress[0].city:""):""),
                   leftValue + 10,
                   topValue + 62
                 );
 
                 doc.text(
-                  (pdfValuesNonMinistry[i].clientAddress[0].province?pdfValuesNonMinistry[i].clientAddress[0].province:"").concat(pdfValuesNonMinistry[i].clientAddress[0].postalCode?(", ").concat(pdfValuesNonMinistry[i].clientAddress[0].postalCode?pdfValuesNonMinistry[i].clientAddress[0].postalCode:""):""),
+                  (pdfValuesNonMinistry[i].clientAddress[0].province?pdfValuesNonMinistry[i].clientAddress[0].province:"")
+                  .concat(pdfValuesNonMinistry[i].clientAddress[0].postalCode?(", ")
+                  .concat(pdfValuesNonMinistry[i].clientAddress[0].postalCode?pdfValuesNonMinistry[i].clientAddress[0].postalCode:""):""),
                   leftValue + 10,
                   topValue + 66
                 );
