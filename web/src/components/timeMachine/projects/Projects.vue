@@ -7,7 +7,7 @@
       </v-flex>
        <v-flex md8><v-radio-group class="right-position" row v-model="selected">
         <v-radio label="My Projects" value="My Projects"></v-radio>
-        <v-radio v-if="isAdmin" label="All Projects" value="All Projects"></v-radio>
+        <v-radio v-if="isAdminOrIntake" label="All Projects" value="All Projects"></v-radio>
         <v-radio label="Archived Projects" value="Archived Projects"></v-radio>
       </v-radio-group></v-flex></v-flex>
     </v-layout>
@@ -38,13 +38,14 @@ export default {
   data: () => ({
     color: Material,
     selected: 'My Projects',
-    isAdmin: false,
+    isAdminOrIntake: false,
   }),
   computed: {
   },
   methods: {
     async setAdmin() {
-      this.isAdmin = getRoles().includes('PSB_Admin');
+      const roles = getRoles();
+      this.isAdminOrIntake = roles.includes('PSB_Admin') || roles.includes('PSB_Intake_User');
     },
   },
   created() {
