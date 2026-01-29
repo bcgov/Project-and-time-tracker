@@ -60,7 +60,7 @@ const menuItems = [
   {
     href: '/projects',
     title: 'Projects',
-    icon: 'folder',
+    icon: 'folder_open',
   },
   {
     href: '/timesheets',
@@ -71,6 +71,12 @@ const menuItems = [
     href: '/finance',
     title: 'Finance',
     icon: 'attach_money',
+  },
+  {
+    href: '/reports',
+    title: 'Reports',
+    //icon: 'table_chart',
+    icon: 'insert_chart_outlined',
   },
   {
     divider: true,

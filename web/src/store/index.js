@@ -110,6 +110,10 @@ const store = new Vuex.Store({
     drawerCommentsEntries: [],
     verifyTokenServer: null,
     timeLogOfSelectedDate: null,
+    //Reports
+    allHours: [],     // the current page (array)
+    totalHours: 0,    // server-reported total
+
   },
   /**
    * Mutations are functions that are used to modify store data - they should be pure.
@@ -140,6 +144,14 @@ const store = new Vuex.Store({
         endDate: data.endDate,
       };
     },
+    
+  setAllHours(state, rows) {
+    state.allHours = Array.isArray(rows) ? rows : [];
+  },
+  setTotalHours(state, n) {
+    state.totalHours = Number(n) || 0;
+  },
+
     // Verify data
     verifyTokenServer(state, data) {
       console.log('verifyTokenServer called', { state, data });
@@ -428,6 +440,10 @@ const store = new Vuex.Store({
     fetchAllTimesheets(state, data) {
       state.allTimesheets = data;
     },
+    fetchAllHours(state, data) {
+      state.allHours = data;
+    },
+    
     fetchUserTimesheets(state, data) {
       state.userTimesheets = data;
     },
@@ -1285,6 +1301,32 @@ const store = new Vuex.Store({
       ctx.commit('fetchAllTimesheets', res.data);
       return Promise.resolve(res.data);
     },
+    
+    async fetchAllHours(ctx, { page = 1, pageSize = 25, startDate, endDate, userIds, projectIds } = {}) {
+      
+      const params = new URLSearchParams({
+          page: String(page),
+          pageSize: String(pageSize)
+        });
+
+        if (startDate) params.set('startDate', startDate);
+        if (endDate) params.set('endDate', endDate);
+
+        // Multi-select (IDs[]) → send CSV
+        if (Array.isArray(userIds) && userIds.length) {
+          params.set('userIds', userIds.join(','));
+        }
+        if (Array.isArray(projectIds) && projectIds.length) {
+          params.set('projectIds', projectIds.join(','));
+        }
+
+        const res = await $http.get(`${API_URI}/timesheet/allHours?${params.toString()}`);
+        ctx.commit('setAllHours', res.data?.data || []);
+        ctx.commit('setTotalHours', res.data?.total || 0);
+        return res.data;
+    },
+  
+
     async fetchUserTimesheets(ctx) {
       const res = await $http.get(`${API_URI}/timesheet/user`);
       ctx.commit('fetchUserTimesheets', res.data);
@@ -1529,6 +1571,9 @@ const store = new Vuex.Store({
   },
   getters: {
     getProjectContactByType: state => contactType => state.activeProjectContacts.find(data => data.contactType === contactType),
+    allHours: s => s.allHours,
+    totalHours: s => s.totalHours
+
   },
 });
 

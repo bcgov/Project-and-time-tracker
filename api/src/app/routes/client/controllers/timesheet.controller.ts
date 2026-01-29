@@ -9,6 +9,7 @@ import {
   updateTimesheet,
   retrieveForLightTimesheet,
   retrieveForLightTimesheetPreview,
+  retrieveAllHoursPaged,
   retrieveAllTimesheets,
   retrieveAllTimesheetsByWeek,
   retrieveForLightTimesheetByUser,
@@ -79,6 +80,65 @@ export const timeEntryByUser = async (ctx: Koa.Context) => {
   } catch (err) {
     ctx.throw(err.message);
   }
+};
+
+
+// GET /api/timesheet/allHours?page=1&pageSize=100
+export const getAllHours = async (ctx: Koa.Context) => {
+  
+try {
+    const auth = ctx.state.auth as IAuth;
+    if (!auth.role.includes(Role.PSB_Admin)) {
+      ctx.status = 403; ctx.body = { message: 'Forbidden' }; return;
+    }
+
+    const {
+      page = '1',
+      pageSize = '100',
+      startDate,
+      endDate,
+      userIds,      // "12,34" or "12"
+      projectIds    // "5,7" or "5"
+    } = ctx.query as Record<string, string | undefined>;
+
+    
+    // UUID v4 regex (accepts lowercase/uppercase hex + dashes)
+    const uuidRe = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+    const toUuidArray = (s?: string) =>
+      s
+        ? s
+            .split(',')
+            .map(x => x.trim())
+            .filter(v => uuidRe.test(v))
+        : undefined;
+
+
+    const toNumArray = (s?: string) =>
+      s
+        ? s.split(',')
+            .map(x => Number(x.trim()))
+            .filter(n => Number.isFinite(n))
+        : undefined;
+
+    const filters = {
+      startDate: startDate || undefined,
+      endDate: endDate || undefined,
+      userIds: toUuidArray(userIds),
+      projectIds: toUuidArray(projectIds),
+    };
+
+    const pg = Math.max(1, Number(page));
+    const ps = Math.min(200, Math.max(1, Number(pageSize)));
+
+    const { data, total } = await retrieveAllHoursPaged(filters, { page: pg, pageSize: ps });
+
+    ctx.set('X-Total-Count', String(total));
+    ctx.body = { data, total, page: pg, pageSize: ps };
+  } catch (err) {
+    ctx.throw(err.message);
+  }
+
 };
 
 export const getAllTimesheets = async (ctx: Koa.Context) => {
@@ -579,6 +639,7 @@ const routerOpts: Router.IRouterOptions = {
 const router: Router = new Router(routerOpts);
 
 // router.get('/', authorize, getTimesheets);
+router.get('/allHours', authorize, getAllHours);
 router.get('/all', authorize, getAllTimesheets);
 router.get('/week/:week', authorize, getAllTimesheetsByWeek);
 router.get('/user', authorize, getMyTimesheets);

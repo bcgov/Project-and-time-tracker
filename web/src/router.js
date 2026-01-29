@@ -21,6 +21,8 @@ import AdminRemoveMOU from './components/timeMachine/admin/RemoveMOU.vue';
 import AdminRfxType from './components/timeMachine/admin/AdminRfxType.vue';
 import AdminRfxPhase from './components/timeMachine/admin/AdminRfxPhase.vue';
 import Unauthorized from './components/error/Unauthorized.vue';
+import Reports from './components/timeMachine/reports/Reports.vue'
+import TimesheetDetailsReport from './components/timeMachine/reports/TimesheetDetailsReport.vue';
 
 Vue.use(Router);
 
@@ -147,6 +149,20 @@ const routes = [
     path: '/admin',
     name: 'admin',
     component: AdminMain,
+    meta: { requiresAuth: true, roles: ['PSB_Admin'] },
+  },
+  {
+    exact: true,
+    path: '/reports',
+    name: 'reports',
+    component: Reports,
+    meta: { requiresAuth: true, roles: ['PSB_Admin'] },
+  },
+  {
+    exact: true,
+    path: '/reports/timesheet-details',
+    name: 'timesheet-details',
+    component: TimesheetDetailsReport,
     meta: { requiresAuth: true, roles: ['PSB_Admin'] },
   },
   {

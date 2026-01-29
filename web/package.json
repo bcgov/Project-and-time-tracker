@@ -58,7 +58,8 @@
     "vuetify": "^1.5.5",
     "vuex": "^3.0.1",
     "webpack-cli": "^6.0.1",
-    "webpack-merge": "^4.2.1"
+    "webpack-merge": "^4.2.1",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@babel/cli": "latest",
