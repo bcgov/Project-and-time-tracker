@@ -51,6 +51,7 @@ const commonForAllUsers = [
   'GET/api/user/',
   'GET/api/MOU/',
   'POST/api/intake/',
+  'GET/api/report/export.csv'
 ];
 
 const commonForPSBAdminAndUser = [

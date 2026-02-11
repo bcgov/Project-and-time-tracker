@@ -17,6 +17,7 @@ import mouController from './client/controllers/mou.controller';
 import procurementController from './client/controllers/procurement.controller';
 import projectNoteController from './client/controllers/projectNote.controller';
 import financeCodesController from './client/controllers/financeCode.controller';
+import reportController from './client/controllers/report.controller'
 
 export const appRoutes = [
   projectController.routes(),
@@ -37,7 +38,8 @@ export const appRoutes = [
   mouController.routes(),
   procurementController.routes(),
   projectNoteController.routes(),
-  financeCodesController.routes()
+  financeCodesController.routes(),
+  reportController.routes()
 ];
 
 export const allowedMethods = [
@@ -59,5 +61,6 @@ export const allowedMethods = [
   mouController.allowedMethods(),
   procurementController.allowedMethods(),
   projectNoteController.allowedMethods(),
-  financeCodesController.allowedMethods()
+  financeCodesController.allowedMethods(),
+  reportController.allowedMethods()
 ];

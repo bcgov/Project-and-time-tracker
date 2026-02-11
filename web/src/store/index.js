@@ -32,6 +32,27 @@ const API_URI = process.env.NODE_ENV === 'development'
 
 console.log('API URL:', { API_URI });
 
+function   // Parse filename from Content-Disposition (RFC 5987 + basic filename=)
+    tryParseContentDispositionFilename(cd) {
+      if (!cd || typeof cd !== 'string') return null;
+
+      // filename*=
+      const star = /filename\*\s*=\s*([^']*)''([^;]+)/i.exec(cd);
+      if (star && star[2]) {
+        try { return decodeURIComponent(star[2].trim()); } catch {}
+      }
+
+      // filename="..."
+      const quoted = /filename\s*=\s*"([^"]+)"/i.exec(cd);
+      if (quoted && quoted[1]) return quoted[1];
+
+      // filename=...
+      const bare = /filename\s*=\s*([^;]+)/i.exec(cd);
+      if (bare && bare[1]) return bare[1].trim();
+
+      return null;
+    }
+
 Vue.use(Vuex);
 
 if (typeof security === 'undefined') throw new Error('Security cannot be undefined');
@@ -145,12 +166,13 @@ const store = new Vuex.Store({
       };
     },
     
-  setAllHours(state, rows) {
-    state.allHours = Array.isArray(rows) ? rows : [];
-  },
-  setTotalHours(state, n) {
-    state.totalHours = Number(n) || 0;
-  },
+    setAllHours(state, rows) {
+      state.allHours = Array.isArray(rows) ? rows : [];
+    },
+    setTotalHours(state, n) {
+      state.totalHours = Number(n) || 0;
+    },
+    
 
     // Verify data
     verifyTokenServer(state, data) {
@@ -1326,6 +1348,28 @@ const store = new Vuex.Store({
         return res.data;
     },
   
+    
+    async fetchTimesheetReport(ctx, { qs }) {
+      const url = `${API_URI}/report/export.csv?${qs}`;
+      const res = await $http.get(url, {
+        responseType: 'blob',
+        validateStatus: () => true
+      });
+
+      const blob = new Blob([res.data], { type: 'text/csv' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      
+      const filename = tryParseContentDispositionFilename(
+        res.headers?.['content-disposition'] || res.headers?.['Content-Disposition']
+      );
+      if(filename){
+        a.download = filename;
+      }else{
+        a.download = 'Timesheets.csv';
+      }
+      a.click();
+    },
 
     async fetchUserTimesheets(ctx) {
       const res = await $http.get(`${API_URI}/timesheet/user`);

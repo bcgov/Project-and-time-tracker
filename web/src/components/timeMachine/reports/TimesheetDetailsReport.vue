@@ -78,9 +78,7 @@
         <v-btn small color="primary" class="mr-2" @click="exportCsv">
           Export CSV
         </v-btn>
-        <v-btn small color="success" @click="exportXlsx">
-          Export Excel (.xlsx)
-        </v-btn>
+
       </div>
     </v-layout>
 
@@ -170,21 +168,7 @@ data() {
             const src = this.$store.state.projects;
             return Array.isArray(src) ? src : Object.values(src || {});
         },
-    /*filteredItems() {
-      const { startDate, endDate, user, project } = this.filters;
-      const start = startDate ? new Date(startDate) : null;
-      const end = endDate ? new Date(endDate) : null;
 
-      return this.items.filter(row => {
-        const rowDate = row.entryDate ? new Date(row.entryDate) : null;
-        const matchesDate =
-          (!start || (rowDate && rowDate >= start)) &&
-          (!end || (rowDate && rowDate <= end));
-        const matchesUser = !user || row.fullName === user;
-        const matchesProject = !project || row.projectName === project;
-        return matchesDate && matchesUser && matchesProject;
-      });
-    },*/
     
     // If you’re still using client-side filteredItems for display:
     pageCountThisPage() {
@@ -278,96 +262,40 @@ data() {
       const num = Number(n);
       return isNaN(num) ? n : num.toFixed(2);
     },
+    
+    
+    buildExportQuery() {
+        const params = new URLSearchParams();
+        if (this.filters.startDate) params.set('startDate', this.filters.startDate);
+        if (this.filters.endDate) params.set('endDate', this.filters.endDate);
+        if (Array.isArray(this.filters.userIds) && this.filters.userIds.length) {
+          params.set('userIds', this.filters.userIds.join(','));
+        }
+        if (Array.isArray(this.filters.projectIds) && this.filters.projectIds.length) {
+          params.set('projectIds', this.filters.projectIds.join(','));
+        }
+        return params.toString();
+      },
 
-    // CSV/XLSX export (same safe version we discussed)
-    exportCsv() {
-      const rows = this.filteredItems;
-      const cols = this.headers.filter(h => !!h.value);
-      const header = cols.map(h => this.escapeCsv(h.text)).join(',');
-      const lines = rows.map(r => cols.map(h => this.escapeCsv(this.csvCellValue(h.value, r))).join(','));
-      const csvString = '\uFEFF' + [header, ...lines].join('\r\n');
-      const filename = this.buildCsvFilename();
 
-      if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-        const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
-        window.navigator.msSaveOrOpenBlob(blob, filename);
-      } else {
-        const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', filename);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-      }
-    },
-    escapeCsv(val) {
-      if (val == null) return '';
-      const str = String(val);
-      return /[",\n]/.test(str) ? `"${str.replace(/"/g, '""')}"` : str;
-    },
-    csvCellValue(key, row) {
-      switch (key) {
-        case 'entryDate': return this.formatDate(row.entryDate);
-        case 'hoursBillable': return this.formatNumber(row.hoursBillable);
-        case 'hoursUnBillable': return this.formatNumber(row.hoursUnBillable);
-        default: return row[key] != null ? row[key] : '';
-      }
-    },
-    buildCsvFilename() {
-      const date = new Date();
-      const yyyy = date.getFullYear();
-      const mm = String(date.getMonth() + 1).padStart(2, '0');
-      const dd = String(date.getDate()).padStart(2, '0');
-      let userName = '';
-      try {
-        const user = this.$store?.state?.users?.find(item => item.id === this.form?.userId);
-        if (user) userName = user.contact.fullName;
-      } catch {}
-      return `TimeMachine-${yyyy}${mm}${dd}-${userName || 'All'}.csv`;
-    },
 
-    async exportXlsx() {
-      const XLSX = window.XLSX;
-      if (!XLSX) {
-        console.warn('SheetJS not found, falling back to CSV.');
-        this.exportCsv();
-        return;
-      }
-      const rows = this.filteredItems;
-      const cols = this.headers.filter(h => !!h.value);
-      const aoa = [
-        cols.map(h => h.text),
-        ...rows.map(r => cols.map(c => {
-          const key = c.value;
-          if (key === 'entryDate') return this.formatDate(r.entryDate);
-          if (key === 'hoursBillable') return Number(r.hoursBillable || 0);
-          if (key === 'hoursUnBillable') return Number(r.hoursUnBillable || 0);
-          return r[key] != null ? r[key] : '';
-        }))
-      ];
-      const ws = XLSX.utils.aoa_to_sheet(aoa);
-      ws['!cols'] = cols.map(h => {
-        if (/hours/i.test(h.text)) return { wch: 16 };
-        if (/date/i.test(h.text)) return { wch: 12 };
-        if (/project|name|rfx|mou/i.test(h.text)) return { wch: 24 };
-        return { wch: 12 };
-      });
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, 'Timesheets');
-      const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-      const blob = new Blob([wbout], { type: 'application/octet-stream' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = this.buildCsvFilename().replace('.csv', '.xlsx');
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    }
+      exportCsv() {
+        const qs = this.buildExportQuery();
+        this.$store.dispatch("fetchTimesheetReport", {qs});
+      },
+      
+    // If you *must* send Authorization headers (Bearer token), use axios/fetch with blob:
+      async exportCsvWithHeaders() {
+        const qs = this.buildExportQuery();
+        const res = await this.$http.get(`${API_URI}/report/export.csv?${qs}`, { responseType: 'blob' });
+        const blob = new Blob([res.data], { type: 'text/csv;charset=utf-8;' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = this.buildCsvFilename();
+        document.body.appendChild(a); a.click(); a.remove();
+        URL.revokeObjectURL(a.href);
+      },
+
   }
 };
 </script>
