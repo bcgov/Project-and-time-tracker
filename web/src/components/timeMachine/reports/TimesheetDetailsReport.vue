@@ -1,53 +1,52 @@
 <template>
-  <v-container grid-list-xl fluid class="page-container custom-timesheets-container">
+  <v-card style="margin: 15px;width: 100%;">
+  <v-container grid-list-xl fluid  >
     <v-layout>
       <v-flex md12>
-        <h1 class="timesheet-header">Timesheet Details Report</h1>
+        <h2 class="timesheet-header" style="text-align: center; font-size: 24px;">Timesheet Details Report</h2>
       </v-flex>
     </v-layout>
-    <v-card>
+    
         
 <!-- FILTERS -->
-    <v-layout row wrap>
+    <v-layout row wrap style="gap:40px; height: 60px;">
       <v-flex xs12 md3>
         <v-text-field
           label="Start Date"
           v-model="filters.startDate"
           type="date"
-          box
           clearable
           @change="onFilterChange"
         />
       </v-flex>
-
       <v-flex xs12 md3>
         <v-text-field
           label="End Date"
           v-model="filters.endDate"
           type="date"
-          box
           clearable
           @change="onFilterChange"
         />
       </v-flex>
-
-      <v-flex xs12 md3>
+    </v-layout>
+    <v-layout row wrap style="gap:40px; height: 100px;">
+      <v-flex xs12 md5>
         <v-select
-        label="User"
-        :items="users"                
-        :item-text="userLabel"        
-        item-value="id"               
-        v-model="filters.userIds"
-        multiple
-        chips
-        deletable-chips
-        clearable
-        box
-        @change="onFilterChange"
-        />
+          label="User"
+          :items="users"                
+          :item-text="userLabel"        
+          item-value="id"               
+          v-model="filters.userIds"
+          multiple
+          chips
+          deletable-chips
+          clearable
+          autocomplete
+          @change="onFilterChange"
+        ></v-select>
         </v-flex>
 
-      <v-flex xs12 md3>
+      <v-flex xs12 md5>
         <v-select
           label="Project"
           :items="projects"
@@ -58,7 +57,7 @@
           chips
           deletable-chips
           clearable
-          box
+          autocomplete
           @change="onFilterChange"
         />
       </v-flex>
@@ -82,6 +81,7 @@
       </div>
     </v-layout>
 
+    <hr></hr>
     
 <!-- DATA TABLE (Vuetify 1.5 API) -->
     <v-data-table
@@ -109,8 +109,9 @@
 
 
 
-    </v-card>
+    
   </v-container>
+  </v-card>
 </template>
 
 
@@ -123,7 +124,6 @@ data() {
     return {
       loading: false,
       items: [],
-      //users: [],
 
       // Vuetify 1.5 pagination object (client-side)
       pagination: {
@@ -137,7 +137,8 @@ data() {
     filters: { 
         startDate: null,
         endDate: null, 
-        userIds: [],      // <-- use ids (not names)
+        userIds: [],
+        userNames: [],
         projectIds: [],
     },
 
@@ -270,6 +271,15 @@ data() {
         if (this.filters.endDate) params.set('endDate', this.filters.endDate);
         if (Array.isArray(this.filters.userIds) && this.filters.userIds.length) {
           params.set('userIds', this.filters.userIds.join(','));
+          // 2. Map IDs to Full Names
+          const selectedFullNames = this.filters.userIds.map(id => {
+            const user = this.users.find(u => u.id === id);
+            return user ? this.userLabel(user) : null;
+          }).filter(name => name !== null);
+
+          if (selectedFullNames.length) {
+            params.set('userNames', selectedFullNames.join(','));
+          }
         }
         if (Array.isArray(this.filters.projectIds) && this.filters.projectIds.length) {
           params.set('projectIds', this.filters.projectIds.join(','));
@@ -302,5 +312,9 @@ data() {
 
 <style scoped>
 .v-data-table td, .v-data-table th { white-space: nowrap; }
+
+::v-deep .v-select--chips .v-select__selections {
+  max-height: 42px; /* Leaves room for 1 row of chips */
+  overflow-y: auto; /* Adds a tiny scroll if they select too many, instead of expanding */
+}
 </style>
-``

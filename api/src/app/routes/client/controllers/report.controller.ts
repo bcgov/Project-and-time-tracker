@@ -8,9 +8,41 @@ import databaseConnection from '../../../../app/database/database.connection';
 const PgCursor = require('pg-cursor');
 const { stringify } = require('csv-stringify'); // ✅ use the streaming API
 
+
+/**
+ * Generates a clean, sanitized filename for the Timesheet CSV
+ */
+const buildTimesheetFilename = (
+  startDate?: string, 
+  endDate?: string, 
+  names?: string[]
+): string => {
+  const start = startDate ? startDate.slice(0, 10) : 'ALL-DATES';
+  const end = endDate ? endDate.slice(0, 10) : 'ALL-DATES';
+
+  // Determine User Context
+  let userLabel = '_ALL-USERS';
+  if (names && names.length === 1) {
+    userLabel = `_${names[0].substring(0, 12)}`;
+  } else if (names && names.length > 1) {
+    userLabel = `_${names.length}-USERS`;
+  }
+
+  // Handle date range logic
+  const dateRange = (start === 'ALL-DATES' && end === 'ALL-DATES') 
+    ? 'ALL-DATES' 
+    : `${start}_to_${end}`;
+
+  const rawName = `Timesheets_${dateRange}${userLabel}.csv`;
+
+  // Sanitize: Replace non-alphanumeric (except ._-) with hyphens and trim length
+  return rawName.replace(/[^a-zA-Z0-9._-]/g, '-').slice(0, 180);
+};
+
 export const timesheetReportCsv = async (ctx: Koa.Context) => {
   const auth = ctx.state.auth as IAuth;
-  if (!auth?.role?.includes(Role.PSB_Admin)) {
+  const allowedRoles = [Role.PSB_Admin, Role.PSB_User];
+  if (!auth?.role?.some(r => allowedRoles.includes(r))) {
     ctx.status = 403;
     ctx.body = { message: 'Forbidden' };
     return;
@@ -19,9 +51,10 @@ export const timesheetReportCsv = async (ctx: Koa.Context) => {
   console.log("API: timesheetReport CSV");
 
   // ---- parse filters
-  const { startDate, endDate, userIds, projectIds } = ctx.query as Record<string, string | undefined>;
+  const { startDate, endDate, userIds, userNames, projectIds } = ctx.query as Record<string, string | undefined>;
   const toUuidArray = (s?: string) => (s ? s.split(',').map(x => x.trim()).filter(Boolean) : undefined);
   const userIdArr = toUuidArray(userIds);
+  const userNameArr = toUuidArray(userNames);
   const projectIdArr = toUuidArray(projectIds);
 
   const where: string[] = [
@@ -62,40 +95,12 @@ export const timesheetReportCsv = async (ctx: Koa.Context) => {
   `;
 
   
-    // ---- Build filename based on dates & users ----
-
-    // Normalize dates (YYYY-MM-DD or fallback)
-    const start = startDate ? startDate.slice(0, 10) : 'ALL-DATES';
-    const end   = endDate   ? endDate.slice(0, 10)   : 'ALL-DATES';
-
-
-    /*
-    // Build clean user label
-    let userLabel = 'ALL-USERS';
-
-    if (userIdArr?.length === 1) {
-    // show one user safely (by id prefix)
-    userLabel = `USER-${userIdArr[0].substring(0, 8)}`;
-    }
-
-    if (userIdArr?.length > 1) {
-    userLabel = `USERS-${userIdArr.length}`;
-    }*/
-
-    // Final filename assembly
-    //let filename = `Timesheets_${start}_to_${end}_${userLabel}.csv`;
-    let filename = `Timesheets_${start}_to_${end}.csv`;
-
-    // Sanitize for filesystem safety
-    filename = filename.replace(/[^a-zA-Z0-9._-]/g, '-');
-
-    // Keep it short just in case (200 is safe everywhere)
-    filename = filename.slice(0, 180);
-    console.log(filename);
-    // Apply to response
-    ctx.attachment(filename);
-    ctx.type = 'text/csv; charset=utf-8';
-    ctx.set('Access-Control-Expose-Headers', 'Content-Disposition');
+  // ---- Build filename based on dates & users ----
+  const filename = buildTimesheetFilename(startDate, endDate, userNameArr);
+  // Apply to response
+  ctx.attachment(filename);
+  ctx.type = 'text/csv; charset=utf-8';
+  ctx.set('Access-Control-Expose-Headers', 'Content-Disposition');
 
 
   // We’ll take over the raw socket and pipe CSV into it
