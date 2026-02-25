@@ -156,14 +156,14 @@ const routes = [
     path: '/reports',
     name: 'reports',
     component: Reports,
-    meta: { requiresAuth: true, roles: ['PSB_Admin'] },
+    meta: { requiresAuth: true, roles: ['PSB_Admin', 'PSB_User'] },
   },
   {
     exact: true,
     path: '/reports/timesheet-details',
     name: 'timesheet-details',
     component: TimesheetDetailsReport,
-    meta: { requiresAuth: true, roles: ['PSB_Admin'] },
+    meta: { requiresAuth: true, roles: ['PSB_Admin', 'PSB_User'] },
   },
   {
     exact: true,

@@ -88,7 +88,7 @@ export const getAllHours = async (ctx: Koa.Context) => {
   
 try {
     const auth = ctx.state.auth as IAuth;
-    if (!auth.role.includes(Role.PSB_Admin)) {
+    if (!auth.role.includes(Role.PSB_Admin) && !auth.role.includes(Role.PSB_User)) {
       ctx.status = 403; ctx.body = { message: 'Forbidden' }; return;
     }
 

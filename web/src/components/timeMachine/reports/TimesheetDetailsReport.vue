@@ -43,6 +43,7 @@
           clearable
           autocomplete
           @change="onFilterChange"
+          :disabled="!isAdmin"
         ></v-select>
         </v-flex>
 
@@ -106,10 +107,6 @@
 
       <v-progress-linear slot="progress" color="primary" indeterminate />
     </v-data-table>
-
-
-
-    
   </v-container>
   </v-card>
 </template>
@@ -117,6 +114,8 @@
 
 
 <script>
+import { getRoles } from '../../../modules/security/init';
+
 export default {
   name: 'TimesheetReportV15',
   
@@ -124,6 +123,8 @@ data() {
     return {
       loading: false,
       items: [],
+      isAdmin: false,
+      ready: false, 
 
       // Vuetify 1.5 pagination object (client-side)
       pagination: {
@@ -134,13 +135,13 @@ data() {
       },
 
       // Add 'user' and 'project' if you want those client-side filters to work
-    filters: { 
+      filters: { 
         startDate: null,
         endDate: null, 
         userIds: [],
         userNames: [],
         projectIds: [],
-    },
+      },
 
       headers: [
         { text: 'Name', value: 'fullName', sortable: true },
@@ -188,13 +189,37 @@ data() {
 
   
     async mounted() {
-        // Load reference data first (if not already loaded elsewhere)
-        await this.$store.dispatch('fetchProjects'); // and fetchUsers if you have it
-        await this.onPaginate(this.pagination);      // initial page with filters
+      
+      await Promise.all([
+        this.$store.dispatch('fetchProjects'),
+        this.$store.dispatch('fetchUsers') // <-- fetch unconditionally (or guard correctly)
+      ]);
+
+      const referenceId = this.$store.state.activeUser?.refId;
+      const me = this.users.find(u => u.referenceId === referenceId);
+      
+      if (!this.isAdmin) {
+        // Non-admins are restricted to themselves
+        this.$set(this.filters, 'userIds', [me.id]); // ensure reactivity
+      } else {
+        // Admins can choose (default: nobody selected = fetch all depending on API rules)
+      }
+
+      this.ready = true;
+      await this.onPaginate(this.pagination);      // initial page with filters
+    },
+
+    created(){
+     this.setAdmin();
     },
 
 
     methods: {
+    async setAdmin() {
+      const roles =  await getRoles();
+      console.log(roles);
+      this.isAdmin = roles.includes('PSB_Admin');
+    },
         
     async onFilterChange() {
       // reset to first page when filters change
@@ -206,6 +231,7 @@ data() {
     async onPaginate(p) {
         this.pagination = p;
         const { page, rowsPerPage } = p;
+        if (!this.ready) return;
         this.loading = true;
         try {
             // Pass page + multi-select arrays to store action
@@ -222,21 +248,16 @@ data() {
             this.total = this.$store.state.totalHours;   // number
         } finally {
             this.loading = false;
-        }
-        
+        } 
     },
-
 
     async loadData() {
       try {
         this.loading = true;
-        // your existing call (make sure backend caps with .limit(100) as discussed)
         await this.$store.dispatch('fetchProjects');
-        await this.$store.dispatch('fetchAllHours');
         
         this.items = this.$store.state.allHours;       // current page array
         this.total = this.$store.state.totalHours;     // (if you want a local copy)
-        //this.users = this.$store.state.users;
         console.log(this.items);
         console.log( this.$store.state.projects);
       } catch (e) {

@@ -90,6 +90,7 @@ const commonForPSBAdminAndUser = [
   'PATCH/api/intake/:id',
   'DELETE/api/intake/:id',
   'DELETE/api/MOU/:id',
+  'GET/api/timesheet/allHours',
 ];
 
 const User = [...commonForAllUsers];
@@ -136,7 +137,6 @@ const permissions = {
     'GET/api/intake/',
     'GET/api/financecode/all',
     'GET/api/intake/:id',
-    'GET/api/timesheet/allHours',
     // 'PATCH/api/intake/:id',
     'POST/api/procurement/',
     'POST/api/financecode/',
