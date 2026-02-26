@@ -1324,7 +1324,7 @@ const store = new Vuex.Store({
       return Promise.resolve(res.data);
     },
     
-    async fetchAllHours(ctx, { page = 1, pageSize = 25, startDate, endDate, userIds, projectIds } = {}) {
+    async fetchAllHours(ctx, { page = 1, pageSize = 25, startDate, endDate, userIds, projectIds, sortBy, sortDesc } = {}) {
       
       const params = new URLSearchParams({
           page: String(page),
@@ -1341,6 +1341,9 @@ const store = new Vuex.Store({
         if (Array.isArray(projectIds) && projectIds.length) {
           params.set('projectIds', projectIds.join(','));
         }
+
+        if (sortBy) params.set('sortBy', String(sortBy));
+        if (typeof sortDesc === 'boolean') params.set('sortDesc', String(sortDesc))
 
         const res = await $http.get(`${API_URI}/timesheet/allHours?${params.toString()}`);
         ctx.commit('setAllHours', res.data?.data || []);

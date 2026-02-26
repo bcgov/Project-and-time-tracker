@@ -28,6 +28,8 @@ import { authorize } from '../../../services/common/authorize.service';
 import { Role } from '../../roles';
 import e = require('express');
 
+type Paging = { page?: number; pageSize?: number };
+
 export const getTimesheets = async (ctx: Koa.Context) => {
   try {
     // If user passes up query params, all are required and filter
@@ -98,7 +100,9 @@ try {
       startDate,
       endDate,
       userIds,      // "12,34" or "12"
-      projectIds    // "5,7" or "5"
+      projectIds,    // "5,7" or "5"
+      sortBy,        // e.g. 'fullName'
+      sortDesc
     } = ctx.query as Record<string, string | undefined>;
 
     
@@ -128,10 +132,32 @@ try {
       projectIds: toUuidArray(projectIds),
     };
 
+    
+    // ---- Sorting (whitelist columns)
+    const sortMap: Record<string, string> = {
+      fullName: 'c.fullName',
+      entryDate: 'te.entryDate',
+      hoursBillable: 'te.hoursBillable',
+      hoursUnBillable: 'te.hoursUnBillable',
+      projectName: 'p.projectName',
+      rfxName: 'pr.rfxName',
+      Mou: 'mou.name',
+      // Derived "IsProjectBillable" -> order by 1/0
+      IsProjectBillable: `(CASE WHEN (p.categoryId = 3 OR p.categoryId IS NULL) THEN 1 ELSE 0 END)`
+    };
+
+    const orderBy = sortBy && sortMap[sortBy] ? sortMap[sortBy] : undefined;
+    const orderDir = String(sortDesc).toLowerCase() === 'true' ? 'DESC' : 'ASC';
+
+
     const pg = Math.max(1, Number(page));
     const ps = Math.min(200, Math.max(1, Number(pageSize)));
 
-    const { data, total } = await retrieveAllHoursPaged(filters, { page: pg, pageSize: ps });
+    
+    const { data, total } = await retrieveAllHoursPaged(
+      filters,
+      { page: pg, pageSize: ps, orderBy, orderDir } as Paging & { orderBy?: string; orderDir?: 'ASC' | 'DESC' }
+    );
 
     ctx.set('X-Total-Count', String(total));
     ctx.body = { data, total, page: pg, pageSize: ps };

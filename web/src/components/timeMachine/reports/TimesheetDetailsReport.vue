@@ -91,18 +91,20 @@
         :loading="loading"
         :pagination.sync="pagination"
         :rows-per-page-items="[10, 25, 50, 100]"
-        :total-items="totalHours"        
+        :total-items="totalHours" 
+        :must-sort="true"             
+        :disable-initial-sort="true"  
         @update:pagination="onPaginate"
     >
       <template slot="items" slot-scope="props">
-        <td>{{ props.item.fullName }}</td>
-        <td>{{ formatDate(props.item.entryDate) }}</td>
-        <td class="text-xs-right">{{ formatNumber(props.item.hoursBillable) }}</td>
-        <td class="text-xs-right">{{ formatNumber(props.item.hoursUnBillable) }}</td>
-        <td>{{ props.item.projectName }}</td>
-        <td>{{ props.item.rfxName }}</td>
-        <td>{{ props.item.Mou }}</td>
-        <td>{{ props.item.IsProjectBillable }}</td>
+        <td style="width: 10%;">{{ props.item.fullName }}</td>
+        <td style="width: 10%;">{{ formatDate(props.item.entryDate) }}</td>
+        <td style="width: 5%;" class="text-xs-center">{{ formatNumber(props.item.hoursBillable) }}</td>
+        <td style="width: 5%;" class="text-xs-center">{{ formatNumber(props.item.hoursUnBillable) }}</td>
+        <td style="width: 15%;">{{ props.item.projectName }}</td>
+        <td style="width: 15%;">{{ props.item.rfxName }}</td>
+        <td style="width: 15%;">{{ props.item.Mou }}</td>
+        <td style="width: 5%;">{{ props.item.IsProjectBillable }}</td>
       </template>
 
       <v-progress-linear slot="progress" color="primary" indeterminate />
@@ -146,12 +148,12 @@ data() {
       headers: [
         { text: 'Name', value: 'fullName', sortable: true },
         { text: 'Entry Date', value: 'entryDate', sortable: true },
-        { text: 'Billable Hours', value: 'hoursBillable', align: 'right', sortable: true },
-        { text: 'Unbillable Hours', value: 'hoursUnBillable', align: 'right', sortable: true },
+        { text: 'Billable Hours', value: 'hoursBillable', sortable: true },
+        { text: 'Unbillable Hours', value: 'hoursUnBillable', sortable: true },
         { text: 'Project', value: 'projectName', sortable: true },
         { text: 'RFX', value: 'rfxName', sortable: true },
         { text: 'MOU', value: 'Mou', sortable: true },
-        { text: 'IsBillable', value: 'IsProjectBillable', sortable: true }
+        { text: 'IsBillable', value: 'IsProjectBillable', sortable: false }
       ]
     };
   },
@@ -230,7 +232,7 @@ data() {
 
     async onPaginate(p) {
         this.pagination = p;
-        const { page, rowsPerPage } = p;
+        const { page, rowsPerPage, sortBy, descending} = p;
         if (!this.ready) return;
         this.loading = true;
         try {
@@ -238,6 +240,13 @@ data() {
             const res = await this.$store.dispatch('fetchAllHours', {
             page,
             pageSize: rowsPerPage,
+
+            //Sorting       
+            sortBy: sortBy || null,         // e.g., 'fullName'
+            sortDesc: !!descending,         // true/false for direction
+
+
+            //Filters
             startDate: this.filters.startDate,
             endDate: this.filters.endDate,
             userIds: this.filters.userIds,

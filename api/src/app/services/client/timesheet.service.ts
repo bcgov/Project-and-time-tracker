@@ -106,11 +106,12 @@ type Paging = { page?: number; pageSize?: number };
 
 export const retrieveAllHoursPaged = async (
   filters: TimesheetReportFilters = {},
-  paging: Paging = {}
+  paging: Paging & { orderBy?: string; orderDir?: 'ASC' | 'DESC' } = {}
 ): Promise<{ data: TimesheetRowDTO[]; total: number }> => {
   const repo = getRepository(Timesheet);
   const page = Math.max(1, Number(paging.page || 1));
   const pageSize = Math.min(200, Math.max(1, Number(paging.pageSize || 100)));
+  const { orderBy, orderDir } = paging;
 
   console.log("retrieveAllHoursPaged()")
 
@@ -160,8 +161,6 @@ if (filters.startDate) {
       `te.expenseCategory AS "expenseCategory"`,
       `te.expenseAmount AS "expenseAmount"`,
       `te.expenseComment AS "expenseComment"`,
-      // If the business rule is project category, keep p.categoryId.
-      // If it's entry category, switch to te.categoryId.
       `CASE WHEN (p.categoryId = 3 OR p.categoryId IS NULL)
             THEN 'True' ELSE 'False' END AS "IsProjectBillable"`,
       `mou.name AS "Mou"`,
@@ -175,12 +174,30 @@ if (filters.startDate) {
     .limit(pageSize)
     .offset((page - 1) * pageSize);
 
+  
+// Apply requested sort (if present), else default multi-sort
+  if (orderBy) {
+    dataQb.orderBy(orderBy, orderDir || 'ASC');
+    console.log(orderBy);
+    console.log(orderDir);
+    // Optional: add stable tiebreakers
+    if (orderBy !== 'c.fullName') dataQb.addOrderBy('c.fullName', 'ASC');
+    if (orderBy !== 'te.entryDate') dataQb.addOrderBy('te.entryDate', 'ASC');
+  } else {
+    dataQb
+      .orderBy('c.fullName', 'ASC')
+      .addOrderBy('te.entryDate', 'ASC')
+      .addOrderBy('p.projectName', 'ASC')
+      .addOrderBy('pr.rfxName', 'ASC');
+  }
+
+
   const data = await dataQb.getRawMany<TimesheetRowDTO>();
   return { data, total };
 };
 
 
-export const retrieveAllHours 
+/*export const retrieveAllHours 
 = async (filters: TimesheetReportFilters = {}): Promise<TimesheetRowDTO[]> => {
   const repo = getRepository(Timesheet);
 
@@ -237,14 +254,13 @@ export const retrieveAllHours
     .addOrderBy(`pr.rfxName`, 'ASC');
 
     
-  // ⭐⭐⭐ LIMIT RESULTS TO ONE PAGE ⭐⭐⭐
   qb.limit(100);        // <-- only first 100 rows
   qb.offset(0);         // <-- first page
 
 
   // Flattened rows:
   return qb.getRawMany<TimesheetRowDTO>();
-};
+};*/
 
 
 export const retrieveAllTimesheets = async () => {
