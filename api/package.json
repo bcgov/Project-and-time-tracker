@@ -54,7 +54,7 @@
     "@types/validator": "^10.9.0",
     "@types/webpack": "^4.4.26",
     "atob": "^2.1.2",
-    "chai": "^4.2.0",
+    "chai": "^4.5.0",
     "chance": "^1.0.18",
     "cross-env": "^5.2.0",
     "csv-stringify": "^6.6.0",
