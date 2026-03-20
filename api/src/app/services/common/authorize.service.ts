@@ -1,4 +1,4 @@
-import * as Koa from 'koa';
+import Koa from 'koa';
 import * as HttpStatus from 'http-status-codes';
 import { IAuth } from '../../models/interfaces/i-auth';
 

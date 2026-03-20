@@ -1,5 +1,5 @@
-import * as Koa from 'koa';
-import * as Router from 'koa-router';
+import Koa from 'koa';
+import Router from 'koa-router';
 import { retrieveUsers, retrieveUsersWithFinanceCodes} from '../../../services/client/user.service';
 import { Role } from '../../roles';
 import { authorize } from '../../../services/common/authorize.service';

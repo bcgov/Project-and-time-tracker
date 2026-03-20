@@ -1,7 +1,7 @@
-import * as Koa from 'koa';
+import Koa from 'koa';
 import * as HttpStatus from 'http-status-codes';
-import * as bodyParser from 'koa-bodyparser';
-import * as cors from '@koa/cors';
+import bodyParser from 'koa-bodyparser'
+import cors from '@koa/cors';
 
 import { appRoutes, allowedMethods } from './routes/routes';
 import { validateToken } from '../app/services/common/auth-verification.service';

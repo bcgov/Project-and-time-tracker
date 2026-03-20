@@ -1,6 +1,6 @@
 import { IProcurement } from './../../../models/interfaces/i-procurement';
-import * as Koa from 'koa';
-import * as Router from 'koa-router';
+import Koa from 'koa';
+import Router from 'koa-router';
 import {
  createProcurementLog,
  retrieveAllProcurementLog,
