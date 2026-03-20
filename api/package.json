@@ -20,17 +20,15 @@
   "devDependencies": {
     "@types/chance": "^1.0.1",
     "@types/http-status-codes": "^1.2.0",
-    "@types/mocha": "^5.2.6",
+    "@types/mocha": "^10.0.10",
     "@types/node": "^20.19.37",
     "@types/supertest": "^2.0.7",
     "@types/validator": "^10.9.0",
     "chai": "^4.5.0",
-    "mocha": "^6.0.2",
-    "nodemon": "^1.18.10",
-    "npm-run-all": "^4.1.5",
-    "nyc": "^13.3.0",
-    "rimraf": "^3.0.2",
-    "source-map-support": "^0.5.6",
+    "mocha": "^11.7.5",
+    "nodemon": "^3.1.14",
+    "nyc": "^18.0.0",
+    "rimraf": "^6.1.3",
     "supertest": "^4.0.0",
     "ts-node": "10.9.2",
     "tsconfig-paths": "^3.8.0",
@@ -40,8 +38,7 @@
     "undici-types": "^7.18.2"
   },
   "dependencies": {
-    "@koa/cors": "^3.0.0",
-    "atob": "^2.1.2",
+    "@koa/cors": "^5.0.0",
     "chance": "^1.0.18",
     "cross-env": "^5.2.0",
     "csv-stringify": "^6.6.0",
@@ -51,12 +48,10 @@
     "koa-route": "^3.2.0",
     "koa-router": "^7.4.0",
     "koa-static": "^5.0.0",
-    "njwt": "^1.0.0",
     "node-fetch": "^2.3.0",
     "pg": "^8.8.0",
     "pg-cursor": "^2.17.0",
     "reflect-metadata": "^0.1.13",
-    "typeorm": "^0.3.28",
-    "uuid-validate": "0.0.3"
+    "typeorm": "^0.3.28"
   }
 }

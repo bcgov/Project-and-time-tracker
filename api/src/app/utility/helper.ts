@@ -1,5 +1,3 @@
-import { atob } from 'atob';
-
 export function validateEmail(email: string) {
     const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(String(email).toLowerCase());
@@ -26,8 +24,7 @@ export function decodeKeycloakToken(str: string) {
     str = (str + '===').slice(0, str.length + (str.length % 4));
     str = str.replace(/-/g, '+').replace(/_/g, '/');
 
-    str = decodeURIComponent(escape(atob(str)));
-
-    str = JSON.parse(str);
-    return str;
+    
+    const json = Buffer.from(str, 'base64').toString('utf-8');
+    return JSON.parse(json);
 }
