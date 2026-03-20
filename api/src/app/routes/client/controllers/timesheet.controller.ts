@@ -26,7 +26,6 @@ import {
 import { IAuth } from '../../../models/interfaces/i-auth';
 import { authorize } from '../../../services/common/authorize.service';
 import { Role } from '../../roles';
-import e = require('express');
 
 type Paging = { page?: number; pageSize?: number };
 

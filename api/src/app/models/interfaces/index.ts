@@ -2,7 +2,6 @@ export * from './i-auth';
 export * from './i-client';
 export * from './i-contact';
 // export * from './i-documents';
-export * from './i-keycloak-user-fetch-by-role';
 export * from './i-ministry';
 export * from './i-project-contact';
 // export * from './i-project-documents';
