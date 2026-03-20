@@ -24,7 +24,7 @@ export const createProjectRfx = async (obj: IProjectRfx | IProjectRfx[]) => {
 
 export const updateProjectRfx = async (id: string, fields: any) => {
   const repo = projectRfxRepo();
-  const projectRfx: ProjectRfx = await repo.findOne(id);
+  const projectRfx: ProjectRfx = await repo.findOne({ where: { id } });
 
   if (!projectRfx) {
     throw Error('projectRfx not found');
@@ -38,7 +38,7 @@ export const updateProjectRfx = async (id: string, fields: any) => {
 
 export const deleteProjectRfx = async (id: string) => {
   const repo = projectRfxRepo();
-  const projectRfx = await repo.findOne(id);
+  const projectRfx = await repo.findOne({ where: { id } });
 
   if (!projectRfx) {
     throw Error('projectRfx not found');
@@ -55,7 +55,7 @@ export const retrieveProjectRfxById = async (id: string | string[]) => {
     }
     return arr;
   }
-  const res = await repo.findOne(id);
+  const res = await repo.findOne({ where: { id } });
   if (!res) {
     throw Error(`projectRfx not found for the id specified: ${id}`);
   }

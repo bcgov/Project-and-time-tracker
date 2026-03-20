@@ -22,7 +22,7 @@ export const createProjectContact = async (obj: IProjectContact | IProjectContac
 
 export const updateProjectContact = async (id: string, fields: any) => {
   const repo = projectContactRepo();
-  const projectContact: ProjectContacts = await repo.findOne(id);
+  const projectContact: ProjectContacts = await repo.findOne({ where: { id } });
 
   if (!projectContact) {
     throw Error('projectContact not found');
@@ -35,7 +35,7 @@ export const updateProjectContact = async (id: string, fields: any) => {
 
 export const deleteProjectContact = async (id: string) => {
   const repo = projectContactRepo();
-  const projectContact = await repo.findOne(id);
+  const projectContact = await repo.findOne({ where: { id } });
 
   if (!projectContact) {
     throw Error('projectContact not found');
@@ -53,7 +53,7 @@ export const retrieveProjectContactById = async (id: string | string[]) => {
     }
     return arr;
   }
-  const res = await repo.findOne(id);
+  const res = await repo.findOne({ where: { id } });
   if (!res) {
     throw Error(`projectContact not found for the id specified: ${id}`);
   }

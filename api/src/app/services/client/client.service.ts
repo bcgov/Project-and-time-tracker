@@ -25,7 +25,7 @@ export const createClient = async (obj: IClient | IClient[]) => {
 
 export const updateClient = async (id: string, fields: any) => {
   const repo = clientRepo();
-  const client: Client = await repo.findOne(id);
+  const client: Client = await repo.findOne({where: { id }});
 
   if (!client) {
     throw Error('client not found');
@@ -39,7 +39,7 @@ export const updateClient = async (id: string, fields: any) => {
 
 export const deleteClient = async (id: string) => {
   const repo = clientRepo();
-  const client = await repo.findOne(id);
+  const client = await repo.findOne({where: { id }});
 
   if (!client) {
     throw Error('client not found');
@@ -56,7 +56,7 @@ export const retrieveClientById = async (id: string | string[]) => {
     }
     return arr;
   }
-  const res = await repo.findOne(id);
+  const res = await repo.findOne({where: { id }});
   if (!res) {
     throw Error(`client not found for the id specified: ${id}`);
   }

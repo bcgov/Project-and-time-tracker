@@ -12,7 +12,7 @@ export const  retrieveProjectIntakeServices = async () => {
 
 export const retrieveProjectIntakeServicesById = async (id: string) => {
   const repo = projectIntakeServicesRepo();
-  const res = await repo.findOne(id);
+  const res = await repo.findOne({ where: { id } });
   if (!res) {
     throw Error(`projectIntakeServices not found for the id specified: ${id}`);
   }

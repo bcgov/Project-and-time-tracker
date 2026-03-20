@@ -23,7 +23,7 @@ export const retrieveAllMinistries = async () => {
 
 export const retrieveMinistryById = async (id: string) => {
   const repo = ministryRepo();
-  const res = await repo.findOne(id);
+  const res = await repo.findOne({where: { id }});
   if (!res) {
     throw Error(`ministry not found for the id specified: ${id}`);
   }
@@ -42,7 +42,10 @@ export const createMinistry = async (obj) => {
 
 export const updateMinistry = async (input: Ministry) => {
   const repo = ministryRepo();
-  const ministry: Ministry = await repo.findOne(input.id);
+  const ministry: Ministry = await repo.findOne
+({
+  where: { id: input.id }
+});
 
   if (!ministry) {
     throw Error('Ministry not found');

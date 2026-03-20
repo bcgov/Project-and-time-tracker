@@ -66,7 +66,7 @@ export const createIntake = async (obj: IProjectIntake) => {
 
 export const updateIntake = async (id: string, fields: any) => {
   const repo = intakeRepo();
-  const intake: ProjectIntake = await repo.findOne(id);
+  const intake: ProjectIntake = await repo.findOne({where: { id }});
 
   if (!intake) {
     throw Error('intake not found');
@@ -82,7 +82,7 @@ export const updateIntake = async (id: string, fields: any) => {
 
 export const deleteIntake = async (id: string) => {
   const repo = intakeRepo();
-  const intake = await repo.findOne(id);
+  const intake = await repo.findOne({where: { id }});
 
   if (!intake) {
     throw Error('intake not found');

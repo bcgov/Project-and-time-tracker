@@ -24,7 +24,7 @@ export const retrieveAllFinanceCodes = async () => {
 
 export const deleteFinanceCodes = async (id: string) => {
   const repo = financeCodeRepo();
-  const fincode = await repo.findOne(id);
+  const fincode = await repo.findOne({where: { id }});
  
   if (!fincode) {
     throw Error('FinanceCodes not Found');
@@ -35,7 +35,7 @@ export const deleteFinanceCodes = async (id: string) => {
 
 export const updatFinanceCodes = async (id: string, fields: any) => {
   const repo = financeCodeRepo();
-  const fincodes: FinanceCodes = await repo.findOne(id);
+  const fincodes: FinanceCodes = await repo.findOne({where: { id }});
 
   if (!fincodes) {
     throw Error('Finance Codes not found');

@@ -38,7 +38,7 @@ export const createMOU = async (obj: { name: string }) => {
 
 export const deleteMOU = async (id: string) => {
   const repo = mouRepo();
-  const mou = await repo.findOne(id);
+  const mou = await repo.findOne({ where: { id } });
 
   if (!mou) {
     throw Error('MOU not Found');

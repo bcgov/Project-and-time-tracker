@@ -30,7 +30,7 @@ export const createTimesheetEntry = async (
 
 export const updateTimesheetEntry = async (id: string, fields: any) => {
   const repo = timesheetEntryRepo();
-  const timesheetEntry: TimesheetEntry = await repo.findOne(id);
+  const timesheetEntry: TimesheetEntry = await repo.findOne({ where: { id } });
 
   if (!timesheetEntry) {
     throw Error('timesheetEntry not found');
@@ -46,7 +46,7 @@ export const deleteEntryByTimesheetId = async (id: string) => {
   const repo = timesheetEntryRepo();
 
   const timesheetRep = timesheetRepo();
-  const timesheet = await timesheetRep.findOne(id);
+  const timesheet = await timesheetRep.findOne({ where: { id } });
   if (!timesheet || timesheet.documentNo != null) {
     throw Error('timesheet not found');
   }
@@ -63,7 +63,7 @@ export const retrieveTimesheetEntryById = async (id: string | string[]) => {
     }
     return arr;
   }
-  const res = await repo.findOne(id);
+  const res = await repo.findOne({ where: { id } });
   if (!res) {
     throw Error(`timesheetEntry not found for the id specified: ${id}`);
   }

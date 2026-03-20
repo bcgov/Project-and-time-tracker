@@ -18,7 +18,7 @@ export const retrieveUsers = async () => {
 
 export const retrieveUserById = async (id: string) => {
   const repo = userRepo();
-  const res = await repo.findOne(id);
+  const res = await repo.findOne({ where: { id } });
   if (!res) {
     throw Error(`user not found for the id specified: ${id}`);
   }
@@ -86,7 +86,7 @@ export const createUser = async (obj: IUser) => {
 
 export const updateUser = async (id: string, fields: any) => {
   const repo = userRepo();
-  const user: User = await repo.findOne(id);
+  const user: User = await repo.findOne({ where: { id } });
 
   if (!user) {
     throw Error('user not found');

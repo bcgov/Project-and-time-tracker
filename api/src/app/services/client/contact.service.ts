@@ -25,7 +25,7 @@ export const createContact = async (obj: IContact | IContact[]) => {
 
 export const updateContact = async (id: string, fields: any) => {
   const repo = contactRepo();
-  const contact: Contact = await repo.findOne(id);
+  const contact: Contact = await repo.findOne({where: { id }});
 
   if (!contact) {
     throw Error('contact not found');
@@ -39,7 +39,7 @@ export const updateContact = async (id: string, fields: any) => {
 
 export const deleteContact = async (id: string) => {
   const repo = contactRepo();
-  const contact = await repo.findOne(id);
+  const contact = await repo.findOne({where: { id }});
 
   if (!contact) {
     throw Error('contact not found');
@@ -56,7 +56,7 @@ export const retrieveContactById = async (id: string | string[]) => {
     }
     return arr;
   }
-  const res = await repo.findOne(id);
+  const res = await repo.findOne({where: { id }});
   if (!res) {
     throw Error(`contact not found for the id specified: ${id}`);
   }

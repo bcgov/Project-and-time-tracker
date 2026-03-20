@@ -22,7 +22,7 @@ export const retrieveAllProcurementLog = async (projId: string) => {
 };
 // export const updateContact = async (id: string, fields: any) => {
 //   const repo = contactRepo();
-//   const contact: Contact = await repo.findOne(id);
+//   const contact: Contact = await repo.findOne({ where: { id } };
 
 //   if (!contact) {
 //     throw Error('contact not found');
@@ -36,7 +36,7 @@ export const retrieveAllProcurementLog = async (projId: string) => {
 
 // export const deleteContact = async (id: string) => {
 //   const repo = contactRepo();
-//   const contact = await repo.findOne(id);
+//   const contact = await repo.findOne({ where: { id } });
 
 //   if (!contact) {
 //     throw Error('contact not found');
@@ -61,7 +61,7 @@ export const retrieveAllProcurementLog = async (projId: string) => {
 // };
 export const updateProcLog = async (id: string, fields: any) => {
   const repo = procurementLogRepo();
-  const proclog: ProcurementLog = await repo.findOne(id);
+  const proclog: ProcurementLog = await repo.findOne({ where: { id } });
 
   if (!proclog) {
     throw Error('procurement log not found');

@@ -12,7 +12,7 @@ export const  retrieveProjectIntakeCategory = async () => {
 
 export const retrieveProjectIntakeCategoryById = async (id: string) => {
   const repo = projectIntakeCategoryRepo();
-  const res = await repo.findOne(id);
+  const res = await repo.findOne({ where: { id } });
   if (!res) {
     throw Error(`projectIntakeCategory not found for the id specified: ${id}`);
   }

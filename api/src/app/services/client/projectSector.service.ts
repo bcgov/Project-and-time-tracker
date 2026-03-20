@@ -15,7 +15,7 @@ export const retrieveProjectSectors = async () => {
 
 export const retrieveProjectSectorById = async (id: string) => {
   const repo = projectSectorRepo();
-  const res = await repo.findOne(id);
+  const res = await repo.findOne({ where: { id } });
   if (!res) {
     throw Error(`projectSector not found for the id specified: ${id}`);
   }

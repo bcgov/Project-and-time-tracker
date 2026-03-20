@@ -22,7 +22,7 @@ export const createProjectIntakeContact = async (obj: IProjectIntakeContact | IP
 
 export const updateProjectIntakeContact = async (id: string, fields: any) => {
   const repo = intakeContactRepo();
-  const intakeContact: ProjectIntakeContacts = await repo.findOne(id);
+  const intakeContact: ProjectIntakeContacts = await repo.findOne({ where: { id } });
 
   if (!intakeContact) {
     throw Error('intakeContact not found');
@@ -35,7 +35,7 @@ export const updateProjectIntakeContact = async (id: string, fields: any) => {
 
 export const deleteProjectIntakeContact = async (id: string) => {
   const repo = intakeContactRepo();
-  const intakeContact = await repo.findOne(id);
+  const intakeContact = await repo.findOne({ where: { id } });
 
   if (!intakeContact) {
     throw Error('intakeContact not found');
@@ -52,7 +52,7 @@ export const retrieveProjectIntakeContactById = async (id: string | string[]) =>
     }
     return arr;
   }
-  const res = await repo.findOne(id);
+  const res = await repo.findOne({ where: { id } });
   if (!res) {
     throw Error(`intakeContact not found for the id specified: ${id}`);
   }

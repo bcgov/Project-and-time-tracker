@@ -79,7 +79,7 @@ export const updateProject = async (
   clientFilds: any = null
 ) => {
   const repo = projectRepo();
-  const project: Project = await repo.findOne(id);
+  const project: Project = await repo.findOne({ where: { id } });
 
   if (!project) {
     throw Error("project not found");
@@ -114,7 +114,7 @@ export const updateProject = async (
 
 export const deleteProject = async (id: string) => {
   const repo = projectRepo();
-  const project = await repo.findOne(id);
+  const project = await repo.findOne({ where: { id } });
 
   if (!project) {
     throw Error("project not found");
@@ -674,7 +674,7 @@ export const retrieveFinanceData = async (obj, userId) => {
       await createFinanceExport(model);
 
       const repoMou = mouRepo();
-      let mou = await repoMou.findOne(res.mou.id);
+      let mou = await repoMou.findOne({where: { id: res.mou.id}});
       if (mou) {
         mou.billingCount = billingCount;
         await repoMou.save(mou);
@@ -955,7 +955,7 @@ export const retrieveFinanceData = async (obj, userId) => {
       await createFinanceExport(model);
 
       const repoMou = mouRepo();
-      let mou = await repoMou.findOne(res.mou.id);
+      let mou = await repoMou.findOne({where: { id: res.mou.id}});
       if (mou) {
         mou.billingCount = billingCount;
         await repoMou.save(mou);
@@ -1259,7 +1259,7 @@ export const getNonMinistryFinanceExportResult = async (
       await createFinanceExport(model);
 
       const repoMou = mouRepo();
-      let mou = await repoMou.findOne(res.mou.id);
+      let mou = await repoMou.findOne({where: { id: res.mou.id}});
       if (mou) {
         mou.billingCount = billingCount;
         await repoMou.save(mou);
@@ -1538,7 +1538,7 @@ export const getMinistryFinanceExportResult = async (
       await createFinanceExport(model);
 
       const repoMou = mouRepo();
-      let mou = await repoMou.findOne(res.mou.id);
+      let mou = await repoMou.findOne({where: { id: res.mou.id}});
       if (mou) {
         mou.billingCount = billingCount;
         await repoMou.save(mou);
@@ -1826,7 +1826,7 @@ export const reinstateFinanceRecord = async (obj) => {
     if (res.mou && billingCount == 0) {
       billingCount = res.mou.billingCount ? res.mou.billingCount + 1 : 1;
       const repoMou = mouRepo();
-      let mou = await repoMou.findOne(res.mou.id);
+      let mou = await repoMou.findOne({where: { id: res.mou.id}});
       if (mou) {
         mou.billingCount = billingCount;
         await repoMou.save(mou);

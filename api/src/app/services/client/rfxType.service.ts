@@ -20,7 +20,7 @@ export const retrieveRfxTypes = async () => {
 
 export const retrieveRfxTypeById = async (id: string) => {
   const repo = rfxTypeRepo();
-  const res = await repo.findOne(id);
+  const res = await repo.findOne({ where: { id } });
   if (!res) {
     throw Error(`rfxType not found for the id specified: ${id}`);
   }
@@ -34,7 +34,7 @@ export const createRfxType = async (obj: IRfxType) => {
 
 export const deleteRfxType = async (id: string) => {
   const repo = rfxTypeRepo();
-  const rfxType = await repo.findOne(id);
+  const rfxType = await repo.findOne({ where: { id } });
 
   if (!rfxType) {
     throw Error('Rfx Type not Found');
@@ -55,7 +55,7 @@ export const checkRfxUsage = async (id: string) => {
 };
 export const updateRfxType = async (id: string, fields: any) => {
   const repo = rfxTypeRepo();
-  const rfxType: RfxType = await repo.findOne(id);
+  const rfxType: RfxType = await repo.findOne({ where: { id } });
 
   if (!rfxType) {
     throw Error('Rfx type not found');

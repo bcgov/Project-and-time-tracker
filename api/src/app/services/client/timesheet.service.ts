@@ -17,7 +17,7 @@ export const createTimesheet = async (obj: ITimesheet) => {
 
 export const updateTimesheet = async (id: string, fields: any) => {
   const repo = timesheetRepo();
-  const timesheet: Timesheet = await repo.findOne(id);
+  const timesheet: Timesheet = await repo.findOne({ where: { id } });
 
   if (!timesheet) {
     throw Error('timesheet not found');
@@ -32,7 +32,7 @@ export const updateTimesheet = async (id: string, fields: any) => {
 export const deleteTimesheet = async (id: string) => {
   const repo = timesheetRepo();
 
-  const timesheet = await repo.findOne(id);
+  const timesheet = await repo.findOne({ where: { id } });
 
   if (!timesheet || timesheet.documentNo != null) {
     throw Error('timesheet not found');

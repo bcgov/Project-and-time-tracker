@@ -18,7 +18,7 @@ export const retrieveRfxPhases = async () => {
 
 export const retrieveRfxPhaseById = async (id: string) => {
   const repo = rfxPhaseRepo();
-  const res = await repo.findOne(id);
+  const res = await repo.findOne({ where: { id } });
   if (!res) {
     throw Error(`rfxPhase not found for the id specified: ${id}`);
   }
@@ -33,7 +33,7 @@ export const createRfxPhase = async (obj: IRfxPhase) => {
 
 export const deleteRfxPhase = async (id: string) => {
   const repo = rfxPhaseRepo();
-  const rfxPhase = await repo.findOne(id);
+  const rfxPhase = await repo.findOne({ where: { id } });
   if (!rfxPhase) {
     throw Error('Rfx Phase not Found');
   }
@@ -54,7 +54,7 @@ export const checkRfxUsage = async (id: string) => {
 
 export const updateRfxPhase = async (id: string, fields: any) => {
   const repo = rfxPhaseRepo();
-  const rfxPhase: RfxPhase = await repo.findOne(id);
+  const rfxPhase: RfxPhase = await repo.findOne({ where: { id } });
 
   if (!rfxPhase) {
     throw Error('Rfx Phase not found');
