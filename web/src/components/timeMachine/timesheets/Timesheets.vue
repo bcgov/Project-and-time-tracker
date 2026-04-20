@@ -3,10 +3,8 @@
         
     <!-- Year-end notification -->
     <div class="red white--text pa-3 mb-4" style="border-radius: 4px; margin-bottom: 6px !important; text-align: center;">
-      <strong>Important fiscal year-end notice:</strong>
-      Time for <strong>March 30 and March 31</strong> must be entered on timesheet
-      dates <strong>on or before March 29</strong>.
-      <br>Please complete all March entries by end of day <strong>April 7</strong>.
+      <strong>Fiscal year-end notice:</strong>
+      Fiscal year end is now over, please refrain from entering time prior to April 1st as it can no longer be billed.
     </div>
     
     <v-layout>
