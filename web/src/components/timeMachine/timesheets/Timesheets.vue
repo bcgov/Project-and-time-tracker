@@ -1,5 +1,10 @@
 <template>
   <v-container grid-list-xl fluid class="page-container custom-timesheets-container">
+    <!-- Year-end notification -->
+    <div class="amber black--text pa-3 mb-4" style="border-radius: 4px; margin-bottom: 6px !important; text-align: center;">
+      <strong>Fiscal year-end notice:</strong>
+      The fiscal year has now ended. Please do not enter time dated before April 1, as it can no longer be billed.
+    </div>
     <v-layout>
       <v-flex md12>
         <h1 class="timesheet-header">Timesheets</h1>

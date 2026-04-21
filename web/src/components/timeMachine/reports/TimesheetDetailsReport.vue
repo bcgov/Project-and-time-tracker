@@ -9,72 +9,75 @@
     
         
 <!-- FILTERS -->
-    <v-layout row wrap style="gap:40px; height: 60px;">
-      <v-flex xs12 md3>
-        <v-text-field
-          label="Start Date"
-          v-model="filters.startDate"
-          type="date"
-          clearable
-          @change="onFilterChange"
-        />
-      </v-flex>
-      <v-flex xs12 md3>
-        <v-text-field
-          label="End Date"
-          v-model="filters.endDate"
-          type="date"
-          clearable
-          @change="onFilterChange"
-        />
-      </v-flex>
-    </v-layout>
-    <v-layout row wrap style="gap:40px; height: 100px;">
-      <v-flex xs12 md5>
-        <v-select
-          label="User"
-          :items="users"                
-          :item-text="userLabel"        
-          item-value="id"               
-          v-model="filters.userIds"
-          multiple
-          chips
-          deletable-chips
-          clearable
-          autocomplete
-          @change="onFilterChange"
-          :disabled="!isAdmin"
-        ></v-select>
+    <div style="margin-left: 15px;">
+      <v-layout row wrap style="gap:40px; height: 60px;">
+        <v-flex xs12 md3>
+          <v-text-field
+            label="Start Date"
+            v-model="filters.startDate"
+            type="date"
+            clearable
+            @change="onFilterChange"
+          />
         </v-flex>
+        <v-flex xs12 md3>
+          <v-text-field
+            label="End Date"
+            v-model="filters.endDate"
+            type="date"
+            clearable
+            @change="onFilterChange"
+          />
+        </v-flex>
+      </v-layout>
+      <v-layout row wrap style="gap:40px; height: 100px;">
+        <v-flex xs12 md5>
+          <v-select
+            label="User"
+            :items="users"                
+            :item-text="userLabel"        
+            item-value="id"               
+            v-model="filters.userIds"
+            multiple
+            chips
+            deletable-chips
+            clearable
+            autocomplete
+            @change="onFilterChange"
+            :disabled="!isAdmin"
+          ></v-select>
+          </v-flex>
 
-      <v-flex xs12 md5>
-        <v-select
-          label="Project"
-          :items="projects"
-          item-text="projectName"
-          item-value="id"
-          v-model="filters.projectIds"
-          multiple
-          chips
-          deletable-chips
-          clearable
-          autocomplete
-          @change="onFilterChange"
-        />
-      </v-flex>
-    </v-layout>
+        <v-flex xs12 md5>
+          <v-select
+            label="Project"
+            :items="projects"
+            item-text="projectName"
+            item-value="id"
+            v-model="filters.projectIds"
+            multiple
+            chips
+            deletable-chips
+            clearable
+            autocomplete
+            @change="onFilterChange"
+          />
+        </v-flex>
+      </v-layout>
+    </div>
 
     <!-- ACTIONS -->
     <v-layout row align-center justify-space-between class="mb-2">
       
         <div class="text-caption">
+        &nbsp;&nbsp;&nbsp;
         <strong>{{ totalHours }}</strong> total rows match filters
         <span v-if="pagination.rowsPerPage > 0">
             • showing {{ pageCountThisPage }} on page {{ pagination.page }}
         </span>
         </div>
 
-      <div>
+      <div style="margin-right: 5px;">
         <v-btn small color="primary" class="mr-2" @click="exportCsv">
           Export CSV
         </v-btn>
@@ -347,4 +350,17 @@ data() {
   max-height: 42px; /* Leaves room for 1 row of chips */
   overflow-y: auto; /* Adds a tiny scroll if they select too many, instead of expanding */
 }
+
+
+
+
+::v-deep table.v-table thead th {
+  font-weight: 700 !important;
+  font-size: 14px !important;
+  background-color: #f5f7fa;
+  border-bottom: 2px solid #d1d5db;
+}
+
+
+
 </style>

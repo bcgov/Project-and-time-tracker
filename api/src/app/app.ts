@@ -5,6 +5,7 @@ import cors from '@koa/cors';
 
 import { appRoutes, allowedMethods } from './routes/routes';
 import { validateToken } from '../app/services/common/auth-verification.service';
+import healthController from './routes/client/controllers/healthCheck.controller'
 
 const app: Koa = new Koa();
 
@@ -30,7 +31,13 @@ app.use(async (ctx: Koa.Context, next: () => Promise<any>) => {
   } 
 });
 
-// Authentication
+
+// Allow Health routes to be (unauthenticated) for openshift ready checks
+// Adding these two lines before validateToken allows for this
+app.use(healthController.routes());
+app.use(healthController.allowedMethods());
+
+// Authentication for all other endpoints
 app.use(validateToken);
 
 appRoutes.forEach(itm => app.use(itm));

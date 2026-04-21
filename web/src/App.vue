@@ -79,6 +79,9 @@
     </v-toolbar>
 
     <v-content>
+      <div v-if="backendDown" class="backend-error">
+        ⚠️ Service temporarily unavailable. Please refresh to try again.
+      </div>
       <v-container pa-0 fluid fill-height>
         <v-layout justify-center align-top>
           <router-view />
@@ -94,6 +97,7 @@ import { mapState } from 'vuex';
 import { shouldDisplayItem } from './menu';
 import './App.styl';
 import { getRoles } from './modules/security/init';
+import { backendState } from './modules/axios';
 
 export default {
   name: 'App',
@@ -147,6 +151,9 @@ export default {
   },
   computed: {
     ...mapState(['message', 'menu', 'pageTitle']),
+    backendDown() {
+      return backendState.down;
+    },
     fetchToken() {
       return this.$store.getters.SECURITY_AUTH.token;
     },
@@ -172,3 +179,14 @@ export default {
   },
 };
 </script>
+
+<style>
+  .backend-error {
+    padding: 1rem;
+    background: #fff3cd;
+    color: #664d03;
+    border-bottom: 1px solid #ffecb5;
+    text-align: center;
+    font-weight: 500;
+  }
+</style>
