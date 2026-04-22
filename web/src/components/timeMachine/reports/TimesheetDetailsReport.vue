@@ -85,8 +85,9 @@
           :loading="exporting"
           :disabled="exporting"
           @click="exportCsv"
+          style="padding:16px 35px"
         >
-          Export CSV
+          <div style="font-size: 14px;">Export CSV</div>
         </v-btn>
       </div>
     </v-layout>
