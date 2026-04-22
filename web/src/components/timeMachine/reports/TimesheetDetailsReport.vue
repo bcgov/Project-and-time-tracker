@@ -78,10 +78,16 @@
         </div>
 
       <div style="margin-right: 5px;">
-        <v-btn small color="primary" class="mr-2" @click="exportCsv">
+        <v-btn
+          small
+          color="primary"
+          class="mr-2"
+          :loading="exporting"
+          :disabled="exporting"
+          @click="exportCsv"
+        >
           Export CSV
         </v-btn>
-
       </div>
     </v-layout>
 
@@ -129,7 +135,8 @@ data() {
       loading: false,
       items: [],
       isAdmin: false,
-      ready: false, 
+      ready: false,
+      exporting: false,
 
       // Vuetify 1.5 pagination object (client-side)
       pagination: {
@@ -320,11 +327,16 @@ data() {
         return params.toString();
       },
 
-
-
-      exportCsv() {
-        const qs = this.buildExportQuery();
-        this.$store.dispatch("fetchTimesheetReport", {qs});
+      async exportCsv() {    
+        this.exporting = true;
+        try {
+          const qs = this.buildExportQuery();
+          await this.$store.dispatch("fetchTimesheetReport", { qs });
+        } catch (e) {
+          console.error('CSV export failed', e);
+        } finally {
+          this.exporting = false;
+        }
       },
       
     // If you *must* send Authorization headers (Bearer token), use axios/fetch with blob:
@@ -352,15 +364,11 @@ data() {
 }
 
 
-
-
 ::v-deep table.v-table thead th {
   font-weight: 700 !important;
   font-size: 14px !important;
   background-color: #f5f7fa;
   border-bottom: 2px solid #d1d5db;
 }
-
-
 
 </style>
