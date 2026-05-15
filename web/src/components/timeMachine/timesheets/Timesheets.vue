@@ -2,10 +2,10 @@
   <v-container grid-list-xl fluid class="page-container custom-timesheets-container">
         
     <!-- Year-end notification -->
-    <div class="red white--text pa-3 mb-4" style="border-radius: 4px; margin-bottom: 6px !important; text-align: center;">
+    <!--<div class="red white--text pa-3 mb-4" style="border-radius: 4px; margin-bottom: 6px !important; text-align: center;">
       <strong>Fiscal year-end notice:</strong>
       Fiscal year end is now over, please refrain from entering time prior to April 1st as it can no longer be billed.
-    </div>
+    </div>-->
     
     <v-layout>
       <v-flex md12>
